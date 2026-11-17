@@ -443,12 +443,12 @@ ok('nordic curl explains its eccentric', /eccentric/i.test(whyOf('nordic-curl'))
 // Rendered, not just present in the config — and on both paths, one generator.
 storage.clear(); boot();
 var sixWhy = ev('liftRowHTML(EX_BY_ID["flat-bb-bench"])');
-ok('6-day path renders the caption', sixWhy.indexOf('class="lift-rep-why"') > -1);
+ok('6-day path renders the caption', sixWhy.indexOf('class="lift-rep-why') > -1);
 ok('6-day path renders that exercise\'s own sentence', sixWhy.indexOf(whyOf('flat-bb-bench')) > -1);
 storage.setItem('monk_lift_days_v1', '4'); boot();
 var altId = anExercise();
 var altWhy = ev('liftRowHTML(EX_BY_ID["' + altId + '"])');
-ok('shorter-split path renders the caption', altWhy.indexOf('class="lift-rep-why"') > -1);
+ok('shorter-split path renders the caption', altWhy.indexOf('class="lift-rep-why') > -1);
 ok('shorter-split path renders that exercise\'s own sentence', altWhy.indexOf(whyOf(altId)) > -1);
 ok('caption sits under the rep count, above the variant chips',
    altWhy.indexOf('lift-sets-reps') < altWhy.indexOf('lift-rep-why'));
