@@ -135,11 +135,11 @@ vm.createContext(ctx);
 var blocks = [];
 var re = /<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g, m;
 while ((m = re.exec(html))) { if (m[1].indexOf('PRE-PAINT THEME') === -1) blocks.push(m[1]); }
-if (blocks.length !== 2) { console.log('expected 2 script blocks, found ' + blocks.length); process.exit(1); }
-try { vm.runInContext(blocks[0], ctx, { filename: 'block1' }); }
-catch (e) { console.log('block 1 threw while loading: ' + e.stack); process.exit(1); }
-try { vm.runInContext(blocks[1], ctx, { filename: 'block2' }); }
-catch (e) { console.log('block 2 threw while loading: ' + e.stack); process.exit(1); }
+if (blocks.length < 2) { console.log('expected at least 2 script blocks, found ' + blocks.length); process.exit(1); }
+blocks.forEach(function (b, i) {
+  try { vm.runInContext(b, ctx, { filename: 'block' + (i + 1) }); }
+  catch (e) { console.log('block ' + (i + 1) + ' threw while loading: ' + e.stack); process.exit(1); }
+});
 
 // ── assertions ────────────────────────────────────────────────────────────
 var pass = 0, fail = 0;

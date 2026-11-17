@@ -180,7 +180,7 @@ vm.createContext(ctx);
 var blocks = [];
 var re = /<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g, m;
 while ((m = re.exec(html))) { if (m[1].indexOf('PRE-PAINT THEME') === -1) blocks.push(m[1]); }
-try { vm.runInContext(blocks[0], ctx, { filename: 'block1' }); vm.runInContext(blocks[1], ctx, { filename: 'block2' }); }
+try { blocks.forEach(function (b, i) { vm.runInContext(b, ctx, { filename: 'block' + (i + 1) }); }); }
 catch (e) { console.log('load failed: ' + e.stack); process.exit(1); }
 
 function ev(src) { return vm.runInContext(src, ctx); }
@@ -417,10 +417,10 @@ eq('older backup leaves everything at the 2-set default', ctx.setsFor(anExercise
 
 section('11. Rep-range explanations — one per exercise, rendered on both paths');
 var allEx = ev('EXERCISES.map(function(e){return {id:e.id,tag:e.tag,range:e.repRange.join("-"),why:e.repWhy};})');
-eq('42 exercises', allEx.length, 42);
+eq('library holds 110 exercises (43 programmed plus 67 library)', allEx.length, 110);
 eq('every exercise has a repWhy', allEx.filter(function (e) { return !e.why || !String(e.why).trim(); }).length, 0);
 var whys = allEx.map(function (e) { return e.why; });
-eq('no two exercises share the same sentence', new Set(whys).size, 42);
+eq('no two exercises share the same sentence', new Set(whys).size, allEx.length);
 var wc = whys.map(function (w) { return w.trim().split(/\s+/).length; });
 ok('all sentences are one short line (8-16 words)',
    Math.min.apply(null, wc) >= 8 && Math.max.apply(null, wc) <= 16,
@@ -449,8 +449,10 @@ ok('shorter-split path renders the caption', altWhy.indexOf('class="lift-rep-why
 ok('shorter-split path renders that exercise\'s own sentence', altWhy.indexOf(whyOf(altId)) > -1);
 ok('caption sits under the rep count, above the variant chips',
    altWhy.indexOf('lift-sets-reps') < altWhy.indexOf('lift-rep-why'));
+// The note moved out of the row markup in an earlier build; when it is
+// present the caption must still sit above it.
 ok('caption is not inside .lift-note',
-   altWhy.indexOf('lift-rep-why') < altWhy.indexOf('class="lift-note"'));
+   altWhy.indexOf('class="lift-note"') === -1 || altWhy.indexOf('lift-rep-why') < altWhy.indexOf('class="lift-note"'));
 
 section('12. Logging a run for a date outside the plan\'s rolling window');
 storage.clear(); boot();

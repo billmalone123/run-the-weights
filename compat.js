@@ -122,7 +122,7 @@ vm.createContext(ctx);
 var blocks = [];
 var re = /<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g, m;
 while ((m = re.exec(html))) { if (m[1].indexOf('PRE-PAINT THEME') === -1) blocks.push(m[1]); }
-try { vm.runInContext(blocks[0], ctx, { filename: 'block1' }); vm.runInContext(blocks[1], ctx, { filename: 'block2' }); }
+try { blocks.forEach(function (b, i) { vm.runInContext(b, ctx, { filename: 'block' + (i + 1) }); }); }
 catch (e) { console.log('load failed: ' + e.stack); process.exit(1); }
 
 // `const` declarations at a script's top level never land on the vm global, so
