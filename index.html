@@ -2196,6 +2196,15 @@ body.training-mode #tab-training .lift-row { margin-bottom: 6px; }
 .lift-tip-title { font-weight: 700; font-size: var(--fs-3); color: var(--text); margin-bottom: 6px; }
 .lift-tip ol { padding-left: 20px; margin: 0 0 10px; color: var(--text); font-size: var(--fs-2); line-height: 1.5; }
 .lift-tip-btn { min-height: 44px; padding: 0 18px; border: none; border-radius: 10px; background: var(--accent); color: var(--on-accent); font-family: var(--font-body); font-weight: 600; font-size: var(--fs-2); cursor: pointer; }
+.day-actions { display: flex; gap: 8px; margin: 0 0 12px; }
+.day-action { min-height: 40px; padding: 0 14px; border: 1px solid var(--field); border-radius: 999px; background: none; color: var(--text); font-family: var(--font-body); font-size: var(--fs-2); cursor: pointer; }
+.day-action.on { background: var(--surface-2); }
+.today-row2 { display: flex; justify-content: space-between; margin-top: 4px; }
+.welcome-back { font-size: var(--fs-3); color: var(--text); margin-bottom: 8px; }
+.going-out-card { display: flex; flex-direction: column; gap: 10px; max-width: 360px; }
+.drinks-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 8px 0; }
+.drink-btn { min-height: 56px; border: 1px solid var(--field); border-radius: 12px; background: none; color: var(--text); font-family: var(--font-body); font-size: var(--fs-3); font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.drink-btn span { font-size: var(--fs-1); font-weight: 400; color: var(--muted); }
 .lift-pick-why { font-size: var(--fs-1); color: var(--muted); margin: 4px 0 8px; line-height: 1.45; padding-left: 8px; border-left: 2px solid var(--border-hi); }
 .lift-pick-why.superset { border-left-color: var(--accent); }
 .variant-chip.variant-more-btn { border-style: dotted; color: var(--muted); }
@@ -2983,6 +2992,16 @@ body.training-mode select.run-input { color: var(--accent); }
   <button class="tabbar-btn" data-action="settings" onclick="openSettingsModal()"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg><span>Settings</span></button>
 </div>
 
+<!-- GOING OUT. Two choices, no lecture. -->
+<div class="settings-modal-overlay" id="goingOutSheet" style="display:none" onclick="if (event.target === this) closeGoingOut()">
+  <div class="settings-modal-card going-out-card" role="dialog" aria-modal="true" aria-labelledby="goingOutTitle">
+    <div class="settings-modal-title" id="goingOutTitle">Going out?</div>
+    <button type="button" class="today-start" onclick="goingOutMove()">Move my session</button>
+    <button type="button" class="today-secondary" onclick="goingOutShort()">Make it a short session</button>
+    <div class="run-hint" id="goingOutMsg" role="status"></div>
+    <button type="button" class="settings-cancel-btn" onclick="closeGoingOut()">Cancel</button>
+  </div>
+</div>
 <!-- GUIDED WORKOUT. One exercise, one set at a time. -->
 <div class="guided" id="guided" role="dialog" aria-modal="true" aria-labelledby="guidedName" style="display:none">
   <div class="guided-top">
@@ -3696,7 +3715,7 @@ body.training-mode select.run-input { color: var(--accent); }
        rewrites (#runFlags, #runPaces, #runChart, #runSchedule), because saving
        a log calls renderRunPlan() and would otherwise wipe this mid-entry. -->
   <div class="run-missed" id="runMissed">
-    <button class="run-missed-toggle" id="runMissedToggle" onclick="toggleMissedRun()">+ Log a missed run</button>
+    <button class="run-missed-toggle" id="runMissedToggle" onclick="toggleMissedRun()">+ Log an earlier run</button>
     <div class="run-missed-body" id="runMissedBody">
       <div class="run-missed-lead">For a run from a week that has already scrolled off the plan above. Same four fields, same log.</div>
       <div class="run-log-group">
@@ -3773,6 +3792,17 @@ body.training-mode select.run-input { color: var(--accent); }
   </div>
 
   <div id="foodDraft" class="food-block food-draft" style="display:none"></div>
+
+  <div class="food-block">
+    <div class="quicklog-recent-title">Drinks</div>
+    <div class="drinks-row">
+      <button type="button" class="drink-btn" onclick="addDrink('Beer, 12 oz', 150, 13)">Beer<span>12 oz, about 150</span></button>
+      <button type="button" class="drink-btn" onclick="addDrink('Wine, 5 oz glass', 125, 4)">Wine<span>5 oz, about 125</span></button>
+      <button type="button" class="drink-btn" onclick="addDrink('Cocktail', 200, 15)">Cocktail<span>about 200</span></button>
+      <button type="button" class="drink-btn" onclick="addDrink('Shot, 1.5 oz', 100, 0)">Shot<span>1.5 oz, about 100</span></button>
+    </div>
+    <div class="run-hint">Calories are estimates. Tap the Drinks meal below to change any number.</div>
+  </div>
 
   <div class="quicklog-recent food-block">
     <div class="quicklog-recent-title">Meals</div>
@@ -4100,7 +4130,7 @@ body.training-mode select.run-input { color: var(--accent); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.08</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.09</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -4192,7 +4222,7 @@ body.training-mode select.run-input { color: var(--accent); }
     <div class="rest-modal-status" id="restModalStatus"></div>
     <div class="rest-modal-btns">
       <button class="rest-modal-add" onclick="addTimerTime(30)">+30s</button>
-      <button class="rest-modal-skip" id="restModalSkipBtn" onclick="dismissTimer()">Skip Rest</button>
+      <button class="rest-modal-skip" id="restModalSkipBtn" onclick="dismissTimer()">End rest</button>
     </div>
   </div>
 </div>
@@ -4752,7 +4782,31 @@ body.training-mode select.run-input { color: var(--accent); }
       ex:['leg-press','machine-chest-press','machine-row','arnold-press','incline-db-curl','cable-face-pull'] }
   };
 
-  function activeSplit() { return SPLIT_TEMPLATES[activeSplitId] || SPLIT_TEMPLATES.arnold; }
+  function activeSplit() {
+    var t = SPLIT_TEMPLATES[activeSplitId] || SPLIT_TEMPLATES.arnold;
+    var mv = (typeof weekMoves === 'object' && weekMoves) ? weekMoves[currentTrainWeek] : null;
+    //  A moved session only reorders this week's seven slots. Anything that
+    //  does not match the template's own days is ignored, so a split change
+    //  can never inherit a stale order.
+    if (!Array.isArray(mv) || mv.length !== 7 || mv.slice().sort().join() !== t.week.slice().sort().join()) return t;
+    var c = {}; Object.keys(t).forEach(function(k) { c[k] = t[k]; });
+    c.week = mv.slice();
+    return c;
+  }
+  //     LIFE HAPPENS. Moved sessions and short days, per training week.
+  //     Nothing here marks a day as missed or behind.
+  const WEEK_MOVES_KEY = 'monk_week_moves_v1';
+  const SHORT_DAYS_KEY = 'monk_short_days_v1';
+  var weekMoves = {}, shortDays = {};
+  function loadLifeHappens() {
+    try { weekMoves = JSON.parse(localStorage.getItem(WEEK_MOVES_KEY)) || {}; } catch(e) { weekMoves = {}; }
+    try { shortDays = JSON.parse(localStorage.getItem(SHORT_DAYS_KEY)) || {}; } catch(e) { shortDays = {}; }
+  }
+  function persistLifeHappens() {
+    try { localStorage.setItem(WEEK_MOVES_KEY, JSON.stringify(weekMoves)); localStorage.setItem(SHORT_DAYS_KEY, JSON.stringify(shortDays)); } catch(e) {}
+    idbSet('lifeHappens', { moves: weekMoves, short: shortDays });
+  }
+  function isShortDay(dayId, week) { return !!(shortDays && shortDays[week + '|' + dayId]); }
   //  Arnold's six pool days have hand written markup; every other split renders
   //  through the generated path.
   function usesStaticPlan() { return activeSplitId === 'arnold'; }
@@ -4847,7 +4901,7 @@ body.training-mode select.run-input { color: var(--accent); }
   }
   var _buildCache = {};
   function buildSession(dayId, week) {
-    var ck = dayId + '|' + week + '|' + sessionSize + '|' + sessionBudget + '|' + equipOwned.join(',') + '|' + hiddenEx.join(',') + '|' + JSON.stringify(customEx[dayId] || []) + '|' + JSON.stringify(setCounts) + '|' + JSON.stringify(variantChoice);
+    var ck = dayId + '|' + week + '|' + (isShortDay(dayId, week) ? 'short' : '') + '|' + sessionSize + '|' + sessionBudget + '|' + equipOwned.join(',') + '|' + hiddenEx.join(',') + '|' + JSON.stringify(customEx[dayId] || []) + '|' + JSON.stringify(setCounts) + '|' + JSON.stringify(variantChoice);
     if (_buildCache[ck]) return _buildCache[ck];
     var base = programmedDayExercises(dayId);
     var reasons = {}, supersets = {}, list = [];
@@ -4923,6 +4977,12 @@ body.training-mode select.run-input { color: var(--accent); }
     }
     //  Default keeps the program's own order exactly; only the reasons are new.
     list = sessionSize == null ? base.slice() : fixed.concat(acc).concat(finEx ? [finEx] : []);
+    //  Short on time: the main lifts only, for this day and week. The plan
+    //  itself does not change, and finishing these counts as a full day.
+    if (isShortDay(dayId, week)) {
+      list = fixed.slice();
+      list.forEach(function(e) { reasons[e.id] = 'Short session. Main lifts only today; the rest of the plan is unchanged.'; });
+    }
     //  Supersets only when a budget is set and the plain session runs past it.
     //  Accessories pair with the next accessory of a different muscle, so one
     //  rests while the other works.
@@ -4964,6 +5024,66 @@ body.training-mode select.run-input { color: var(--accent); }
   function dismissLiftTip() {
     try { localStorage.setItem(LIFT_TIP_KEY, '1'); } catch(e) {}
     var el = document.getElementById('liftTip'); if (el) el.style.display = 'none';
+  }
+  function toggleShortDay(dayId) {
+    var k = currentTrainWeek + '|' + dayId;
+    if (shortDays[k]) delete shortDays[k]; else shortDays[k] = true;
+    persistLifeHappens(); invalidateBuild();
+    renderDaySections(); renderAllRowStates();
+    if (typeof switchDay === 'function') switchDay(dayId);
+    if (typeof renderToday === 'function') renderToday();
+  }
+  //  Swap this session with the nearest free day after today, this week.
+  //  Returns the weekday it moved to, or -1 if every later day is taken.
+  function moveSessionToNextFree(dayId) {
+    var week = activeSplit().week.slice(), from = week.indexOf(dayId);
+    if (from === -1) return -1;
+    var start = Math.max(mondayIndex(startOfToday()) + 1, 0), to = -1;
+    for (var i = start; i < 7; i++) if (week[i] === 'rest') { to = i; break; }
+    if (to === -1) for (var j = from + 1; j < 7; j++) if (week[j] === 'rest') { to = j; break; }
+    if (to === -1) return -1;
+    week[to] = dayId; week[from] = 'rest';
+    weekMoves[currentTrainWeek] = week;
+    persistLifeHappens(); invalidateBuild();
+    renderDaySections(); renderAllRowStates();
+    if (typeof renderWeekCalendar === 'function') renderWeekCalendar();
+    if (typeof renderToday === 'function') renderToday();
+    return to;
+  }
+  var _goingOutDay = null;
+  function openGoingOut(dayId) {
+    _goingOutDay = dayId;
+    var m = document.getElementById('goingOutSheet');
+    var msg = document.getElementById('goingOutMsg');
+    if (msg) msg.textContent = '';
+    if (m) m.style.display = 'flex';
+  }
+  function closeGoingOut() { var m = document.getElementById('goingOutSheet'); if (m) m.style.display = 'none'; }
+  function goingOutMove() {
+    var to = moveSessionToNextFree(_goingOutDay);
+    var msg = document.getElementById('goingOutMsg');
+    if (to === -1) { if (msg) msg.textContent = 'Every later day this week already has a session. A short session works too.'; return; }
+    if (msg) msg.textContent = 'Moved to ' + WG_DOWS[to] + '. Have a good night.';
+    setTimeout(closeGoingOut, 1200);
+  }
+  function goingOutShort() {
+    if (!isShortDay(_goingOutDay, currentTrainWeek)) toggleShortDay(_goingOutDay);
+    closeGoingOut();
+  }
+  //  Day actions under each day header, on both render paths.
+  function addDayActions() {
+    document.querySelectorAll('#plan > .plan-content[id^="day-"], #altPlan .plan-content[id^="altday-"]').forEach(function(el) {
+      var dayId = el.id.replace(/^alt/, '').replace(/^day-/, '');
+      if (dayId === 'rest' || !SPLIT_DAYS[dayId] || SPLIT_DAYS[dayId].rest) return;
+      var old = el.querySelector('.day-actions'); if (old) old.remove();
+      var head = el.querySelector('.plan-day-header'); if (!head) return;
+      var short = isShortDay(dayId, currentTrainWeek);
+      var div = document.createElement('div');
+      div.className = 'day-actions';
+      div.innerHTML = '<button type="button" class="day-action' + (short ? ' on' : '') + '" onclick="toggleShortDay(\'' + dayId + '\')">' + (short ? 'Show full session' : 'Short on time') + '</button>'
+        + '<button type="button" class="day-action" onclick="openGoingOut(\'' + dayId + '\')">Going out?</button>';
+      head.parentNode.insertBefore(div, head.nextSibling);
+    });
   }
   function stepTrainWeek(d) {
     var n = Math.max(0, Math.min(totalTrainWeeks() - 1, currentTrainWeek + d));
@@ -5036,11 +5156,14 @@ body.training-mode select.run-input { color: var(--accent); }
         var d = SPLIT_DAYS[next] || {}, b = buildSession(next, currentTrainWeek);
         var restToday = slot === 'rest';
         var prog = partial ? dayProgress(next) : null;
-        host.innerHTML = '<div class="today-card-kicker">' + (partial ? 'In progress' : restToday ? 'Rest day today. Next up' : (slot === next ? 'Today' : 'Next workout')) + '</div>'
+        host.innerHTML = (daysSinceLastLog() >= 3 ? '<div class="welcome-back">Welcome back. Pick up where you left off.</div>' : '')
+          + '<div class="today-card-kicker">' + (partial ? 'In progress' : restToday ? 'Rest day today. Next up' : (slot === next ? 'Today' : 'Next workout')) + '</div>'
           + '<div class="today-card-title">' + d.title + '</div>'
           + '<div class="today-card-meta">' + (prog ? prog.done + ' of ' + prog.total + ' sets done' : b.list.length + ' exercises, about ' + sessionMinutesText(next).replace('~', '')) + '</div>'
           + '<button class="today-start" onclick="startWorkout(\'' + next + '\')">' + (partial ? 'Continue workout' : 'Start workout') + '</button>'
-          + '<button class="today-secondary" onclick="goTab(\'training\'); switchDay(\'' + next + '\');">See all exercises</button>';
+          + '<button class="today-secondary" onclick="goTab(\'training\'); switchDay(\'' + next + '\');">See all exercises</button>'
+          + '<div class="today-row2"><button class="today-link" onclick="toggleShortDay(\'' + next + '\')">' + (isShortDay(next, currentTrainWeek) ? 'Show full session' : 'Short on time') + '</button>'
+          + '<button class="today-link" onclick="openGoingOut(\'' + next + '\')">Going out?</button></div>';
       }
     }
     var w = document.getElementById('todayWeight'), wn = document.getElementById('todayWeightNote');
@@ -5099,6 +5222,15 @@ body.training-mode select.run-input { color: var(--accent); }
         + '<span class="fresh-status">' + (r.recovering ? 'Recovering' : 'Ready') + '</span>'
         + '</div>';
     }).join('');
+  }
+  //  Days since anything was last logged. Infinity for a new user, who gets
+  //  no welcome back line.
+  function daysSinceLastLog() {
+    var last = null;
+    Object.keys(sessions || {}).forEach(function(k) { (sessions[k] || []).forEach(function(e) { if (e && e.d && (!last || e.d > last)) last = e.d; }); });
+    if (!last) return -1;
+    var d = parseDateKey(last);
+    return d ? dayDiff(d, startOfToday()) : -1;
   }
   function saveTodayWeight(v) {
     var n = parseFloat(v), k = todayKey();
@@ -5195,7 +5327,7 @@ body.training-mode select.run-input { color: var(--accent); }
       + '<div><div class="guided-field-label">' + unit.charAt(0).toUpperCase() + unit.slice(1) + ' done</div>' + withSteppers('gr', 'reps', '<input class="guided-input" id="gr" type="number" inputmode="numeric" value="' + r0 + '" aria-label="' + unit + ' done">') + '</div>'
       + '</div>'
       + '<button class="guided-done" id="guidedDoneBtn" onclick="guidedDone()">Done</button>'
-      + '<button class="guided-skip" onclick="guidedSkip()">Skip this exercise</button>';
+      + '<button class="guided-skip" onclick="guidedSkip()">Next exercise</button>';
     document.getElementById('guidedDoneBtn').focus();
   }
   function guidedDone() {
@@ -5226,7 +5358,7 @@ body.training-mode select.run-input { color: var(--accent); }
       + '<div class="guided-rest-time" id="gRest" role="timer" aria-live="off"></div>'
       + '<p class="guided-center">Next: ' + nextLabel + '</p>'
       + '<div class="guided-row2"><button class="guided-ghost" onclick="guidedAddRest()">+30 sec</button>'
-      + '<button class="guided-done" style="margin-top:0" onclick="renderGuided()">Skip rest</button></div>';
+      + '<button class="guided-done" style="margin-top:0" onclick="renderGuided()">End rest</button></div>';
     _g.restEnd = end;
     function tick() {
       var left = Math.max(0, Math.round((_g.restEnd - Date.now()) / 1000));
@@ -6654,7 +6786,7 @@ body.training-mode select.run-input { color: var(--accent); }
         : '';
     });
     if (!alt) return;
-    if (sixDay) { alt.innerHTML = ''; updateSessionEstimates(); renderWeekGlance(); return; }
+    if (sixDay) { alt.innerHTML = ''; addDayActions(); updateSessionEstimates(); renderWeekGlance(); return; }
     var ids = splitDayIds();
     var nav = '<div class="plan-nav adv" id="altPlanNav">' + ids.map(function(id, i) {
       var d = SPLIT_DAYS[id];
@@ -6674,6 +6806,7 @@ body.training-mode select.run-input { color: var(--accent); }
         + '<div class="lift-rows">' + rows + addExerciseHTML(id) + '</div></div>';
     }).join('');
     alt.innerHTML = nav + body;
+    addDayActions();
     //  A rebuild must not bounce the user back to the first day.
     var lastDay = null;
     try { lastDay = localStorage.getItem(LAST_DAY_KEY); } catch(e) {}
@@ -7873,7 +8006,7 @@ body.training-mode select.run-input { color: var(--accent); }
     if (mTime) { mTime.className = 'rest-modal-time'; setTimerText(mTime, formatTime(seconds)); }
     if (mRing) { mRing.style.strokeDashoffset = '0'; mRing.style.stroke = 'var(--accent)'; }
     if (mStatus) { mStatus.textContent = ''; mStatus.className = 'rest-modal-status'; }
-    if (mSkip) { mSkip.textContent = 'Skip Rest'; mSkip.className = 'rest-modal-skip'; }
+    if (mSkip) { mSkip.textContent = 'End rest'; mSkip.className = 'rest-modal-skip'; }
     var bar = document.getElementById('timerBar');
     if (quiet) {
       // Auto-started between sets: unobtrusive bottom bar, no full-screen takeover
@@ -8982,7 +9115,7 @@ body.training-mode select.run-input { color: var(--accent); }
       foodLogs: foodLogs, foodTargets: foodTargets, bodyweight: bodyweight, goalMode: goalMode,
       hiddenEx: hiddenEx,
       sessionPrefs: { size: sessionSize, budget: sessionBudget, equip: equipOwned },
-      bwBand: bwBand
+      bwBand: bwBand, weekMoves: weekMoves, shortDays: shortDays
     };
     var blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
     var a = document.createElement('a');
@@ -9059,6 +9192,9 @@ body.training-mode select.run-input { color: var(--accent); }
           bwBand = { lo: +data.bwBand.lo, hi: +data.bwBand.hi };
           try { localStorage.setItem(BW_BAND_KEY, JSON.stringify(bwBand)); } catch(e) {}
         }
+        if (data.weekMoves && typeof data.weekMoves === 'object') { weekMoves = data.weekMoves; }
+        if (data.shortDays && typeof data.shortDays === 'object') { shortDays = data.shortDays; }
+        if (data.weekMoves || data.shortDays) { persistLifeHappens(); invalidateBuild(); }
         if (data.sessionPrefs && typeof data.sessionPrefs === 'object') {
           var sp = data.sessionPrefs;
           sessionSize = SESSION_SIZES.indexOf(sp.size) !== -1 ? sp.size : null;
@@ -9948,7 +10084,7 @@ body.training-mode select.run-input { color: var(--accent); }
         if (!retried) return requestMealEstimate(payload, source, true);
         throw new Error('Wrong passcode.');
       }
-      if (!res.r.ok) throw new Error(res.data.error || 'Estimate failed. Try again.');
+      if (!res.r.ok) throw new Error(res.data.error || 'Could not get an estimate. Try again.');
       setFoodBusy(false);
       if (noteEl) noteEl.value = '';
       var items = res.data.items || [];
@@ -9965,7 +10101,7 @@ body.training-mode select.run-input { color: var(--accent); }
       openFoodDraft(meal, res.data.assumptions || [], null);
     }).catch(function(e) {
       setFoodBusy(false);
-      foodSetMsg('foodAddMsg', e.message || 'Estimate failed. Try again.');
+      foodSetMsg('foodAddMsg', e.message || 'Could not get an estimate. Try again.');
     });
   }
 
@@ -10162,7 +10298,7 @@ body.training-mode select.run-input { color: var(--accent); }
         if (noteEl) noteEl.focus();
         return;
       }
-      if (!res.r.ok) { hideBarcodeWrap(); throw new Error(res.data.error || 'Lookup failed. Try again.'); }
+      if (!res.r.ok) { hideBarcodeWrap(); throw new Error(res.data.error || 'Could not find that. Try again.'); }
       hideBarcodeWrap();
       foodSetMsg('foodAddMsg', '');
       var d = res.data;
@@ -10177,7 +10313,7 @@ body.training-mode select.run-input { color: var(--accent); }
       openFoodDraft(meal, [], null);
     }).catch(function(e) {
       hideBarcodeWrap();   // idempotent — safe even when a branch above already called it
-      foodSetMsg('foodAddMsg', e.message || 'Lookup failed. Try again.');
+      foodSetMsg('foodAddMsg', e.message || 'Could not find that. Try again.');
     });
   }
 
@@ -10332,6 +10468,18 @@ body.training-mode select.run-input { color: var(--accent); }
       return '<button class="run-setup-toggle" onclick="repeatFoodMeal(' + i + ')">+ ' + quickLogEscape(m.name) + '</button>';
     }).join('') + '</div>';
   }
+  //  One Drinks meal per day; each tap adds an item to it. Same meal shape as
+  //  everything else, so it lands in the same calorie total and can be
+  //  edited like any meal.
+  function addDrink(name, cal, carbs) {
+    var dk = foodDate();
+    var list = foodLogs[dk] = foodLogs[dk] || [];
+    var m = list.filter(function(x) { return x.source === 'drinks'; })[0];
+    if (!m) { m = { id: newMealId(), time: nowHHMM(), name: 'Drinks', items: [], source: 'drinks', confidence: 'estimate' }; list.push(m); }
+    m.items.push({ name: name, cal: cal, protein: 0, carbs: carbs, fat: 0 });
+    persistFoodLogs();
+    renderFoodTab();
+  }
   //  No API call: bulking meals repeat constantly, and this costs nothing.
   function repeatFoodMeal(i) {
     var src = _foodRepeatList[i];
@@ -10450,7 +10598,7 @@ body.training-mode select.run-input { color: var(--accent); }
       var ta = document.createElement('textarea');
       ta.value = text; document.body.appendChild(ta); ta.select();
       try { document.execCommand('copy'); foodSetMsg('foodPostMsg', 'Copied.'); }
-      catch(e) { foodSetMsg('foodPostMsg', 'Copy failed. Long press to copy:\n' + text); }
+      catch(e) { foodSetMsg('foodPostMsg', 'Could not copy. Long press to copy:\n' + text); }
       ta.remove();
     }
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -10565,7 +10713,7 @@ body.training-mode select.run-input { color: var(--accent); }
     var cleanUrl = location.origin + location.pathname + location.hash;
     try { history.replaceState({}, '', cleanUrl); } catch(e) {}
     if (err) { updateStravaUI('Strava connection declined'); return; }
-    if (!expected || state !== expected) { updateStravaUI('Connect failed — try again'); return; }
+    if (!expected || state !== expected) { updateStravaUI('Could not connect. Try again.'); return; }
     exchangeStravaCode(code);
   }
 
@@ -10584,9 +10732,9 @@ body.training-mode select.run-input { color: var(--accent); }
         updateStravaUI('Connected');
         syncStravaRuns();
       } else {
-        updateStravaUI('Connect failed — try again');
+        updateStravaUI('Could not connect. Try again.');
       }
-    }).catch(function() { updateStravaUI('Connect failed — network error'); });
+    }).catch(function() { updateStravaUI('Could not connect. Check your connection.'); });
   }
 
   //  Refreshes the access token first if it's expired (or about to be), then
@@ -10652,7 +10800,7 @@ body.training-mode select.run-input { color: var(--accent); }
         try { localStorage.setItem(STRAVA_SYNC_KEY, String(Date.now())); } catch(e) {}
         idbSet('stravaSync', String(Date.now()));
         updateStravaUI(added ? (added + ' run' + (added > 1 ? 's' : '') + ' synced') : 'Up to date');
-      }).catch(function() { updateStravaUI('Sync failed — will retry next time you open the app'); });
+      }).catch(function() { updateStravaUI('Could not sync. It tries again next time you open the app.'); });
     });
   }
 
@@ -11513,7 +11661,7 @@ body.training-mode select.run-input { color: var(--accent); }
     if (!body || !btn) return;
     var open = body.classList.toggle('open');
     btn.classList.toggle('open', open);
-    btn.textContent = open ? '− Log a missed run' : '+ Log a missed run';
+    btn.textContent = open ? '− Log an earlier run' : '+ Log an earlier run';
     //  Cap the picker at today. You cannot log a run you have not done, which
     //  is the same rule the in-plan inputs enforce by only rendering backward.
     var d = document.getElementById('run-missed-date');
@@ -12142,6 +12290,7 @@ body.training-mode select.run-input { color: var(--accent); }
     loadMaxes();
     loadVariants();
     loadHiddenEx();
+    loadLifeHappens();
     loadAdvanced();
     loadRunning();
     loadOwnerTools();
