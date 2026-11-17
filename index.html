@@ -2205,6 +2205,9 @@ body.training-mode #tab-training .lift-row { margin-bottom: 6px; }
 .drinks-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 8px 0; }
 .drink-btn { min-height: 56px; border: 1px solid var(--field); border-radius: 12px; background: none; color: var(--text); font-family: var(--font-body); font-size: var(--fs-3); font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
 .drink-btn span { font-size: var(--fs-1); font-weight: 400; color: var(--muted); }
+.onb-welcome-line { font-size: var(--fs-4); line-height: 1.35; color: var(--text); margin: 6px 0 24px; }
+.onb-optional summary { cursor: pointer; font-size: var(--fs-2); color: var(--text); text-decoration: underline; min-height: 44px; display: flex; align-items: center; }
+.onb-optional-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 8px; }
 .lift-pick-why { font-size: var(--fs-1); color: var(--muted); margin: 4px 0 8px; line-height: 1.45; padding-left: 8px; border-left: 2px solid var(--border-hi); }
 .lift-pick-why.superset { border-left-color: var(--accent); }
 .variant-chip.variant-more-btn { border-style: dotted; color: var(--muted); }
@@ -3063,32 +3066,37 @@ body.training-mode select.run-input { color: var(--accent); }
 
     <div class="onb-flow-screen" id="onbFlowScreen1">
       <div class="settings-modal-title" style="font-size:var(--fs-5);">RUN THE WEIGHTS</div>
-      <div class="settings-modal-sub">Train like an athlete. Track everything.</div>
-      <ul class="onb-flow-bullets">
-        <li>Log every lift. Track sets, reps, and weight over time.</li>
-        <li>Log every run. A dedicated run section built into the app.</li>
-        <li>Track every meal. Photo, barcode, or type what you ate.</li>
-        <li>Monitor your weight. Weekly trends, not daily noise.</li>
-      </ul>
-      <button class="quicklog-save-btn" onclick="onbFlowGoto(2)">Get Started</button>
+      <div class="settings-modal-sub onb-welcome-line">A simple plan to get stronger that works around your life.</div>
+      <button class="quicklog-save-btn" onclick="onbFlowGoto(2)">Get started</button>
       <button class="quicklog-back" style="margin-top:14px;" onclick="onbFlowSkip()">Skip setup</button>
     </div>
 
     <div class="onb-flow-screen" id="onbFlowScreen2" style="display:none">
-      <div class="settings-modal-title">SET YOUR GOAL</div>
+      <div class="settings-modal-title">A few quick questions</div>
       <div class="quicklog-field">
-        <label for="onbFlowWeight">Current bodyweight (lbs)</label>
+        <label for="onbFlowWeight">Your weight (lbs)</label>
         <input class="run-input" type="number" inputmode="decimal" id="onbFlowWeight" placeholder="Your weight">
       </div>
-      <div class="run-field-label" style="margin-top:18px;"><span>Goal</span></div>
-      <div class="liftdays-group goal-mode-group" id="onbFlowGoalPills"></div>
-      <div class="run-field-label" style="margin-top:18px;"><span>Lift days per week</span></div>
-      <div class="liftdays-group" id="onbFlowLiftDaysPills"></div>
-      <div class="run-field-label" style="margin-top:18px;"><span>Do you plan to run or do cardio?</span></div>
+      <div class="run-field-label" style="margin-top:18px;"><span>Do you run or do cardio?</span></div>
       <div class="run-toggle">
         <button type="button" class="run-toggle-btn" id="onbFlowCardioYes" onclick="onbFlowSetCardio(true)">Yes</button>
         <button type="button" class="run-toggle-btn" id="onbFlowCardioNo" onclick="onbFlowSetCardio(false)">No</button>
       </div>
+      <div class="run-field-label" style="margin-top:18px;"><span>What do you want most?</span></div>
+      <div class="liftdays-group goal-mode-group" id="onbFlowGoalPills"></div>
+      <div class="run-field-label" style="margin-top:18px;"><span>Days a week to lift</span></div>
+      <div class="liftdays-group" id="onbFlowLiftDaysPills"></div>
+      <div class="liftdays-desc" id="onbFlowLiftDaysDesc" style="margin-top:6px;"></div>
+      <details class="onb-optional" style="margin-top:18px;">
+        <summary>Optional: height, age and sex for a better calorie estimate</summary>
+        <div class="onb-optional-grid">
+          <div><div class="run-field-label">Height, ft</div><input class="run-input" type="number" inputmode="numeric" id="onbFlowHeightFt" placeholder="5"></div>
+          <div><div class="run-field-label">in</div><input class="run-input" type="number" inputmode="numeric" id="onbFlowHeightIn" placeholder="9"></div>
+          <div><div class="run-field-label">Age</div><input class="run-input" type="number" inputmode="numeric" id="onbFlowAge" placeholder="25"></div>
+        </div>
+        <div class="run-field-label" style="margin-top:10px;"><span>Sex</span></div>
+        <div class="liftdays-group goal-mode-group" id="onbFlowSexPills"></div>
+      </details>
       <div id="onbFlowStravaWrap" style="margin-top:18px;display:none;">
         <button class="settings-open-btn" onclick="onStravaButtonClick()">Connect Strava to sync your runs automatically.</button>
         <div class="run-hint" style="margin-top:6px;">Apple Health sync coming when the native app launches.</div>
@@ -4121,6 +4129,12 @@ body.training-mode select.run-input { color: var(--accent); }
         <div><div class="run-field-label">Goal lbs</div><input class="run-input" type="number" inputmode="decimal" id="set-food-goal" placeholder="Optional" onchange="saveFoodTargetsFrom('set-food-cal', 'set-food-protein', 'set-food-goal', 'set-food-carb', 'set-food-fat')"></div>
       </div>
       <div class="food-settings-grid" style="width:100%;">
+        <div><div class="run-field-label">Height, ft</div><input class="run-input" type="number" inputmode="numeric" id="set-prof-ft" placeholder="Optional" onchange="saveProfileFromSettings()"></div>
+        <div><div class="run-field-label">Height, in</div><input class="run-input" type="number" inputmode="numeric" id="set-prof-in" placeholder="Optional" onchange="saveProfileFromSettings()"></div>
+        <div><div class="run-field-label">Age</div><input class="run-input" type="number" inputmode="numeric" id="set-prof-age" placeholder="Optional" onchange="saveProfileFromSettings()"></div>
+        <div><div class="run-field-label">Sex</div><select class="run-input" id="set-prof-sex" onchange="saveProfileFromSettings()"><option value="">Prefer not to say</option><option value="female">Female</option><option value="male">Male</option></select></div>
+      </div>
+      <div class="food-settings-grid" style="width:100%;">
         <div><div class="run-field-label">Gain band low, lb/wk</div><input class="run-input" type="number" inputmode="decimal" step="0.1" id="set-bw-lo" placeholder="0.5" onchange="saveBwBand()"></div>
         <div><div class="run-field-label">Gain band high, lb/wk</div><input class="run-input" type="number" inputmode="decimal" step="0.1" id="set-bw-hi" placeholder="1.0" onchange="saveBwBand()"></div>
       </div>
@@ -4130,7 +4144,7 @@ body.training-mode select.run-input { color: var(--accent); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.09</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.10</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -8678,8 +8692,10 @@ body.training-mode select.run-input { color: var(--accent); }
     if (!el) return;
     _onbFlowGoalMode = goalMode;
     _onbFlowCardio = null;
+    _onbGoalId = 'stronger'; _onbSex = null;
     renderOnbFlowGoalPills();
     renderOnbFlowLiftDaysPills(4);
+    renderOnbFlowSexPills();
     renderOnbFlowCardioToggle();
     var wEl = document.getElementById('onbFlowWeight');
     if (wEl) wEl.value = '';
@@ -8693,18 +8709,39 @@ body.training-mode select.run-input { color: var(--accent); }
     });
   }
   function onbFlowGoto(n) { onbFlowShowScreen(n); }
+  //  Plain choices, mapped onto the existing goal values so the food math
+  //  is untouched. Race only when the user runs; Carb load never here.
+  var ONB_GOALS = [
+    { id: 'stronger', label: 'Get stronger', mode: 'maintain' },
+    { id: 'muscle', label: 'Build muscle', mode: 'bulk' },
+    { id: 'fat', label: 'Lose fat', mode: 'cut' },
+    { id: 'stay', label: 'Stay where I am', mode: 'maintain' },
+    { id: 'race', label: 'Train for a race', mode: 'raceprep', runOnly: true }
+  ];
+  var _onbGoalId = 'stronger';
   function renderOnbFlowGoalPills() {
     var host = document.getElementById('onbFlowGoalPills');
     if (!host) return;
-    host.innerHTML = GOAL_MODES.map(function(m) {
-      return '<button type="button" class="liftdays-btn' + (m === _onbFlowGoalMode ? ' on' : '')
-        + '" onclick="onbFlowSetGoalMode(\'' + m + '\')">' + GOAL_MODE_LABELS[m] + '</button>';
+    if (_onbGoalId === 'race' && _onbFlowCardio !== true) _onbGoalId = 'stronger';
+    host.innerHTML = ONB_GOALS.filter(function(g) { return !g.runOnly || _onbFlowCardio === true; }).map(function(g) {
+      return '<button type="button" class="liftdays-btn' + (g.id === _onbGoalId ? ' on' : '')
+        + '" onclick="onbFlowSetGoalMode(\'' + g.id + '\')">' + g.label + '</button>';
     }).join('');
+    var g = ONB_GOALS.filter(function(x) { return x.id === _onbGoalId; })[0];
+    _onbFlowGoalMode = g ? g.mode : 'maintain';
   }
-  function onbFlowSetGoalMode(m) {
-    if (GOAL_MODES.indexOf(m) === -1) return;
-    _onbFlowGoalMode = m;
+  function onbFlowSetGoalMode(id) {
+    if (!ONB_GOALS.some(function(g) { return g.id === id; })) return;
+    _onbGoalId = id;
     renderOnbFlowGoalPills();
+  }
+  var _onbSex = null;
+  function renderOnbFlowSexPills() {
+    var host = document.getElementById('onbFlowSexPills');
+    if (!host) return;
+    host.innerHTML = [['female', 'Female'], ['male', 'Male'], ['none', 'Prefer not to say']].map(function(o) {
+      return '<button type="button" class="liftdays-btn' + (o[0] === _onbSex ? ' on' : '') + '" onclick="_onbSex=\'' + o[0] + '\';renderOnbFlowSexPills()">' + o[1] + '</button>';
+    }).join('');
   }
   function renderOnbFlowLiftDaysPills(selected) {
     _onbFlowLiftDays = selected;
@@ -8714,6 +8751,10 @@ body.training-mode select.run-input { color: var(--accent); }
       return '<button type="button" class="liftdays-btn' + (n === selected ? ' on' : '')
         + '" onclick="onbFlowSetLiftDays(' + n + ')">' + n + '</button>';
     }).join('');
+    //  What the choice means, in one line, from the split it will pick.
+    var d = document.getElementById('onbFlowLiftDaysDesc');
+    var pre = SPLIT_PRESETS_BY_DAYS[selected];
+    if (d && pre && SPLIT_TEMPLATES[pre.onboardingDefault]) d.textContent = SPLIT_TEMPLATES[pre.onboardingDefault].note;
   }
   //  3 to 6 only — the app has no split for a 1 or 2 day week (setLiftDays()
   //  itself clamps below 3 up to 3), so a 1-6 picker would silently relabel
@@ -8727,9 +8768,10 @@ body.training-mode select.run-input { color: var(--accent); }
     //  Not persisted anywhere — the task names no storage key for this
     //  answer. Its only effect is whether the Strava section below it shows.
     var wrap = document.getElementById('onbFlowStravaWrap');
-    if (wrap) wrap.style.display = _onbFlowCardio === true ? '' : 'none';
+    //  Strava only when it can actually connect; no dead button, no promises.
+    if (wrap) wrap.style.display = (_onbFlowCardio === true && STRAVA_CLIENT_ID) ? '' : 'none';
   }
-  function onbFlowSetCardio(v) { _onbFlowCardio = v; renderOnbFlowCardioToggle(); }
+  function onbFlowSetCardio(v) { _onbFlowCardio = v; renderOnbFlowCardioToggle(); renderOnbFlowGoalPills(); }
   //  Everything on this screen is optional and nothing here is written until
   //  Next is tapped — Skip (from any screen) must leave all of it undone.
   function onbFlowNext2() {
@@ -8741,6 +8783,13 @@ body.training-mode select.run-input { color: var(--accent); }
     }
     goalMode = _onbFlowGoalMode;
     persistGoalMode();
+    //  Optional profile. Anything left blank stays blank.
+    var ft = parseFloat((document.getElementById('onbFlowHeightFt') || {}).value), inch = parseFloat((document.getElementById('onbFlowHeightIn') || {}).value);
+    var age = parseFloat((document.getElementById('onbFlowAge') || {}).value);
+    var hIn = (isFinite(ft) ? ft * 12 : 0) + (isFinite(inch) ? inch : 0);
+    userProfile = { heightIn: hIn >= 48 && hIn <= 96 ? hIn : null, age: age >= 13 && age <= 100 ? age : null,
+                    sex: _onbSex === 'female' || _onbSex === 'male' ? _onbSex : null };
+    persistUserProfile();
     //  The cardio answer is the running switch: No hides the Run tab and
     //  every run field, Yes shows them. Unanswered leaves it as it was.
     if (_onbFlowCardio !== null && typeof setRunning === 'function') setRunning(_onbFlowCardio === true);
@@ -9115,7 +9164,7 @@ body.training-mode select.run-input { color: var(--accent); }
       foodLogs: foodLogs, foodTargets: foodTargets, bodyweight: bodyweight, goalMode: goalMode,
       hiddenEx: hiddenEx,
       sessionPrefs: { size: sessionSize, budget: sessionBudget, equip: equipOwned },
-      bwBand: bwBand, weekMoves: weekMoves, shortDays: shortDays
+      bwBand: bwBand, weekMoves: weekMoves, shortDays: shortDays, profile: userProfile
     };
     var blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
     var a = document.createElement('a');
@@ -9192,6 +9241,7 @@ body.training-mode select.run-input { color: var(--accent); }
           bwBand = { lo: +data.bwBand.lo, hi: +data.bwBand.hi };
           try { localStorage.setItem(BW_BAND_KEY, JSON.stringify(bwBand)); } catch(e) {}
         }
+        if (data.profile && typeof data.profile === 'object') { userProfile = data.profile; persistUserProfile(); }
         if (data.weekMoves && typeof data.weekMoves === 'object') { weekMoves = data.weekMoves; }
         if (data.shortDays && typeof data.shortDays === 'object') { shortDays = data.shortDays; }
         if (data.weekMoves || data.shortDays) { persistLifeHappens(); invalidateBuild(); }
@@ -9649,7 +9699,7 @@ body.training-mode select.run-input { color: var(--accent); }
     return keys.length ? parseFloat(bodyweight[keys[0]]) : null;
   }
   var GOAL_MODES = ['bulk', 'maintain', 'cut', 'carbload', 'raceprep'];
-  var GOAL_MODE_LABELS = { bulk: 'Bulk', maintain: 'Maintain', cut: 'Cut', carbload: 'Carb Load', raceprep: 'Race Prep' };
+  var GOAL_MODE_LABELS = { bulk: 'Build muscle', maintain: 'Stay where I am', cut: 'Lose fat', carbload: 'Carb load', raceprep: 'Train for a race' };
   var foodLogs = {}, foodTargets = {}, bodyweight = {}, goalMode = 'bulk';
   function loadFoodData() {
     function read(k) {
@@ -9700,12 +9750,34 @@ body.training-mode select.run-input { color: var(--accent); }
     //  Race Prep is Carb Load's math under a different label — same rule set.
     return rules[mode === 'raceprep' ? 'carbload' : mode] || rules.bulk;
   }
+  //     PROFILE + CALORIE MATH. With height, age and sex, maintenance is
+  //  Mifflin St Jeor times a moderate activity factor for people who lift
+  //  three or more days a week. Without all three it stays bodyweight x 15,
+  //  flagged as a rough start. Either way the target never drops below
+  //  1,200 or more than 25 percent under maintenance.
+  const USER_PROFILE_KEY = 'monk_profile_v1';
+  var userProfile = {};
+  function loadUserProfile() { try { userProfile = JSON.parse(localStorage.getItem(USER_PROFILE_KEY)) || {}; } catch(e) { userProfile = {}; } }
+  function persistUserProfile() { try { localStorage.setItem(USER_PROFILE_KEY, JSON.stringify(userProfile)); } catch(e) {} idbSet('profile', userProfile); }
+  var CAL_FLOOR = 1200, MAX_DEFICIT = 0.25, ACTIVITY = 1.55;
+  function maintenanceCalories(bw, profile) {
+    var p = profile || {};
+    if (p.heightIn > 0 && p.age > 0 && (p.sex === 'female' || p.sex === 'male')) {
+      var kg = bw * 0.4536, cm = p.heightIn * 2.54;
+      var bmr = 10 * kg + 6.25 * cm - 5 * p.age + (p.sex === 'male' ? 5 : -161);
+      return { cal: bmr * ACTIVITY, rough: false };
+    }
+    return { cal: bw * 15, rough: true };
+  }
   function goalModeRecommendation(mode, bw) {
     if (!isFinite(bw) || bw <= 0) return null;
     var r = goalModeRules(mode);
-    var cal = Math.round(bw * 15 + r.calAdj);
+    var mt = maintenanceCalories(bw, userProfile);
+    var cal = mt.cal + r.calAdj;
+    if (cal < mt.cal * (1 - MAX_DEFICIT)) cal = mt.cal * (1 - MAX_DEFICIT);
+    cal = Math.round(Math.max(CAL_FLOOR, cal));
     return {
-      cal: cal, protein: Math.round(bw * r.proteinPerLb),
+      cal: cal, rough: mt.rough, protein: Math.round(bw * r.proteinPerLb),
       carbs: Math.round(cal * r.carbPct / 4), fat: Math.round(cal * r.fatPct / 9)
     };
   }
@@ -9729,7 +9801,14 @@ body.training-mode select.run-input { color: var(--accent); }
   function renderGoalMode() {
     var host = document.getElementById('foodGoalMode');
     if (!host) return;
-    var pills = GOAL_MODES.map(function(m) {
+    var pills = GOAL_MODES.filter(function(m) {
+      //  Carb load is an Advanced tool, race prep only for runners; whichever
+      //  is already chosen always stays visible.
+      if (m === goalMode) return true;
+      if (m === 'carbload') return typeof advancedMode !== 'undefined' && advancedMode;
+      if (m === 'raceprep') return typeof runningEnabled !== 'undefined' && runningEnabled;
+      return true;
+    }).map(function(m) {
       return '<button class="liftdays-btn' + (m === goalMode ? ' on' : '') + '" onclick="setGoalMode(\'' + m + '\')">' + GOAL_MODE_LABELS[m] + '</button>';
     }).join('');
     var html = '<div class="quicklog-recent-title">Goal</div>'
@@ -9739,8 +9818,9 @@ body.training-mode select.run-input { color: var(--accent); }
     if (!rec) {
       html += '<div class="run-hint" style="margin-top:10px;">Log your weight to get a recommendation</div>';
     } else {
-      html += '<div class="run-hint" style="margin-top:10px;">Recommended: ' + fmtInt(rec.cal) + ' cal / ' + fmtInt(rec.protein) + 'g protein'
-        + ' <button class="food-apply-btn" onclick="applyGoalModeRecommendation()">Apply</button></div>';
+      html += '<div class="run-hint" style="margin-top:10px;">Suggested: ' + fmtInt(rec.cal) + ' cal / ' + fmtInt(rec.protein) + 'g protein'
+        + ' <button class="food-apply-btn" onclick="applyGoalModeRecommendation()">Apply</button></div>'
+        + (rec.rough ? '<div class="run-hint">A rough starting point from your weight. Add height, age and sex in Settings for a closer number, or edit it any time.</div>' : '');
     }
     host.innerHTML = html;
   }
@@ -10503,6 +10583,16 @@ body.training-mode select.run-input { color: var(--accent); }
       if (b && isFinite(b.lo) && isFinite(b.hi) && b.lo <= b.hi) bwBand = { lo: +b.lo, hi: +b.hi };
     } catch(e) {}
   }
+  function saveProfileFromSettings() {
+    function n(id) { return parseFloat((document.getElementById(id) || {}).value); }
+    var ft = n('set-prof-ft'), inch = n('set-prof-in'), age = n('set-prof-age');
+    var hIn = (isFinite(ft) ? ft * 12 : 0) + (isFinite(inch) ? inch : 0);
+    var sx = (document.getElementById('set-prof-sex') || {}).value;
+    userProfile = { heightIn: hIn >= 48 && hIn <= 96 ? hIn : null, age: age >= 13 && age <= 100 ? age : null,
+                    sex: sx === 'female' || sx === 'male' ? sx : null };
+    persistUserProfile();
+    if (typeof renderGoalMode === 'function') renderGoalMode();
+  }
   function saveBwBand() {
     var lo = parseFloat((document.getElementById('set-bw-lo') || {}).value);
     var hi = parseFloat((document.getElementById('set-bw-hi') || {}).value);
@@ -10608,6 +10698,10 @@ body.training-mode select.run-input { color: var(--accent); }
   function fillFoodSettings() {
     function set(id, v) { var el = document.getElementById(id); if (el) el.value = v != null ? v : ''; }
     set('set-bw-lo', bwBand.lo); set('set-bw-hi', bwBand.hi);
+    var hi = userProfile && userProfile.heightIn;
+    set('set-prof-ft', hi ? Math.floor(hi / 12) : ''); set('set-prof-in', hi ? Math.round(hi % 12) : '');
+    set('set-prof-age', userProfile && userProfile.age ? userProfile.age : '');
+    set('set-prof-sex', userProfile && userProfile.sex ? userProfile.sex : '');
     set('set-food-cal', foodTargets.cal);
     set('set-food-protein', foodTargets.protein);
     //  Blank when unset, like Goal lbs already does — the placeholder shows
@@ -12290,6 +12384,7 @@ body.training-mode select.run-input { color: var(--accent); }
     loadMaxes();
     loadVariants();
     loadHiddenEx();
+    loadUserProfile();
     loadLifeHappens();
     loadAdvanced();
     loadRunning();

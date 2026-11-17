@@ -403,22 +403,27 @@ eq('a junk mode is ignored', ctx.goalMode, 'cut');
 reset(); boot(); ctx.loadFoodData();
 ctx.renderGoalMode();
 var gmHtml = ctx.document.getElementById('foodGoalMode')._html || '';
-['Bulk', 'Maintain', 'Cut', 'Carb Load', 'Race Prep'].forEach(function (label) {
+// Plain labels. Carb load is Advanced only and race prep is for runners, so
+// a new user sees three choices.
+['Build muscle', 'Stay where I am', 'Lose fat'].forEach(function (label) {
   ok('pill shown: ' + label, gmHtml.indexOf('>' + label + '<') > -1);
 });
-ok('Bulk (the default) is the active pill', /class="liftdays-btn on" onclick="setGoalMode\('bulk'\)">Bulk</.test(gmHtml));
+['Carb load', 'Train for a race'].forEach(function (label) {
+  ok('hidden for a new user: ' + label, gmHtml.indexOf('>' + label + '<') === -1);
+});
+ok('Build muscle (the default) is the active pill', /class="liftdays-btn on" onclick="setGoalMode\('bulk'\)">Build muscle</.test(gmHtml));
 eq('no weight logged: prompts to log it', /Log your weight to get a recommendation/.test(gmHtml), true);
 eq('and there is no Apply button yet', /Apply/.test(gmHtml), false);
 
 setFood(null, null, (function () { var o = {}; o[day(0)] = 200; return o; })());
 ctx.renderGoalMode();
 gmHtml = ctx.document.getElementById('foodGoalMode')._html || '';
-ok('with a weight logged: the recommendation line appears', gmHtml.indexOf('Recommended: 3,300 cal / 200g protein') > -1, gmHtml);
+ok('with a weight logged: the recommendation line appears', gmHtml.indexOf('Suggested: 3,300 cal / 200g protein') > -1, gmHtml);
 ok('with an Apply button', /Apply/.test(gmHtml));
 ctx.setGoalMode('cut');
 gmHtml = ctx.document.getElementById('foodGoalMode')._html || '';
-ok('switching modes updates the recommendation live', gmHtml.indexOf('Recommended: 2,600 cal / 220g protein') > -1, gmHtml);
-ok('and Cut is now the active pill', /class="liftdays-btn on" onclick="setGoalMode\('cut'\)">Cut</.test(gmHtml));
+ok('switching modes updates the recommendation live', gmHtml.indexOf('Suggested: 2,600 cal / 220g protein') > -1, gmHtml);
+ok('and Lose fat is now the active pill', /class="liftdays-btn on" onclick="setGoalMode\('cut'\)">Lose fat</.test(gmHtml));
 
 // applyGoalModeRecommendation: only takes effect on tap, and only touches targets.
 reset(); boot(); ctx.loadFoodData();
@@ -463,19 +468,10 @@ eq('and the existing food log came through untouched', ctx.foodLogs[day(0)][0].n
 section('2f. Welcome flow (onbFlow): markup and copy');
 ok('three screens exist', /id="onbFlowScreen1"/.test(html) && /id="onbFlowScreen2"/.test(html) && /id="onbFlowScreen3"/.test(html));
 ok('screen 1: heading', />RUN THE WEIGHTS</.test(html));
-ok('screen 1: subhead', />Train like an athlete\. Track everything\.</.test(html));
-['Log every lift. Track sets, reps, and weight over time.',
- 'Log every run. A dedicated run section built into the app.',
- 'Track every meal. Photo, barcode, or type what you ate.',
- 'Monitor your weight. Weekly trends, not daily noise.'
-].forEach(function (b) {
-  ok('bullet: ' + b, html.indexOf('<li>' + b + '</li>') > -1);
-  ok('under 15 words: ' + b, b.split(' ').length < 15);
-});
-ok('screen 1 CTA', /onclick="onbFlowGoto\(2\)">Get Started</.test(html));
-ok('screen 2 heading', />SET YOUR GOAL</.test(html));
+ok('screen 1: one line on what the app does, no feature list', />A simple plan to get stronger that works around your life\.</.test(html) && !/class="onb-flow-bullets"/.test(html));
+ok('screen 1 CTA', /onclick="onbFlowGoto\(2\)">Get started</.test(html));
+ok('screen 2 heading', />A few quick questions</.test(html));
 ok('Strava button reuses the existing connect flow', /onclick="onStravaButtonClick\(\)">Connect Strava to sync your runs automatically\./.test(html));
-ok('Apple Health note', /Apple Health sync coming when the native app launches\./.test(html));
 ok('screen 3 heading', />YOU'RE READY</.test(html));
 ok('screen 3 body copy', /Your targets are set\. Log your first meal or your first lift to get started\./.test(html));
 ok('Log a meal goes to Food', /onclick="onbFlowFinish\('food'\)">Log a meal</.test(html));
@@ -519,7 +515,9 @@ var p2h = flush(8).then(function () {
   eq('starting on screen 1', ctx.document.getElementById('onbFlowScreen1').style.display, 'block');
   eq('screen 2 starts hidden', ctx.document.getElementById('onbFlowScreen2').style.display, 'none');
   eq('screen 3 starts hidden', ctx.document.getElementById('onbFlowScreen3').style.display, 'none');
-  ok('goal pills default to the app-wide default (Bulk)', /class="liftdays-btn on" onclick="onbFlowSetGoalMode\('bulk'\)"/.test(ctx.document.getElementById('onbFlowGoalPills')._html));
+  ok('goal pills default to Get stronger', /class="liftdays-btn on" onclick="onbFlowSetGoalMode\('stronger'\)">Get stronger</.test(ctx.document.getElementById('onbFlowGoalPills')._html));
+  ok('no race choice until the user says they run', ctx.document.getElementById('onbFlowGoalPills')._html.indexOf('Train for a race') === -1);
+  ok('no carb load in onboarding', ctx.document.getElementById('onbFlowGoalPills')._html.indexOf('Carb') === -1);
   ok('lift day pills default to 4, as specified', /class="liftdays-btn on" onclick="onbFlowSetLiftDays\(4\)">4</.test(ctx.document.getElementById('onbFlowLiftDaysPills')._html));
   eq('cardio starts unanswered — Yes is not pre-selected', ctx.document.getElementById('onbFlowCardioYes').classList.contains('on'), false);
   eq('nor is No', ctx.document.getElementById('onbFlowCardioNo').classList.contains('on'), false);
@@ -530,13 +528,14 @@ var p2h = flush(8).then(function () {
 
   ctx.onbFlowSetCardio(true);
   eq('Yes activates', ctx.document.getElementById('onbFlowCardioYes').classList.contains('on'), true);
-  eq('and reveals Strava', ctx.document.getElementById('onbFlowStravaWrap').style.display, '');
+  eq('Strava stays hidden while it cannot connect', ctx.document.getElementById('onbFlowStravaWrap').style.display, 'none');
+  ok('a runner now sees the race choice', ctx.document.getElementById('onbFlowGoalPills')._html.indexOf('Train for a race') > -1);
   ctx.onbFlowSetCardio(false);
   eq('No re-hides it', ctx.document.getElementById('onbFlowStravaWrap').style.display, 'none');
 
   // Tapping pills is a local draft — it must not leak into real app state
   // (visible elsewhere the instant it changes) before Next is tapped.
-  ctx.onbFlowSetGoalMode('cut');
+  ctx.onbFlowSetGoalMode('fat');
   eq('the real goalMode is untouched by a pill tap alone', ctx.goalMode, 'bulk');
   ctx.onbFlowSetLiftDays(6);
   eq('the real liftDaysPerWeek is untouched too', ctx.liftDaysPerWeek, 6);   // 6 is boot()'s own default either way, so also check nothing was WRITTEN:
@@ -562,7 +561,7 @@ var p2i = p2h.then(function () {
     ok('shown (fresh install, same as 2h)', ctx.document.getElementById('onbFlow').style.display === 'flex');
     ctx.onbFlowGoto(2);
     ctx.document.getElementById('onbFlowWeight').value = '200';
-    ctx.onbFlowSetGoalMode('cut');
+    ctx.onbFlowSetGoalMode('fat');
     ctx.onbFlowSetLiftDays(5);
     ctx.onbFlowNext2();
     eq('bodyweight saved as today\'s entry', ctx.bodyweight[day(0)], 200);
@@ -594,7 +593,7 @@ var p2i = p2h.then(function () {
       ctx.onbFlowNext2();
       eq('a blank bodyweight writes nothing', Object.keys(ctx.bodyweight).length, 0);
       eq('lift days still saves — it always has a value', ctx.liftDaysPerWeek, 3);
-      eq('goal mode still saves too', ctx.goalMode, 'bulk');
+      eq('goal mode still saves too (the default, Get stronger, maps to maintain)', ctx.goalMode, 'maintain');
       eq('but with no bodyweight, no targets get applied', 'cal' in ctx.foodTargets, false);
       ctx.onbFlowFinish('training');
       ok('Start lifting lands on the Training tab', ctx.document.getElementById('tab-training').style.display === 'block');
