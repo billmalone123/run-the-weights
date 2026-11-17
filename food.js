@@ -615,10 +615,10 @@ ok('a literal 20% opacity white border was NOT used (it would regress contrast)'
 
 // 2. Primary action buttons — more padding, a subtle inner glow, no color change.
 ok('.quicklog-save-btn got +4px top/bottom padding (14px -> 18px 14px)', /\.quicklog-save-btn \{[^}]*padding: 18px 14px;/.test(html));
-ok('.quicklog-save-btn got the inner glow', /\.quicklog-save-btn \{[^}]*box-shadow: inset 0 1px 0 rgba\(255,255,255,0\.1\);/.test(html));
+ok('.quicklog-save-btn got the inner glow', /\.quicklog-save-btn \{[^}]*box-shadow: inset 0 1px 0 rgba\((?:255,255,255|var\(--hi-rgb\)),0\.1\);/.test(html));
 ok('.quicklog-save-btn is still accent-colored — untouched', /\.quicklog-save-btn \{[^}]*background: var\(--accent\);/.test(html));
 ok('.settings-save-btn got +4px padding too (16px -> 20px 16px)', /\.settings-save-btn \{[^}]*padding: 20px 16px;/.test(html));
-ok('.settings-save-btn got the inner glow, alongside its existing drop shadow', /\.settings-save-btn \{[^}]*box-shadow: 0 4px 16px rgba\(241,239,225,0\.25\), inset 0 1px 0 rgba\(255,255,255,0\.1\);/.test(html));
+ok('.settings-save-btn got the inner glow, alongside its existing drop shadow', /\.settings-save-btn \{[^}]*box-shadow: 0 4px 16px rgba\((?:241,239,225|var\(--ink-rgb\)),0\.25\), inset 0 1px 0 rgba\((?:255,255,255|var\(--hi-rgb\)),0\.1\);/.test(html));
 // Apply was the one primary action with NO fill at all before this — a
 // bigger gap than "needs more weight" describes for the others.
 eq('the Apply button no longer uses the plain, unfilled link style', /class="quicklog-back"[^>]*onclick="applyGoalModeRecommendation\(\)"/.test(html), false);
@@ -693,9 +693,9 @@ ok('enhanceAllInputs also drives color state now (same call sites, no new ones n
    /function enhanceAllInputs\(\) \{[\s\S]{0,200}enhanceInputColorState\(inp\);/.test(html));
 
 section('2l. Nav pill: accent background/border, centered content, tap flash');
-ok('background is --accent at 15% opacity, not a new color', /\.nav-logo \{[\s\S]{0,220}background: rgba\(241,239,225,0\.15\);/.test(html));
-ok('border is --accent at 40% opacity', /border: 1px solid rgba\(241,239,225,0\.4\);/.test(html));
-ok('content is centered both ways', /background: rgba\(241,239,225,0\.15\);[\s\S]{0,150}justify-content: center;/.test(html));
+ok('background is --accent at 15% opacity, not a new color', /\.nav-logo \{[\s\S]{0,220}background: rgba\((?:241,239,225|var\(--ink-rgb\)),0\.15\);/.test(html));
+ok('border is --accent at 40% opacity', /border: 1px solid rgba\((?:241,239,225|var\(--ink-rgb\)),0\.4\);/.test(html));
+ok('content is centered both ways', /background: rgba\((?:241,239,225|var\(--ink-rgb\)),0\.15\);[\s\S]{0,150}justify-content: center;/.test(html));
 ok('a tap-flash class and its 100ms timeout both exist', /nav-tap-flash/.test(html) && /setTimeout\(function\(\) \{ trigger\.classList\.remove\('nav-tap-flash'\); \}, 100\)/.test(html));
 reset(); boot();
 var navBtn = ctx.document.getElementById('navLogo');

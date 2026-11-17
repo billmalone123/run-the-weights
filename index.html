@@ -12,11 +12,14 @@
   (function() {
     var t = null;
     try { t = localStorage.getItem('rtw_theme'); } catch(e) {}
-    if (t === 'black') {
-      document.documentElement.setAttribute('data-theme', 'black');
-      var m = document.querySelector('meta[name="theme-color"]');
-      if (m) m.setAttribute('content', '#000000');
-    }
+    //  Light is the default. Black is the option. Anyone who picked the old
+    //  Dark theme gets Black, the closest match.
+    var black = t === 'black' || t === 'dark';
+    document.documentElement.setAttribute('data-theme', black ? 'black' : 'light');
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', black ? '#000000' : '#FFFFFF');
+    var sb = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+    if (sb && !black) sb.setAttribute('content', 'default');
   })();
 </script>
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -57,6 +60,18 @@
     --input-border-idle: rgba(255,255,255,0.35);
     /* The sparkle gray from the brand mark — the one non-cream accent it uses */
     --gray:        #5E5E5E;
+    /* Theme plumbing. Every cream or charcoal literal in the app now reads
+       one of these, so Light can invert the brand with one attribute. */
+    --ink-rgb:     241,239,225;
+    --on-ink-rgb:  26,26,24;
+    --hi-rgb:      255,255,255;
+    --on-accent:   #1A1A18;
+    --accent-2:    #D9D6C6;
+    --accent-hi:   #FBF9EC;
+    --text-soft:   #C9C5B6;
+    --warn:        #D9A05B;
+    --calm:        #A9BEDA;
+    --calm-2:      #7C93B3;
     --black:  #1A1A18;
     --dark:   #1F1F1C;
     --card:   #232320;
@@ -77,6 +92,46 @@
     --card:      #0B0B0A;
   }
   html[data-theme="black"] body { background-image: none; }
+  /* LIGHT. The brand inverted: white page, charcoal ink where cream was. */
+  html[data-theme="light"] {
+    --accent:      #1A1A18;
+    --accent-lo:   rgba(26,26,24,0.06);
+    --accent-dim:  rgba(26,26,24,0.22);
+    --accent-glow: rgba(26,26,24,0.18);
+    --bg:          #FFFFFF;
+    --surface:     #F4F3EF;
+    --surface-2:   #E9E7E1;
+    --border:      #DAD7CE;
+    --border-hi:   #C2BEB2;
+    --text:        #1A1A18;
+    --muted:       #5C584F;
+    --dim:         #9E998D;
+    --field:       #7D786C;
+    --input-border-idle: rgba(0,0,0,0.38);
+    --gray:        #8A8A8A;
+    --black:       #FFFFFF;
+    --dark:        #F4F3EF;
+    --card:        #F4F3EF;
+    --ink-rgb:     26,26,24;
+    --on-ink-rgb:  255,255,255;
+    --hi-rgb:      0,0,0;
+    --on-accent:   #FFFFFF;
+    --accent-2:    #3A3935;
+    --accent-hi:   #000000;
+    --text-soft:   #3F3C36;
+    --warn:        #84500F;
+    --calm:        #2F5684;
+    --calm-2:      #4E6F99;
+  }
+  html[data-theme="light"] body { background-image: none; }
+  /* Glows are light on dark. On white they read as smudges, so Light drops
+     them and keeps shadows short and soft. */
+  html[data-theme="light"] * { text-shadow: none !important; }
+  html[data-theme="light"] .ring-fill { filter: none; }
+  html[data-theme="light"] ellipse[filter="url(#spotBlur)"] { display: none; }
+  html[data-theme="light"] .timer-bar { box-shadow: 0 -1px 0 var(--border), 0 -6px 20px rgba(0,0,0,0.06); }
+  html[data-theme="light"] img[src$="rtw-square-a.png"] { content: url("assets/brand/rtw-square-a-light.png"); }
+  html[data-theme="light"] img[src$="rtw-wordmark.png"] { content: url("assets/brand/rtw-wordmark-light.png"); }
   /* The brand PNGs carry the Dark background baked in. On true black that
      reads as a gray box, so swap in the remapped black versions. */
   html[data-theme="black"] img[src$="rtw-square-a.png"] { content: url("assets/brand/rtw-square-a-black.png"); }
@@ -86,7 +141,7 @@
   body {
     font-family: var(--font-body);
     background: var(--bg);
-    background-image: radial-gradient(ellipse 80% 40% at 50% 0%, rgba(241,239,225,0.05) 0%, transparent 65%);
+    background-image: radial-gradient(ellipse 80% 40% at 50% 0%, rgba(var(--ink-rgb),0.05) 0%, transparent 65%);
     color: var(--text);
     overflow-x: hidden;
     padding-top: 60px;
@@ -129,7 +184,7 @@
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     background: var(--bg);
-    border-bottom: 1px solid rgba(241,239,225,0.06);
+    border-bottom: 1px solid rgba(var(--ink-rgb),0.06);
     padding: 0 40px;
     height: 60px;
     display: flex; align-items: center; justify-content: flex-start; gap: 0;
@@ -139,16 +194,16 @@
     font-weight: 900;
     font-size: 22px;
     letter-spacing: 0.08em;
-    color: #F1EFE1;
+    color: var(--accent);
   }
-  /* The wordmark PNG carries the brand background (#1A1A18), identical to the
+  /* The wordmark PNG carries the brand background (var(--on-accent)), identical to the
      page, so its padding is invisible and it sits flush. Height is set so the
      lettering inside matches the type size the text mark used to render at. */
   .nav-logo {
     position: relative;
     /* --accent at 15%/40% opacity — a visible pill against the nav bar
        without introducing a new color; reads as a control, not a label. */
-    background: rgba(241,239,225,0.15); border: 1px solid rgba(241,239,225,0.4);
+    background: rgba(var(--ink-rgb),0.15); border: 1px solid rgba(var(--ink-rgb),0.4);
     border-radius: 10px; padding: 6px 14px; cursor: pointer;
     display: flex; align-items: center; justify-content: center; gap: 10px;
     -webkit-tap-highlight-color: transparent;
@@ -156,7 +211,7 @@
   }
   /* Tap flash — confirms the tap registered before the menu (open async on
      the next frame via buildNavMenu/positionNavMenu) actually appears. */
-  .nav-logo.nav-tap-flash { background: rgba(241,239,225,0.32); }
+  .nav-logo.nav-tap-flash { background: rgba(var(--ink-rgb),0.32); }
   /* First-open hint — a ring that expands and fades once, so a brand-new
      user notices the only nav there is. Gated in JS on monk_nav_hint_v1;
      the single play (animation's default iteration-count is 1, not
@@ -205,7 +260,7 @@
     text-decoration: none;
     transition: color 0.2s;
   }
-  .nav-links a:hover { color: #F1EFE1; }
+  .nav-links a:hover { color: var(--accent); }
 
   /* HERO — RING */
   .hero {
@@ -252,7 +307,7 @@
   }
   .ring-track {
     fill: none;
-    stroke: rgba(241,239,225,0.07);
+    stroke: rgba(var(--ink-rgb),0.07);
     stroke-width: 2;
   }
   .ring-fill {
@@ -260,7 +315,7 @@
     stroke: var(--accent);
     stroke-width: 2.5;
     stroke-linecap: butt;
-    filter: drop-shadow(0 0 6px rgba(241,239,225,0.6));
+    filter: drop-shadow(0 0 6px rgba(var(--ink-rgb),0.6));
     transition: stroke-dashoffset 1.2s cubic-bezier(0.25, 1, 0.5, 1);
   }
   .ring-center {
@@ -277,13 +332,13 @@
     font-size: clamp(72px, 15vw, 108px);
     font-weight: 700;
     line-height: 0.85;
-    color: #F1EFE1;
+    color: var(--accent);
     letter-spacing: -0.02em;
   }
   .ring-week-label {
     font-family: var(--font-mono);
     font-size: 11px;
-    color: #C9C5B6;
+    color: var(--text-soft);
     letter-spacing: 0.18em;
     text-transform: uppercase;
     margin-top: 10px;
@@ -306,7 +361,7 @@
     font-size: 11px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: #C9C5B6;
+    color: var(--text-soft);
     margin-bottom: 14px;
   }
   .hero-desc {
@@ -333,7 +388,7 @@
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
   }
-  .hero-cta:hover { background: var(--accent); color: #1A1A18; }
+  .hero-cta:hover { background: var(--accent); color: var(--on-accent); }
   .hero-cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
   .hero-cta-arrow { font-size: 16px; transition: transform 0.2s; }
   .hero-cta:hover .hero-cta-arrow { transform: translateX(4px); }
@@ -376,7 +431,7 @@
     text-transform: uppercase;
     line-height: 0.95;
     letter-spacing: -0.01em;
-    color: #F1EFE1;
+    color: var(--accent);
     margin-bottom: 48px;
   }
 
@@ -408,11 +463,11 @@
   .pillar {
     background: var(--card);
     padding: 32px 28px;
-    border: 1px solid rgba(241,239,225,0.06);
+    border: 1px solid rgba(var(--ink-rgb),0.06);
     border-radius: 18px;
     transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
   }
-  .pillar:hover { border-color: rgba(241,239,225,0.12); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.35); }
+  .pillar:hover { border-color: rgba(var(--ink-rgb),0.12); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.35); }
   .pillar-icon {
     font-size: 24px;
     margin-bottom: 12px;
@@ -423,7 +478,7 @@
     font-size: 18px;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: #F1EFE1;
+    color: var(--accent);
     margin-bottom: 8px;
   }
   .pillar-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
@@ -437,7 +492,7 @@
   }
   .week-tab {
     background: transparent;
-    border: 1px solid rgba(241,239,225,0.08);
+    border: 1px solid rgba(var(--ink-rgb),0.08);
     color: var(--muted);
     padding: 10px 24px;
     border-radius: 999px;
@@ -449,12 +504,12 @@
     cursor: pointer;
     transition: all 0.2s ease;
   }
-  .week-tab:hover { border-color: rgba(241,239,225,0.2); color: var(--text); transform: translateY(-2px); }
-  .week-tab.active { background: var(--accent); border-color: var(--accent); color: #1A1A18; font-weight: 700; }
+  .week-tab:hover { border-color: rgba(var(--ink-rgb),0.2); color: var(--text); transform: translateY(-2px); }
+  .week-tab.active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
   .week-info {
     padding: 28px 32px;
     background: var(--card);
-    border: 1px solid rgba(241,239,225,0.06);
+    border: 1px solid rgba(var(--ink-rgb),0.06);
     border-left: 4px solid var(--accent);
     border-radius: 16px;
     margin-bottom: 40px;
@@ -472,7 +527,7 @@
   }
   .day-card {
     background: var(--card);
-    border: 1px solid rgba(241,239,225,0.06);
+    border: 1px solid rgba(var(--ink-rgb),0.06);
     border-radius: 18px;
     padding: 32px;
     cursor: pointer;
@@ -491,7 +546,7 @@
     transition: transform 0.3s;
   }
   .day-card:hover::before { transform: scaleX(1); }
-  .day-card:hover { border-color: rgba(241,239,225,0.12); background: var(--surface-2); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.35); }
+  .day-card:hover { border-color: rgba(var(--ink-rgb),0.12); background: var(--surface-2); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.35); }
   .day-card-tag {
     font-size: 10px;
     font-weight: 700;
@@ -518,7 +573,7 @@
     padding: 4px 12px;
     border-radius: 999px;
   }
-  .day-duration { font-size: 12px; color: #F1EFE1; font-weight: 600; }
+  .day-duration { font-size: 12px; color: var(--accent); font-weight: 600; }
   .day-lift-count { font-size: 12px; color: var(--muted); }
 
   /* WORKOUT PLAN */
@@ -530,7 +585,7 @@
   }
   .plan-nav-btn {
     background: transparent;
-    border: 1px solid rgba(241,239,225,0.08);
+    border: 1px solid rgba(var(--ink-rgb),0.08);
     color: var(--muted);
     padding: 11px 22px;
     border-radius: 999px;
@@ -542,8 +597,8 @@
     cursor: pointer;
     transition: all 0.2s ease;
   }
-  .plan-nav-btn:hover { color: var(--text); border-color: rgba(241,239,225,0.2); transform: translateY(-2px); }
-  .plan-nav-btn.active { color: #1A1A18; background: var(--dc, var(--accent)); border-color: var(--dc, var(--accent)); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+  .plan-nav-btn:hover { color: var(--text); border-color: rgba(var(--ink-rgb),0.2); transform: translateY(-2px); }
+  .plan-nav-btn.active { color: var(--on-accent); background: var(--dc, var(--accent)); border-color: var(--dc, var(--accent)); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
 
   .plan-content { display: none; }
   .plan-content.active { display: block; animation: fadeIn 0.3s ease; }
@@ -567,8 +622,8 @@
   /* WARMUP SECTION */
   .warmup-toggle-btn {
     background: transparent;
-    border: 1px solid rgba(241,239,225,0.22);
-    color: rgba(241,239,225,0.6);
+    border: 1px solid rgba(var(--ink-rgb),0.22);
+    color: rgba(var(--ink-rgb),0.6);
     padding: 12px 24px;
     font-family: var(--font-display);
     font-weight: 700;
@@ -581,13 +636,13 @@
     display: flex; align-items: center; gap: 10px;
   }
   .warmup-toggle-btn:hover, .warmup-toggle-btn.open {
-    border-color: var(--accent); color: var(--accent); background: rgba(241,239,225,0.05);
+    border-color: var(--accent); color: var(--accent); background: rgba(var(--ink-rgb),0.05);
   }
   .warmup-panel {
     display: none;
-    background: rgba(241,239,225,0.03);
-    border: 1px solid rgba(241,239,225,0.15);
-    border-left: 3px solid rgba(241,239,225,0.5);
+    background: rgba(var(--ink-rgb),0.03);
+    border: 1px solid rgba(var(--ink-rgb),0.15);
+    border-left: 3px solid rgba(var(--ink-rgb),0.5);
     padding: 28px 32px;
     margin-bottom: 32px;
     animation: fadeIn 0.2s ease;
@@ -635,13 +690,13 @@
     grid-template-columns: 1fr 80px 90px 90px;
     gap: 12px;
     padding: 20px 16px;
-    border-bottom: 1px solid rgba(241,239,225,0.05);
+    border-bottom: 1px solid rgba(var(--ink-rgb),0.05);
     border-radius: 12px;
     cursor: pointer;
     transition: background 0.2s ease;
     align-items: start;
   }
-  .lift-row:hover { background: rgba(241,239,225,0.04); }
+  .lift-row:hover { background: rgba(var(--ink-rgb),0.04); }
   .lift-name {
     font-size: 16px;
     font-weight: 600;
@@ -687,7 +742,7 @@
   .variant-chip {
     font-size: 12px; font-weight: 600;
     color: var(--text);
-    background: rgba(241,239,225,0.04);
+    background: rgba(var(--ink-rgb),0.04);
     border: 1px solid var(--muted);
     border-radius: 999px;
     padding: 5px 11px;
@@ -697,7 +752,7 @@
   }
   .variant-chip:hover { border-color: var(--accent); }
   .variant-chip.active {
-    color: #1A1A18; background: var(--accent);
+    color: var(--on-accent); background: var(--accent);
     border-color: var(--accent); font-weight: 700;
   }
   .lift-rest { font-size: 14px; color: var(--muted); font-weight: 600; padding-top: 2px; }
@@ -708,7 +763,7 @@
   .prog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
   .prog-card {
     background: var(--card);
-    border: 1px solid rgba(241,239,225,0.06);
+    border: 1px solid rgba(var(--ink-rgb),0.06);
     border-radius: 18px;
     overflow: hidden;
   }
@@ -734,10 +789,10 @@
     transition: background 0.15s;
   }
   .prog-row:last-child { border-bottom: none; }
-  .prog-row:hover { background: rgba(241,239,225,0.02); }
-  .prog-row.highlight { background: rgba(241,239,225,0.06); border-left: 2px solid var(--accent); }
+  .prog-row:hover { background: rgba(var(--ink-rgb),0.02); }
+  .prog-row.highlight { background: rgba(var(--ink-rgb),0.06); border-left: 2px solid var(--accent); }
   .prog-week { font-size: 13px; color: var(--muted); font-weight: 500; }
-  .prog-week.active-week { color: #F1EFE1; font-weight: 700; }
+  .prog-week.active-week { color: var(--accent); font-weight: 700; }
   .prog-weight {
     font-family: var(--font-display);
     font-weight: 800;
@@ -750,7 +805,7 @@
   }
   .prog-week-btn {
     background: transparent;
-    border: 1px solid rgba(241,239,225,0.08);
+    border: 1px solid rgba(var(--ink-rgb),0.08);
     color: var(--muted);
     padding: 8px 22px;
     border-radius: 999px;
@@ -762,8 +817,8 @@
     cursor: pointer;
     transition: all 0.2s ease;
   }
-  .prog-week-btn:hover { border-color: rgba(241,239,225,0.2); color: var(--text); transform: translateY(-2px); }
-  .prog-week-btn.active { background: var(--accent); border-color: var(--accent); color: #1A1A18; font-weight: 700; }
+  .prog-week-btn:hover { border-color: rgba(var(--ink-rgb),0.2); color: var(--text); transform: translateY(-2px); }
+  .prog-week-btn.active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
 
   /* FOOTER */
   footer {
@@ -779,7 +834,7 @@
     font-size: 32px;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: #F1EFE1;
+    color: var(--accent);
     margin-bottom: 8px;
   }
   .footer-logo img { height: 46px; width: auto; display: block; margin-bottom: 4px; }
@@ -998,9 +1053,9 @@
     flex-shrink: 0;
     position: relative;
   }
-  .set-circle:hover { border-color: var(--dim); color: var(--text); background: rgba(241,239,225,0.06); }
-  .set-circle.logged { border-color: var(--accent); color: var(--accent); background: rgba(241,239,225,0.10); }
-  .set-circle.flash { background: var(--accent); color: #1A1A18; border-color: var(--accent); }
+  .set-circle:hover { border-color: var(--dim); color: var(--text); background: rgba(var(--ink-rgb),0.06); }
+  .set-circle.logged { border-color: var(--accent); color: var(--accent); background: rgba(var(--ink-rgb),0.10); }
+  .set-circle.flash { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
   .last-session-row {
     grid-column: 1 / -1;
     display: flex;
@@ -1021,13 +1076,13 @@
     color: var(--muted);
     padding: 3px 12px;
     background: var(--dark);
-    border: 1px solid rgba(241,239,225,0.08);
+    border: 1px solid rgba(var(--ink-rgb),0.08);
     border-radius: 999px;
     font-family: var(--font-display);
     font-weight: 600;
     letter-spacing: 0.05em;
   }
-  .last-session-chip.has-data { color: #9C978A; border-color: #3A3935; }
+  .last-session-chip.has-data { color: var(--muted); border-color: var(--border-hi); }
   /* INLINE EXERCISE LOG — warm-ups, targets, one input area per lift */
   .warmup-lines { margin-top: 10px; }
   .warmup-title {
@@ -1057,9 +1112,9 @@
     color: var(--muted);
   }
   .log-inline-input {
-    background: rgba(241,239,225,0.08);
+    background: rgba(var(--ink-rgb),0.08);
     border: 1px solid var(--input-border-idle);
-    color: #F1EFE1;
+    color: var(--accent);
     padding: 10px 12px;
     font-family: var(--font-display);
     font-size: 18px; font-weight: 700;
@@ -1068,20 +1123,20 @@
     outline: none;
     transition: border-color 0.15s;
   }
-  .log-inline-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(241,239,225,0.12); }
+  .log-inline-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(var(--ink-rgb),0.12); }
   /* ── TAP STEPPERS — flank every weight/reps field so a phone at the rack
      never needs the (missing, on iOS Safari) native number-input spinner. */
   .stepper-row { display: flex; align-items: center; gap: 4px; }
   .stepper-btn {
     width: 44px; height: 44px; flex: 0 0 44px;
     display: flex; align-items: center; justify-content: center;
-    background: rgba(241,239,225,0.06); border: 1px solid var(--field); color: var(--text);
+    background: rgba(var(--ink-rgb),0.06); border: 1px solid var(--field); color: var(--text);
     font-family: var(--font-display); font-size: 20px; font-weight: 700; line-height: 1;
     border-radius: 8px; cursor: pointer; touch-action: manipulation;
     -webkit-user-select: none; user-select: none;
   }
   .stepper-btn:hover { border-color: var(--accent); }
-  .stepper-btn:active { background: var(--accent); color: #1A1A18; border-color: var(--accent); }
+  .stepper-btn:active { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
   .failure-toggle {
     background: transparent;
     border: 1px solid var(--border);
@@ -1095,7 +1150,7 @@
     transition: all 0.15s;
   }
   .failure-toggle:hover { border-color: var(--dim); color: var(--text); }
-  .failure-toggle.on { border-color: var(--accent); color: var(--accent); background: rgba(241,239,225,0.10); }
+  .failure-toggle.on { border-color: var(--accent); color: var(--accent); background: rgba(var(--ink-rgb),0.10); }
   .autosave-flash {
     font-family: var(--font-display);
     font-size: 12px; font-weight: 700;
@@ -1122,7 +1177,7 @@
     transition: all 0.15s;
   }
   .setcount-btn:hover { border-color: var(--dim); color: var(--text); }
-  .setcount-btn.on { border-color: var(--accent); color: var(--accent); background: rgba(241,239,225,0.10); }
+  .setcount-btn.on { border-color: var(--accent); color: var(--accent); background: rgba(var(--ink-rgb),0.10); }
   .set-row[data-setrow^="3-"] { display: none; }
   .lift-row.sets-3 .set-row[data-setrow^="3-"] { display: flex; }
   /* Warm-up logging. Visually subordinate to the working sets on purpose —
@@ -1146,11 +1201,11 @@
     font-size: 15px;
     padding: 8px 10px;
     width: 84px;
-    background: rgba(241,239,225,0.05);
+    background: rgba(var(--ink-rgb),0.05);
   }
   .inline-save-btn {
-    background: linear-gradient(135deg, #F1EFE1 0%, #D9D6C6 100%);
-    color: #1A1A18; border: none;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+    color: var(--on-accent); border: none;
     padding: 12px 24px;
     font-family: var(--font-display);
     font-weight: 800; font-size: 13px;
@@ -1158,9 +1213,9 @@
     cursor: pointer;
     border-radius: 999px;
     transition: all 0.15s;
-    box-shadow: 0 4px 16px rgba(241,239,225,0.25);
+    box-shadow: 0 4px 16px rgba(var(--ink-rgb),0.25);
   }
-  .inline-save-btn:hover { background: linear-gradient(135deg, #C9C5B6 0%, #D9D6C6 100%); box-shadow: 0 6px 20px rgba(241,239,225,0.35); }
+  .inline-save-btn:hover { background: linear-gradient(135deg, var(--text-soft) 0%, var(--accent-2) 100%); box-shadow: 0 6px 20px rgba(var(--ink-rgb),0.35); }
   /* Add your own exercise — one quiet line under a day's programmed rows. */
   .add-ex { grid-column: 1 / -1; padding: 4px 0 2px; }
   .add-ex-toggle {
@@ -1175,7 +1230,7 @@
   .add-ex-row { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
   .add-ex-name { width: 100%; font-size: 15px; }
   .add-ex-go {
-    background: var(--accent); color: #1A1A18; border: none;
+    background: var(--accent); color: var(--on-accent); border: none;
     padding: 11px 22px; font-family: var(--font-display); font-weight: 800;
     font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
     cursor: pointer; border-radius: 999px; transition: all 0.15s;
@@ -1205,7 +1260,7 @@
   }
   .log-modal-card {
     background: var(--surface);
-    border: 1px solid rgba(241,239,225,0.08);
+    border: 1px solid rgba(var(--ink-rgb),0.08);
     border-top: 2px solid var(--accent);
     border-radius: 22px;
     padding: 32px 36px;
@@ -1226,7 +1281,7 @@
     font-family: var(--font-display);
     font-weight: 700;
     font-size: 20px;
-    color: #F1EFE1;
+    color: var(--accent);
     margin-bottom: 24px;
     line-height: 1.2;
   }
@@ -1248,7 +1303,7 @@
   .log-input-field {
     background: var(--bg);
     border: 1px solid var(--field);
-    color: #F1EFE1;
+    color: var(--accent);
     padding: 14px 16px;
     font-family: var(--font-display);
     font-size: 22px;
@@ -1258,10 +1313,10 @@
     outline: none;
     transition: border-color 0.15s;
   }
-  .log-input-field:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(241,239,225,0.12); }
+  .log-input-field:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(var(--ink-rgb),0.12); }
   .log-save-btn {
-    background: linear-gradient(135deg, #F1EFE1 0%, #D9D6C6 100%);
-    color: #1A1A18;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+    color: var(--on-accent);
     border: none;
     padding: 14px;
     font-family: var(--font-display);
@@ -1274,9 +1329,9 @@
     width: 100%;
     margin-bottom: 10px;
     transition: all 0.15s;
-    box-shadow: 0 4px 16px rgba(241,239,225,0.25);
+    box-shadow: 0 4px 16px rgba(var(--ink-rgb),0.25);
   }
-  .log-save-btn:hover { background: linear-gradient(135deg, #C9C5B6 0%, #D9D6C6 100%); box-shadow: 0 6px 20px rgba(241,239,225,0.35); }
+  .log-save-btn:hover { background: linear-gradient(135deg, var(--text-soft) 0%, var(--accent-2) 100%); box-shadow: 0 6px 20px rgba(var(--ink-rgb),0.35); }
   .log-cancel-btn {
     background: transparent;
     color: var(--muted);
@@ -1292,11 +1347,11 @@
     width: 100%;
     transition: all 0.15s;
   }
-  .log-cancel-btn:hover { color: #C9C5B6; border-color: #46443E; }
+  .log-cancel-btn:hover { color: var(--text-soft); border-color: var(--border-hi); }
   .clear-day-btn {
     background: transparent;
     border: 1px solid var(--border);
-    color: #3A3935;
+    color: var(--border-hi);
     cursor: pointer;
     padding: 6px 14px;
     font-family: var(--font-display);
@@ -1308,7 +1363,7 @@
     transition: all 0.15s;
     margin-left: 8px;
   }
-  .clear-day-btn:hover { border-color: rgba(241,239,225,0.4); color: rgba(241,239,225,0.65); }
+  .clear-day-btn:hover { border-color: rgba(var(--ink-rgb),0.4); color: rgba(var(--ink-rgb),0.65); }
 
 
   /* ── REST TIMER ─────────────────────────────────────────────────────────── */
@@ -1335,7 +1390,7 @@
     width: 100%;
     transition: width 1s linear, background 0.5s ease;
   }
-  .timer-progress-fill.warning { background: #F1EFE1; }
+  .timer-progress-fill.warning { background: var(--accent); }
   .timer-progress-fill.done { background: var(--accent); }
   .timer-inner {
     display: flex;
@@ -1369,12 +1424,12 @@
     font-size: 52px;
     line-height: 1;
     letter-spacing: -0.02em;
-    color: #F1EFE1;
+    color: var(--accent);
     min-width: 110px;
     text-align: center;
     transition: color 0.3s;
   }
-  .timer-display.warning { color: #F1EFE1; }
+  .timer-display.warning { color: var(--accent); }
   .timer-display.done { color: var(--accent); }
   .timer-right { display: flex; align-items: center; gap: 10px; }
   .timer-btn {
@@ -1383,9 +1438,9 @@
     font-size: 13px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    border: 1px solid #3A3935;
+    border: 1px solid var(--border-hi);
     background: transparent;
-    color: #9C978A;
+    color: var(--muted);
     padding: 8px 18px;
     cursor: pointer;
     border-radius: 3px;
@@ -1394,13 +1449,13 @@
   }
   .timer-btn:hover { border-color: var(--dim); color: var(--text); }
   .timer-btn.primary {
-    background: linear-gradient(135deg, #F1EFE1 0%, #D9D6C6 100%);
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
     border-color: transparent;
-    color: #1A1A18;
-    box-shadow: 0 2px 10px rgba(241,239,225,0.3);
+    color: var(--on-accent);
+    box-shadow: 0 2px 10px rgba(var(--ink-rgb),0.3);
   }
-  .timer-btn.primary:hover { background: linear-gradient(135deg, #C9C5B6 0%, #D9D6C6 100%); }
-  .timer-btn.danger { border-color: rgba(241,239,225,0.35); color: rgba(241,239,225,0.65); }
+  .timer-btn.primary:hover { background: linear-gradient(135deg, var(--text-soft) 0%, var(--accent-2) 100%); }
+  .timer-btn.danger { border-color: rgba(var(--ink-rgb),0.35); color: rgba(var(--ink-rgb),0.65); }
   .timer-btn.danger:hover { border-color: var(--accent); color: var(--accent); }
   @media (max-width: 600px) {
     .timer-inner { padding: 12px 16px; gap: 12px; }
@@ -1443,7 +1498,7 @@
     white-space: nowrap;
   }
   .subnav-btn:hover { color: var(--text); }
-  .subnav-btn.active { color: #F1EFE1; border-bottom-color: var(--accent); }
+  .subnav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
 
 
   /* ── MAXES SETTINGS ─────────────────────────────────────────────────────── */
@@ -1473,7 +1528,7 @@
   .settings-max-val {
     font-size: 16px;
     font-weight: 800;
-    color: #F1EFE1;
+    color: var(--accent);
     letter-spacing: 0.02em;
   }
   .settings-max-val.unset { color: var(--muted); font-size: 13px; font-weight: 400; }
@@ -1494,7 +1549,7 @@
     align-items: center;
     gap: 8px;
   }
-  .settings-open-btn:hover { border-color: #56534B; color: #C9C5B6; }
+  .settings-open-btn:hover { border-color: var(--dim); color: var(--text-soft); }
   .settings-open-btn.has-data { border-color: var(--accent); color: var(--accent); }
   /* Settings modal */
   .settings-modal-overlay {
@@ -1525,7 +1580,7 @@
     font-size: 28px;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: #F1EFE1;
+    color: var(--accent);
     margin-bottom: 6px;
   }
   .settings-modal-sub {
@@ -1552,7 +1607,7 @@
   .settings-input-field {
     background: var(--bg);
     border: 1px solid var(--input-border-idle);
-    color: #F1EFE1;
+    color: var(--accent);
     padding: 14px 18px;
     font-family: var(--font-display);
     font-size: 24px;
@@ -1563,7 +1618,7 @@
     transition: border-color 0.15s;
     letter-spacing: 0.02em;
   }
-  .settings-input-field:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(241,239,225,0.12); }
+  .settings-input-field:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(var(--ink-rgb),0.12); }
   .settings-input-hint {
     font-size: 11px;
     color: var(--muted);
@@ -1571,8 +1626,8 @@
     line-height: 1.5;
   }
   .settings-save-btn {
-    background: linear-gradient(135deg, #F1EFE1 0%, #D9D6C6 100%);
-    color: #1A1A18;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+    color: var(--on-accent);
     border: none;
     padding: 20px 16px;
     font-family: var(--font-display);
@@ -1585,9 +1640,9 @@
     width: 100%;
     margin-bottom: 10px;
     transition: all 0.15s;
-    box-shadow: 0 4px 16px rgba(241,239,225,0.25), inset 0 1px 0 rgba(255,255,255,0.1);
+    box-shadow: 0 4px 16px rgba(var(--ink-rgb),0.25), inset 0 1px 0 rgba(var(--hi-rgb),0.1);
   }
-  .settings-save-btn:hover { background: linear-gradient(135deg, #C9C5B6 0%, #D9D6C6 100%); }
+  .settings-save-btn:hover { background: linear-gradient(135deg, var(--text-soft) 0%, var(--accent-2) 100%); }
   .settings-cancel-btn {
     background: transparent;
     color: var(--muted);
@@ -1603,7 +1658,7 @@
     width: 100%;
     transition: all 0.15s;
   }
-  .settings-cancel-btn:hover { color: #C9C5B6; border-color: #46443E; }
+  .settings-cancel-btn:hover { color: var(--text-soft); border-color: var(--border-hi); }
   .settings-danger-btn {
     background: transparent;
     color: var(--accent);
@@ -1648,7 +1703,7 @@
     transition: all 0.15s;
     line-height: 1.2;
   }
-  .mode-toggle-btn.active { background: var(--accent); color: #1A1A18; }
+  .mode-toggle-btn.active { background: var(--accent); color: var(--on-accent); }
   .maxes-reps-row {
     display: none;
     gap: 10px;
@@ -1693,15 +1748,15 @@
   .onb-progress-fill { height: 100%; width: 0; background: var(--accent); transition: width 0.25s ease; }
   .onb-choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); gap: 10px; margin-bottom: 18px; }
   .onb-choice {
-    background: var(--bg); border: 1px solid var(--field); color: #F1EFE1;
+    background: var(--bg); border: 1px solid var(--field); color: var(--accent);
     padding: 16px 8px; border-radius: 4px; cursor: pointer; transition: all 0.15s;
     font-family: var(--font-display); font-weight: 800; font-size: 18px;
     letter-spacing: 0.06em; text-transform: uppercase;
   }
-  .onb-choice.on { background: var(--accent); border-color: var(--accent); color: #1A1A18; }
+  .onb-choice.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
   .onb-q-hint { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 22px; min-height: 18px; }
-  .onb-summary { list-style: none; padding: 0; margin: 0 0 26px; display: grid; gap: 10px; font-size: 14px; line-height: 1.5; color: #C9C5B6; }
-  .onb-summary strong { color: #F1EFE1; }
+  .onb-summary { list-style: none; padding: 0; margin: 0 0 26px; display: grid; gap: 10px; font-size: 14px; line-height: 1.5; color: var(--text-soft); }
+  .onb-summary strong { color: var(--accent); }
   .onb-later { font-size: 12px; color: var(--muted); text-align: center; margin-top: 14px; }
   .onb-restore { display: block; text-align: center; font-size: 12px; color: var(--muted); margin-top: 14px; cursor: pointer; text-decoration: underline; }
   .settings-save-btn:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -1709,9 +1764,9 @@
   /* Weight badge on lift rows */
   .lift-weight-badge {
     display: inline-block;
-    background: rgba(241,239,225,0.1);
-    border: 1px solid rgba(241,239,225,0.28);
-    color: #F1EFE1;
+    background: rgba(var(--ink-rgb),0.1);
+    border: 1px solid rgba(var(--ink-rgb),0.28);
+    color: var(--accent);
     padding: 2px 10px;
     border-radius: 2px;
     font-family: var(--font-display);
@@ -1721,18 +1776,18 @@
     margin-left: 10px;
     vertical-align: middle;
   }
-  .lift-weight-badge.squat { background: rgba(241,239,225,0.08); border-color: rgba(241,239,225,0.28); color: var(--accent); }
-  .lift-weight-badge.ohp { background: rgba(241,239,225,0.08); border-color: rgba(241,239,225,0.28); color: var(--accent); }
-  .lift-weight-badge.pullup { background: rgba(241,239,225,0.08); border-color: rgba(241,239,225,0.28); color: var(--accent); }
+  .lift-weight-badge.squat { background: rgba(var(--ink-rgb),0.08); border-color: rgba(var(--ink-rgb),0.28); color: var(--accent); }
+  .lift-weight-badge.ohp { background: rgba(var(--ink-rgb),0.08); border-color: rgba(var(--ink-rgb),0.28); color: var(--accent); }
+  .lift-weight-badge.pullup { background: rgba(var(--ink-rgb),0.08); border-color: rgba(var(--ink-rgb),0.28); color: var(--accent); }
   .acc-log-wrap { display: inline-flex; align-items: center; gap: 6px; margin-left: 10px; vertical-align: middle; }
   .acc-input {
-    width: 72px; background: rgba(241,239,225,0.08); border: 1px solid rgba(241,239,225,0.35);
-    color: #F1EFE1; padding: 2px 8px; border-radius: 2px;
+    width: 72px; background: rgba(var(--ink-rgb),0.08); border: 1px solid rgba(var(--ink-rgb),0.35);
+    color: var(--accent); padding: 2px 8px; border-radius: 2px;
     font-family: var(--font-display); font-weight: 700; font-size: 14px;
     text-align: center; outline: none; letter-spacing: 0.05em;
   }
-  .acc-input:focus { border-color: rgba(241,239,225,0.7); background: rgba(241,239,225,0.12); }
-  .acc-input::placeholder { color: rgba(241,239,225,0.35); }
+  .acc-input:focus { border-color: rgba(var(--ink-rgb),0.7); background: rgba(var(--ink-rgb),0.12); }
+  .acc-input::placeholder { color: rgba(var(--ink-rgb),0.35); }
   .acc-rpe-hint { font-size: 10px; color: var(--muted); font-family: var(--font-display); letter-spacing: 0.06em; white-space: nowrap; }
 
 
@@ -1771,72 +1826,72 @@
 }
 .nav-sub button {
   background: none; border: none; border-bottom: 2px solid transparent;
-  color: #605C53; padding: 12px 18px; cursor: pointer;
+  color: var(--muted); padding: 12px 18px; cursor: pointer;
   font-family: var(--font-display); font-weight: 700;
   font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
   white-space: nowrap;
 }
-.nav-sub button.on { color: #F1EFE1; border-bottom-color: var(--accent); }
+.nav-sub button.on { color: var(--accent); border-bottom-color: var(--accent); }
 
 /* ── TRAINING MODE — dark throughout ─────────────────────────────────────── */
 body.training-mode { background: var(--bg); }
 body.training-mode nav { background: var(--bg); border-bottom-color: var(--border); }
-body.training-mode .nav-logo { color: #F1EFE1; }
+body.training-mode .nav-logo { color: var(--accent); }
 body.training-mode .nav-logo span { color: var(--accent); }
 body.training-mode #plan { background: var(--bg); border-top: none; padding-top: 0; padding-bottom: 60px; }
-body.training-mode .settings-max-chip { background: var(--surface); border-color: rgba(241,239,225,0.2); gap: 10px; padding: 10px 18px; }
+body.training-mode .settings-max-chip { background: var(--surface); border-color: rgba(var(--ink-rgb),0.2); gap: 10px; padding: 10px 18px; }
 body.training-mode .settings-max-label { color: var(--muted); font-size: 9px; letter-spacing: 0.18em; }
 body.training-mode .settings-max-val { color: var(--accent); font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
 body.training-mode .settings-max-val.unset { color: var(--muted); font-size: 13px; }
 body.training-mode .settings-open-btn {
   border-color: var(--accent);
-  color: #1A1A18;
+  color: var(--on-accent);
   background: var(--accent);
   font-size: 12px;
   padding: 10px 22px;
   letter-spacing: 0.12em;
 }
-body.training-mode .settings-open-btn:hover { background: #FBF9EC; border-color: #FBF9EC; }
+body.training-mode .settings-open-btn:hover { background: var(--accent-hi); border-color: var(--accent-hi); }
 body.training-mode .rest-timer-strip { background: var(--surface); border-color: var(--border); }
 body.training-mode .rest-timer-strip-label { color: var(--muted); }
 body.training-mode .rest-preset-btn { border-color: var(--border-hi); color: var(--muted); background: transparent; }
 body.training-mode .rest-preset-btn:hover,
-body.training-mode .rest-preset-btn.active-preset { background: var(--accent); border-color: var(--accent); color: #1A1A18; }
-body.training-mode .section-title { color: #F1EFE1; }
+body.training-mode .rest-preset-btn.active-preset { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+body.training-mode .section-title { color: var(--accent); }
 body.training-mode .section-label { color: var(--accent); }
 body.training-mode .train-title { font-size: clamp(56px, 8vw, 100px); margin-bottom: 32px; }
-body.training-mode .accent-word { color: var(--accent); text-shadow: 0 0 40px rgba(241,239,225,0.4); }
+body.training-mode .accent-word { color: var(--accent); text-shadow: 0 0 40px rgba(var(--ink-rgb),0.4); }
 body.training-mode .plan-day-focus { color: var(--muted); }
 body.training-mode .lift-table-header span { color: var(--muted); }
 body.training-mode .lift-table-header { border-bottom-color: var(--border); }
 body.training-mode .lift-row { border-bottom: none; background: var(--surface); border-radius: 14px; margin-bottom: 8px; box-shadow: none; transition: background 0.18s, border-color 0.18s, box-shadow 0.18s; border: 1px solid var(--border); border-left: 3px solid transparent; }
-body.training-mode .lift-row:hover { background: var(--surface-2); border-color: var(--border-hi); border-left-color: rgba(241,239,225,0.5); transform: none; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+body.training-mode .lift-row:hover { background: var(--surface-2); border-color: var(--border-hi); border-left-color: rgba(var(--ink-rgb),0.5); transform: none; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
 body.training-mode .lift-row.has-logs { border-left-color: var(--accent); }
 body.training-mode .lift-name { color: var(--text); }
 body.training-mode .lift-sets-reps { color: var(--muted); }
 body.training-mode .lift-rep-why { color: var(--muted); }
-body.training-mode .warmup-toggle-btn { border-color: rgba(241,239,225,0.25); color: rgba(241,239,225,0.6); }
+body.training-mode .warmup-toggle-btn { border-color: rgba(var(--ink-rgb),0.25); color: rgba(var(--ink-rgb),0.6); }
 body.training-mode .warmup-toggle-btn:hover, body.training-mode .warmup-toggle-btn.open { border-color: var(--accent); color: var(--accent); background: var(--accent-lo); }
-body.training-mode .warmup-panel { background: rgba(241,239,225,0.03); border-color: rgba(241,239,225,0.16); border-left-color: rgba(241,239,225,0.45); }
+body.training-mode .warmup-panel { background: rgba(var(--ink-rgb),0.03); border-color: rgba(var(--ink-rgb),0.16); border-left-color: rgba(var(--ink-rgb),0.45); }
 body.training-mode .warmup-step-text { color: var(--text); }
 body.training-mode .warmup-step-why { color: var(--muted); }
 body.training-mode #planNav { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 32px; }
 body.training-mode .plan-nav-btn { border-color: var(--border-hi); color: var(--muted); background: var(--surface); font-weight: 600; }
-body.training-mode .plan-nav-btn:hover { border-color: rgba(241,239,225,0.4); color: #F1EFE1; background: var(--surface-2); }
-body.training-mode .plan-nav-btn.active { color: #1A1A18; background: var(--accent); border-color: var(--accent); font-weight: 700; box-shadow: 0 2px 16px rgba(241,239,225,0.35); }
+body.training-mode .plan-nav-btn:hover { border-color: rgba(var(--ink-rgb),0.4); color: var(--accent); background: var(--surface-2); }
+body.training-mode .plan-nav-btn.active { color: var(--on-accent); background: var(--accent); border-color: var(--accent); font-weight: 700; box-shadow: 0 2px 16px rgba(var(--ink-rgb),0.35); }
 /* Week selector */
 body.training-mode .train-week-btn { border: 1px solid var(--border) !important; color: var(--muted) !important; background: var(--surface) !important; border-radius: 3px !important; }
 body.training-mode .train-week-btn:hover { border-color: var(--border-hi) !important; color: var(--text) !important; background: var(--surface-2) !important; }
-body.training-mode .train-week-btn.twb-active { background: var(--accent) !important; border-color: var(--accent) !important; color: #1A1A18 !important; font-weight: 700 !important; box-shadow: 0 2px 12px rgba(241,239,225,0.35) !important; transform: scale(1.07) !important; }
+body.training-mode .train-week-btn.twb-active { background: var(--accent) !important; border-color: var(--accent) !important; color: var(--on-accent) !important; font-weight: 700 !important; box-shadow: 0 2px 12px rgba(var(--ink-rgb),0.35) !important; transform: scale(1.07) !important; }
 body.training-mode .train-week-label { color: var(--muted); }
 body.training-mode .timer-bar { background: var(--bg); border-top-color: var(--border); }
 body.training-mode .timer-label { color: var(--muted); }
 body.training-mode .timer-lift-name { color: var(--muted); }
-body.training-mode .timer-display { color: #F1EFE1; }
+body.training-mode .timer-display { color: var(--accent); }
 body.training-mode .clear-day-btn { border-color: var(--border); color: var(--muted); }
-body.training-mode .clear-day-btn:hover { border-color: rgba(241,239,225,0.35); color: rgba(241,239,225,0.65); }
+body.training-mode .clear-day-btn:hover { border-color: rgba(var(--ink-rgb),0.35); color: rgba(var(--ink-rgb),0.65); }
 body.training-mode .log-sets-row .set-circle { border-color: var(--border-hi); color: var(--muted); background: transparent; }
-body.training-mode .log-sets-row .set-circle.logged { border-color: var(--accent); color: var(--accent); background: rgba(241,239,225,0.08); }
+body.training-mode .log-sets-row .set-circle.logged { border-color: var(--accent); color: var(--accent); background: rgba(var(--ink-rgb),0.08); }
 body.training-mode .last-session { color: var(--muted); }
 body.training-mode footer { display: none; }
 
@@ -1872,14 +1927,14 @@ body.training-mode footer { display: none; }
   font-family: var(--font-display); font-weight: 900;
   font-size: 62px; line-height: 1; color: var(--text); letter-spacing: -0.02em;
 }
-.rest-modal-time.warning { color: #F1EFE1; }
-.rest-modal-time.done { color: #F1EFE1; font-size: 46px; }
+.rest-modal-time.warning { color: var(--accent); }
+.rest-modal-time.done { color: var(--accent); font-size: 46px; }
 .rest-modal-status {
   font-family: var(--font-display); font-weight: 700;
   font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
   color: var(--muted); margin-bottom: 24px; min-height: 16px;
 }
-.rest-modal-status.ready { color: #F1EFE1; }
+.rest-modal-status.ready { color: var(--accent); }
 .rest-modal-btns { display: flex; gap: 10px; justify-content: center; }
 .rest-modal-add {
   background: transparent; border: 1px solid var(--border); color: var(--muted);
@@ -1890,7 +1945,7 @@ body.training-mode footer { display: none; }
 }
 .rest-modal-add:hover { border-color: var(--border-hi); color: var(--text); }
 .rest-modal-skip {
-  background: var(--surface); color: #F1EFE1; border: 1px solid var(--border);
+  background: var(--surface); color: var(--accent); border: 1px solid var(--border);
   padding: 12px 28px; font-family: var(--font-display);
   font-weight: 700; font-size: 14px; letter-spacing: 0.1em;
   border-radius: 999px;
@@ -1925,20 +1980,20 @@ body.training-mode footer { display: none; }
   font-family: var(--font-display); font-size: 8px; font-weight: 700;
   letter-spacing: 0.12em; text-transform: uppercase;
   padding: 1px 5px; border-radius: 2px;
-  background: rgba(241,239,225,0.08); color: var(--muted);
+  background: rgba(var(--ink-rgb),0.08); color: var(--muted);
   border: 1px solid var(--border-hi);
 }
 /* Minimal-equipment options read brighter — the whole point is spotting them fast */
 .variant-eq.eq-bodyweight, .variant-eq.eq-dumbbell, .variant-eq.eq-band {
   color: var(--text); border-color: var(--field);
 }
-.variant-chip.active .variant-eq { background: rgba(26,26,24,0.18); color: #1A1A18; border-color: rgba(26,26,24,0.3); }
+.variant-chip.active .variant-eq { background: rgba(var(--on-ink-rgb),0.18); color: var(--on-accent); border-color: rgba(var(--on-ink-rgb),0.3); }
 .variant-chip.variant-custom { border-style: dashed; }
 .equip-chip {
-  background: transparent; border: 1px solid var(--border-hi); color: var(--muted); border-radius: 999px;
+  background: transparent; border: 1px solid var(--field); color: var(--muted); border-radius: 999px;
   padding: 7px 12px; font-size: 12px; cursor: pointer; font-family: var(--font-body); min-height: 34px;
 }
-.equip-chip.on { background: var(--accent); border-color: var(--accent); color: #1A1A18; font-weight: 600; }
+.equip-chip.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
 .set-row { flex-direction: column; align-items: stretch; gap: 6px; }
 .set-row-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .set-last { font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
@@ -1949,17 +2004,17 @@ body.training-mode footer { display: none; }
   font-family: var(--font-display); font-weight: 700; font-size: 14px; letter-spacing: 0.08em;
   text-transform: uppercase; cursor: pointer; touch-action: manipulation;
 }
-.set-done-btn.on { background: var(--accent); border-color: var(--accent); color: #1A1A18; }
+.set-done-btn.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .failure-toggle, .setcount-btn { min-height: 44px; }
 .log-inline-input { min-height: 44px; }
 .pr-badge {
   display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 11px; letter-spacing: 0.12em;
-  background: var(--accent); color: #1A1A18; border-radius: 4px; padding: 2px 7px; margin: 6px 8px 0 0;
+  background: var(--accent); color: var(--on-accent); border-radius: 4px; padding: 2px 7px; margin: 6px 8px 0 0;
 }
 .pr-note { font-size: 12px; color: var(--text); }
 .week-glance { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin: 0 0 18px; }
 .wg-day {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 7px 2px 8px; min-width: 0;
+  background: var(--surface); border: 1px solid var(--field); border-radius: 8px; padding: 7px 2px 8px; min-width: 0;
   text-align: center; cursor: pointer; min-height: 64px; color: var(--muted); font-family: var(--font-body);
 }
 .wg-day.rest { cursor: default; opacity: 0.6; }
@@ -1968,7 +2023,7 @@ body.training-mode footer { display: none; }
 .wg-dow { font-family: var(--font-display); font-weight: 700; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
 .wg-title { font-size: 9.5px; line-height: 1.25; margin-top: 3px; color: var(--text); overflow-wrap: normal; white-space: nowrap; overflow: hidden; text-overflow: clip; }
 .wg-time { font-size: 10px; margin-top: 3px; font-family: var(--font-mono); }
-.maxes-est-1rm.warn { color: #D9A05B; }
+.maxes-est-1rm.warn { color: var(--warn); }
 .maxes-set-wrap { flex-basis: 100%; }
 .settings-modal-card.maxes-mode-reps .maxes-reps-row { flex-wrap: wrap; }
 .bw-chart { width: 100%; height: auto; display: block; margin: 10px 0 4px; }
@@ -1980,13 +2035,13 @@ body.training-mode footer { display: none; }
 .variant-opt.variant-more { display: none; }
 .variant-opt.variant-more.open { display: inline-flex; }
 .variant-hide {
-  min-width: 32px; background: transparent; border: 1px solid var(--border-hi); color: var(--muted);
+  min-width: 32px; background: transparent; border: 1px solid var(--field); color: var(--muted);
   border-radius: 999px; font-size: 14px; cursor: pointer; padding: 0 8px;
 }
 .variant-hide:hover { color: var(--text); border-color: var(--muted); }
 .hidden-ex-list { display: flex; flex-wrap: wrap; gap: 6px; width: 100%; }
 .hidden-ex-chip {
-  background: transparent; border: 1px dashed var(--border-hi); color: var(--muted); border-radius: 999px;
+  background: transparent; border: 1px dashed var(--field); color: var(--muted); border-radius: 999px;
   padding: 6px 12px; font-size: 12px; cursor: pointer; font-family: var(--font-body);
 }
 .hidden-ex-chip span { color: var(--text); font-weight: 600; margin-left: 4px; }
@@ -2009,7 +2064,7 @@ body.training-mode footer { display: none; }
   font-size: 13px; cursor: pointer; border-radius: 2px; transition: all 0.15s;
 }
 .liftdays-btn:hover { color: var(--text); }
-.liftdays-btn.on { background: var(--accent); color: #1A1A18; }
+.liftdays-btn.on { background: var(--accent); color: var(--on-accent); }
 .liftdays-desc { font-size: 11px; color: var(--muted); }
 /* Reuses .liftdays-group/.liftdays-btn as-is (same pill look, same .on active
    state) — this modifier only adds wrapping, since five modes including two
@@ -2017,7 +2072,7 @@ body.training-mode footer { display: none; }
    a phone, unlike the shorter day-count/split pickers that group serves. */
 .goal-mode-group { flex-wrap: wrap; }
 .storage-status { font-size: 11px; color: var(--muted); flex-basis: 100%; }
-.storage-status.warn { color: #D9A05B; }
+.storage-status.warn { color: var(--warn); }
 .week-complete-banner {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
   flex-wrap: wrap; background: var(--surface); border: 1px solid var(--accent);
@@ -2028,7 +2083,7 @@ body.training-mode footer { display: none; }
   letter-spacing: 0.02em; color: var(--text);
 }
 .week-complete-btn {
-  background: var(--accent); color: #1A1A18; border: none; border-radius: 4px;
+  background: var(--accent); color: var(--on-accent); border: none; border-radius: 4px;
   padding: 9px 16px; font-family: var(--font-display); font-weight: 700;
   font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
   cursor: pointer; white-space: nowrap;
@@ -2068,10 +2123,10 @@ body.training-mode footer { display: none; }
 }
 .quicklog-field input:focus { border-color: var(--accent); }
 .quicklog-save-btn {
-  width: 100%; background: var(--accent); color: #1A1A18; border: none; border-radius: 5px;
+  width: 100%; background: var(--accent); color: var(--on-accent); border: none; border-radius: 5px;
   padding: 18px 14px; font-family: var(--font-display); font-weight: 700; font-size: 15px;
   letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; margin-top: 4px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+  box-shadow: inset 0 1px 0 rgba(var(--hi-rgb),0.1);
 }
 .quicklog-save-btn:active { transform: scale(0.98); }
 .quicklog-confirm {
@@ -2117,7 +2172,7 @@ label.food-photo-btn, button.food-photo-btn {
 }
 label.food-photo-btn:hover, button.food-photo-btn:hover { border-color: transparent; background: var(--surface-2); }
 /* Snap meal is the primary action — accent fill, dark text for contrast. */
-label.food-photo-btn.food-photo-primary, button.food-photo-btn.food-photo-primary { background: var(--accent); color: #1A1A18; }
+label.food-photo-btn.food-photo-primary, button.food-photo-btn.food-photo-primary { background: var(--accent); color: var(--on-accent); }
 label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-primary:hover { background: var(--accent); }
 .food-photo-btn.disabled { opacity: 0.5; pointer-events: none; }
 /* A quiet line between the camera row and the typed path — two distinct
@@ -2139,10 +2194,10 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
    compact rather than full width, since it sits mid-sentence next to the
    recommendation text, not on its own line. */
 .food-apply-btn {
-  display: inline-block; background: var(--accent); color: #1A1A18; border: none;
+  display: inline-block; background: var(--accent); color: var(--on-accent); border: none;
   border-radius: 5px; padding: 10px 14px; font-family: var(--font-display); font-weight: 700;
   font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer;
-  margin-left: 8px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+  margin-left: 8px; box-shadow: inset 0 1px 0 rgba(var(--hi-rgb),0.1);
 }
 .food-apply-btn:active { transform: scale(0.98); }
 /* ── WELCOME FLOW ─────────────────────────────────────────────────────────── */
@@ -2183,11 +2238,11 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
    deload, recovery), not a warning. Never red/orange. */
 .maintenance-banner {
   display: flex; align-items: center; gap: 9px; background: rgba(110,136,168,0.14);
-  border: 1px solid rgba(110,136,168,0.4); color: #A9BEDA; border-radius: 6px;
+  border: 1px solid rgba(110,136,168,0.4); color: var(--calm); border-radius: 6px;
   padding: 11px 14px; margin-bottom: 16px; font-size: 13px; line-height: 1.5;
 }
 .maintenance-banner-dot {
-  width: 7px; height: 7px; border-radius: 50%; background: #7C93B3; flex: 0 0 auto;
+  width: 7px; height: 7px; border-radius: 50%; background: var(--calm-2); flex: 0 0 auto;
 }
 .maintenance-mode-row {
   display: flex; align-items: center; justify-content: space-between; gap: 14px;
@@ -2204,8 +2259,8 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
   position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%;
   background: var(--muted); transition: transform 0.15s, background 0.15s;
 }
-.maintenance-toggle.on { background: rgba(110,136,168,0.35); border-color: #7C93B3; }
-.maintenance-toggle.on .maintenance-toggle-knob { background: #A9BEDA; transform: translateX(20px); }
+.maintenance-toggle.on { background: rgba(110,136,168,0.35); border-color: var(--calm-2); }
+.maintenance-toggle.on .maintenance-toggle-knob { background: var(--calm); transform: translateX(20px); }
 /* One-tap switch on the Train tab, so toggling doesn't mean digging into the maxes modal */
 .maintenance-quick {
   margin-left: auto; display: inline-flex; align-items: center; gap: 8px; background: none;
@@ -2213,7 +2268,7 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
 }
 .maintenance-quick:hover { border-color: var(--border-hi); }
 .maintenance-quick-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
-.maintenance-quick:has(.maintenance-toggle.on) .maintenance-quick-label { color: #A9BEDA; }
+.maintenance-quick:has(.maintenance-toggle.on) .maintenance-quick-label { color: var(--calm); }
 .maintenance-toggle-sm { display: inline-block; width: 36px; height: 20px; border-radius: 10px; }
 .maintenance-toggle-sm .maintenance-toggle-knob { top: 2px; left: 2px; width: 14px; height: 14px; }
 .maintenance-toggle-sm.on .maintenance-toggle-knob { transform: translateX(16px); }
@@ -2226,7 +2281,7 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
 .backup-nudge-text { font-size: 13px; line-height: 1.5; color: var(--text); flex: 1 1 260px; }
 .backup-nudge-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 .backup-nudge-btn {
-  background: var(--accent); color: #1A1A18; border: none; border-radius: 4px;
+  background: var(--accent); color: var(--on-accent); border: none; border-radius: 4px;
   padding: 9px 16px; font-family: var(--font-display); font-weight: 700;
   font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
   cursor: pointer; white-space: nowrap;
@@ -2280,7 +2335,7 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
   display: flex; align-items: center; justify-content: center;
   transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.09s ease;
 }
-.edge-arrow:hover { background: var(--accent); border-color: var(--accent); color: #1A1A18; }
+.edge-arrow:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .edge-arrow:active { transform: scale(0.9); }
 .edge-dots { display: flex; gap: 9px; align-items: center; }
 .edge-dot {
@@ -2331,7 +2386,7 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
 .navmenu-item:hover, .navmenu-item:focus-visible { background: var(--surface-2); color: var(--text); outline: none; }
 .navmenu-item:focus { outline: none; }
 .navmenu-item:active { background: var(--surface-2); }
-.navmenu-item.current { color: var(--text); border-left-color: var(--accent); background: rgba(241,239,225,0.06); }
+.navmenu-item.current { color: var(--text); border-left-color: var(--accent); background: rgba(var(--ink-rgb),0.06); }
 .navmenu-item.primary { font-size: 17px; color: var(--text); }
 .navmenu-tick { font-size: 10px; color: var(--accent); opacity: 0; }
 .navmenu-item.current .navmenu-tick { opacity: 1; }
@@ -2418,7 +2473,7 @@ input.smooth-input { caret-color: transparent; }
 .timer-btn, .rest-modal-add, .rest-modal-skip, .rest-preset-btn { transition: transform 0.09s ease, all 0.15s; }
 
 .rest-modal-skip:hover { background: var(--border-hi); }
-.rest-modal-skip.ready-state { background: #F1EFE1; border-color: #F1EFE1; color: #1A1A18; }
+.rest-modal-skip.ready-state { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 
 /* ── RUNNING PLAN GENERATOR ─────────────────────────────────────────────── */
 .run-form {
@@ -2436,12 +2491,12 @@ input.smooth-input { caret-color: transparent; }
   color: var(--accent); letter-spacing: 0.02em;
 }
 .run-input {
-  background: var(--bg); border: 1px solid var(--input-border-idle); color: #F1EFE1;
+  background: var(--bg); border: 1px solid var(--input-border-idle); color: var(--accent);
   padding: 12px 14px; font-family: var(--font-display); font-size: 17px; font-weight: 800;
   border-radius: 4px; width: 100%; outline: none; letter-spacing: 0.02em;
   transition: border-color 0.15s;
 }
-.run-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(241,239,225,0.12); }
+.run-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(var(--ink-rgb),0.12); }
 .run-input::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.55); cursor: pointer; }
 .run-range {
   -webkit-appearance: none; appearance: none; width: 100%; height: 4px;
@@ -2449,7 +2504,7 @@ input.smooth-input { caret-color: transparent; }
 }
 .run-range::-webkit-slider-thumb {
   -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%;
-  background: var(--accent); border: none; cursor: pointer; box-shadow: 0 2px 10px rgba(241,239,225,0.45);
+  background: var(--accent); border: none; cursor: pointer; box-shadow: 0 2px 10px rgba(var(--ink-rgb),0.45);
 }
 .run-range::-moz-range-thumb {
   width: 20px; height: 20px; border-radius: 50%; background: var(--accent);
@@ -2466,11 +2521,11 @@ input.smooth-input { caret-color: transparent; }
   letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
   border-radius: 2px; transition: all 0.15s; line-height: 1.2;
 }
-.run-toggle-btn.on { background: var(--accent); color: #1A1A18; }
+.run-toggle-btn.on { background: var(--accent); color: var(--on-accent); }
 .run-flags { margin-bottom: 26px; }
 .run-flag {
   padding: 13px 18px; border-radius: 0 12px 12px 0; border-left: 3px solid var(--accent);
-  background: rgba(241,239,225,0.07); color: var(--text);
+  background: rgba(var(--ink-rgb),0.07); color: var(--text);
   font-size: 13px; line-height: 1.65; margin-bottom: 8px;
 }
 .run-flag strong { color: var(--accent); }
@@ -2499,13 +2554,13 @@ input.smooth-input { caret-color: transparent; }
   letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); padding: 4px 10px 8px;
 }
 .run-cell-week { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
-.run-cell-num { font-family: var(--font-display); font-weight: 900; font-size: 19px; color: #F1EFE1; line-height: 1; }
+.run-cell-num { font-family: var(--font-display); font-weight: 900; font-size: 19px; color: var(--accent); line-height: 1; }
 .run-cell-dates { font-size: 10px; color: var(--muted); margin-top: 5px; line-height: 1.45; }
 .run-phase {
   display: inline-block; margin-top: 7px; padding: 2px 7px; border-radius: 2px;
   font-family: var(--font-display); font-size: 9px; font-weight: 700;
   letter-spacing: 0.14em; text-transform: uppercase;
-  background: rgba(241,239,225,0.13); color: var(--accent); border: 1px solid rgba(241,239,225,0.3);
+  background: rgba(var(--ink-rgb),0.13); color: var(--accent); border: 1px solid rgba(var(--ink-rgb),0.3);
 }
 .run-phase.quiet { background: var(--surface); color: var(--muted); border-color: var(--border-hi); }
 .run-deload {
@@ -2521,7 +2576,7 @@ input.smooth-input { caret-color: transparent; }
 .run-cell.has-run { border-left: 3px solid var(--accent); }
 /* Lifting days carry a quiet top rule — the cell text already says "Lift" */
 .run-cell.has-lift { border-top: 2px solid var(--border-hi); }
-.run-cell.race { background: rgba(241,239,225,0.12); border-color: var(--accent); color: #F1EFE1; font-weight: 700; }
+.run-cell.race { background: rgba(var(--ink-rgb),0.12); border-color: var(--accent); color: var(--accent); font-weight: 700; }
 .run-cell.quiet { color: var(--muted); background: transparent; border-style: dashed; }
 .run-cell-miles {
   background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
@@ -2552,19 +2607,19 @@ input.smooth-input { caret-color: transparent; }
   gap: 12px; margin-bottom: 40px;
 }
 .cal-day {
-  background: var(--card); border: 1px solid rgba(241,239,225,0.06);
+  background: var(--card); border: 1px solid rgba(var(--ink-rgb),0.06);
   border-left: 4px solid var(--dim); border-radius: 16px; padding: 18px 20px;
   display: flex; flex-direction: column; gap: 10px;
 }
 .cal-day.has-work { border-left-color: var(--accent); }
-.cal-day.is-today { border-color: rgba(241,239,225,0.35); background: var(--surface-2); }
+.cal-day.is-today { border-color: rgba(var(--ink-rgb),0.35); background: var(--surface-2); }
 .cal-dow {
   font-size: 11px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
   color: var(--muted); display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
 }
 .cal-today-chip {
   font-family: var(--font-display); font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
-  color: var(--accent); border: 1px solid rgba(241,239,225,0.4); border-radius: 2px; padding: 1px 6px;
+  color: var(--accent); border: 1px solid rgba(var(--ink-rgb),0.4); border-radius: 2px; padding: 1px 6px;
 }
 .cal-lift-tag {
   font-family: var(--font-display); font-size: 10px; font-weight: 700;
@@ -2575,7 +2630,7 @@ input.smooth-input { caret-color: transparent; }
   letter-spacing: 0.02em; text-transform: uppercase; color: var(--text); line-height: 1.15;
 }
 .cal-run {
-  border-top: 1px solid rgba(241,239,225,0.07); padding-top: 9px;
+  border-top: 1px solid rgba(var(--ink-rgb),0.07); padding-top: 9px;
   font-size: 13px; color: var(--text); line-height: 1.5;
 }
 .cal-run-tag {
@@ -2592,7 +2647,7 @@ input.smooth-input { caret-color: transparent; }
   font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
   cursor: pointer; border-radius: 2px; transition: all 0.15s; margin-bottom: 40px;
 }
-.cal-fullview-btn:hover { background: var(--accent); border-color: var(--accent); color: #1A1A18; }
+.cal-fullview-btn:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 
 /* ── CALENDAR TAB — the full-width, any-week version of the same view ───── */
 .calfull-nav {
@@ -2611,7 +2666,7 @@ input.smooth-input { caret-color: transparent; }
   font-size: 22px; line-height: 1; cursor: pointer; transition: all 0.15s;
   display: flex; align-items: center; justify-content: center;
 }
-.calfull-arrow:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); color: #1A1A18; }
+.calfull-arrow:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .calfull-arrow:disabled { opacity: 0.3; cursor: default; }
 .calfull-weekbtns { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 26px; }
 .cal-week-btn {
@@ -2622,7 +2677,7 @@ input.smooth-input { caret-color: transparent; }
 }
 .cal-week-btn:hover { border-color: var(--border-hi); color: var(--text); background: var(--surface-2); }
 .cal-week-btn.cwb-active {
-  background: var(--accent); border-color: var(--accent); color: #1A1A18;
+  background: var(--accent); border-color: var(--accent); color: var(--on-accent);
   font-weight: 700; transform: scale(1.07);
 }
 body.training-mode #calendarfull { background: var(--bg); border-top: none; padding-top: 0; padding-bottom: 60px; }
@@ -2640,9 +2695,9 @@ body.training-mode #calendarfull { background: var(--bg); border-top: none; padd
   text-transform: uppercase; color: var(--muted); white-space: nowrap;
 }
 .run-log-input {
-  background: rgba(241,239,225,0.08);
+  background: rgba(var(--ink-rgb),0.08);
   border: 1px solid var(--input-border-idle);
-  color: #F1EFE1;
+  color: var(--accent);
   padding: 6px 8px;
   font-family: var(--font-display);
   font-size: 14px; font-weight: 700;
@@ -2651,7 +2706,7 @@ body.training-mode #calendarfull { background: var(--bg); border-top: none; padd
   outline: none;
   transition: border-color 0.15s;
 }
-.run-log-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(241,239,225,0.12); }
+.run-log-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(var(--ink-rgb),0.12); }
 .run-log-input.logged { border-color: var(--accent); }
 .run-log-pace {
   font-family: var(--font-mono); font-size: 10px; color: var(--muted);
@@ -2665,7 +2720,7 @@ body.training-mode #calendarfull { background: var(--bg); border-top: none; padd
 
 /* ── PLANNED VS ACTUAL CHART — inline SVG, no library ───────────────────── */
 .run-chart-card {
-  background: var(--card); border: 1px solid rgba(241,239,225,0.06);
+  background: var(--card); border: 1px solid rgba(var(--ink-rgb),0.06);
   border-radius: 18px; overflow: hidden; margin-bottom: 28px;
 }
 .run-chart-header {
@@ -2744,7 +2799,7 @@ body.training-mode #calendarfull { background: var(--bg); border-top: none; padd
 .run-missed-hint { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
 body.training-mode #runplan { background: var(--bg); border-top: none; padding-top: 0; padding-bottom: 60px; }
 body.training-mode .run-field-label { color: var(--muted); }
-body.training-mode select.run-input { color: #F1EFE1; }
+body.training-mode select.run-input { color: var(--accent); }
 @media (max-width: 768px) {
   .run-week { grid-template-columns: 100px repeat(7, minmax(164px, 1fr)) 66px; min-width: 1314px; }
 }
@@ -2877,7 +2932,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
       </filter>
     </defs>
     <ellipse cx="540" cy="290" rx="430" ry="185" transform="rotate(-20 540 290)"
-             fill="#F1EFE1" opacity="0.18" filter="url(#spotBlur)"/>
+             style="fill:var(--accent)" opacity="0.18" filter="url(#spotBlur)"/>
   </svg>
   <div class="hero-ring-wrap">
     <svg class="ring-svg" viewBox="0 0 300 300" aria-hidden="true" focusable="false">
@@ -2945,41 +3000,41 @@ body.training-mode select.run-input { color: #F1EFE1; }
     <div class="edge-viewport" id="edgeViewport">
 
     <!-- Confidence -->
-    <div class="edge-slide" style="background:var(--surface);border:1px solid rgba(241,239,225,0.06);border-radius:20px;padding:40px 36px;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:-10px;right:20px;font-family:'Antonio',sans-serif;font-weight:900;font-size:120px;color:rgba(241,239,225,0.05);line-height:1;user-select:none;">01</div>
+    <div class="edge-slide" style="background:var(--surface);border:1px solid rgba(var(--ink-rgb),0.06);border-radius:20px;padding:40px 36px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-10px;right:20px;font-family:'Antonio',sans-serif;font-weight:900;font-size:120px;color:rgba(var(--ink-rgb),0.05);line-height:1;user-select:none;">01</div>
       <div style="font-family:'Antonio',sans-serif;font-weight:900;font-size:13px;letter-spacing:0.25em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;">Mental Edge</div>
-      <div style="font-family:'Antonio',sans-serif;font-weight:900;font-size:36px;text-transform:uppercase;letter-spacing:0.02em;color:#F1EFE1;line-height:1.1;margin-bottom:20px;">Confidence<br>Is Not Born.<br>It's Built.</div>
+      <div style="font-family:'Antonio',sans-serif;font-weight:900;font-size:36px;text-transform:uppercase;letter-spacing:0.02em;color:var(--accent);line-height:1.1;margin-bottom:20px;">Confidence<br>Is Not Born.<br>It's Built.</div>
       <p style="font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:16px;">
         Every rep you finish when you wanted to stop is a deposit into your self-belief. Finish this program and you will walk into rooms differently. Not because you told yourself to. Because your body knows what you put into it.
       </p>
       <p style="font-size:14px;color:var(--muted);line-height:1.8;">
-        The men who dominate in every area of life, in business, in social settings, in creative work, are not smarter than everyone else. They carry themselves like they've already won. <strong style="color:#C9C5B6;">That posture comes from the work you do in here.</strong>
+        The men who dominate in every area of life, in business, in social settings, in creative work, are not smarter than everyone else. They carry themselves like they've already won. <strong style="color:var(--text-soft);">That posture comes from the work you do in here.</strong>
       </p>
     </div>
 
     <!-- Social Status -->
-    <div class="edge-slide" style="background:var(--surface);border:1px solid rgba(241,239,225,0.06);border-radius:20px;padding:40px 36px;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:-10px;right:20px;font-family:'Antonio',sans-serif;font-weight:900;font-size:120px;color:rgba(241,239,225,0.05);line-height:1;user-select:none;">02</div>
+    <div class="edge-slide" style="background:var(--surface);border:1px solid rgba(var(--ink-rgb),0.06);border-radius:20px;padding:40px 36px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-10px;right:20px;font-family:'Antonio',sans-serif;font-weight:900;font-size:120px;color:rgba(var(--ink-rgb),0.05);line-height:1;user-select:none;">02</div>
       <div style="font-family:'Antonio',sans-serif;font-weight:900;font-size:13px;letter-spacing:0.25em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;">Social Capital</div>
-      <div style="font-family:'Antonio',sans-serif;font-weight:900;font-size:36px;text-transform:uppercase;letter-spacing:0.02em;color:#F1EFE1;line-height:1.1;margin-bottom:20px;">People Treat<br>You How You<br>Look.</div>
+      <div style="font-family:'Antonio',sans-serif;font-weight:900;font-size:36px;text-transform:uppercase;letter-spacing:0.02em;color:var(--accent);line-height:1.1;margin-bottom:20px;">People Treat<br>You How You<br>Look.</div>
       <p style="font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:16px;">
         This is uncomfortable to say out loud. But you already know it's true. A physically imposing, well-built man is treated with more respect in every room he enters. In job interviews. In negotiations. On the street. At a party.
       </p>
       <p style="font-size:14px;color:var(--muted);line-height:1.8;">
-        You cannot control how people are wired. You can control how you show up. <strong style="color:#C9C5B6;">Build the kind of body that commands attention before you say a word.</strong>
+        You cannot control how people are wired. You can control how you show up. <strong style="color:var(--text-soft);">Build the kind of body that commands attention before you say a word.</strong>
       </p>
     </div>
 
     <!-- Athletic Performance -->
-    <div class="edge-slide" style="background:var(--surface);border:1px solid rgba(241,239,225,0.06);border-radius:20px;padding:40px 36px;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:-10px;right:20px;font-family:'Antonio',sans-serif;font-weight:900;font-size:120px;color:rgba(241,239,225,0.05);line-height:1;user-select:none;">03</div>
+    <div class="edge-slide" style="background:var(--surface);border:1px solid rgba(var(--ink-rgb),0.06);border-radius:20px;padding:40px 36px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:-10px;right:20px;font-family:'Antonio',sans-serif;font-weight:900;font-size:120px;color:rgba(var(--ink-rgb),0.05);line-height:1;user-select:none;">03</div>
       <div style="font-family:'Antonio',sans-serif;font-weight:900;font-size:13px;letter-spacing:0.25em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;">Athletic Output</div>
-      <div style="font-family:'Antonio',sans-serif;font-weight:900;font-size:36px;text-transform:uppercase;letter-spacing:0.02em;color:#F1EFE1;line-height:1.1;margin-bottom:20px;">Strong Men<br>Are Useful<br>Men.</div>
+      <div style="font-family:'Antonio',sans-serif;font-weight:900;font-size:36px;text-transform:uppercase;letter-spacing:0.02em;color:var(--accent);line-height:1.1;margin-bottom:20px;">Strong Men<br>Are Useful<br>Men.</div>
       <p style="font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:16px;">
         Mobility work is baked into every session. You will be stronger and move better than 99% of men your age. Pick up anything. Sprint when it matters. Play any sport and be the most physically capable person on the field.
       </p>
       <p style="font-size:14px;color:var(--muted);line-height:1.8;">
-        Weakness is a choice at this age. You have every resource you need. <strong style="color:#C9C5B6;">The only question is whether you actually want it badly enough to show up every day.</strong>
+        Weakness is a choice at this age. You have every resource you need. <strong style="color:var(--text-soft);">The only question is whether you actually want it badly enough to show up every day.</strong>
       </p>
     </div>
 
@@ -2993,7 +3048,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
 
   <!-- Pull quote -->
   <div style="border-left:4px solid var(--accent);border-radius:0 16px 16px 0;padding:36px 44px;background:var(--dark);max-width:800px;">
-    <div style="font-family:'Antonio',sans-serif;font-weight:900;font-size:clamp(28px,4vw,48px);line-height:1.15;color:#F1EFE1;margin-bottom:20px;letter-spacing:0.01em;">
+    <div style="font-family:'Antonio',sans-serif;font-weight:900;font-size:clamp(28px,4vw,48px);line-height:1.15;color:var(--accent);margin-bottom:20px;letter-spacing:0.01em;">
       "The average man will never know what he was capable of. He was too comfortable to find out."
     </div>
     <div style="font-size:12px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);">
@@ -3037,7 +3092,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
 </section><footer>
   <div>
     <div class="footer-logo"><img src="assets/brand/rtw-wordmark.png" alt="Run the Weights"></div>
-    <div class="footer-sub">Do the work. Become undeniable. <span style="opacity:0.45">· build 7.96</span></div>
+    <div class="footer-sub">Do the work. Become undeniable. <span style="opacity:0.45">· build 7.97</span></div>
   </div>
   <div class="footer-rules">
     <div class="footer-rules-title">The Code</div>
@@ -3055,10 +3110,10 @@ body.training-mode select.run-input { color: #F1EFE1; }
 
 <section id="plan">
   <!-- STORAGE WARNING -->
-  <div id="storageWarn" style="display:none;padding:12px 16px;margin-bottom:16px;border:1px solid var(--accent);border-radius:12px;background:rgba(241,239,225,0.10);color:var(--accent);font-size:13px;font-weight:600">
+  <div id="storageWarn" style="display:none;padding:12px 16px;margin-bottom:16px;border:1px solid var(--accent);border-radius:12px;background:rgba(var(--ink-rgb),0.10);color:var(--accent);font-size:13px;font-weight:600">
     ⚠ This device is blocking storage — logs will not survive closing the app. Tap Backup now, and check private-browsing or storage settings.
   </div>
-  <div class="section-label">Run the Weights — Daily Training <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.96</span></div>
+  <div class="section-label">Run the Weights — Daily Training <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.97</span></div>
   <h2 class="section-title train-title">THIS IS<br>WHERE YOU <span class="accent-word">WIN</span></h2>
 
   <!-- WEEK SELECTOR FOR TRAINING -->
@@ -3113,11 +3168,11 @@ body.training-mode select.run-input { color: #F1EFE1; }
   <div class="plan-content active" id="day-chest">
     <div class="plan-day-header">
       <div>
-        <div class="plan-day-title" style="color:#F1EFE1">CHEST + BACK</div>
+        <div class="plan-day-title" style="color:var(--accent)">CHEST + BACK</div>
         <div class="plan-day-focus">Horizontal push and pull. Balanced pressing and rowing volume.</div>
       </div>
       <div class="plan-badges">
-        <span class="badge" style="background:rgba(241,239,225,0.12);color:#F1EFE1;border:1px solid rgba(241,239,225,0.28)">Day 1</span>
+        <span class="badge" style="background:rgba(var(--ink-rgb),0.12);color:var(--accent);border:1px solid rgba(var(--ink-rgb),0.28)">Day 1</span>
         <span class="badge" data-est="chest" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:20</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('chest'); return false;">Clear Logs</button>
@@ -3140,11 +3195,11 @@ body.training-mode select.run-input { color: #F1EFE1; }
   <div class="plan-content" id="day-arms">
     <div class="plan-day-header">
       <div>
-        <div class="plan-day-title" style="color:#F1EFE1">SHOULDERS + ARMS</div>
+        <div class="plan-day-title" style="color:var(--accent)">SHOULDERS + ARMS</div>
         <div class="plan-day-focus">Overhead pressing, lateral delt volume, bicep and tricep isolation.</div>
       </div>
       <div class="plan-badges">
-        <span class="badge" style="background:rgba(241,239,225,0.12);color:#F1EFE1;border:1px solid rgba(241,239,225,0.28)">Day 2</span>
+        <span class="badge" style="background:rgba(var(--ink-rgb),0.12);color:var(--accent);border:1px solid rgba(var(--ink-rgb),0.28)">Day 2</span>
         <span class="badge" data-est="arms" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:15</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('arms'); return false;">Clear Logs</button>
@@ -3167,11 +3222,11 @@ body.training-mode select.run-input { color: #F1EFE1; }
   <div class="plan-content" id="day-legs">
     <div class="plan-day-header">
       <div>
-        <div class="plan-day-title" style="color:#F1EFE1">LEGS + ABS</div>
+        <div class="plan-day-title" style="color:var(--accent)">LEGS + ABS</div>
         <div class="plan-day-focus">Quad dominance, posterior chain, and core stability.</div>
       </div>
       <div class="plan-badges">
-        <span class="badge" style="background:rgba(241,239,225,0.12);color:#F1EFE1;border:1px solid rgba(241,239,225,0.28)">Day 3</span>
+        <span class="badge" style="background:rgba(var(--ink-rgb),0.12);color:var(--accent);border:1px solid rgba(var(--ink-rgb),0.28)">Day 3</span>
         <span class="badge" data-est="legs" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:25</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('legs'); return false;">Clear Logs</button>
@@ -3194,11 +3249,11 @@ body.training-mode select.run-input { color: #F1EFE1; }
   <div class="plan-content" id="day-chest-b">
     <div class="plan-day-header">
       <div>
-        <div class="plan-day-title" style="color:#F1EFE1">CHEST + BACK</div>
+        <div class="plan-day-title" style="color:var(--accent)">CHEST + BACK</div>
         <div class="plan-day-focus">Incline focus, machine rows, cable isolation. Different angles from Day 1A.</div>
       </div>
       <div class="plan-badges">
-        <span class="badge" style="background:rgba(241,239,225,0.12);color:#F1EFE1;border:1px solid rgba(241,239,225,0.28)">1B</span>
+        <span class="badge" style="background:rgba(var(--ink-rgb),0.12);color:var(--accent);border:1px solid rgba(var(--ink-rgb),0.28)">1B</span>
         <span class="badge" data-est="chest-b" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:20</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('chest-b'); return false;">Clear Logs</button>
@@ -3221,11 +3276,11 @@ body.training-mode select.run-input { color: #F1EFE1; }
   <div class="plan-content" id="day-arms-b">
     <div class="plan-day-header">
       <div>
-        <div class="plan-day-title" style="color:#F1EFE1">SHOULDERS + ARMS</div>
+        <div class="plan-day-title" style="color:var(--accent)">SHOULDERS + ARMS</div>
         <div class="plan-day-focus">Arnold press, cable lateral work, isolation for bis and tris from different angles.</div>
       </div>
       <div class="plan-badges">
-        <span class="badge" style="background:rgba(241,239,225,0.12);color:#F1EFE1;border:1px solid rgba(241,239,225,0.28)">2B</span>
+        <span class="badge" style="background:rgba(var(--ink-rgb),0.12);color:var(--accent);border:1px solid rgba(var(--ink-rgb),0.28)">2B</span>
         <span class="badge" data-est="arms-b" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:15</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('arms-b'); return false;">Clear Logs</button>
@@ -3248,11 +3303,11 @@ body.training-mode select.run-input { color: #F1EFE1; }
   <div class="plan-content" id="day-legs-b">
     <div class="plan-day-header">
       <div>
-        <div class="plan-day-title" style="color:#F1EFE1">MOBILITY + CORE</div>
+        <div class="plan-day-title" style="color:var(--accent)">MOBILITY + CORE</div>
         <div class="plan-day-focus">Basement day — dumbbell and bodyweight legs for mobility, depth and contraction, plus heavy loaded core. No machines required.</div>
       </div>
       <div class="plan-badges">
-        <span class="badge" style="background:rgba(241,239,225,0.12);color:#F1EFE1;border:1px solid rgba(241,239,225,0.28)">3B</span>
+        <span class="badge" style="background:rgba(var(--ink-rgb),0.12);color:var(--accent);border:1px solid rgba(var(--ink-rgb),0.28)">3B</span>
         <span class="badge" data-est="legs-b" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:00</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('legs-b'); return false;">Clear Logs</button>
@@ -3275,17 +3330,17 @@ body.training-mode select.run-input { color: #F1EFE1; }
   <div class="plan-content" id="day-rest">
     <div class="plan-day-header">
       <div>
-        <div class="plan-day-title" style="color:#C9C5B6">REST + STRETCH</div>
+        <div class="plan-day-title" style="color:var(--text-soft)">REST + STRETCH</div>
         <div class="plan-day-focus">Recovery, mobility, and shoulder maintenance. No heavy loading.</div>
       </div>
       <div class="plan-badges">
-        <span class="badge" style="background:rgba(241,239,225,0.12);color:#C9C5B6;border:1px solid rgba(241,239,225,0.28)">Day 4</span>
+        <span class="badge" style="background:rgba(var(--ink-rgb),0.12);color:var(--text-soft);border:1px solid rgba(var(--ink-rgb),0.28)">Day 4</span>
         <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~45 min</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('rest'); return false;">Clear Logs</button>
     </div>
-    <div style="padding:24px 28px;background:rgba(241,239,225,0.05);border:1px solid rgba(241,239,225,0.18);border-left:4px solid #F1EFE1;border-radius:0 16px 16px 0;margin-bottom:32px">
-      <div style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#C9C5B6;margin-bottom:16px">Start with 5 min foam rolling: quads, hip flexors, t-spine. Then 10 deep diaphragmatic breaths.</div>
+    <div style="padding:24px 28px;background:rgba(var(--ink-rgb),0.05);border:1px solid rgba(var(--ink-rgb),0.18);border-left:4px solid var(--accent);border-radius:0 16px 16px 0;margin-bottom:32px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-soft);margin-bottom:16px">Start with 5 min foam rolling: quads, hip flexors, t-spine. Then 10 deep diaphragmatic breaths.</div>
       <div style="display:flex;flex-wrap:wrap;gap:8px">
         <span style="font-size:13px;color:var(--muted)">No heavy loading.</span>
         <span style="font-size:13px;color:var(--muted)">Hip work is the priority.</span>
@@ -3311,7 +3366,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
 <div id="tab-running" class="tab-main" style="background:var(--bg)">
 
 <section id="runplan">
-  <div class="section-label">Run the Weights — Running Plan <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.96</span></div>
+  <div class="section-label">Run the Weights — Running Plan <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.97</span></div>
   <h2 class="section-title train-title">RACE DAY IS<br>A <span class="accent-word">DEADLINE</span></h2>
 
   <!-- Race setup collapses once there is a raceDate, so a returning user lands
@@ -3429,7 +3484,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
 <div id="tab-calendar" class="tab-main" style="background:var(--bg)">
 
 <section id="calendarfull">
-  <div class="section-label">Full Calendar <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.96</span></div>
+  <div class="section-label">Full Calendar <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.97</span></div>
   <h2 class="section-title train-title">EVERY WEEK.<br>BOTH <span class="accent-word">PLANS</span>.</h2>
 
   <div class="calfull-nav">
@@ -3451,7 +3506,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
 <div id="tab-food" class="tab-main" style="background:var(--bg)">
 
 <section id="foodSection">
-  <div class="section-label">Run the Weights — Food <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.96</span></div>
+  <div class="section-label">Run the Weights — Food <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.97</span></div>
   <h2 class="section-title train-title">EVERY MEAL.<br>TO <span class="accent-word">200</span>.</h2>
 
   <div class="calfull-nav">
@@ -3514,7 +3569,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
 <div id="tab-quicklog" class="tab-main" style="background:var(--bg)">
 
 <section id="quicklogSection">
-  <div class="section-label">Run the Weights — Quick Log <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.96</span></div>
+  <div class="section-label">Run the Weights — Quick Log <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.97</span></div>
   <h2 class="section-title train-title">ONE LIFT.<br>ONE <span class="accent-word">SET</span>.</h2>
   <p style="color:var(--muted);font-size:13px;line-height:1.6;margin:-8px 0 20px;max-width:480px;">
     For taper weeks and short-on-time days — log one set on an anchor lift without opening the full workout.
@@ -3564,7 +3619,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
      they render changed, only how you get to them. -->
 <div id="tab-more" class="tab-main" style="display:none">
 <section id="moreSection">
-  <div class="section-label">Run the Weights — More <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.96</span></div>
+  <div class="section-label">Run the Weights — More <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.97</span></div>
   <h2 class="section-title train-title">EVERYTHING<br>ELSE.</h2>
   <div class="more-list">
     <button class="more-list-item" onclick="goTab('info'); goSec('home');">Home</button>
@@ -3751,7 +3806,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
     <div class="liftdays-wrap" style="margin-bottom:24px;">
       <span class="liftdays-label">Theme</span>
       <div class="liftdays-group">
-        <button class="liftdays-btn" data-theme-btn="dark" onclick="setTheme('dark')">Dark</button>
+        <button class="liftdays-btn" data-theme-btn="light" onclick="setTheme('light')">Light</button>
         <button class="liftdays-btn" data-theme-btn="black" onclick="setTheme('black')">Black</button>
       </div>
     </div>
@@ -3763,11 +3818,6 @@ body.training-mode select.run-input { color: #F1EFE1; }
       <span class="liftdays-label">Time budget</span>
       <div class="liftdays-group goal-mode-group" id="sessionBudgetGroup"></div>
       <span class="liftdays-desc">Past the budget, accessories pair into supersets.</span>
-    </div>
-    <div class="liftdays-wrap" style="margin-bottom:16px;">
-      <span class="liftdays-label">Sunday</span>
-      <div class="liftdays-group" id="sundayEngineGroup"></div>
-      <span class="liftdays-desc">Engine is a private conditioning day. It never shows in the food post.</span>
     </div>
     <div class="liftdays-wrap" style="margin-bottom:24px;">
       <span class="liftdays-label">Equipment you have</span>
@@ -3884,8 +3934,8 @@ body.training-mode select.run-input { color: #F1EFE1; }
     <div class="rest-modal-lift" id="restModalLift"></div>
     <div class="rest-modal-ring-wrap">
       <svg viewBox="0 0 200 200">
-        <circle cx="100" cy="100" r="85" stroke="#3A3935" stroke-width="10" fill="none"/>
-        <circle id="restModalRing" cx="100" cy="100" r="85" stroke="#F1EFE1" stroke-width="10" fill="none"
+        <circle cx="100" cy="100" r="85" style="stroke:var(--border-hi)" stroke-width="10" fill="none"/>
+        <circle id="restModalRing" cx="100" cy="100" r="85" style="stroke:var(--accent)" stroke-width="10" fill="none"
           stroke-dasharray="534" stroke-dashoffset="0" stroke-linecap="round"
           transform="rotate(-90 100 100)" style="transition:stroke-dashoffset 1s linear,stroke 0.4s;"/>
       </svg>
@@ -4445,55 +4495,14 @@ body.training-mode select.run-input { color: #F1EFE1; }
       ex:['bb-squat','flat-bb-bench','lat-pulldown','seated-ohp','ez-bar-curl','ab-wheel'] },
     'fb-b':    { tag:'B',  title:'Full Body B', focus:'Hinge pattern, incline press, horizontal pull, delts, triceps, calves.',
       ex:['rdl','incline-bb-bench','seated-cable-row','lateral-raise-mach','tricep-pushdown','seated-calf'] },
-    //  HYROX prep, kept private: titled Engine everywhere it renders, used only
-    //  on the Sunday slot when Settings turns it on, and excluded from the
-    //  food post. Technique first and easy; it is not a hard lift day.
-    'hyrox':   { tag:'EN', title:'Engine', engine:true, focus:'Technique first at an easy pace. Ski erg, sled, wall balls, carries and lunges. Nothing here is for time yet.',
-      ex:['ski-erg-intervals','sled-push','sled-rope-pull','wall-ball','farmer-carry','db-walking-lunge'] },
     'fb-c':    { tag:'C',  title:'Full Body C', focus:'Machine squat pattern, machine press, row, Arnold press, biceps, rear delts.',
       ex:['leg-press','machine-chest-press','machine-row','arnold-press','incline-db-curl','cable-face-pull'] }
   };
 
-  function activeSplit() {
-    var t = SPLIT_TEMPLATES[activeSplitId] || SPLIT_TEMPLATES.arnold;
-    if (!sundayEngine) return t;
-    //  The Engine day takes the Sunday slot only. liftDaysPerWeek is left
-    //  alone, so the run plan places hard runs exactly as before.
-    var c = {}; Object.keys(t).forEach(function(k) { c[k] = t[k]; });
-    c.week = t.week.slice(0, 6).concat(['hyrox']);
-    return c;
-  }
-  const SUNDAY_ENGINE_KEY = 'monk_sunday_engine_v1';
-  var sundayEngine = false;
-  function loadSundayEngine() { try { sundayEngine = localStorage.getItem(SUNDAY_ENGINE_KEY) === '1'; } catch(e) { sundayEngine = false; } }
-  function setSundayEngine(on) {
-    sundayEngine = !!on;
-    try { localStorage.setItem(SUNDAY_ENGINE_KEY, sundayEngine ? '1' : '0'); } catch(e) {}
-    idbSet('sundayEngine', sundayEngine);
-    invalidateBuild();
-    renderSessionPrefs();
-    renderDaySections(); renderAllRowStates();
-    if (typeof renderRing === 'function') renderRing();
-    if (typeof updateWeekCompleteBanner === 'function') updateWeekCompleteBanner();
-    if (typeof renderWeekCalendar === 'function') renderWeekCalendar();
-  }
-  //  Arnold's six pool days have hand written markup; anything else, including
-  //  Arnold with the Engine Sunday, renders through the generated path.
-  function usesStaticPlan() { return activeSplitId === 'arnold' && !sundayEngine; }
-  function isEngineExercise(exId) { return (SPLIT_DAYS.hyrox.ex || []).indexOf(exId) !== -1; }
-  //  Hard run on this calendar Sunday, if the run plan puts one there.
-  function sundayHardRun() {
-    try {
-      if (!runPlan || !runPlan.raceDate || typeof generateRunPlan !== 'function') return null;
-      var plan = generateRunPlan(readRunInputs(), startOfToday());
-      if (!plan || plan.error || !plan.weeks) return null;
-      var sunday = addDays(startOfToday(), 6 - mondayIndex(startOfToday())), hit = null;
-      plan.weeks.forEach(function(w) { (w.cells || []).forEach(function(c) {
-        if (c.date && dayDiff(c.date, sunday) === 0 && (c.type === 'long' || c.type === 'tempo' || c.race)) hit = c.race ? 'race' : c.type;
-      }); });
-      return hit;
-    } catch(e) { return null; }
-  }
+  function activeSplit() { return SPLIT_TEMPLATES[activeSplitId] || SPLIT_TEMPLATES.arnold; }
+  //  Arnold's six pool days have hand written markup; every other split renders
+  //  through the generated path.
+  function usesStaticPlan() { return activeSplitId === 'arnold'; }
   //  The single phrasing for the active split. The hero eyebrow, the Train tab
   //  control and the Run tab readout all render this, so none of them can drift
   //  into describing a split the app is not actually running.
@@ -4589,19 +4598,6 @@ body.training-mode select.run-input { color: #F1EFE1; }
     if (_buildCache[ck]) return _buildCache[ck];
     var base = programmedDayExercises(dayId);
     var reasons = {}, supersets = {}, list = [];
-    if (SPLIT_DAYS[dayId] && SPLIT_DAYS[dayId].engine) {
-      //  A fixed station list: session size, budget and rotation do not apply,
-      //  because the point is repeating the same stations until they are smooth.
-      var hard = sundayHardRun();
-      base.forEach(function(e, i) {
-        reasons[e.id] = 'Engine station ' + (i + 1) + ' of ' + base.length + '. Sunday template, ' + (PATTERN_VERB[e.pattern] || 'work') + ' on ' + EQUIP_LABEL[e.equip[0]].toLowerCase() + ', technique first at an easy pace.'
-          + (i === 0 && hard ? ' Your run plan has a ' + hard + ' run today, so keep every station easy and skip anything that feels hard.' : '');
-      });
-      var em = base.reduce(function(t, e) { return t + exMinutes(e); }, 0) + 10;
-      var res = { list: base.concat(customExercisesFor(dayId)), reasons: reasons, supersets: {}, minutes: Math.round(em) };
-      _buildCache[ck] = res;
-      return res;
-    }
     var mainEx = base.filter(function(e) { return e.tag === 'primary'; })[0]
       || base.filter(function(e) { return e.kind === 'compound'; })[0] || base[0];
     if (!mainEx) return { list: customExercisesFor(dayId), reasons: {}, supersets: {}, minutes: 0 };
@@ -4735,9 +4731,6 @@ body.training-mode select.run-input { color: #F1EFE1; }
     var bg = document.getElementById('sessionBudgetGroup');
     if (bg) bg.innerHTML = '<button class="liftdays-btn' + (sessionBudget == null ? ' on' : '') + '" onclick="setSessionBudget(null)">Off</button>'
       + SESSION_BUDGETS.map(function(n) { return '<button class="liftdays-btn' + (sessionBudget === n ? ' on' : '') + '" onclick="setSessionBudget(' + n + ')">' + n + '</button>'; }).join('');
-    var sg = document.getElementById('sundayEngineGroup');
-    if (sg) sg.innerHTML = '<button class="liftdays-btn' + (!sundayEngine ? ' on' : '') + '" onclick="setSundayEngine(false)">Program</button>'
-      + '<button class="liftdays-btn' + (sundayEngine ? ' on' : '') + '" onclick="setSundayEngine(true)">Engine</button>';
     var eq = document.getElementById('equipOwnedList');
     if (eq) eq.innerHTML = EQUIP_ALL.map(function(q) {
       var on = equipOwned.indexOf(q) !== -1;
@@ -5999,7 +5992,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
         + '<div class="plan-day-header"><div>'
         + '<div class="plan-day-title" style="color:var(--accent)">' + d.title.toUpperCase() + '</div>'
         + '<div class="plan-day-focus">' + (d.focus || '') + '</div></div>'
-        + '<div class="plan-badges"><span class="badge" style="background:rgba(241,239,225,0.12);color:var(--accent);border:1px solid rgba(241,239,225,0.28)">'
+        + '<div class="plan-badges"><span class="badge" style="background:rgba(var(--ink-rgb),0.12);color:var(--accent);border:1px solid rgba(var(--ink-rgb),0.28)">'
         + d.tag + '</span><span class="badge" data-est="' + id + '" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">\u23F1 ' + sessionMinutesText(id) + '</span></div></div>'
         + '<div class="lift-table-header"><span>Exercise</span><span>Rest</span><span>Time</span><span></span></div>'
         + '<div class="lift-rows">' + rows + addExerciseHTML(id) + '</div></div>';
@@ -6968,11 +6961,11 @@ body.training-mode select.run-input { color: #F1EFE1; }
     if (mRing) mRing.style.strokeDashoffset = offset;
     if (secs <= 10 && secs > 0) {
       if (mTime) mTime.className = 'rest-modal-time warning';
-      if (mRing) mRing.style.stroke = '#F1EFE1';
+      if (mRing) mRing.style.stroke = 'var(--accent)';
     }
     if (secs <= 0) {
       if (mTime) { mTime.className = 'rest-modal-time done'; setTimerText(mTime, 'GO!'); }
-      if (mRing) { mRing.style.stroke = '#F1EFE1'; mRing.style.strokeDashoffset = CIRC; }
+      if (mRing) { mRing.style.stroke = 'var(--accent)'; mRing.style.strokeDashoffset = CIRC; }
       if (mStatus) { mStatus.textContent = 'Next set ready'; mStatus.className = 'rest-modal-status ready'; }
       if (mSkip) { mSkip.textContent = 'Start Next Set'; mSkip.className = 'rest-modal-skip ready-state'; }
     }
@@ -7064,7 +7057,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
     setTimerToggleIcon(toggleBtn, true);
     if (mLift) mLift.textContent = liftName || '';
     if (mTime) { mTime.className = 'rest-modal-time'; setTimerText(mTime, formatTime(seconds)); }
-    if (mRing) { mRing.style.strokeDashoffset = '0'; mRing.style.stroke = '#F1EFE1'; }
+    if (mRing) { mRing.style.strokeDashoffset = '0'; mRing.style.stroke = 'var(--accent)'; }
     if (mStatus) { mStatus.textContent = ''; mStatus.className = 'rest-modal-status'; }
     if (mSkip) { mSkip.textContent = 'Skip Rest'; mSkip.className = 'rest-modal-skip'; }
     var bar = document.getElementById('timerBar');
@@ -7380,12 +7373,12 @@ body.training-mode select.run-input { color: #F1EFE1; }
   //  change, updateLiftDaysUI() inside setSplit(), reportStoragePersistence()
   //  on its own async resolution) — nothing here needs a refresh-on-open step
   //  that the older bar-in-flow version didn't have either.
-  //     THEME. Dark is the default and has no attribute. Black overrides the
-  //     surface tokens only. Stored per device under rtw_theme, which the
+  //     THEME. Light is the default, Black the option; the pre-paint script
+  //     always sets one of them. Stored per device under rtw_theme, which the
   //     backup payload never lists, so a restore never changes it.
   const THEME_KEY = 'rtw_theme';
   function currentTheme() {
-    return document.documentElement.getAttribute('data-theme') === 'black' ? 'black' : 'dark';
+    return document.documentElement.getAttribute('data-theme') === 'black' ? 'black' : 'light';
   }
   function markThemeButtons() {
     var t = currentTheme();
@@ -7394,11 +7387,10 @@ body.training-mode select.run-input { color: #F1EFE1; }
     });
   }
   function setTheme(t) {
-    t = t === 'black' ? 'black' : 'dark';
-    if (t === 'black') document.documentElement.setAttribute('data-theme', 'black');
-    else document.documentElement.removeAttribute('data-theme');
+    t = t === 'black' ? 'black' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
     var m = document.querySelector('meta[name="theme-color"]');
-    if (m) m.setAttribute('content', t === 'black' ? '#000000' : '#1A1A18');
+    if (m) m.setAttribute('content', t === 'black' ? '#000000' : '#FFFFFF');
     try { localStorage.setItem(THEME_KEY, t); } catch(e) {}
     markThemeButtons();
   }
@@ -8171,7 +8163,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
       foodLogs: foodLogs, foodTargets: foodTargets, bodyweight: bodyweight, goalMode: goalMode,
       hiddenEx: hiddenEx,
       sessionPrefs: { size: sessionSize, budget: sessionBudget, equip: equipOwned },
-      bwBand: bwBand, sundayEngine: sundayEngine
+      bwBand: bwBand
     };
     var blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
     var a = document.createElement('a');
@@ -8248,10 +8240,6 @@ body.training-mode select.run-input { color: #F1EFE1; }
           bwBand = { lo: +data.bwBand.lo, hi: +data.bwBand.hi };
           try { localStorage.setItem(BW_BAND_KEY, JSON.stringify(bwBand)); } catch(e) {}
         }
-        if (typeof data.sundayEngine === 'boolean') {
-          sundayEngine = data.sundayEngine;
-          try { localStorage.setItem(SUNDAY_ENGINE_KEY, sundayEngine ? '1' : '0'); } catch(e) {}
-        }
         if (data.sessionPrefs && typeof data.sessionPrefs === 'object') {
           var sp = data.sessionPrefs;
           sessionSize = SESSION_SIZES.indexOf(sp.size) !== -1 ? sp.size : null;
@@ -8302,7 +8290,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
 
   function progRow(label, value, noteHTML, accent) {
     return '<div class="prog-row"><div class="prog-week">' + label + '</div>'
-      + '<div class="prog-weight"' + (accent ? ' style="color:#F1EFE1"' : '') + '>' + value + '</div>'
+      + '<div class="prog-weight"' + (accent ? ' style="color:var(--accent)"' : '') + '>' + value + '</div>'
       + '<div class="prog-note">' + noteHTML + '</div></div>';
   }
 
@@ -8354,7 +8342,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
     }
     return '<div class="prog-card">'
       + '<div class="prog-card-header"><div class="prog-card-lift" style="font-size:22px">' + ex.name + '</div>'
-      + '<span class="badge" style="background:rgba(241,239,225,0.12);color:#F1EFE1;border:1px solid rgba(241,239,225,0.28);margin-left:auto">' + (DAY_LABELS[ex.day] || '') + '</span></div>'
+      + '<span class="badge" style="background:rgba(var(--ink-rgb),0.12);color:var(--accent);border:1px solid rgba(var(--ink-rgb),0.28);margin-left:auto">' + (DAY_LABELS[ex.day] || '') + '</span></div>'
       + rows + '</div>';
   }
 
@@ -8477,16 +8465,16 @@ body.training-mode select.run-input { color: #F1EFE1; }
         o3 += '<div class="week-info" id="winfo' + k + '"'
           + (k === currentTrainWeek ? '' : ' style="display:none"') + '>'
           + item('Wave', '<span style="color:var(--accent);font-weight:700;">' + w.wave + '</span>')
-          + item('Phase', '<span style="background:' + (quiet ? 'var(--surface)' : 'rgba(241,239,225,0.13)')
+          + item('Phase', '<span style="background:' + (quiet ? 'var(--surface)' : 'rgba(var(--ink-rgb),0.13)')
               + ';color:' + (quiet ? 'var(--muted)' : 'var(--accent)') + ';border:1px solid '
-              + (quiet ? 'var(--border-hi)' : 'rgba(241,239,225,0.3)')
+              + (quiet ? 'var(--border-hi)' : 'rgba(var(--ink-rgb),0.3)')
               + ';padding:2px 10px;border-radius:2px;font-size:12px;font-weight:700;letter-spacing:0.1em;">'
               + w.phase + '</span>')
           + item('Focus', w.focus)
           + item('Intensity', w.intensity)
           + item('Explosive Work', w.explosive)
           + '<div class="week-info-item" style="grid-column:1/-1"><div class="week-info-label">Mindset</div>'
-          + '<div class="week-info-val" style="color:#C9C5B6;font-style:italic;">"' + w.mindset + '"</div></div>'
+          + '<div class="week-info-val" style="color:var(--text-soft);font-style:italic;">"' + w.mindset + '"</div></div>'
           + '</div>';
       }
       panels.innerHTML = o3;
@@ -8881,8 +8869,6 @@ body.training-mode select.run-input { color: #F1EFE1; }
         if (!best || w > best.w || (w === best.w && r > best.r)) best = { w: w, r: r };
       });
       if (!best) return;
-      //  Engine work stays private: it never reaches the shareable post.
-      if (isEngineExercise(exId)) return;
       var ex = EX_BY_ID[exId];
       var name = (QUICK_LOG_LIFTS[exId] || (ex && ex.name) || exId).replace(/[-‐-―]/g, ' ').replace(/\s+/g, ' ').trim();
       out.push(name + ' ' + best.w + 'x' + best.r);
@@ -10802,10 +10788,10 @@ body.training-mode select.run-input { color: #F1EFE1; }
     [0.25, 0.5, 0.75, 1].forEach(function(f) {
       var yy = y(maxY * f);
       svg += '<line x1="' + PAD_L + '" y1="' + yy.toFixed(1) + '" x2="' + (W - PAD_R)
-        + '" y2="' + yy.toFixed(1) + '" stroke="#302F2A" stroke-width="1"/>';
+        + '" y2="' + yy.toFixed(1) + '" style="stroke:var(--border)" stroke-width="1"/>';
     });
     svg += '<line x1="' + PAD_L + '" y1="' + baseY + '" x2="' + (W - PAD_R)
-      + '" y2="' + baseY + '" stroke="#3A3935" stroke-width="1"/>';
+      + '" y2="' + baseY + '" style="stroke:var(--border-hi)" stroke-width="1"/>';
 
     rows.forEach(function(r, i) {
       var cx = PAD_L + i * colW + colW / 2;
@@ -10816,10 +10802,10 @@ body.training-mode select.run-input { color: #F1EFE1; }
       var tip = r.label + ' — planned ' + chartNum(r.planned) + ' mi'
         + (r.actual > 0 ? ', logged ' + chartNum(r.actual) + ' mi' : ', nothing logged');
 
-      svg += '<path d="' + barPath(px, py, bw, ph, R) + '" fill="none" stroke="#78736A" '
+      svg += '<path d="' + barPath(px, py, bw, ph, R) + '" fill="none" style="stroke:var(--field)" '
         + 'stroke-width="1.25"><title>' + tip + '</title></path>';
       if (r.actual > 0) {
-        svg += '<path d="' + barPath(ax, ay, bw, ah, R) + '" fill="#F1EFE1">'
+        svg += '<path d="' + barPath(ax, ay, bw, ah, R) + '" style="fill:var(--accent)">'
           + '<title>' + tip + '</title></path>';
       }
 
@@ -10828,14 +10814,14 @@ body.training-mode select.run-input { color: #F1EFE1; }
       var bothShown = r.actual > 0;
       var plannedLabelY = py - 7 - (bothShown && Math.abs(py - ay) < 13 ? 10 : 0);
       svg += '<text x="' + (px + bw / 2).toFixed(1) + '" y="' + plannedLabelY.toFixed(1) + '" text-anchor="middle" '
-        + 'font-size="9" fill="#9C978A" font-family="monospace">' + chartNum(r.planned) + '</text>';
+        + 'font-size="9" style="fill:var(--muted)" font-family="monospace">' + chartNum(r.planned) + '</text>';
       if (bothShown) {
         svg += '<text x="' + (ax + bw / 2).toFixed(1) + '" y="' + (ay - 7).toFixed(1)
-          + '" text-anchor="middle" font-size="9" fill="#F1EFE1" font-family="monospace" '
+          + '" text-anchor="middle" font-size="9" style="fill:var(--accent)" font-family="monospace" '
           + 'font-weight="700">' + chartNum(r.actual) + '</text>';
       }
       svg += '<text x="' + cx.toFixed(1) + '" y="' + (H - 8)
-        + '" text-anchor="middle" font-size="9" fill="#9C978A" font-family="monospace">'
+        + '" text-anchor="middle" font-size="9" style="fill:var(--muted)" font-family="monospace">'
         + r.label + '</text>';
     });
     svg += '</svg>';
@@ -11324,7 +11310,6 @@ body.training-mode select.run-input { color: #F1EFE1; }
     loadMaxes();
     loadVariants();
     loadHiddenEx();
-    loadSundayEngine();
     loadSessionPrefs();
     loadBwBand();
     loadAims();
@@ -12340,7 +12325,7 @@ function renderRing() {
     var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     line.setAttribute('x1', x1); line.setAttribute('y1', y1);
     line.setAttribute('x2', x2); line.setAttribute('y2', y2);
-    line.setAttribute('stroke', isActive ? '#F1EFE1' : 'rgba(241,239,225,0.13)');
+    line.setAttribute('stroke', isActive ? 'var(--accent)' : 'rgba(var(--ink-rgb),0.13)');
     line.setAttribute('stroke-width', isActive ? '2.5' : '1.5');
     line.setAttribute('stroke-linecap', 'round');
     g.appendChild(line);
