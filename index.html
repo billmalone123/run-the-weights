@@ -2112,6 +2112,13 @@ body:not(.running) #tab-calendar .run-log { display: none; }
 .guided-center { text-align: center; color: var(--muted); font-size: 16px; line-height: 1.5; }
 .guided-row2 { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-top: auto; }
 .guided-ghost { min-height: 60px; background: none; border: 1px solid var(--field); border-radius: 14px; color: var(--text); font-family: var(--font-display); font-weight: 700; font-size: 17px; cursor: pointer; }
+.log-planned-btn {
+  width: 100%; min-height: 48px; margin: 6px 0 10px; border-radius: 10px; cursor: pointer;
+  background: var(--accent); color: var(--on-accent); border: none;
+  font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase;
+}
+.log-planned-btn.done { background: transparent; color: var(--muted); border: 1px solid var(--field); }
+details.warmup-log > summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; list-style: revert; }
 .lift-pick-why { font-size: 12px; color: var(--muted); margin: 4px 0 8px; line-height: 1.45; padding-left: 8px; border-left: 2px solid var(--border-hi); }
 .lift-pick-why.superset { border-left-color: var(--accent); }
 .variant-chip.variant-more-btn { border-style: dotted; color: var(--muted); }
@@ -3195,7 +3202,7 @@ body.training-mode select.run-input { color: var(--accent); }
 </section><footer>
   <div>
     <div class="footer-logo"><img src="assets/brand/rtw-wordmark.png" alt="Run the Weights"></div>
-    <div class="footer-sub">Do the work. Become undeniable. <span style="opacity:0.45">· build 8.00</span></div>
+    <div class="footer-sub">Do the work. Become undeniable. <span style="opacity:0.45">· build 8.01</span></div>
   </div>
   <div class="footer-rules">
     <div class="footer-rules-title">The Code</div>
@@ -3239,7 +3246,7 @@ body.training-mode select.run-input { color: var(--accent); }
   <div id="storageWarn" style="display:none;padding:12px 16px;margin-bottom:16px;border:1px solid var(--accent);border-radius:12px;background:rgba(var(--ink-rgb),0.10);color:var(--accent);font-size:13px;font-weight:600">
     ⚠ This device is blocking storage — logs will not survive closing the app. Tap Backup now, and check private-browsing or storage settings.
   </div>
-  <div class="section-label adv">Run the Weights — Daily Training <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.00</span></div>
+  <div class="section-label adv">Run the Weights — Daily Training <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.01</span></div>
   <h2 class="section-title train-title adv">THIS IS<br>WHERE YOU <span class="accent-word">WIN</span></h2>
 
   <!-- WEEK SELECTOR FOR TRAINING -->
@@ -3492,7 +3499,7 @@ body.training-mode select.run-input { color: var(--accent); }
 <div id="tab-running" class="tab-main" style="background:var(--bg)">
 
 <section id="runplan">
-  <div class="section-label">Run the Weights — Running Plan <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.00</span></div>
+  <div class="section-label">Run the Weights — Running Plan <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.01</span></div>
   <h2 class="section-title train-title">RACE DAY IS<br>A <span class="accent-word">DEADLINE</span></h2>
 
   <!-- Race setup collapses once there is a raceDate, so a returning user lands
@@ -3610,7 +3617,7 @@ body.training-mode select.run-input { color: var(--accent); }
 <div id="tab-calendar" class="tab-main" style="background:var(--bg)">
 
 <section id="calendarfull">
-  <div class="section-label adv">Full Calendar <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.00</span></div>
+  <div class="section-label adv">Full Calendar <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.01</span></div>
   <h2 class="section-title train-title adv">EVERY WEEK.<br>BOTH <span class="accent-word">PLANS</span>.</h2>
   <div class="today-date simple-only">Progress</div>
 
@@ -3633,7 +3640,7 @@ body.training-mode select.run-input { color: var(--accent); }
 <div id="tab-food" class="tab-main" style="background:var(--bg)">
 
 <section id="foodSection">
-  <div class="section-label">Run the Weights — Food <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.00</span></div>
+  <div class="section-label">Run the Weights — Food <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.01</span></div>
   <h2 class="section-title train-title">EVERY MEAL.<br>TO <span class="accent-word">200</span>.</h2>
 
   <div class="calfull-nav">
@@ -3696,7 +3703,7 @@ body.training-mode select.run-input { color: var(--accent); }
 <div id="tab-quicklog" class="tab-main" style="background:var(--bg)">
 
 <section id="quicklogSection">
-  <div class="section-label">Run the Weights — Quick Log <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.00</span></div>
+  <div class="section-label">Run the Weights — Quick Log <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.01</span></div>
   <h2 class="section-title train-title">ONE LIFT.<br>ONE <span class="accent-word">SET</span>.</h2>
   <p style="color:var(--muted);font-size:13px;line-height:1.6;margin:-8px 0 20px;max-width:480px;">
     For taper weeks and short-on-time days — log one set on an anchor lift without opening the full workout.
@@ -3746,7 +3753,7 @@ body.training-mode select.run-input { color: var(--accent); }
      they render changed, only how you get to them. -->
 <div id="tab-more" class="tab-main" style="display:none">
 <section id="moreSection">
-  <div class="section-label">Run the Weights — More <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.00</span></div>
+  <div class="section-label">Run the Weights — More <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.01</span></div>
   <h2 class="section-title train-title">EVERYTHING<br>ELSE.</h2>
   <div class="more-list">
     <button class="more-list-item" onclick="goTab('info'); goSec('home');">Home</button>
@@ -4984,8 +4991,9 @@ body.training-mode select.run-input { color: var(--accent); }
     var hist = getHistory(ex.id), target = effectiveTarget(ex, hist), prevRef = prevWeekEntry(hist, currentTrainWeek, ex);
     var wEl = document.getElementById(slot + 'w-' + ex.id), rEl = document.getElementById(slot + 'r-' + ex.id);
     var aimR = parseInt((document.getElementById('r-' + ex.id) || {}).value, 10);
-    var w0 = wEl && parseFloat(wEl.value) > 0 ? parseFloat(wEl.value) : (target.weight > 0 ? target.weight : '');
-    var r0 = rEl && parseInt(rEl.value, 10) > 0 ? parseInt(rEl.value, 10) : (aimR > 0 ? aimR : (parseInt((rEl || {}).placeholder, 10) || ex.repRange[0]));
+    var ps = prevSlotLogged(ex, slot);
+    var w0 = ps && ps.w ? ps.w : (wEl && parseFloat(wEl.value) > 0 ? parseFloat(wEl.value) : (target.weight > 0 ? target.weight : ''));
+    var r0 = rEl && parseInt(rEl.value, 10) > 0 ? parseInt(rEl.value, 10) : (ps ? ps.r : (aimR > 0 ? aimR : (parseInt((rEl || {}).placeholder, 10) || ex.repRange[0])));
     var noLoad = weightOptional(ex) && !(target.weight > 0);
     var unit = ex.unit || 'reps';
     document.getElementById('guidedStep').textContent = 'Exercise ' + (_g.i + 1) + ' of ' + _g.list.length;
@@ -6154,11 +6162,14 @@ body.training-mode select.run-input { color: var(--accent); }
         + withSteppers(wurId, 'reps', wurInput) + '</div>'
         + '</div>';
     }
-    return '<div class="warmup-log adv-card" id="wulog-' + ex.id + '">'
-      + '<div class="warmup-log-title">Log Warm-Up Sets <span class="warmup-log-note">Not counted as working volume</span></div>'
+    //  Collapsed by default: six boxes nobody needs to fill every day. Opens
+    //  on its own once a warm-up for this week is already logged.
+    var anyWu = storedWarmups(ex).some(Boolean);
+    return '<details class="warmup-log adv-card" id="wulog-' + ex.id + '"' + (anyWu ? ' open' : '') + '>'
+      + '<summary class="warmup-log-title">Log warm-up sets <span class="warmup-log-note">Optional, not counted as working volume</span></summary>'
       + rows
       + '<span class="autosave-flash" id="wusave-' + ex.id + '"></span>'
-      + '</div>';
+      + '</details>';
   }
 
   //     ADD EXERCISE — one quiet line at the bottom of a day's list. Collapsed
@@ -6282,6 +6293,7 @@ body.training-mode select.run-input { color: var(--accent); }
       + '<button class="setcount-btn' + (n === 2 ? ' on' : '') + '" id="sc2-' + ex.id + '" data-ex="' + ex.id + '" data-n="2" onclick="setExerciseSets(this.dataset.ex, 2)">2</button>'
       + '<button class="setcount-btn' + (n === 3 ? ' on' : '') + '" id="sc3-' + ex.id + '" data-ex="' + ex.id + '" data-n="3" onclick="setExerciseSets(this.dataset.ex, 3)">3</button>'
       + '</div>'
+      + '<button type="button" class="log-planned-btn" id="planned-' + ex.id + '" data-ex="' + ex.id + '" onclick="logAsPlanned(this.dataset.ex)">Log as planned</button>'
       + setRowHTML(ex, 1)
       + setRowHTML(ex, 2)
       + setRowHTML(ex, 3)
@@ -6687,6 +6699,14 @@ body.training-mode select.run-input { color: var(--accent); }
     var rowEl = document.getElementById('row-' + ex.id);
     if (rowEl) rowEl.classList.toggle('has-logs', !!wkEntry);
     ['s1', 's2', 's3'].forEach(function(slot) { markDoneBtn(ex.id, slot, !!(wkEntry && normSet(wkEntry, wkEntry[slot]))); });
+    followPrevSets(ex);
+    var pb = document.getElementById('planned-' + ex.id);
+    if (pb) {
+      var all = !!wkEntry;
+      for (var k = 1; k <= setsFor(ex.id) && all; k++) all = !!normSet(wkEntry, wkEntry['s' + k]);
+      pb.classList.toggle('done', all);
+      pb.textContent = all ? 'All sets logged' : (wkEntry ? 'Log the rest as planned' : 'Log as planned');
+    }
     var st = document.querySelector('[data-status="' + ex.id + '"]');
     if (!st) return;
     var out = '';
@@ -6771,11 +6791,13 @@ body.training-mode select.run-input { color: var(--accent); }
     clearTimeout(_autoSaveT[exId]);
     _autoSaveT[exId] = setTimeout(function() { autoSaveExercise(exId, fireTimer); }, 1200);
   }
-  //     ADVANCED TOOLS. Off by default: a new lifter sees the exercise, the
-  //  weight to use and the sets. On restores every tool. Device preference.
+  //     ADVANCED TOOLS. On by default. Off gives the simple card: the
+  //  exercise, the weight to use and the sets. Device preference.
   const ADVANCED_KEY = 'monk_advanced_v1';
   var advancedMode = false;
-  function loadAdvanced() { try { advancedMode = localStorage.getItem(ADVANCED_KEY) === '1'; } catch(e) { advancedMode = false; } applyAdvanced(); }
+  //  On unless switched off: this is a lifter's app first, and every tool
+  //  stays one tap away. Simple mode is the opt in.
+  function loadAdvanced() { try { advancedMode = localStorage.getItem(ADVANCED_KEY) !== '0'; } catch(e) { advancedMode = true; } applyAdvanced(); }
   function applyAdvanced() {
     if (document.body) document.body.classList.toggle('advanced', advancedMode);
     document.querySelectorAll('[data-adv-btn]').forEach(function(b) { b.classList.toggle('on', (b.dataset.advBtn === 'on') === advancedMode); });
@@ -6803,6 +6825,62 @@ body.training-mode select.run-input { color: var(--accent); }
     }
     return 'Pick a weight you can lift ' + ex.repRange[1] + ' times with good form. Next time the app suggests the weight.';
   }
+  //  What this week's entry holds for the slot before this one, so set 2
+  //  starts from what set 1 actually was, not from the plan.
+  function prevSlotLogged(ex, slot) {
+    var n = parseInt(String(slot).slice(1), 10);
+    if (!(n > 1)) return null;
+    var e = entryForWeek(getHistory(ex.id), currentTrainWeek, ex);
+    return e ? normSet(e, e['s' + (n - 1)]) : null;
+  }
+  //  After a save, every still empty later slot follows the one before it:
+  //  weight copied in, reps as the ghost placeholder. Never touches a box
+  //  the user is typing in or has edited.
+  function followPrevSets(ex) {
+    var e = entryForWeek(getHistory(ex.id), currentTrainWeek, ex);
+    if (!e) return;
+    ['s2', 's3'].forEach(function(slot) {
+      if (normSet(e, e[slot])) return;
+      var prev = prevSlotLogged(ex, slot);
+      if (!prev) return;
+      var wEl = document.getElementById(slot + 'w-' + ex.id), rEl = document.getElementById(slot + 'r-' + ex.id);
+      if (wEl && document.activeElement !== wEl && !wEl.dataset.dirty && prev.w) wEl.value = prev.w;
+      if (rEl && !rEl.value) rEl.placeholder = String(prev.r);
+    });
+  }
+  //  One tap logs every set at what the screen already shows: each set's
+  //  weight box (the aim, or what the set before it was), and the aim reps,
+  //  then last session's reps, then the bottom of the range. Sets already
+  //  logged keep their numbers. Edit any of them afterwards like normal.
+  function logAsPlanned(exId) {
+    var ex = EX_BY_ID[exId];
+    if (!ex) return;
+    var aimW = parseFloat((document.getElementById('w-' + exId) || {}).value);
+    var aimR = parseInt((document.getElementById('r-' + exId) || {}).value, 10);
+    var lastW = null, lastR = null;
+    for (var n = 1; n <= setsFor(exId); n++) {
+      var wEl = document.getElementById('s' + n + 'w-' + exId), rEl = document.getElementById('s' + n + 'r-' + exId);
+      if (!wEl || !rEl) continue;
+      var w = parseFloat(wEl.value), r = parseInt(rEl.value, 10);
+      if (!(w > 0)) w = lastW || (aimW > 0 ? aimW : NaN);
+      if (!(r > 0)) r = lastR || (aimR > 0 ? aimR : (parseInt(rEl.placeholder, 10) || ex.repRange[0]));
+      if (w > 0) wEl.value = w;
+      rEl.value = r;
+      lastW = w > 0 ? w : lastW; lastR = r;
+    }
+    clearTimeout(_autoSaveT[exId]);
+    autoSaveExercise(exId, false);
+    var e = entryForWeek(getHistory(exId), currentTrainWeek, ex);
+    var btn = document.getElementById('planned-' + exId);
+    if (!e) {
+      //  Nothing saved means no weight anywhere: no aim, no max, no history.
+      var first = document.getElementById('s1w-' + exId);
+      if (first) first.focus();
+      if (btn) btn.textContent = 'Enter a weight first';
+      return;
+    }
+    renderLiftRowState(ex);
+  }
   function markDoneBtn(exId, slot, done) {
     var b = document.getElementById('done-' + slot + '-' + exId);
     if (!b) return;
@@ -6822,10 +6900,12 @@ body.training-mode select.run-input { color: var(--accent); }
       var aw = parseFloat((document.getElementById('w-' + exId) || {}).value);
       if (aw > 0) wEl.value = aw;
     }
+    var ps = prevSlotLogged(ex, slot);
+    if (ps && ps.w && !wEl.dataset.dirty) wEl.value = ps.w;
     if (!(parseInt(rEl.value, 10) > 0)) {
       var ar = parseInt((document.getElementById('r-' + exId) || {}).value, 10);
       var ph = parseInt(rEl.placeholder, 10);
-      rEl.value = ar > 0 ? ar : (ph > 0 ? ph : ex.repRange[0]);
+      rEl.value = ps ? ps.r : (ar > 0 ? ar : (ph > 0 ? ph : ex.repRange[0]));
     }
     onSetCommit(rEl);
     //  Only a set that actually landed in storage counts. With no weight
