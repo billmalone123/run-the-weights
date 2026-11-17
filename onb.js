@@ -134,7 +134,7 @@ vm.createContext(ctx);
 // ── load the app's main script block ──────────────────────────────────────
 var blocks = [];
 var re = /<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g, m;
-while ((m = re.exec(html))) blocks.push(m[1]);
+while ((m = re.exec(html))) { if (m[1].indexOf('PRE-PAINT THEME') === -1) blocks.push(m[1]); }
 if (blocks.length !== 2) { console.log('expected 2 script blocks, found ' + blocks.length); process.exit(1); }
 try { vm.runInContext(blocks[0], ctx, { filename: 'block1' }); }
 catch (e) { console.log('block 1 threw while loading: ' + e.stack); process.exit(1); }

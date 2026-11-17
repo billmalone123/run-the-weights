@@ -121,7 +121,7 @@ vm.createContext(ctx);
 
 var blocks = [];
 var re = /<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g, m;
-while ((m = re.exec(html))) blocks.push(m[1]);
+while ((m = re.exec(html))) { if (m[1].indexOf('PRE-PAINT THEME') === -1) blocks.push(m[1]); }
 try { vm.runInContext(blocks[0], ctx, { filename: 'block1' }); vm.runInContext(blocks[1], ctx, { filename: 'block2' }); }
 catch (e) { console.log('load failed: ' + e.stack); process.exit(1); }
 

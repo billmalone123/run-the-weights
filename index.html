@@ -6,6 +6,19 @@
 <title>RUN THE WEIGHTS</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1A1A18">
+<script>
+  // PRE-PAINT THEME. Applied here, before first paint, so Black never flashes Dark.
+  // A device preference: never part of a backup or a storage migration.
+  (function() {
+    var t = null;
+    try { t = localStorage.getItem('rtw_theme'); } catch(e) {}
+    if (t === 'black') {
+      document.documentElement.setAttribute('data-theme', 'black');
+      var m = document.querySelector('meta[name="theme-color"]');
+      if (m) m.setAttribute('content', '#000000');
+    }
+  })();
+</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Run the Weights">
@@ -51,6 +64,23 @@
     --font-body:    'DM Sans', sans-serif;
     --font-mono:    'Space Mono', monospace;
   }
+  /* BLACK THEME. Surface tokens only. Accent, text, muted and dim stay put
+     so every contrast ratio tuned against Dark still holds or improves. */
+  html[data-theme="black"] {
+    --bg:        #000000;
+    --surface:   #0B0B0A;
+    --surface-2: #151513;
+    --border:    #22211E;
+    --border-hi: #2E2D29;
+    --black:     #000000;
+    --dark:      #050505;
+    --card:      #0B0B0A;
+  }
+  html[data-theme="black"] body { background-image: none; }
+  /* The brand PNGs carry the Dark background baked in. On true black that
+     reads as a gray box, so swap in the remapped black versions. */
+  html[data-theme="black"] img[src$="rtw-square-a.png"] { content: url("assets/brand/rtw-square-a-black.png"); }
+  html[data-theme="black"] img[src$="rtw-wordmark.png"] { content: url("assets/brand/rtw-wordmark-black.png"); }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; background: var(--bg); }
   body {
@@ -2662,7 +2692,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
 }
 </style>
 </head>
-<body style="background:#1A1A18">
+<body style="background:var(--bg)">
 
 <!-- SPLASH — seamlessness, not a brand moment. No sessionStorage gate: it
      shows on every full load, on purpose. It stays up for at least MIN_MS
@@ -2773,7 +2803,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
        every destination lives in #navMenu, built in buildNavMenu(). -->
 </nav>
 
-<div id="tab-info" class="tab-main on" style="background:#1A1A18">
+<div id="tab-info" class="tab-main on" style="background:var(--bg)">
   <div class="nav-sub" id="info-subnav">
     <button id="sb-home" class="on" onclick="goSec('home')">Home</button>
     <button id="sb-about" onclick="goSec('about')">About</button>
@@ -2846,7 +2876,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
     </div>
   </div>
 </section></div>
-  <div id="sec-edge" class="sub-sec"><section id="edge" class="edge-section" style="background:#1F1F1C;border-top:1px solid var(--border);">
+  <div id="sec-edge" class="sub-sec"><section id="edge" class="edge-section" style="background:var(--dark);border-top:1px solid var(--border);">
   <div class="section-label">The Real ROI</div>
   <h2 class="section-title" style="margin-bottom:24px;">YOUR BODY<br>OPENS DOORS</h2>
   <p style="font-size:16px;color:var(--muted);max-width:600px;line-height:1.8;margin-bottom:72px;">
@@ -2904,7 +2934,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
   </div>
 
   <!-- Pull quote -->
-  <div style="border-left:4px solid var(--accent);border-radius:0 16px 16px 0;padding:36px 44px;background:#1F1F1C;max-width:800px;">
+  <div style="border-left:4px solid var(--accent);border-radius:0 16px 16px 0;padding:36px 44px;background:var(--dark);max-width:800px;">
     <div style="font-family:'Antonio',sans-serif;font-weight:900;font-size:clamp(28px,4vw,48px);line-height:1.15;color:#F1EFE1;margin-bottom:20px;letter-spacing:0.01em;">
       "The average man will never know what he was capable of. He was too comfortable to find out."
     </div>
@@ -2949,7 +2979,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
 </section><footer>
   <div>
     <div class="footer-logo"><img src="assets/brand/rtw-wordmark.png" alt="Run the Weights"></div>
-    <div class="footer-sub">Do the work. Become undeniable. <span style="opacity:0.45">· build 7.91</span></div>
+    <div class="footer-sub">Do the work. Become undeniable. <span style="opacity:0.45">· build 7.92</span></div>
   </div>
   <div class="footer-rules">
     <div class="footer-rules-title">The Code</div>
@@ -2963,14 +2993,14 @@ body.training-mode select.run-input { color: #F1EFE1; }
 </footer></div>
 </div>
 
-<div id="tab-training" class="tab-main" style="background:#1A1A18">
+<div id="tab-training" class="tab-main" style="background:var(--bg)">
 
 <section id="plan">
   <!-- STORAGE WARNING -->
   <div id="storageWarn" style="display:none;padding:12px 16px;margin-bottom:16px;border:1px solid var(--accent);border-radius:12px;background:rgba(241,239,225,0.10);color:var(--accent);font-size:13px;font-weight:600">
     ⚠ This device is blocking storage — logs will not survive closing the app. Tap Backup now, and check private-browsing or storage settings.
   </div>
-  <div class="section-label">Run the Weights — Daily Training <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.91</span></div>
+  <div class="section-label">Run the Weights — Daily Training <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.92</span></div>
   <h2 class="section-title train-title">THIS IS<br>WHERE YOU <span class="accent-word">WIN</span></h2>
 
   <!-- WEEK SELECTOR FOR TRAINING -->
@@ -3029,7 +3059,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
       </div>
       <div class="plan-badges">
         <span class="badge" style="background:rgba(241,239,225,0.12);color:#F1EFE1;border:1px solid rgba(241,239,225,0.28)">Day 1</span>
-        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid #302F2A">⏱ ~1:20</span>
+        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:20</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('chest'); return false;">Clear Logs</button>
     </div>
@@ -3056,7 +3086,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
       </div>
       <div class="plan-badges">
         <span class="badge" style="background:rgba(241,239,225,0.12);color:#F1EFE1;border:1px solid rgba(241,239,225,0.28)">Day 2</span>
-        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid #302F2A">⏱ ~1:15</span>
+        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:15</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('arms'); return false;">Clear Logs</button>
     </div>
@@ -3083,7 +3113,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
       </div>
       <div class="plan-badges">
         <span class="badge" style="background:rgba(241,239,225,0.12);color:#F1EFE1;border:1px solid rgba(241,239,225,0.28)">Day 3</span>
-        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid #302F2A">⏱ ~1:25</span>
+        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:25</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('legs'); return false;">Clear Logs</button>
     </div>
@@ -3110,7 +3140,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
       </div>
       <div class="plan-badges">
         <span class="badge" style="background:rgba(241,239,225,0.12);color:#F1EFE1;border:1px solid rgba(241,239,225,0.28)">1B</span>
-        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid #302F2A">⏱ ~1:20</span>
+        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:20</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('chest-b'); return false;">Clear Logs</button>
     </div>
@@ -3137,7 +3167,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
       </div>
       <div class="plan-badges">
         <span class="badge" style="background:rgba(241,239,225,0.12);color:#F1EFE1;border:1px solid rgba(241,239,225,0.28)">2B</span>
-        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid #302F2A">⏱ ~1:15</span>
+        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:15</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('arms-b'); return false;">Clear Logs</button>
     </div>
@@ -3164,7 +3194,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
       </div>
       <div class="plan-badges">
         <span class="badge" style="background:rgba(241,239,225,0.12);color:#F1EFE1;border:1px solid rgba(241,239,225,0.28)">3B</span>
-        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid #302F2A">⏱ ~1:00</span>
+        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:00</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('legs-b'); return false;">Clear Logs</button>
     </div>
@@ -3191,7 +3221,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
       </div>
       <div class="plan-badges">
         <span class="badge" style="background:rgba(241,239,225,0.12);color:#C9C5B6;border:1px solid rgba(241,239,225,0.28)">Day 4</span>
-        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid #302F2A">⏱ ~45 min</span>
+        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~45 min</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('rest'); return false;">Clear Logs</button>
     </div>
@@ -3219,10 +3249,10 @@ body.training-mode select.run-input { color: #F1EFE1; }
 
 </div>
 
-<div id="tab-running" class="tab-main" style="background:#1A1A18">
+<div id="tab-running" class="tab-main" style="background:var(--bg)">
 
 <section id="runplan">
-  <div class="section-label">Run the Weights — Running Plan <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.91</span></div>
+  <div class="section-label">Run the Weights — Running Plan <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.92</span></div>
   <h2 class="section-title train-title">RACE DAY IS<br>A <span class="accent-word">DEADLINE</span></h2>
 
   <!-- Race setup collapses once there is a raceDate, so a returning user lands
@@ -3337,10 +3367,10 @@ body.training-mode select.run-input { color: #F1EFE1; }
 
 </div>
 
-<div id="tab-calendar" class="tab-main" style="background:#1A1A18">
+<div id="tab-calendar" class="tab-main" style="background:var(--bg)">
 
 <section id="calendarfull">
-  <div class="section-label">Full Calendar <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.91</span></div>
+  <div class="section-label">Full Calendar <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.92</span></div>
   <h2 class="section-title train-title">EVERY WEEK.<br>BOTH <span class="accent-word">PLANS</span>.</h2>
 
   <div class="calfull-nav">
@@ -3359,10 +3389,10 @@ body.training-mode select.run-input { color: #F1EFE1; }
 
 </div>
 
-<div id="tab-food" class="tab-main" style="background:#1A1A18">
+<div id="tab-food" class="tab-main" style="background:var(--bg)">
 
 <section id="foodSection">
-  <div class="section-label">Run the Weights — Food <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.91</span></div>
+  <div class="section-label">Run the Weights — Food <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.92</span></div>
   <h2 class="section-title train-title">EVERY MEAL.<br>TO <span class="accent-word">200</span>.</h2>
 
   <div class="calfull-nav">
@@ -3422,10 +3452,10 @@ body.training-mode select.run-input { color: #F1EFE1; }
 
 </div>
 
-<div id="tab-quicklog" class="tab-main" style="background:#1A1A18">
+<div id="tab-quicklog" class="tab-main" style="background:var(--bg)">
 
 <section id="quicklogSection">
-  <div class="section-label">Run the Weights — Quick Log <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.91</span></div>
+  <div class="section-label">Run the Weights — Quick Log <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.92</span></div>
   <h2 class="section-title train-title">ONE LIFT.<br>ONE <span class="accent-word">SET</span>.</h2>
   <p style="color:var(--muted);font-size:13px;line-height:1.6;margin:-8px 0 20px;max-width:480px;">
     For taper weeks and short-on-time days — log one set on an anchor lift without opening the full workout.
@@ -3475,7 +3505,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
      they render changed, only how you get to them. -->
 <div id="tab-more" class="tab-main" style="display:none">
 <section id="moreSection">
-  <div class="section-label">Run the Weights — More <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.91</span></div>
+  <div class="section-label">Run the Weights — More <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.92</span></div>
   <h2 class="section-title train-title">EVERYTHING<br>ELSE.</h2>
   <div class="more-list">
     <button class="more-list-item" onclick="goTab('info'); goSec('home');">Home</button>
@@ -3646,6 +3676,13 @@ body.training-mode select.run-input { color: #F1EFE1; }
         <button class="liftdays-btn" data-split="full-body" onclick="setSplit('full-body')">Full Body</button>
       </div>
       <span class="liftdays-desc" id="liftDaysLabel"></span>
+    </div>
+    <div class="liftdays-wrap" style="margin-bottom:24px;">
+      <span class="liftdays-label">Theme</span>
+      <div class="liftdays-group">
+        <button class="liftdays-btn" data-theme-btn="dark" onclick="setTheme('dark')">Dark</button>
+        <button class="liftdays-btn" data-theme-btn="black" onclick="setTheme('black')">Black</button>
+      </div>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
       <button class="settings-open-btn" onclick="exportData()">⇩ Backup</button>
@@ -5486,7 +5523,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
   }
 
   function updateLiftDaysUI() {
-    document.querySelectorAll('.liftdays-btn').forEach(function(b) {
+    document.querySelectorAll('.liftdays-btn[data-split]').forEach(function(b) {
       b.classList.toggle('on', b.dataset.split === activeSplitId);
     });
     var lbl = document.getElementById('liftDaysLabel');
@@ -6624,8 +6661,31 @@ body.training-mode select.run-input { color: #F1EFE1; }
   //  change, updateLiftDaysUI() inside setSplit(), reportStoragePersistence()
   //  on its own async resolution) — nothing here needs a refresh-on-open step
   //  that the older bar-in-flow version didn't have either.
+  //     THEME. Dark is the default and has no attribute. Black overrides the
+  //     surface tokens only. Stored per device under rtw_theme, which the
+  //     backup payload never lists, so a restore never changes it.
+  const THEME_KEY = 'rtw_theme';
+  function currentTheme() {
+    return document.documentElement.getAttribute('data-theme') === 'black' ? 'black' : 'dark';
+  }
+  function markThemeButtons() {
+    var t = currentTheme();
+    document.querySelectorAll('.liftdays-btn[data-theme-btn]').forEach(function(b) {
+      b.classList.toggle('on', b.dataset.themeBtn === t);
+    });
+  }
+  function setTheme(t) {
+    t = t === 'black' ? 'black' : 'dark';
+    if (t === 'black') document.documentElement.setAttribute('data-theme', 'black');
+    else document.documentElement.removeAttribute('data-theme');
+    var m = document.querySelector('meta[name="theme-color"]');
+    if (m) m.setAttribute('content', t === 'black' ? '#000000' : '#1A1A18');
+    try { localStorage.setItem(THEME_KEY, t); } catch(e) {}
+    markThemeButtons();
+  }
   function openSettingsModal() {
     fillFoodSettings();
+    markThemeButtons();
     var m = document.getElementById('settingsModal');
     if (m) m.style.display = 'flex';
   }
