@@ -2178,8 +2178,8 @@ body:not(.owner-tools) .owner-only { display: none !important; }
 .lift-row:not(.show-wu) .wu-panel { display: none !important; }
 .wu-panel.warmup-lines:empty::before { content: 'Add a weight to see a warm up ramp.'; }
 /* Lean card: no nested box around the sets, tighter padding. */
-#tab-training .lift-row { padding: 12px 12px 10px; gap: 2px; }
-body.training-mode #tab-training .lift-row { margin-bottom: 6px; }
+#tab-training .lift-row { padding: 10px 12px 10px; gap: 2px; }
+body.training-mode #tab-training .lift-row { margin-bottom: 4px; }
 #tab-training .set-row { padding: 2px; }
 .card-foot .howto-link { justify-content: center; min-height: 44px; border-radius: 10px; padding: 0 6px; }
 .lift-cue { line-height: 1.35; }
@@ -2196,8 +2196,10 @@ body.training-mode #tab-training .lift-row { margin-bottom: 6px; }
 .lift-tip-title { font-weight: 700; font-size: var(--fs-3); color: var(--text); margin-bottom: 6px; }
 .lift-tip ol { padding-left: 20px; margin: 0 0 10px; color: var(--text); font-size: var(--fs-2); line-height: 1.5; }
 .lift-tip-btn { min-height: 44px; padding: 0 18px; border: none; border-radius: 10px; background: var(--accent); color: var(--on-accent); font-family: var(--font-body); font-weight: 600; font-size: var(--fs-2); cursor: pointer; }
-.day-actions { display: flex; gap: 8px; margin: 0 0 12px; }
-.day-action { min-height: 40px; padding: 0 14px; border: 1px solid var(--field); border-radius: 999px; background: none; color: var(--text); font-family: var(--font-body); font-size: var(--fs-2); cursor: pointer; }
+.day-actions { display: flex; gap: 6px; margin: 0; }
+.plan-badges .day-actions { margin-left: auto; }
+body:not(.advanced) #tab-training .plan-day-focus { display: none; }
+.day-action { min-height: 40px; padding: 0 12px; border: 1px solid var(--field); border-radius: 999px; background: none; color: var(--text); font-family: var(--font-body); font-size: var(--fs-2); cursor: pointer; }
 .day-action.on { background: var(--surface-2); }
 .today-row2 { display: flex; justify-content: space-between; margin-top: 4px; }
 .welcome-back { font-size: var(--fs-3); color: var(--text); margin-bottom: 8px; }
@@ -2219,6 +2221,8 @@ body.training-mode #tab-training .lift-row { margin-bottom: 6px; }
   border-radius: 999px; font-size: var(--fs-2); cursor: pointer; padding: 0 8px;
 }
 .variant-hide:hover { color: var(--text); border-color: var(--muted); }
+.variant-fav { min-width: 40px; background: transparent; border: 1px solid var(--field); color: var(--muted); border-radius: 999px; font-size: var(--fs-3); cursor: pointer; padding: 0 8px; }
+.variant-fav.on { color: var(--text); border-color: var(--accent); }
 .hidden-ex-list { display: flex; flex-wrap: wrap; gap: 6px; width: 100%; }
 .hidden-ex-chip {
   background: transparent; border: 1px dashed var(--field); color: var(--muted); border-radius: 999px;
@@ -3806,7 +3810,7 @@ body.training-mode select.run-input { color: var(--accent); }
     <div class="drinks-row">
       <button type="button" class="drink-btn" onclick="addDrink('Beer, 12 oz', 150, 13)">Beer<span>12 oz, about 150</span></button>
       <button type="button" class="drink-btn" onclick="addDrink('Wine, 5 oz glass', 125, 4)">Wine<span>5 oz, about 125</span></button>
-      <button type="button" class="drink-btn" onclick="addDrink('Cocktail', 200, 15)">Cocktail<span>about 200</span></button>
+      <button type="button" class="drink-btn" onclick="addDrink('Cocktail', 210, 15)">Cocktail<span>about 210</span></button>
       <button type="button" class="drink-btn" onclick="addDrink('Shot, 1.5 oz', 100, 0)">Shot<span>1.5 oz, about 100</span></button>
     </div>
     <div class="run-hint">Calories are estimates. Tap the Drinks meal below to change any number.</div>
@@ -4144,7 +4148,7 @@ body.training-mode select.run-input { color: var(--accent); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.10</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.11</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -5092,11 +5096,13 @@ body.training-mode select.run-input { color: var(--accent); }
       var old = el.querySelector('.day-actions'); if (old) old.remove();
       var head = el.querySelector('.plan-day-header'); if (!head) return;
       var short = isShortDay(dayId, currentTrainWeek);
-      var div = document.createElement('div');
+      var div = document.createElement('span');
       div.className = 'day-actions';
       div.innerHTML = '<button type="button" class="day-action' + (short ? ' on' : '') + '" onclick="toggleShortDay(\'' + dayId + '\')">' + (short ? 'Show full session' : 'Short on time') + '</button>'
         + '<button type="button" class="day-action" onclick="openGoingOut(\'' + dayId + '\')">Going out?</button>';
-      head.parentNode.insertBefore(div, head.nextSibling);
+      //  Into the badge row when there is one, so it costs no extra height.
+      var badges = head.querySelector('.plan-badges');
+      if (badges) badges.appendChild(div); else head.parentNode.insertBefore(div, head.nextSibling);
     });
   }
   function stepTrainWeek(d) {
@@ -5845,7 +5851,30 @@ body.training-mode select.run-input { color: var(--accent); }
       if (seen[k] || o.id === ex.id || o.day === 'anchor' || isHiddenName(o.name) || slotKey(o) !== key) return;
       seen[k] = 1; more.push(o.name);
     });
+    //  Favorites first: any favorite from the More list moves up into the
+    //  main list, and favorites lead it.
+    var favs = more.filter(isFavName);
+    curated = favs.concat(curated);
+    more = more.filter(function(n) { return !isFavName(n); });
+    curated.sort(function(a, b) { return (isFavName(b) ? 1 : 0) - (isFavName(a) ? 1 : 0); });
     return { curated: curated, more: more };
+  }
+  //     FAVORITES. Sort to the top of every swap list they appear in.
+  const FAV_EX_KEY = 'monk_fav_ex_v1';
+  var favEx = [];
+  function loadFavEx() {
+    try { var v = JSON.parse(localStorage.getItem(FAV_EX_KEY)); favEx = Array.isArray(v) ? v.filter(function(x) { return typeof x === 'string'; }) : []; } catch(e) { favEx = []; }
+  }
+  function persistFavEx() { try { localStorage.setItem(FAV_EX_KEY, JSON.stringify(favEx)); } catch(e) {} idbSet('favEx', favEx); }
+  function isFavName(n) { return favEx.indexOf(n) !== -1; }
+  function toggleFavOption(evt, exId) {
+    evt.stopPropagation();
+    var name = evt.currentTarget.dataset.name;
+    if (!name) return;
+    if (isFavName(name)) favEx = favEx.filter(function(n) { return n !== name; }); else favEx.push(name);
+    persistFavEx();
+    rerenderVariantChips(exId);
+    var row = document.getElementById('row-' + exId); if (row) row.classList.add('show-swap');
   }
 
   const VARIANTS_KEY = 'monk_variants_v1';
@@ -6058,8 +6087,10 @@ body.training-mode select.run-input { color: var(--accent); }
         + '<span class="variant-name">' + name + '</span>'
         + '<span class="variant-eq eq-' + eq + '">' + (EQUIP_LABEL[eq] || 'Other') + '</span></button>';
       if (name === active || name === ex.name) return b;
+      var fav = isFavName(name), q = name.replace(/"/g, '&quot;');
       return '<span class="variant-opt' + (extra || '') + '">' + b
-        + '<button class="variant-hide" aria-label="Hide ' + name.replace(/"/g, '&quot;') + '" data-name="' + name.replace(/"/g, '&quot;') + '" onclick="hideSwapOption(event,\'' + ex.id + '\')">&times;</button></span>';
+        + '<button class="variant-fav' + (fav ? ' on' : '') + '" aria-pressed="' + fav + '" aria-label="' + (fav ? 'Remove favorite ' : 'Favorite ') + q + '" data-name="' + q + '" onclick="toggleFavOption(event,\'' + ex.id + '\')">' + (fav ? '&#9733;' : '&#9734;') + '</button>'
+        + '<button class="variant-hide" aria-label="Hide ' + q + '" data-name="' + q + '" onclick="hideSwapOption(event,\'' + ex.id + '\')">&times;</button></span>';
     }
     var chips = shown.map(function(n) { return chip(n); }).join('');
     if (opts.more.length) {
@@ -6142,6 +6173,7 @@ body.training-mode select.run-input { color: var(--accent); }
     hiddenEx.push(name);
     persistHiddenEx();
     rerenderVariantChips(exId);
+    var hrow = document.getElementById('row-' + exId); if (hrow) hrow.classList.add('show-swap');
     renderHiddenExList();
   }
   function unhideExercise(name) {
@@ -9164,7 +9196,7 @@ body.training-mode select.run-input { color: var(--accent); }
       foodLogs: foodLogs, foodTargets: foodTargets, bodyweight: bodyweight, goalMode: goalMode,
       hiddenEx: hiddenEx,
       sessionPrefs: { size: sessionSize, budget: sessionBudget, equip: equipOwned },
-      bwBand: bwBand, weekMoves: weekMoves, shortDays: shortDays, profile: userProfile
+      bwBand: bwBand, weekMoves: weekMoves, shortDays: shortDays, profile: userProfile, favEx: favEx
     };
     var blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
     var a = document.createElement('a');
@@ -9242,6 +9274,7 @@ body.training-mode select.run-input { color: var(--accent); }
           try { localStorage.setItem(BW_BAND_KEY, JSON.stringify(bwBand)); } catch(e) {}
         }
         if (data.profile && typeof data.profile === 'object') { userProfile = data.profile; persistUserProfile(); }
+        if (Array.isArray(data.favEx)) { favEx = data.favEx.filter(function(x) { return typeof x === 'string'; }); persistFavEx(); }
         if (data.weekMoves && typeof data.weekMoves === 'object') { weekMoves = data.weekMoves; }
         if (data.shortDays && typeof data.shortDays === 'object') { shortDays = data.shortDays; }
         if (data.weekMoves || data.shortDays) { persistLifeHappens(); invalidateBuild(); }
@@ -12384,6 +12417,7 @@ body.training-mode select.run-input { color: var(--accent); }
     loadMaxes();
     loadVariants();
     loadHiddenEx();
+    loadFavEx();
     loadUserProfile();
     loadLifeHappens();
     loadAdvanced();
