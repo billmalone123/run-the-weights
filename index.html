@@ -1968,6 +1968,11 @@ body.training-mode footer { display: none; }
 .wg-dow { font-family: var(--font-display); font-weight: 700; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
 .wg-title { font-size: 9.5px; line-height: 1.25; margin-top: 3px; color: var(--text); overflow-wrap: normal; white-space: nowrap; overflow: hidden; text-overflow: clip; }
 .wg-time { font-size: 10px; margin-top: 3px; font-family: var(--font-mono); }
+.maxes-est-1rm.warn { color: #D9A05B; }
+.maxes-set-wrap { flex-basis: 100%; }
+.settings-modal-card.maxes-mode-reps .maxes-reps-row { flex-wrap: wrap; }
+.bw-chart { width: 100%; height: auto; display: block; margin: 10px 0 4px; }
+.bw-band-note { font-size: 13px; color: var(--text); margin-top: 6px; line-height: 1.5; }
 .lift-pick-why { font-size: 12px; color: var(--muted); margin: 4px 0 8px; line-height: 1.45; padding-left: 8px; border-left: 2px solid var(--border-hi); }
 .lift-pick-why.superset { border-left-color: var(--accent); }
 .variant-chip.variant-more-btn { border-style: dotted; color: var(--muted); }
@@ -3032,7 +3037,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
 </section><footer>
   <div>
     <div class="footer-logo"><img src="assets/brand/rtw-wordmark.png" alt="Run the Weights"></div>
-    <div class="footer-sub">Do the work. Become undeniable. <span style="opacity:0.45">· build 7.95</span></div>
+    <div class="footer-sub">Do the work. Become undeniable. <span style="opacity:0.45">· build 7.96</span></div>
   </div>
   <div class="footer-rules">
     <div class="footer-rules-title">The Code</div>
@@ -3053,7 +3058,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
   <div id="storageWarn" style="display:none;padding:12px 16px;margin-bottom:16px;border:1px solid var(--accent);border-radius:12px;background:rgba(241,239,225,0.10);color:var(--accent);font-size:13px;font-weight:600">
     ⚠ This device is blocking storage — logs will not survive closing the app. Tap Backup now, and check private-browsing or storage settings.
   </div>
-  <div class="section-label">Run the Weights — Daily Training <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.95</span></div>
+  <div class="section-label">Run the Weights — Daily Training <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.96</span></div>
   <h2 class="section-title train-title">THIS IS<br>WHERE YOU <span class="accent-word">WIN</span></h2>
 
   <!-- WEEK SELECTOR FOR TRAINING -->
@@ -3306,7 +3311,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
 <div id="tab-running" class="tab-main" style="background:var(--bg)">
 
 <section id="runplan">
-  <div class="section-label">Run the Weights — Running Plan <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.95</span></div>
+  <div class="section-label">Run the Weights — Running Plan <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.96</span></div>
   <h2 class="section-title train-title">RACE DAY IS<br>A <span class="accent-word">DEADLINE</span></h2>
 
   <!-- Race setup collapses once there is a raceDate, so a returning user lands
@@ -3424,7 +3429,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
 <div id="tab-calendar" class="tab-main" style="background:var(--bg)">
 
 <section id="calendarfull">
-  <div class="section-label">Full Calendar <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.95</span></div>
+  <div class="section-label">Full Calendar <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.96</span></div>
   <h2 class="section-title train-title">EVERY WEEK.<br>BOTH <span class="accent-word">PLANS</span>.</h2>
 
   <div class="calfull-nav">
@@ -3446,7 +3451,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
 <div id="tab-food" class="tab-main" style="background:var(--bg)">
 
 <section id="foodSection">
-  <div class="section-label">Run the Weights — Food <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.95</span></div>
+  <div class="section-label">Run the Weights — Food <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.96</span></div>
   <h2 class="section-title train-title">EVERY MEAL.<br>TO <span class="accent-word">200</span>.</h2>
 
   <div class="calfull-nav">
@@ -3509,7 +3514,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
 <div id="tab-quicklog" class="tab-main" style="background:var(--bg)">
 
 <section id="quicklogSection">
-  <div class="section-label">Run the Weights — Quick Log <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.95</span></div>
+  <div class="section-label">Run the Weights — Quick Log <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.96</span></div>
   <h2 class="section-title train-title">ONE LIFT.<br>ONE <span class="accent-word">SET</span>.</h2>
   <p style="color:var(--muted);font-size:13px;line-height:1.6;margin:-8px 0 20px;max-width:480px;">
     For taper weeks and short-on-time days — log one set on an anchor lift without opening the full workout.
@@ -3559,7 +3564,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
      they render changed, only how you get to them. -->
 <div id="tab-more" class="tab-main" style="display:none">
 <section id="moreSection">
-  <div class="section-label">Run the Weights — More <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.95</span></div>
+  <div class="section-label">Run the Weights — More <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.96</span></div>
   <h2 class="section-title train-title">EVERYTHING<br>ELSE.</h2>
   <div class="more-list">
     <button class="more-list-item" onclick="goTab('info'); goSec('home');">Home</button>
@@ -3593,6 +3598,10 @@ body.training-mode select.run-input { color: #F1EFE1; }
       <div class="settings-input-label">Back Squat <span>lbs</span></div>
       <input class="settings-input-field maxes-1rm-input" id="max-squat" type="number" oninput="onMaxInput()" onchange="onMaxCommit()" onblur="onMaxCommit()" placeholder="315" inputmode="decimal">
       <div class="maxes-reps-row">
+        <div class="maxes-reps-input-wrap maxes-set-wrap">
+          <div class="maxes-reps-label">Recent set</div>
+          <input class="settings-input-field" id="reps-set-squat" type="text" placeholder="275x5" autocomplete="off" autocapitalize="off" oninput="onSetTextInput('squat')" onchange="onRepsCommit()">
+        </div>
         <div class="maxes-reps-input-wrap">
           <div class="maxes-reps-label">Weight (lbs)</div>
           <input class="settings-input-field" id="reps-weight-squat" type="number" placeholder="275" inputmode="decimal" oninput="onRepsInput()" onchange="onRepsCommit()" onblur="onRepsCommit()">
@@ -3608,6 +3617,10 @@ body.training-mode select.run-input { color: #F1EFE1; }
       <div class="settings-input-label">Bench Press <span>lbs</span></div>
       <input class="settings-input-field maxes-1rm-input" id="max-bench" type="number" oninput="onMaxInput()" onchange="onMaxCommit()" onblur="onMaxCommit()" placeholder="225" inputmode="decimal">
       <div class="maxes-reps-row">
+        <div class="maxes-reps-input-wrap maxes-set-wrap">
+          <div class="maxes-reps-label">Recent set</div>
+          <input class="settings-input-field" id="reps-set-bench" type="text" placeholder="235x4" autocomplete="off" autocapitalize="off" oninput="onSetTextInput('bench')" onchange="onRepsCommit()">
+        </div>
         <div class="maxes-reps-input-wrap">
           <div class="maxes-reps-label">Weight (lbs)</div>
           <input class="settings-input-field" id="reps-weight-bench" type="number" placeholder="185" inputmode="decimal" oninput="onRepsInput()" onchange="onRepsCommit()" onblur="onRepsCommit()">
@@ -3624,6 +3637,10 @@ body.training-mode select.run-input { color: #F1EFE1; }
       <div class="settings-input-label">Dumbbell Shoulder Press <span>lbs</span></div>
       <input class="settings-input-field maxes-1rm-input" id="max-ohp" type="number" oninput="onMaxInput()" onchange="onMaxCommit()" onblur="onMaxCommit()" placeholder="70" inputmode="decimal">
       <div class="maxes-reps-row">
+        <div class="maxes-reps-input-wrap maxes-set-wrap">
+          <div class="maxes-reps-label">Recent set</div>
+          <input class="settings-input-field" id="reps-set-ohp" type="text" placeholder="55x8" autocomplete="off" autocapitalize="off" oninput="onSetTextInput('ohp')" onchange="onRepsCommit()">
+        </div>
         <div class="maxes-reps-input-wrap">
           <div class="maxes-reps-label">Weight (lbs)</div>
           <input class="settings-input-field" id="reps-weight-ohp" type="number" placeholder="55" inputmode="decimal" oninput="onRepsInput()" onchange="onRepsCommit()" onblur="onRepsCommit()">
@@ -3747,6 +3764,11 @@ body.training-mode select.run-input { color: #F1EFE1; }
       <div class="liftdays-group goal-mode-group" id="sessionBudgetGroup"></div>
       <span class="liftdays-desc">Past the budget, accessories pair into supersets.</span>
     </div>
+    <div class="liftdays-wrap" style="margin-bottom:16px;">
+      <span class="liftdays-label">Sunday</span>
+      <div class="liftdays-group" id="sundayEngineGroup"></div>
+      <span class="liftdays-desc">Engine is a private conditioning day. It never shows in the food post.</span>
+    </div>
     <div class="liftdays-wrap" style="margin-bottom:24px;">
       <span class="liftdays-label">Equipment you have</span>
       <div class="hidden-ex-list" id="equipOwnedList"></div>
@@ -3770,6 +3792,10 @@ body.training-mode select.run-input { color: #F1EFE1; }
         <div><div class="run-field-label">Carbs g</div><input class="run-input" type="number" inputmode="numeric" id="set-food-carb" placeholder="350" onchange="saveFoodTargetsFrom('set-food-cal', 'set-food-protein', 'set-food-goal', 'set-food-carb', 'set-food-fat')"></div>
         <div><div class="run-field-label">Fat g</div><input class="run-input" type="number" inputmode="numeric" id="set-food-fat" placeholder="90" onchange="saveFoodTargetsFrom('set-food-cal', 'set-food-protein', 'set-food-goal', 'set-food-carb', 'set-food-fat')"></div>
         <div><div class="run-field-label">Goal lbs</div><input class="run-input" type="number" inputmode="decimal" id="set-food-goal" placeholder="200" onchange="saveFoodTargetsFrom('set-food-cal', 'set-food-protein', 'set-food-goal', 'set-food-carb', 'set-food-fat')"></div>
+      </div>
+      <div class="food-settings-grid" style="width:100%;">
+        <div><div class="run-field-label">Gain band low, lb/wk</div><input class="run-input" type="number" inputmode="decimal" step="0.1" id="set-bw-lo" placeholder="0.5" onchange="saveBwBand()"></div>
+        <div><div class="run-field-label">Gain band high, lb/wk</div><input class="run-input" type="number" inputmode="decimal" step="0.1" id="set-bw-hi" placeholder="1.0" onchange="saveBwBand()"></div>
       </div>
       <div style="width:100%;"><div class="run-field-label">Meal passcode</div><input class="run-input" type="password" id="set-food-pass" placeholder="Same as MEAL_PASSCODE in Vercel" autocomplete="off" onchange="saveMealPass(this.value)"></div>
       <button class="settings-open-btn" style="margin-top:4px;" onclick="resetMealPass()">Reset meal passcode</button>
@@ -4419,11 +4445,55 @@ body.training-mode select.run-input { color: #F1EFE1; }
       ex:['bb-squat','flat-bb-bench','lat-pulldown','seated-ohp','ez-bar-curl','ab-wheel'] },
     'fb-b':    { tag:'B',  title:'Full Body B', focus:'Hinge pattern, incline press, horizontal pull, delts, triceps, calves.',
       ex:['rdl','incline-bb-bench','seated-cable-row','lateral-raise-mach','tricep-pushdown','seated-calf'] },
+    //  HYROX prep, kept private: titled Engine everywhere it renders, used only
+    //  on the Sunday slot when Settings turns it on, and excluded from the
+    //  food post. Technique first and easy; it is not a hard lift day.
+    'hyrox':   { tag:'EN', title:'Engine', engine:true, focus:'Technique first at an easy pace. Ski erg, sled, wall balls, carries and lunges. Nothing here is for time yet.',
+      ex:['ski-erg-intervals','sled-push','sled-rope-pull','wall-ball','farmer-carry','db-walking-lunge'] },
     'fb-c':    { tag:'C',  title:'Full Body C', focus:'Machine squat pattern, machine press, row, Arnold press, biceps, rear delts.',
       ex:['leg-press','machine-chest-press','machine-row','arnold-press','incline-db-curl','cable-face-pull'] }
   };
 
-  function activeSplit() { return SPLIT_TEMPLATES[activeSplitId] || SPLIT_TEMPLATES.arnold; }
+  function activeSplit() {
+    var t = SPLIT_TEMPLATES[activeSplitId] || SPLIT_TEMPLATES.arnold;
+    if (!sundayEngine) return t;
+    //  The Engine day takes the Sunday slot only. liftDaysPerWeek is left
+    //  alone, so the run plan places hard runs exactly as before.
+    var c = {}; Object.keys(t).forEach(function(k) { c[k] = t[k]; });
+    c.week = t.week.slice(0, 6).concat(['hyrox']);
+    return c;
+  }
+  const SUNDAY_ENGINE_KEY = 'monk_sunday_engine_v1';
+  var sundayEngine = false;
+  function loadSundayEngine() { try { sundayEngine = localStorage.getItem(SUNDAY_ENGINE_KEY) === '1'; } catch(e) { sundayEngine = false; } }
+  function setSundayEngine(on) {
+    sundayEngine = !!on;
+    try { localStorage.setItem(SUNDAY_ENGINE_KEY, sundayEngine ? '1' : '0'); } catch(e) {}
+    idbSet('sundayEngine', sundayEngine);
+    invalidateBuild();
+    renderSessionPrefs();
+    renderDaySections(); renderAllRowStates();
+    if (typeof renderRing === 'function') renderRing();
+    if (typeof updateWeekCompleteBanner === 'function') updateWeekCompleteBanner();
+    if (typeof renderWeekCalendar === 'function') renderWeekCalendar();
+  }
+  //  Arnold's six pool days have hand written markup; anything else, including
+  //  Arnold with the Engine Sunday, renders through the generated path.
+  function usesStaticPlan() { return activeSplitId === 'arnold' && !sundayEngine; }
+  function isEngineExercise(exId) { return (SPLIT_DAYS.hyrox.ex || []).indexOf(exId) !== -1; }
+  //  Hard run on this calendar Sunday, if the run plan puts one there.
+  function sundayHardRun() {
+    try {
+      if (!runPlan || !runPlan.raceDate || typeof generateRunPlan !== 'function') return null;
+      var plan = generateRunPlan(readRunInputs(), startOfToday());
+      if (!plan || plan.error || !plan.weeks) return null;
+      var sunday = addDays(startOfToday(), 6 - mondayIndex(startOfToday())), hit = null;
+      plan.weeks.forEach(function(w) { (w.cells || []).forEach(function(c) {
+        if (c.date && dayDiff(c.date, sunday) === 0 && (c.type === 'long' || c.type === 'tempo' || c.race)) hit = c.race ? 'race' : c.type;
+      }); });
+      return hit;
+    } catch(e) { return null; }
+  }
   //  The single phrasing for the active split. The hero eyebrow, the Train tab
   //  control and the Run tab readout all render this, so none of them can drift
   //  into describing a split the app is not actually running.
@@ -4498,6 +4568,11 @@ body.training-mode select.run-input { color: #F1EFE1; }
     if (isNaN(m)) m = 8;
     return m * (setsFor(ex.id) / 2);
   }
+  var NO_LOAD_EQUIP = { bodyweight:1, skierg:1, rope:1, band:1, 'pullup-bar':1 };
+  function weightOptional(ex) {
+    return !!ex && !ex.maxKey && (ex.equip || []).length > 0
+      && ex.equip.every(function(q) { return NO_LOAD_EQUIP[q]; });
+  }
   function ownsAll(ex) { return (ex.equip || []).every(function(q) { return equipOwned.indexOf(q) !== -1; }); }
   //  Deterministic weekly rotation through a ranked list: week w takes the
   //  k items starting at w*k. Two weeks in a row can only match when the
@@ -4514,6 +4589,19 @@ body.training-mode select.run-input { color: #F1EFE1; }
     if (_buildCache[ck]) return _buildCache[ck];
     var base = programmedDayExercises(dayId);
     var reasons = {}, supersets = {}, list = [];
+    if (SPLIT_DAYS[dayId] && SPLIT_DAYS[dayId].engine) {
+      //  A fixed station list: session size, budget and rotation do not apply,
+      //  because the point is repeating the same stations until they are smooth.
+      var hard = sundayHardRun();
+      base.forEach(function(e, i) {
+        reasons[e.id] = 'Engine station ' + (i + 1) + ' of ' + base.length + '. Sunday template, ' + (PATTERN_VERB[e.pattern] || 'work') + ' on ' + EQUIP_LABEL[e.equip[0]].toLowerCase() + ', technique first at an easy pace.'
+          + (i === 0 && hard ? ' Your run plan has a ' + hard + ' run today, so keep every station easy and skip anything that feels hard.' : '');
+      });
+      var em = base.reduce(function(t, e) { return t + exMinutes(e); }, 0) + 10;
+      var res = { list: base.concat(customExercisesFor(dayId)), reasons: reasons, supersets: {}, minutes: Math.round(em) };
+      _buildCache[ck] = res;
+      return res;
+    }
     var mainEx = base.filter(function(e) { return e.tag === 'primary'; })[0]
       || base.filter(function(e) { return e.kind === 'compound'; })[0] || base[0];
     if (!mainEx) return { list: customExercisesFor(dayId), reasons: {}, supersets: {}, minutes: 0 };
@@ -4647,6 +4735,9 @@ body.training-mode select.run-input { color: #F1EFE1; }
     var bg = document.getElementById('sessionBudgetGroup');
     if (bg) bg.innerHTML = '<button class="liftdays-btn' + (sessionBudget == null ? ' on' : '') + '" onclick="setSessionBudget(null)">Off</button>'
       + SESSION_BUDGETS.map(function(n) { return '<button class="liftdays-btn' + (sessionBudget === n ? ' on' : '') + '" onclick="setSessionBudget(' + n + ')">' + n + '</button>'; }).join('');
+    var sg = document.getElementById('sundayEngineGroup');
+    if (sg) sg.innerHTML = '<button class="liftdays-btn' + (!sundayEngine ? ' on' : '') + '" onclick="setSundayEngine(false)">Program</button>'
+      + '<button class="liftdays-btn' + (sundayEngine ? ' on' : '') + '" onclick="setSundayEngine(true)">Engine</button>';
     var eq = document.getElementById('equipOwnedList');
     if (eq) eq.innerHTML = EQUIP_ALL.map(function(q) {
       var on = equipOwned.indexOf(q) !== -1;
@@ -5534,7 +5625,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
           indicator: seedIsRough ? SEED_WEIGHT_INDICATOR : null }; }
     }
     return { mode: 'baseline', weight: null, reps: ex.repRange[0],
-      msg: 'First session — establish a baseline in the ' + repRangeText(ex) + ' rep range.',
+      msg: 'First session — establish a baseline in the ' + repRangeText(ex) + ' ' + (ex.unit || 'rep') + ' range.',
       indicator: seedIsRough ? SEED_WEIGHT_INDICATOR : null };
   }
 
@@ -5876,7 +5967,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
     //  hardcoded chest/arms/legs ids). Every other preset — including PPL,
     //  despite also being 6 days — renders through the generated #altPlan
     //  path below, same as the 3/4/5-day splits always have.
-    var sixDay = (activeSplitId === 'arnold');
+    var sixDay = usesStaticPlan();
     if (orig) orig.style.display = sixDay ? '' : 'none';
     document.querySelectorAll('#plan > .plan-content').forEach(function(el) {
       el.style.display = sixDay ? '' : 'none';
@@ -6202,7 +6293,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
         rEl.placeholder = refSet ? String(refSet.r) : 'reps';
       }
       var lastEl = document.getElementById('last-' + slot + '-' + ex.id);
-      if (lastEl) lastEl.textContent = refSet ? 'Last ' + refSet.w + ' \u00d7 ' + refSet.r : 'No last session';
+      if (lastEl) lastEl.textContent = refSet ? 'Last ' + (refSet.w ? refSet.w + ' \u00d7 ' : '') + refSet.r + (refSet.w ? '' : ' ' + (ex.unit || 'reps')) : 'No last session';
       markDoneBtn(ex.id, slot, !!loggedSet);
     });
     if (fBtn) setFailureBtn(fBtn, loggedThisWeek && wkEntry.failure === true);
@@ -6474,7 +6565,11 @@ body.training-mode select.run-input { color: #F1EFE1; }
       var sr = parseInt(rEl.value, 10);
       if (isNaN(sr) || sr <= 0) return null;
       if (isNaN(sw) || sw <= 0) sw = aimW;
-      return sw ? { w: sw, r: sr } : null;
+      if (sw) return { w: sw, r: sr };
+      //  Ski erg calories, a plank hold, an ab wheel set: no load to enter,
+      //  so the reps alone are the set. Logged at weight 0, which the
+      //  weight based progression and PR math already skip.
+      return weightOptional(ex) ? { w: 0, r: sr } : null;
     }
     var set1 = readSet('s1'), set2 = readSet('s2');
     //  Slot 3 is only read when the exercise is actually set to 3. Its inputs
@@ -7201,6 +7296,30 @@ body.training-mode select.run-input { color: #F1EFE1; }
     if (r === 1) return w;
     return roundToNearestFive(w * (1 + r / 30));
   }
+  //  "235x4", "235 x 4", "235*4" or "235×4", weight first. Anything else is
+  //  not a set and returns null.
+  function parseSetText(t) {
+    var m = String(t || '').trim().match(/^(\d+(?:\.\d+)?)\s*[x×*X]\s*(\d+)$/);
+    if (!m) return null;
+    var w = parseFloat(m[1]), r = parseInt(m[2], 10);
+    return (w > 0 && r >= 1 && r <= 30) ? { w: w, r: r } : null;
+  }
+  function onSetTextInput(k) {
+    var p = parseSetText((document.getElementById('reps-set-' + k) || {}).value);
+    if (!p) return;
+    var we = document.getElementById('reps-weight-' + k), re = document.getElementById('reps-count-' + k);
+    if (we) we.value = p.w;
+    if (re) re.value = p.r;
+    onRepsInput();
+  }
+  //  A single moves with sleep, warm up and nerves, so it makes a noisy
+  //  baseline for a whole cycle of percentages. Past ten reps Epley drifts.
+  function epleyWarning(reps) {
+    var r = parseInt(reps, 10);
+    if (r === 1) return 'A single is noisy. One off day skews every target. A set of 3 to 5 gives a steadier number.';
+    if (r > 10) return 'Past 10 reps the estimate drifts high. Use a heavier set if you have one.';
+    return '';
+  }
   function epleyForLift(k) {
     function v(id) { var el = document.getElementById(id); return el ? el.value : ''; }
     return epleyEstimate(v('reps-weight-' + k), v('reps-count-' + k));
@@ -7212,7 +7331,11 @@ body.training-mode select.run-input { color: #F1EFE1; }
     MAX_KEYS.forEach(function(k) {
       var est = epleyForLift(k);
       var out = document.getElementById('est-1rm-' + k);
-      if (out) out.textContent = est == null ? '' : '≈ ' + est + ' lbs estimated 1RM';
+      var warn = est == null ? '' : epleyWarning((document.getElementById('reps-count-' + k) || {}).value);
+      if (out) {
+        out.textContent = est == null ? '' : '≈ ' + est + ' lbs estimated 1RM' + (warn ? '. ' + warn : '');
+        out.classList.toggle('warn', !!warn);
+      }
       if (est == null) return;
       var el = document.getElementById('max-' + k);
       if (el) el.value = est;
@@ -7228,7 +7351,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
       if (el) el.value = userMaxes[k] || '';
       //  Reps fields are entry scratch, not stored state — the estimate they
       //  produced is already in the max field above. Clear them each open.
-      ['reps-weight-', 'reps-count-'].forEach(function(p) {
+      ['reps-weight-', 'reps-count-', 'reps-set-'].forEach(function(p) {
         var r = document.getElementById(p + k);
         if (r) r.value = '';
       });
@@ -7361,6 +7484,8 @@ body.training-mode select.run-input { color: #F1EFE1; }
     updateMaxChips();
     renderAllRowStates();
     openMaxesModal();
+    //  Reset is the moment to rebuild from real sets, not a guessed single.
+    setMaxesMode('reps');
   }
   //  Archives the current cycle (sessions + maxes) so a new one can start clean
   //  without losing anything. The escape hatch Reset 1RMs is not: that only
@@ -8045,7 +8170,8 @@ body.training-mode select.run-input { color: #F1EFE1; }
       //  for a credential.
       foodLogs: foodLogs, foodTargets: foodTargets, bodyweight: bodyweight, goalMode: goalMode,
       hiddenEx: hiddenEx,
-      sessionPrefs: { size: sessionSize, budget: sessionBudget, equip: equipOwned }
+      sessionPrefs: { size: sessionSize, budget: sessionBudget, equip: equipOwned },
+      bwBand: bwBand, sundayEngine: sundayEngine
     };
     var blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
     var a = document.createElement('a');
@@ -8118,6 +8244,14 @@ body.training-mode select.run-input { color: #F1EFE1; }
         }
         //  Absent on every backup older than the library. Absent leaves the
         //  current hidden list alone rather than clearing it.
+        if (data.bwBand && isFinite(data.bwBand.lo) && isFinite(data.bwBand.hi) && data.bwBand.lo <= data.bwBand.hi) {
+          bwBand = { lo: +data.bwBand.lo, hi: +data.bwBand.hi };
+          try { localStorage.setItem(BW_BAND_KEY, JSON.stringify(bwBand)); } catch(e) {}
+        }
+        if (typeof data.sundayEngine === 'boolean') {
+          sundayEngine = data.sundayEngine;
+          try { localStorage.setItem(SUNDAY_ENGINE_KEY, sundayEngine ? '1' : '0'); } catch(e) {}
+        }
         if (data.sessionPrefs && typeof data.sessionPrefs === 'object') {
           var sp = data.sessionPrefs;
           sessionSize = SESSION_SIZES.indexOf(sp.size) !== -1 ? sp.size : null;
@@ -8438,7 +8572,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
     var _prevDay = null;
     try { _prevDay = localStorage.getItem(LAST_DAY_KEY); } catch(e) {}
     if (_prevDay && _prevDay !== dayId) clearActiveSession();
-    if (activeSplitId !== 'arnold') {
+    if (!usesStaticPlan()) {
       switchAltDay(dayId);
       try { localStorage.setItem(LAST_DAY_KEY, dayId); } catch(e) {}
     idbSet('lastDay', dayId);
@@ -8747,6 +8881,8 @@ body.training-mode select.run-input { color: #F1EFE1; }
         if (!best || w > best.w || (w === best.w && r > best.r)) best = { w: w, r: r };
       });
       if (!best) return;
+      //  Engine work stays private: it never reaches the shareable post.
+      if (isEngineExercise(exId)) return;
       var ex = EX_BY_ID[exId];
       var name = (QUICK_LOG_LIFTS[exId] || (ex && ex.name) || exId).replace(/[-‐-―]/g, ' ').replace(/\s+/g, ' ').trim();
       out.push(name + ' ' + best.w + 'x' + best.r);
@@ -9396,6 +9532,80 @@ body.training-mode select.run-input { color: #F1EFE1; }
     renderFoodTab();
   }
 
+  //     WEEKLY GAIN BAND. The user's own target rate, lb per week of 7 day
+  //  average change. Outside it the app says which way to nudge calories and
+  //  nothing more: no numbers beyond the user's own target.
+  const BW_BAND_KEY = 'monk_bw_band_v1';
+  var bwBand = { lo: 0.5, hi: 1.0 };
+  function loadBwBand() {
+    try {
+      var b = JSON.parse(localStorage.getItem(BW_BAND_KEY));
+      if (b && isFinite(b.lo) && isFinite(b.hi) && b.lo <= b.hi) bwBand = { lo: +b.lo, hi: +b.hi };
+    } catch(e) {}
+  }
+  function saveBwBand() {
+    var lo = parseFloat((document.getElementById('set-bw-lo') || {}).value);
+    var hi = parseFloat((document.getElementById('set-bw-hi') || {}).value);
+    if (!isFinite(lo)) lo = 0.5; if (!isFinite(hi)) hi = 1.0;
+    if (lo > hi) { var t = lo; lo = hi; hi = t; }
+    bwBand = { lo: Math.round(lo * 10) / 10, hi: Math.round(hi * 10) / 10 };
+    try { localStorage.setItem(BW_BAND_KEY, JSON.stringify(bwBand)); } catch(e) {}
+    idbSet('bwBand', bwBand);
+    fillFoodSettings();
+    if (typeof renderFoodWeight === 'function') renderFoodWeight();
+  }
+  //  Pure: the one line to show for a weekly change, or '' inside the band.
+  function bwBandPrompt(change, band) {
+    if (change == null || !band) return '';
+    var rng = band.lo + ' to ' + band.hi + ' lb';
+    var moved = (change > 0 ? 'Up ' : change < 0 ? 'Down ' : 'Flat at ') + Math.abs(change).toFixed(1) + ' lb this week';
+    if (change < band.lo) return moved + ', under your ' + rng + ' band. Eat a little more each day.';
+    if (change > band.hi) return moved + ', over your ' + rng + ' band. Pull calories back a little.';
+    return '';
+  }
+  //  Last 8 weeks: daily weigh ins as small dots, the 7 day average as the
+  //  line. One series, so no legend; the title says what it is. Each point
+  //  has a hover title, and the text above the chart states the numbers.
+  function bwChartSVG(endKey) {
+    //  Span from the first weigh in inside the last 8 weeks, never under two
+    //  weeks, so three weeks of data is not squeezed into the right edge.
+    var DAYS = 14;
+    for (var s0 = 55; s0 >= 14; s0--) { if (isFinite(parseFloat(bodyweight[shiftDateKey(endKey, -s0)]))) { DAYS = s0 + 1; break; } }
+    var pts = [], avgs = [];
+    for (var i = DAYS - 1; i >= 0; i--) {
+      var k = shiftDateKey(endKey, -i), v = parseFloat(bodyweight[k]);
+      if (isFinite(v) && v > 0) pts.push({ i: DAYS - 1 - i, k: k, v: v });
+      var a = weekAvgWeight(k);
+      if (a != null && pts.length) avgs.push({ i: DAYS - 1 - i, k: k, v: a });
+    }
+    if (pts.length < 2) return '';
+    var all = pts.map(function(p) { return p.v; }).concat(avgs.map(function(p) { return p.v; }));
+    var lo = Math.floor(Math.min.apply(null, all) - 1), hi = Math.ceil(Math.max.apply(null, all) + 1);
+    var W = 340, H = 150, PL = 30, PR = 8, PT = 10, PB = 20;
+    function x(i) { return PL + (W - PL - PR) * i / (DAYS - 1); }
+    function y(v) { return PT + (H - PT - PB) * (1 - (v - lo) / (hi - lo)); }
+    var svg = '<svg class="bw-chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Bodyweight, last ' + Math.round((DAYS - 1) / 7) + ' weeks. Dots are weigh ins, the line is the 7 day average.">';
+    [lo, (lo + hi) / 2, hi].forEach(function(g) {
+      svg += '<line x1="' + PL + '" x2="' + (W - PR) + '" y1="' + y(g).toFixed(1) + '" y2="' + y(g).toFixed(1) + '" style="stroke:var(--border)" stroke-width="1"/>'
+        + '<text x="' + (PL - 4) + '" y="' + (y(g) + 3).toFixed(1) + '" text-anchor="end" font-size="9" style="fill:var(--muted)">' + Math.round(g) + '</text>';
+    });
+    svg += '<text x="' + PL + '" y="' + (H - 5) + '" font-size="9" style="fill:var(--muted)">' + Math.round((DAYS - 1) / 7) + ' wk ago</text>'
+      + '<text x="' + (W - PR) + '" y="' + (H - 5) + '" font-size="9" text-anchor="end" style="fill:var(--muted)">Today</text>';
+    pts.forEach(function(p) {
+      svg += '<circle cx="' + x(p.i).toFixed(1) + '" cy="' + y(p.v).toFixed(1) + '" r="2.5" style="fill:var(--muted)"/>';
+    });
+    if (avgs.length > 1) {
+      svg += '<path d="' + avgs.map(function(p, j) { return (j ? 'L' : 'M') + x(p.i).toFixed(1) + ' ' + y(p.v).toFixed(1); }).join(' ')
+        + '" fill="none" style="stroke:var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>';
+    }
+    //  Hit targets larger than the marks, one per weigh in.
+    pts.forEach(function(p) {
+      var a = weekAvgWeight(p.k);
+      svg += '<circle cx="' + x(p.i).toFixed(1) + '" cy="' + y(p.v).toFixed(1) + '" r="9" fill="transparent"><title>' + p.k + ': ' + p.v.toFixed(1) + ' lb'
+        + (a != null ? ', 7 day average ' + a.toFixed(1) : '') + '</title></circle>';
+    });
+    return svg + '</svg>';
+  }
   function renderFoodWeight() {
     var host = document.getElementById('foodWeight');
     if (!host) return;
@@ -9408,7 +9618,9 @@ body.training-mode select.run-input { color: #F1EFE1; }
     host.innerHTML = '<div class="quicklog-field" style="max-width:220px;"><label for="foodWeighIn">Weigh in (lbs)</label>'
       + '<input type="number" inputmode="decimal" id="foodWeighIn" value="' + (today != null ? today : '') + '" placeholder="e.g. 186.4" onchange="saveWeighIn(this.value)"></div>'
       + lines.join('')
-      + '<div class="run-hint">The weekly average matters more than any single weigh in. Aim for about 0.5 to 1 lb a week.</div>';
+      + bwChartSVG(dk)
+      + (bwBandPrompt(trend, bwBand) ? '<div class="bw-band-note">' + bwBandPrompt(trend, bwBand) + '</div>' : '')
+      + '<div class="run-hint">The weekly average matters more than any single weigh in. Your band is ' + bwBand.lo + ' to ' + bwBand.hi + ' lb a week; change it in Settings.</div>';
   }
   function saveWeighIn(value) {
     var v = parseFloat(value), dk = foodDate();
@@ -9435,6 +9647,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
   }
   function fillFoodSettings() {
     function set(id, v) { var el = document.getElementById(id); if (el) el.value = v != null ? v : ''; }
+    set('set-bw-lo', bwBand.lo); set('set-bw-hi', bwBand.hi);
     set('set-food-cal', foodTargets.cal);
     set('set-food-protein', foodTargets.protein);
     //  Blank when unset, like Goal lbs already does — the placeholder shows
@@ -11111,7 +11324,9 @@ body.training-mode select.run-input { color: #F1EFE1; }
     loadMaxes();
     loadVariants();
     loadHiddenEx();
+    loadSundayEngine();
     loadSessionPrefs();
+    loadBwBand();
     loadAims();
     loadSetCounts();
     loadWarmupLogs();
