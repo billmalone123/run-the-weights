@@ -2158,6 +2158,40 @@ details.warmup-log > summary { cursor: pointer; min-height: 44px; display: flex;
 /* Owner tools: hidden for everyone until a long press on the Settings version label. */
 body:not(.owner-tools) .owner-only { display: none !important; }
 .settings-version { margin-top: 18px; text-align: center; font-size: 12px; color: var(--muted); padding: 10px; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+/* LIFT SCREEN, LEAN. */
+.lift-hero { font-family: var(--font-display); font-weight: 700; font-size: 28px; color: var(--text); margin: 0 0 12px; }
+.lift-toolbar { display: flex; align-items: center; gap: 6px; margin: 0 0 12px; flex-wrap: wrap; }
+.tool-arrow { width: 44px; height: 44px; border: 1px solid var(--field); border-radius: 10px; background: none; color: var(--text); font-size: 22px; cursor: pointer; }
+.tool-week { min-width: 84px; text-align: center; font-size: 15px; font-weight: 600; color: var(--text); }
+.tool-rest { margin-left: auto; min-height: 44px; padding: 0 14px; border: 1px solid var(--field); border-radius: 10px; background: none; color: var(--text); font-family: var(--font-body); font-size: 14px; cursor: pointer; }
+.tool-rest.on { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.lift-toolbar .maintenance-quick { margin-left: 0; }
+.rest-timer-strip#restPresets { display: none; }
+.rest-timer-strip#restPresets.open { display: flex; }
+.lift-cue { font-size: 14px; color: var(--muted); line-height: 1.4; margin: 2px 0 6px; }
+.warmup-lines { font-size: 13px; color: var(--muted); margin: 0 0 6px; }
+.warmup-lines .warmup-title { font-weight: 600; color: var(--text); }
+.lift-row:not(.show-swap) .swap-panel { display: none !important; }
+.card-foot { display: flex; gap: 6px; margin-top: 6px; }
+.lift-row:not(.show-wu) .wu-panel { display: none !important; }
+.wu-panel.warmup-lines:empty::before { content: 'Add a weight to see a warm up ramp.'; }
+/* Lean card: no nested box around the sets, tighter padding. */
+#tab-training .lift-row { padding: 12px 12px 10px; gap: 2px; }
+body.training-mode #tab-training .lift-row { margin-bottom: 6px; }
+#tab-training .set-row { padding: 2px; }
+.card-foot .howto-link { justify-content: center; min-height: 44px; border-radius: 10px; padding: 0 6px; }
+.lift-cue { line-height: 1.35; }
+#tab-training .plan-day-title { font-size: 28px; line-height: 1.1; }
+#tab-training .plan-day-focus { font-size: 14px; margin-top: 4px; }
+#tab-training .plan-day-header { margin-bottom: 10px; padding-bottom: 8px; gap: 8px; }
+#tab-training .lift-log-inline { background: none; border: none; padding: 0; margin-top: 6px; gap: 6px; }
+#tab-training .simple-target { margin: 2px 0 4px; }
+.card-foot-btn { flex: 1; min-height: 44px; background: none; border: 1px solid var(--field); border-radius: 10px; color: var(--text); font-family: var(--font-body); font-size: 14px; cursor: pointer; }
+.card-foot-btn.on { background: var(--surface-2); }
+.lift-tip { background: var(--surface); border: 1px solid var(--field); border-radius: 14px; padding: 14px 16px; margin: 0 0 14px; }
+.lift-tip-title { font-weight: 700; font-size: 16px; color: var(--text); margin-bottom: 6px; }
+.lift-tip ol { padding-left: 20px; margin: 0 0 10px; color: var(--text); font-size: 14px; line-height: 1.5; }
+.lift-tip-btn { min-height: 44px; padding: 0 18px; border: none; border-radius: 10px; background: var(--accent); color: var(--on-accent); font-family: var(--font-body); font-weight: 600; font-size: 14px; cursor: pointer; }
 .lift-pick-why { font-size: 12px; color: var(--muted); margin: 4px 0 8px; line-height: 1.45; padding-left: 8px; border-left: 2px solid var(--border-hi); }
 .lift-pick-why.superset { border-left-color: var(--accent); }
 .variant-chip.variant-more-btn { border-style: dotted; color: var(--muted); }
@@ -3288,16 +3322,23 @@ body.training-mode select.run-input { color: var(--accent); }
     ⚠ This device is blocking storage — logs will not survive closing the app. Tap Backup now, and check private-browsing or storage settings.
   </div>
   <div class="section-label adv">Run the Weights — Daily Training</div>
-  <h2 class="section-title train-title adv">THIS IS<br>WHERE YOU <span class="accent-word">WIN</span></h2>
+  <h2 class="lift-hero adv">This is where you win.</h2>
 
-  <!-- WEEK SELECTOR FOR TRAINING -->
-  <div class="adv" style="display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
-    <span style="font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);">Training Week</span>
-    <div style="display:flex;gap:4px;flex-wrap:wrap;" id="trainWeekSelector"></div>
+  <!-- COMPACT WEEK + REST ROW. One week shown; arrows change it. -->
+  <div class="lift-toolbar">
+    <button type="button" class="tool-arrow" onclick="stepTrainWeek(-1)" aria-label="Previous week">&#8249;</button>
+    <span class="tool-week" id="toolWeek">Week 1</span>
+    <button type="button" class="tool-arrow" onclick="stepTrainWeek(1)" aria-label="Next week">&#8250;</button>
+    <button type="button" class="tool-rest" id="toolRestBtn" aria-expanded="false" onclick="toggleRestPresets()">Rest timer</button>
     <button class="maintenance-quick" id="maintenanceQuickBtn" role="switch" aria-checked="false" onclick="toggleMaintenanceMode()" aria-label="Maintenance Mode">
-      <span class="maintenance-quick-label">Maintenance</span>
+      <span class="maintenance-quick-label">Easy week</span>
       <span class="maintenance-toggle maintenance-toggle-sm" aria-hidden="true"><span class="maintenance-toggle-knob"></span></span>
     </button>
+  </div>
+  <!-- Ten week pills, kept for the week renderer but not shown. -->
+  <div style="display:none">
+    <span style="font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);">Training Week</span>
+    <div style="display:flex;gap:4px;flex-wrap:wrap;" id="trainWeekSelector"></div>
   </div>
   <div id="backupNudgeBanner" class="backup-nudge-banner" style="display:none">
     <div class="backup-nudge-text">Back up your data. Save the file to Google Drive or email it to yourself — a backup that only lives on this device won't survive a lost or wiped phone.</div>
@@ -3305,6 +3346,15 @@ body.training-mode select.run-input { color: var(--accent); }
       <button class="backup-nudge-btn" onclick="exportData()">⇩ Backup Now</button>
       <button class="backup-nudge-dismiss" onclick="dismissBackupNudge()" aria-label="Dismiss">✕</button>
     </div>
+  </div>
+  <div class="lift-tip" id="liftTip" role="note" style="display:none">
+    <div class="lift-tip-title">How logging works</div>
+    <ol>
+      <li>A set is one round of reps, like 8 squats in a row.</li>
+      <li>Check the weight and reps on the row. Change them if you did different.</li>
+      <li>Tap the check when you finish the set. That logs it.</li>
+    </ol>
+    <button type="button" class="lift-tip-btn" onclick="dismissLiftTip()">Got it</button>
   </div>
   <div class="week-glance" id="weekGlance" aria-label="This week at a glance"></div>
   <div id="maintenanceBanner" class="maintenance-banner" style="display:none">
@@ -3319,7 +3369,7 @@ body.training-mode select.run-input { color: var(--accent); }
        configuration; burying it behind a modal open would cost every rest
        period an extra tap. Still satisfies "nothing but the hero above the
        fold" since it now sits below it, not above. -->
-  <div class="rest-timer-strip adv">
+  <div class="rest-timer-strip" id="restPresets">
     <span class="rest-timer-strip-label">Rest Timer</span>
     <button class="rest-preset-btn" onclick="quickStartTimer(60, this)">1:00</button>
     <button class="rest-preset-btn" onclick="quickStartTimer(90, this)">1:30</button>
@@ -4046,7 +4096,7 @@ body.training-mode select.run-input { color: var(--accent); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.06</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.07</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -4897,6 +4947,38 @@ body.training-mode select.run-input { color: var(--accent); }
     return result;
   }
   function invalidateBuild() { _buildCache = {}; }
+  //  Shown once, on a new user's first Lift visit. Anyone with history has
+  //  already logged a set and never sees it.
+  const LIFT_TIP_KEY = 'monk_lift_tip_v1';
+  function maybeShowLiftTip() {
+    var el = document.getElementById('liftTip');
+    if (!el) return;
+    var seen = false;
+    try { seen = localStorage.getItem(LIFT_TIP_KEY) === '1'; } catch(e) {}
+    el.style.display = (!seen && !hasAnyHistory()) ? '' : 'none';
+  }
+  function dismissLiftTip() {
+    try { localStorage.setItem(LIFT_TIP_KEY, '1'); } catch(e) {}
+    var el = document.getElementById('liftTip'); if (el) el.style.display = 'none';
+  }
+  function stepTrainWeek(d) {
+    var n = Math.max(0, Math.min(totalTrainWeeks() - 1, currentTrainWeek + d));
+    if (n !== currentTrainWeek) setTrainWeek(n);
+    updateLiftToolbar();
+  }
+  function updateLiftToolbar() {
+    var w = document.getElementById('toolWeek');
+    if (w) w.textContent = 'Week ' + (currentTrainWeek + 1) + (isDeloadWeek(currentTrainWeek) ? ', easy' : '');
+    //  Easy week mode is a race taper tool: only on screen with a race set.
+    var m = document.getElementById('maintenanceQuickBtn');
+    if (m) m.style.display = (runningEnabled && runPlan && runPlan.raceDate) ? '' : 'none';
+  }
+  function toggleRestPresets() {
+    var r = document.getElementById('restPresets'), b = document.getElementById('toolRestBtn');
+    if (!r) return;
+    var open = r.classList.toggle('open');
+    if (b) { b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.classList.toggle('on', open); }
+  }
   //     WEEK AT A GLANCE. The split's seven slots run Monday to Sunday, the
   //  same mapping the calendar uses. Today is outlined, logged days are
   //  struck through, and a tap opens that day.
@@ -5560,6 +5642,15 @@ body.training-mode select.run-input { color: var(--accent); }
   function normName(n) { return String(n || '').toLowerCase().replace(/[^a-z0-9]/g, '').replace(/s$/, ''); }
   var EX_BY_NAME = {};
   EXERCISES.forEach(function(ex) { EX_BY_NAME[normName(ex.name)] = ex; });
+  //     FORM CUES. One plain line per exercise, under 14 words.
+  //     A certified trainer must review every cue before public launch.
+  var EX_CUES = { "flat-bb-bench": "Feet flat, shoulder blades squeezed, lower the bar to mid chest with control.", "lat-pulldown": "Chest up, pull the bar to your upper chest, elbows down and back.", "incline-mach-press": "Back flat on the pad, press up and slightly in, lower slowly.", "seated-cable-row": "Sit tall, pull the handle to your belly, squeeze your shoulder blades.", "pec-dec": "Slight bend in the elbows, bring your arms together, open back slowly.", "chest-supp-row": "Chest on the pad, pull your elbows back toward your hips.", "face-pulls": "Rope at eye height, pull toward your face, elbows high and wide.", "seated-ohp": "Back against the bench, press straight up, lower to shoulder height.", "shoulder-press-mach": "Handles at shoulder height, press up, lower with control.", "lateral-raise-mach": "Raise your arms out to the side to shoulder height, lower slowly.", "ez-bar-curl": "Elbows pinned to your sides, curl up, lower all the way down.", "cable-curl": "Elbow still at your side, curl up, lower slowly.", "tricep-pushdown": "Elbows tucked at your sides, push down until your arms are straight.", "oh-tricep-ext": "Elbows pointing up, lower behind your head, straighten your arms.", "bb-squat": "Feet shoulder width, chest up, sit back and down, drive up.", "leg-press": "Feet flat, lower until knees bend about 90 degrees, push through heels.", "rdl": "Soft knees, push your hips back, bar close to your legs, back flat.", "leg-ext": "Sit back, straighten your legs, lower slowly.", "leg-curl": "Hips down, curl your heels toward you, lower slowly.", "seated-calf": "Lower your heels for a stretch, then rise as high as you can.", "ab-wheel": "Brace your stomach, roll out only as far as your back stays flat.", "incline-bb-bench": "Feet flat, shoulder blades back, lower the bar to your upper chest.", "machine-row": "Chest on the pad, pull your elbows back, squeeze, return slowly.", "machine-chest-press": "Handles at chest height, press out, return with control.", "sa-cable-row": "Stand or sit tall, pull your elbow back past your side.", "low-high-fly": "Cables low, sweep your hands up and together to chest height.", "straight-arm-pd": "Arms straight, pull the bar down to your thighs, return slowly.", "rear-delt-fly": "Chest on the pad, sweep your arms out wide, slight elbow bend.", "arnold-press": "Start palms facing you, rotate and press overhead, reverse on the way down.", "cable-lat-raise": "Raise your arm out to the side to shoulder height, lower slowly.", "cable-face-pull": "Rope at eye height, pull toward your face, elbows high.", "incline-db-curl": "Lie back on the incline, let your arms hang, curl up slowly.", "hammer-curl": "Palms facing in, elbows at your sides, curl up and lower slowly.", "machine-dip": "Sit tall, press the handles down until your arms are straight.", "skull-crusher": "Elbows pointing up, lower the bar toward your forehead slowly, extend.", "goblet-squat-b": "Hold the weight at your chest, sit down between your knees, stand.", "cossack-squat": "Wide stance, sit into one leg, other leg straight, switch sides.", "reverse-lunge": "Step back, lower your back knee, push through the front foot.", "sissy-squat": "Hold on for balance, lean back, bend your knees only as comfortable.", "nordic-curl": "Feet anchored, lower your body forward slowly, use your hands to catch.", "weighted-leg-raise": "Lower back pressed down, raise your legs, lower slowly.", "weighted-situp": "Feet anchored, curl up with control, lower slowly.", "deadlift": "Bar over midfoot, back flat, push the floor away, stand tall.", "db-bench": "Feet flat, lower the dumbbells to chest level, press up together.", "incline-db-press": "Bench at a low incline, lower to your upper chest, press up.", "weighted-push-up": "Body in one line, lower your chest to the floor, push up.", "floor-press": "Lie on the floor, lower until your elbows touch, press up.", "pull-up": "Hang with straight arms, pull your chest toward the bar.", "chin-up": "Palms facing you, pull your chin over the bar, lower all the way.", "neutral-pull-up": "Palms facing each other, pull up, lower with control.", "sa-cable-pulldown": "Kneel under the cable, pull your elbow down to your side.", "bb-row": "Hinge forward with a flat back, pull the bar to your lower ribs.", "sa-db-row": "One hand on a bench, pull the dumbbell toward your hip.", "inverted-row": "Body straight under the bar, pull your chest up to it.", "cable-chest-fly": "Slight bend in the elbows, bring your hands together in front.", "db-fly": "Slight elbow bend, open your arms wide, bring them back together.", "incline-db-fly": "On a low incline, open your arms wide, bring them back together.", "reverse-db-fly": "Chest on an incline bench, sweep your arms out to the sides.", "band-pull-apart": "Arms straight in front, pull the band apart to your chest.", "standing-ohp": "Squeeze your glutes, press the bar straight up, head through at the top.", "push-press": "Small knee dip, drive up, press the bar overhead.", "db-lat-raise": "Slight lean forward, raise the dumbbells out to shoulder height.", "leaning-cable-raise": "Hold on and lean away, raise your arm out to shoulder height.", "cable-y-raise": "Raise both arms up and out into a Y, thumbs up.", "db-curl": "Elbows at your sides, curl up, turn your palms up, lower slowly.", "bb-curl": "Elbows at your sides, curl the bar up, lower all the way.", "oh-db-ext": "Hold one dumbbell overhead, lower behind your head, straighten your arms.", "straight-bar-pushdown": "Elbows at your sides, push the bar down until your arms are straight.", "close-grip-bench": "Hands shoulder width, elbows tucked, lower to your lower chest, press.", "weighted-dip": "Lower until your upper arms are level, press back up.", "diamond-push-up": "Hands close together under your chest, lower slowly, push up.", "front-squat": "Bar on the front of your shoulders, elbows up, sit straight down.", "bulgarian-split-squat": "Back foot on a bench, lower straight down, push through the front foot.", "db-walking-lunge": "Long step forward, lower your back knee, step through.", "db-step-up": "Whole foot on the box, push up and stand tall, step down slowly.", "db-rdl": "Soft knees, push your hips back, dumbbells close to your legs.", "sl-db-rdl": "Stand on one leg, hinge forward, free leg reaches back.", "good-morning": "Bar on your back, push your hips back, back flat, go light.", "spanish-squat": "Band behind your knees, lean back, sit down with shins upright.", "wall-sit": "Back flat on the wall, thighs level with the floor, hold.", "reverse-nordic": "Kneel tall, lean back only as far as you can control, return.", "sliding-leg-curl": "Hips up, slide your heels in toward you, slide back out.", "db-leg-curl": "Lie face down, dumbbell between your feet, curl it up slowly.", "band-leg-curl": "Band around your ankle, curl your heel toward you, lower slowly.", "standing-calf": "Balls of your feet on a step, lower your heels, rise high.", "sl-db-calf": "One foot on a step, hold support, lower your heel, rise high.", "bb-calf-raise": "Bar on your back, lower your heels, rise onto your toes.", "hanging-leg-raise": "Hang still, raise your legs with control, no swinging.", "cable-crunch": "Kneel with the rope at your head, curl your ribs toward your hips.", "pallof-press": "Stand side on to the cable, press out, resist the turn.", "plank": "Forearms under shoulders, body in one line, squeeze your glutes, hold.", "bb-hip-thrust": "Upper back on a bench, drive your hips up, squeeze at the top.", "sumo-deadlift": "Wide stance, hands inside your knees, back flat, stand up.", "glute-bridge": "Lie on your back, feet flat, drive your hips up, squeeze.", "sl-hip-thrust": "Upper back on a bench, one foot down, drive your hips up.", "db-pullover": "Lie across a bench, lower the dumbbell behind your head, bring it back.", "band-straight-arm-pd": "Arms straight, pull the band down to your thighs.", "sa-cable-pullover": "Arm straight, sweep the cable down to your hip, return slowly.", "farmer-carry": "Heavy weights at your sides, stand tall, walk with short steps.", "suitcase-carry": "One weight on one side, stay upright, walk steadily.", "overhead-carry": "Arm locked overhead, ribs down, walk slowly.", "sled-drag": "Lean back, walk backward with short steps.", "ski-erg-intervals": "Hinge and pull the handles down past your hips.", "sled-push": "Arms straight, lean in, drive with short steps.", "sled-rope-pull": "Stand braced, pull the rope hand over hand.", "tire-flip": "Chest against the tire, lift with your legs, push it over.", "med-ball-slam": "Ball overhead, slam it down using your whole body.", "wall-ball": "Squat with the ball at your chest, stand and throw to the target.", "battle-rope": "Knees bent, move your arms fast to make waves.", "burpee-broad-jump": "Chest to the floor, stand, jump forward, land softly." };
+  //  The active variant's own cue when it is a library movement, else the
+  //  slot's cue. Custom exercises have none.
+  function cueFor(ex) {
+    var lib = EX_BY_NAME[normName(activeVariant(ex))];
+    return (lib && EX_CUES[lib.id]) || EX_CUES[ex.id] || '';
+  }
   function nameKey(name, parent) {
     if (ALT_KEYS[name]) return ALT_KEYS[name];
     var hit = EX_BY_NAME[normName(name)];
@@ -5823,7 +5914,7 @@ body.training-mode select.run-input { color: var(--accent); }
       if (!openMore) chips += '<button class="variant-chip variant-more-btn" onclick="showMoreSwaps(event,\'' + ex.id + '\')">More (' + opts.more.length + ')</button>';
     }
     chips += '<button class="variant-chip variant-custom" onclick="openCustomVariant(event,\'' + ex.id + '\')">Add your own</button>';
-    return '<div class="lift-variants detail" data-variants="' + ex.id + '" onclick="event.stopPropagation()">'
+    return '<div class="lift-variants swap-panel" data-variants="' + ex.id + '" onclick="event.stopPropagation()">'
       + '<span class="lift-variants-label">Change exercise</span>' + chips + '</div>';
   }
 
@@ -5926,6 +6017,8 @@ body.training-mode select.run-input { color: var(--accent); }
     if (nameEl) nameEl.textContent = name;
     var how = document.getElementById('howto-' + exId);
     if (how && EX_BY_ID[exId]) how.href = howToUrl(EX_BY_ID[exId]);
+    var cueEl = document.getElementById('cue-' + exId);
+    if (cueEl && EX_BY_ID[exId]) cueEl.textContent = cueFor(EX_BY_ID[exId]);
     // Re-render this row so target/boxes reflect the chosen variant's own history
     if (EX_BY_ID[exId] && typeof renderLiftRowState === 'function') renderLiftRowState(EX_BY_ID[exId]);
   }
@@ -6083,6 +6176,15 @@ body.training-mode select.run-input { color: var(--accent); }
   //  load movements get no number at all.
   var EQUIP_SEED = { dumbbell: { barbell: 0.4, smith: 0.4, machine: 0.45, cable: 0.5 },
                      barbell: { dumbbell: 2.0, machine: 0.9, cable: 1.0 }, smith: { dumbbell: 2.0 } };
+  //  Nothing to go on (no history, no max): a safe, standard first weight
+  //  for free weights only. The empty bar for a barbell, light dumbbells.
+  //  Machines and cables vary too much to guess.
+  function starterWeight(ex) {
+    var eq = nameEquip(activeVariant(ex));
+    if (eq === 'barbell') return { w: 45, text: 'Start with the empty bar, 45 lbs.' };
+    if (eq === 'dumbbell') return { w: 10, text: 'Start light, 10 lbs each hand.' };
+    return null;
+  }
   function variantSeed(ex) {
     var name = activeVariant(ex), lib = EX_BY_NAME[normName(name)];
     if (lib && lib !== ex) {
@@ -6135,6 +6237,8 @@ body.training-mode select.run-input { color: var(--accent); }
       if (vs) return { mode: 'baseline', weight: vs.weight, reps: ex.repRange[0],
         msg: 'Suggested start: ' + vs.weight + ' lbs from your ' + vs.from + '. Log it to start the progression.',
         indicator: SEED_WEIGHT_INDICATOR };
+      var vst = starterWeight(ex);
+      if (vst) return { mode: 'baseline', weight: vst.w, reps: ex.repRange[0], starter: vst.text, msg: vst.text, indicator: SEED_WEIGHT_INDICATOR };
       return { mode: 'baseline', weight: null, reps: ex.repRange[0],
         msg: 'First session for ' + activeVariant(ex) + '. Pick a weight you can lift ' + ex.repRange[1] + ' times with good form.',
         indicator: SEED_WEIGHT_INDICATOR };
@@ -6152,6 +6256,9 @@ body.training-mode select.run-input { color: var(--accent); }
         return { mode: 'baseline', weight: sw, reps: ex.repRange[0], msg: 'Suggested start: ' + sw + ' lbs from your ' + EX_BY_ID[ex.seedFrom].name + '.',
           indicator: seedIsRough ? SEED_WEIGHT_INDICATOR : null }; }
     }
+    var st = starterWeight(ex);
+    if (st) return { mode: 'baseline', weight: st.w, reps: ex.repRange[0], starter: st.text,
+      msg: st.text, indicator: seedIsRough ? SEED_WEIGHT_INDICATOR : null };
     return { mode: 'baseline', weight: null, reps: ex.repRange[0],
       msg: 'First session — establish a baseline in the ' + repRangeText(ex) + ' ' + (ex.unit || 'rep') + ' range.',
       indicator: seedIsRough ? SEED_WEIGHT_INDICATOR : null };
@@ -6330,11 +6437,11 @@ body.training-mode select.run-input { color: var(--accent); }
   }
   function howToLinkHTML(ex, cls) {
     return '<a class="' + (cls || 'howto-link') + '" id="howto-' + ex.id + '" href="' + howToUrl(ex) + '" target="_blank" rel="noopener" onclick="event.stopPropagation()" aria-label="Watch how to do ' + activeVariant(ex).replace(/"/g, '&quot;') + '">'
-      + '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/></svg>Watch how</a>';
+      + '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/></svg>' + (cls && cls.indexOf('card-foot-btn') !== -1 ? 'How to' : 'Watch how') + '</a>';
   }
   function setTableHeadHTML(ex) {
     var unit = ex.unit ? ex.unit.charAt(0).toUpperCase() + ex.unit.slice(1) : 'Reps';
-    return '<div class="set-table-head" aria-hidden="true"><span>Set</span><span>Previous</span><span>lbs</span><span>' + unit + '</span><span></span></div>';
+    return '<div class="set-table-head" aria-hidden="true"><span>Set</span><span>Previous</span><span>lbs</span><span>' + unit + ' ' + effectiveRepRangeText(ex) + '</span><span></span></div>';
   }
 
   //  Warm-up logging lives in its own block rather than inside .warmup-lines,
@@ -6357,8 +6464,8 @@ body.training-mode select.run-input { color: var(--accent); }
     //  Collapsed by default: six boxes nobody needs to fill every day. Opens
     //  on its own once a warm-up for this week is already logged.
     var anyWu = storedWarmups(ex).some(Boolean);
-    return '<details class="warmup-log adv-card" id="wulog-' + ex.id + '"' + (anyWu ? ' open' : '') + '>'
-      + '<summary class="warmup-log-title">Log warm-up sets <span class="warmup-log-note">Optional, not counted as working volume</span></summary>'
+    return '<details class="warmup-log wu-panel" id="wulog-' + ex.id + '"' + (anyWu ? ' open' : '') + '>'
+      + '<summary class="warmup-log-title">Log warm-ups</summary>'
       + rows
       + '<span class="autosave-flash" id="wusave-' + ex.id + '"></span>'
       + '</details>';
@@ -6458,8 +6565,9 @@ body.training-mode select.run-input { color: var(--accent); }
     var range = effectiveRepRangeText(ex) + repUnitText(ex);
     return '<div class="lift-row' + (n === 3 ? ' sets-3' : '') + '" id="row-' + ex.id + '">'
       + '<div>'
-      + '<div class="lift-name-row"><div class="lift-name" id="name-' + ex.id + '">' + activeVariant(ex) + '</div>' + howToLinkHTML(ex) + '</div>'
-      + '<div class="lift-sets-reps" data-setslabel="' + ex.id + '">' + dispN + ' sets × ' + range + '</div>'
+      + '<div class="lift-name-row"><div class="lift-name" id="name-' + ex.id + '">' + activeVariant(ex) + '</div></div>'
+      + '<div class="lift-cue" id="cue-' + ex.id + '">' + cueFor(ex) + '</div>'
+      + '<div class="lift-sets-reps adv-card" data-setslabel="' + ex.id + '">' + dispN + ' sets × ' + range + '</div>'
       //  Caption under the rep count. Static content off EXERCISES, so it
       //  never needs restoring or persisting.
       + '<div class="simple-target" data-simpletarget="' + ex.id + '"></div>'
@@ -6468,7 +6576,7 @@ body.training-mode select.run-input { color: var(--accent); }
       //  older call sites still map liftRowHTML directly, which passes an index.
       + (typeof reason === 'string' ? '<div class="detail lift-pick-why' + (typeof partnerId === 'string' ? ' superset' : '') + '">' + reason + '</div>' : '')
       + variantChipsHTML(ex)
-      + '<div class="warmup-lines detail" data-warmups="' + ex.id + '"></div>'
+      + '<div class="warmup-lines wu-panel" data-warmups="' + ex.id + '"></div>'
       + '<div class="target-block detail" data-targets="' + ex.id + '"></div>'
       + '</div>'
       + '<div class="lift-rest detail">' + ex.rest + '</div>'
@@ -6489,7 +6597,7 @@ body.training-mode select.run-input { color: var(--accent); }
       + setRowHTML(ex, 1)
       + setRowHTML(ex, 2)
       + setRowHTML(ex, 3)
-      + '<button type="button" class="log-planned-btn" id="planned-' + ex.id + '" data-ex="' + ex.id + '" onclick="logAsPlanned(this.dataset.ex)">Log as planned</button>'
+      + '<button type="button" class="log-planned-btn adv-card" id="planned-' + ex.id + '" data-ex="' + ex.id + '" onclick="logAsPlanned(this.dataset.ex)">Log as planned</button>'
       + '<div class="log-row adv-card">'
       + '<button class="failure-toggle" id="f-' + ex.id + '" data-ex="' + ex.id + '" onclick="toggleFailure(this)">Failure · No</button>'
       + '<span class="autosave-flash" id="save-' + ex.id + '"></span>'
@@ -6501,7 +6609,12 @@ body.training-mode select.run-input { color: var(--accent); }
       + warmupLogHTML(ex)
       + '</div>'
       + '<div class="lift-status" data-status="' + ex.id + '" onclick="event.stopPropagation()"></div>'
-      + '<button type="button" class="card-more-btn" aria-expanded="false" data-ex="' + ex.id + '" onclick="toggleCardMore(this)">Swap and details</button>'
+      + '<div class="card-foot">'
+      + '<button type="button" class="card-foot-btn" aria-expanded="false" data-ex="' + ex.id + '" data-panel="show-swap" onclick="toggleCardPanel(this)">Swap</button>'
+      + '<button type="button" class="card-foot-btn" aria-expanded="false" data-ex="' + ex.id + '" data-panel="show-wu" onclick="toggleCardPanel(this)">Warm-up</button>'
+      + '<button type="button" class="card-foot-btn" aria-expanded="false" data-ex="' + ex.id + '" data-panel="show-more" onclick="toggleCardPanel(this)">Notes</button>'
+      + howToLinkHTML(ex, 'card-foot-btn howto-link')
+      + '</div>'
       + '</div>';
   }
 
@@ -6761,9 +6874,9 @@ body.training-mode select.run-input { color: var(--accent); }
     var wuEl = document.querySelector('[data-warmups="' + ex.id + '"]');
     var lines = computeWarmups(ex.tag, w);
     if (wuEl) {
-      wuEl.innerHTML = '<div class="warmup-title">Warm-up</div>' + (lines
-        ? lines.map(function(l) { return '<div class="ramp-hint">' + l + '</div>'; }).join('')
-        : '<div class="ramp-hint">Enter an aim weight to calculate</div>');
+      //  One line: the ramp to do before the first set. Nothing when there is
+      //  no weight to build a ramp from.
+      wuEl.innerHTML = lines ? '<span class="warmup-title">Warm up</span> ' + lines.join(', ') : '';
     }
     //  The suggested ramp becomes the placeholder on the log inputs, so the
     //  numbers you are being told to lift sit in the boxes you record them in.
@@ -6839,7 +6952,9 @@ body.training-mode select.run-input { color: var(--accent); }
         // This week's logged reps if present; otherwise empty with last week's reps
         // as a ghost placeholder for reference (never auto-saved).
         rEl.value = loggedSet ? loggedSet.r : '';
-        rEl.placeholder = refSet ? String(refSet.r) : 'reps';
+        //  Ghost number: last session's reps, else the target, never a word
+        //  that gets clipped in a narrow box.
+        rEl.placeholder = refSet ? String(refSet.r) : String(target.reps || ex.repRange[0]);
       }
       var lastEl = document.getElementById('last-' + slot + '-' + ex.id);
       if (lastEl) {
@@ -6993,7 +7108,17 @@ body.training-mode select.run-input { color: var(--accent); }
   var advancedMode = false;
   //  On unless switched off: this is a lifter's app first, and every tool
   //  stays one tap away. Simple mode is the opt in.
-  function loadAdvanced() { try { advancedMode = localStorage.getItem(ADVANCED_KEY) !== '0'; } catch(e) { advancedMode = true; } applyAdvanced(); }
+  function hasAnyHistory() {
+    return Object.keys(sessions || {}).some(function(k) { return (sessions[k] || []).length > 0; });
+  }
+  function loadAdvanced() {
+    var v = null;
+    try { v = localStorage.getItem(ADVANCED_KEY); } catch(e) {}
+    //  An explicit choice always wins. With none, someone who has logged
+    //  before keeps every tool; a new install starts lean.
+    advancedMode = v === '1' ? true : v === '0' ? false : hasAnyHistory();
+    applyAdvanced();
+  }
   function applyAdvanced() {
     if (document.body) document.body.classList.toggle('advanced', advancedMode);
     document.querySelectorAll('[data-adv-btn]').forEach(function(b) { b.classList.toggle('on', (b.dataset.advBtn === 'on') === advancedMode); });
@@ -7003,17 +7128,20 @@ body.training-mode select.run-input { color: var(--accent); }
     try { localStorage.setItem(ADVANCED_KEY, advancedMode ? '1' : '0'); } catch(e) {}
     applyAdvanced();
   }
-  function toggleCardMore(btn) {
+  //  Swap opens the like for like list; Notes opens the coaching notes, the
+  //  pick reason, the target detail and the advanced boxes. Each is a toggle.
+  function toggleCardPanel(btn) {
     var row = document.getElementById('row-' + btn.dataset.ex);
     if (!row) return;
-    var open = row.classList.toggle('show-more');
-    btn.textContent = open ? 'Hide details' : 'Swap and details';
+    var open = row.classList.toggle(btn.dataset.panel);
+    btn.classList.toggle('on', open);
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
   //  One plain sentence for simple mode: what weight to put on the bar.
   function simpleTargetText(ex, target, prevRef) {
     var unit = ex.unit || 'reps';
     if (weightOptional(ex) && !(target.weight > 0)) return 'No weight needed. Aim for ' + effectiveRepRangeText(ex) + ' ' + unit + '.';
+    if (target.starter) return target.starter.replace(/(\d+) lbs/, '<strong>$1 lbs</strong>');
     if (target.weight > 0) {
       return 'Use <strong>' + target.weight + ' lbs</strong>.'
         + (prevRef && prevRef.weight ? ' Last time ' + prevRef.weight + '.' : '')
@@ -9181,6 +9309,7 @@ body.training-mode select.run-input { color: var(--accent); }
     //  On Default nothing about the lists depends on the week.
     if (sessionSize != null && typeof renderDaySections === 'function') renderDaySections();
     if (typeof renderWeekGlance === 'function') renderWeekGlance();
+    if (typeof updateLiftToolbar === 'function') updateLiftToolbar();
     if (typeof renderAllRowStates === 'function') renderAllRowStates();
     if (typeof renderProgressView === 'function') renderProgressView();
     if (typeof updateWeekCompleteBanner === 'function') updateWeekCompleteBanner();
@@ -12892,6 +13021,8 @@ function goTab(t) {
       //  to resume, so pickTrainingDay() (which would reroute to whichever
       //  day is earliest-unlogged) never runs at all in that case.
       if (!restoreActiveSessionIfPresent()) switchDay(pickTrainingDay());
+      if (typeof maybeShowLiftTip === 'function') maybeShowLiftTip();
+      if (typeof updateLiftToolbar === 'function') updateLiftToolbar();
     }
     else if (t === 'today') {
       if (typeof renderToday === 'function') renderToday();
