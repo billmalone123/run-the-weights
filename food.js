@@ -703,23 +703,21 @@ noThrow('tapping the pill does not throw', function () { ctx.toggleNavMenu({ sto
 eq('the flash class is applied immediately on tap', navBtn.classList.contains('nav-tap-flash'), true);
 ctx.closeNavMenu();
 
-section('2m. Navigation consolidation: five top items, More holds the rest, nothing lost');
-eq('MAIN_TABS keeps info and quicklog working, adds more', ev('MAIN_TABS').join(','), 'info,training,running,calendar,food,quicklog,more');
+section('2m. Navigation: bottom bar is primary, the logo menu indexes everything, nothing lost');
+eq('MAIN_TABS adds today and keeps every older tab', ev('MAIN_TABS').join(','), 'today,info,training,running,calendar,food,quicklog,more');
 var menuHtml = ctx.buildNavMenu().innerHTML;
-['Lift', 'Run', 'Food', 'Calendar', 'More'].forEach(function (label, i) {
-  var order = ['Lift', 'Run', 'Food', 'Calendar', 'More'];
-  ok(label + ' is a top-level nav item', menuHtml.indexOf('>' + label + '<') > -1);
+['Today', 'Workout', 'Food', 'Progress', 'Quick Log', 'About and more'].forEach(function (label) {
+  ok(label + ' is in the logo menu', menuHtml.indexOf('>' + label + '<') > -1);
 });
-eq('exactly five destinations plus Settings — Home/About/Edge/Overview/Progression/Quick Log are gone from the list',
-   (menuHtml.match(/data-tab="/g) || []).length, 5);
-['Home', 'About', 'Edge', 'Week Overview', 'Progression', 'Quick Log'].forEach(function (label) {
-  eq('"' + label + '" is not a top-level nav item any more', menuHtml.indexOf('>' + label + '<') > -1, false);
+eq('Run stays out of the menu while running is off', menuHtml.indexOf('>Run<') > -1, false);
+['today', 'training', 'food', 'calendar'].forEach(function (t) {
+  ok('bottom bar has ' + t, html.indexOf('class="tabbar-btn" data-tab="' + t + '"') > -1);
 });
-// The More tab itself: every removed destination is reachable from it, via
-// the exact same goTab()/goSec() calls those destinations always used.
+ok('bottom bar opens Settings', /class="tabbar-btn" data-action="settings" onclick="openSettingsModal\(\)"/.test(html));
+// The More tab still reaches every older destination.
 [['Home', "goTab('info'); goSec('home');"], ['About', "goTab('info'); goSec('about');"],
  ['The Edge', "goTab('info'); goSec('edge');"], ['Week Overview', "goTab('info'); goSec('overview');"],
- ['Progression', "goTab('info'); goSec('progression');"], ['Quick Log', "goTab('quicklog');"]
+ ['Progression', "goTab('calendar');"], ['Quick Log', "goTab('quicklog');"]
 ].forEach(function (p) {
   ok('More has a working link to ' + p[0], html.indexOf('onclick="' + p[1] + '">' + p[0] + '<') > -1);
 });
@@ -730,7 +728,7 @@ var renderRunPlanCalls = 0;
 ctx.renderRunPlan = function () { renderRunPlanCalls++; };
 noThrow('goTab(\'more\') runs without throwing', function () { ctx.goTab('more'); });
 eq('the More panel is shown', ctx.document.getElementById('tab-more').style.display, 'block');
-eq('every other panel is hidden, including info and quicklog', ['info', 'training', 'running', 'calendar', 'food', 'quicklog'].every(function (n) {
+eq('every other panel is hidden, including info and quicklog', ['today', 'info', 'training', 'running', 'calendar', 'food', 'quicklog'].every(function (n) {
   return ctx.document.getElementById('tab-' + n).style.display === 'none';
 }), true);
 eq('and it did NOT fall through to renderRunPlan() (the bug this needed guarding against)', renderRunPlanCalls, 0);
