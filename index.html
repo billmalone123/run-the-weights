@@ -1994,15 +1994,27 @@ body.training-mode footer { display: none; }
   padding: 7px 12px; font-size: 12px; cursor: pointer; font-family: var(--font-body); min-height: 34px;
 }
 .equip-chip.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
-.set-row { flex-direction: column; align-items: stretch; gap: 6px; }
-.set-row-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
-.set-last { font-size: 12px; color: var(--muted); font-family: var(--font-mono); }
-.set-row-body { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; }
+/* SET TABLE. One 48px row per set: number, previous, weight, reps, check. */
+.set-table-head, .set-row {
+  display: grid; grid-template-columns: 22px minmax(0, 1fr) 64px 52px 46px; gap: 5px; align-items: center;
+}
+.set-table-head { margin: 8px 0 2px; padding: 0 2px; font-size: 11px; font-weight: 600; color: var(--muted); }
+.set-table-head span:nth-child(n+3) { text-align: center; }
+.set-row { padding: 3px 2px; border-radius: 10px; margin: 0; }
+.lift-row.sets-3 .set-row[data-setrow^="3-"] { display: grid; }
+.set-row.logged { background: rgba(var(--ink-rgb),0.06); }
+.set-num { font-family: var(--font-display); font-weight: 700; font-size: 16px; color: var(--muted); text-align: center; }
+.set-last {
+  min-height: 44px; background: none; border: none; padding: 0 2px; text-align: left; cursor: pointer;
+  font-family: var(--font-mono); font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.set-last:not(:disabled):active { color: var(--text); }
+.set-last:disabled { cursor: default; }
+.log-inline-input.set-cell { width: 100%; min-height: 44px; padding: 6px 4px; text-align: center; font-size: 18px; border-radius: 8px; }
 .set-done-btn {
-  min-height: 44px; min-width: 76px; padding: 0 16px; border-radius: 10px;
-  background: transparent; border: 1px solid var(--field); color: var(--text);
-  font-family: var(--font-display); font-weight: 700; font-size: 14px; letter-spacing: 0.08em;
-  text-transform: uppercase; cursor: pointer; touch-action: manipulation;
+  width: 46px; height: 44px; border-radius: 10px; cursor: pointer; touch-action: manipulation;
+  background: transparent; border: 1.5px solid var(--field); color: var(--muted);
+  font-size: 20px; font-weight: 700; line-height: 1;
 }
 .set-done-btn.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .failure-toggle, .setcount-btn { min-height: 44px; }
@@ -2033,6 +2045,7 @@ body.training-mode footer { display: none; }
    only in simple mode. body.advanced brings everything back. */
 body:not(.advanced) .adv { display: none !important; }
 body:not(.advanced) .lift-row:not(.show-more) .adv-card { display: none !important; }
+.lift-row:not(.show-more) .detail { display: none !important; }
 body.advanced .simple-only { display: none !important; }
 .simple-target { font-size: 15px; color: var(--text); margin: 6px 0 10px; line-height: 1.45; }
 .simple-target strong { font-family: var(--font-display); font-size: 18px; letter-spacing: 0.02em; }
@@ -3202,7 +3215,7 @@ body.training-mode select.run-input { color: var(--accent); }
 </section><footer>
   <div>
     <div class="footer-logo"><img src="assets/brand/rtw-wordmark.png" alt="Run the Weights"></div>
-    <div class="footer-sub">Do the work. Become undeniable. <span style="opacity:0.45">· build 8.01</span></div>
+    <div class="footer-sub">Do the work. Become undeniable. <span style="opacity:0.45">· build 8.02</span></div>
   </div>
   <div class="footer-rules">
     <div class="footer-rules-title">The Code</div>
@@ -3246,7 +3259,7 @@ body.training-mode select.run-input { color: var(--accent); }
   <div id="storageWarn" style="display:none;padding:12px 16px;margin-bottom:16px;border:1px solid var(--accent);border-radius:12px;background:rgba(var(--ink-rgb),0.10);color:var(--accent);font-size:13px;font-weight:600">
     ⚠ This device is blocking storage — logs will not survive closing the app. Tap Backup now, and check private-browsing or storage settings.
   </div>
-  <div class="section-label adv">Run the Weights — Daily Training <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.01</span></div>
+  <div class="section-label adv">Run the Weights — Daily Training <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.02</span></div>
   <h2 class="section-title train-title adv">THIS IS<br>WHERE YOU <span class="accent-word">WIN</span></h2>
 
   <!-- WEEK SELECTOR FOR TRAINING -->
@@ -3499,7 +3512,7 @@ body.training-mode select.run-input { color: var(--accent); }
 <div id="tab-running" class="tab-main" style="background:var(--bg)">
 
 <section id="runplan">
-  <div class="section-label">Run the Weights — Running Plan <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.01</span></div>
+  <div class="section-label">Run the Weights — Running Plan <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.02</span></div>
   <h2 class="section-title train-title">RACE DAY IS<br>A <span class="accent-word">DEADLINE</span></h2>
 
   <!-- Race setup collapses once there is a raceDate, so a returning user lands
@@ -3617,7 +3630,7 @@ body.training-mode select.run-input { color: var(--accent); }
 <div id="tab-calendar" class="tab-main" style="background:var(--bg)">
 
 <section id="calendarfull">
-  <div class="section-label adv">Full Calendar <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.01</span></div>
+  <div class="section-label adv">Full Calendar <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.02</span></div>
   <h2 class="section-title train-title adv">EVERY WEEK.<br>BOTH <span class="accent-word">PLANS</span>.</h2>
   <div class="today-date simple-only">Progress</div>
 
@@ -3640,7 +3653,7 @@ body.training-mode select.run-input { color: var(--accent); }
 <div id="tab-food" class="tab-main" style="background:var(--bg)">
 
 <section id="foodSection">
-  <div class="section-label">Run the Weights — Food <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.01</span></div>
+  <div class="section-label">Run the Weights — Food <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.02</span></div>
   <h2 class="section-title train-title">EVERY MEAL.<br>TO <span class="accent-word">200</span>.</h2>
 
   <div class="calfull-nav">
@@ -3703,7 +3716,7 @@ body.training-mode select.run-input { color: var(--accent); }
 <div id="tab-quicklog" class="tab-main" style="background:var(--bg)">
 
 <section id="quicklogSection">
-  <div class="section-label">Run the Weights — Quick Log <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.01</span></div>
+  <div class="section-label">Run the Weights — Quick Log <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.02</span></div>
   <h2 class="section-title train-title">ONE LIFT.<br>ONE <span class="accent-word">SET</span>.</h2>
   <p style="color:var(--muted);font-size:13px;line-height:1.6;margin:-8px 0 20px;max-width:480px;">
     For taper weeks and short-on-time days — log one set on an anchor lift without opening the full workout.
@@ -3753,7 +3766,7 @@ body.training-mode select.run-input { color: var(--accent); }
      they render changed, only how you get to them. -->
 <div id="tab-more" class="tab-main" style="display:none">
 <section id="moreSection">
-  <div class="section-label">Run the Weights — More <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.01</span></div>
+  <div class="section-label">Run the Weights — More <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 8.02</span></div>
   <h2 class="section-title train-title">EVERYTHING<br>ELSE.</h2>
   <div class="more-list">
     <button class="more-list-item" onclick="goTab('info'); goSec('home');">Home</button>
@@ -5707,7 +5720,7 @@ body.training-mode select.run-input { color: var(--accent); }
       if (!openMore) chips += '<button class="variant-chip variant-more-btn" onclick="showMoreSwaps(event,\'' + ex.id + '\')">More (' + opts.more.length + ')</button>';
     }
     chips += '<button class="variant-chip variant-custom" onclick="openCustomVariant(event,\'' + ex.id + '\')">Add your own</button>';
-    return '<div class="lift-variants adv-card" data-variants="' + ex.id + '" onclick="event.stopPropagation()">'
+    return '<div class="lift-variants detail" data-variants="' + ex.id + '" onclick="event.stopPropagation()">'
       + '<span class="lift-variants-label">Change exercise</span>' + chips + '</div>';
   }
 
@@ -6131,18 +6144,22 @@ body.training-mode select.run-input { color: var(--accent); }
     var wId = slot + 'w-' + ex.id, rId = slot + 'r-' + ex.id;
     var wInput = '<input class="log-inline-input" type="number" inputmode="decimal" id="' + wId + '" data-ex="' + ex.id + '" oninput="this.dataset.dirty=1;onLogEdit(this.dataset.ex)" onchange="onLogCommit(this)">';
     var rInput = '<input class="log-inline-input" type="number" inputmode="numeric" id="' + rId + '" data-ex="' + ex.id + '" oninput="onSetInput(this)" onchange="onSetCommit(this)">';
-    //  Last session's numbers for this slot sit on the label line, so the
-    //  target is visible without opening anything. Done logs the set as shown.
+    //  One compact row per set, the layout Strong and Hevy settled on:
+    //  set number, last session's numbers (tap to copy them in), weight,
+    //  reps, and a check that logs the set. Ids are unchanged, so every save
+    //  and restore path reads these boxes exactly as before.
+    var noLoad = weightOptional(ex);
     return '<div class="log-row set-row" data-setrow="' + n + '-' + ex.id + '">'
-      + '<div class="set-row-head"><span class="log-inline-label">Set ' + n + '</span>'
-      + '<span class="set-last" id="last-' + slot + '-' + ex.id + '"></span></div>'
-      + '<div class="set-row-body">'
-      + '<div class="log-inline-group"><span class="log-inline-label">Weight</span>'
-      + withSteppers(wId, 'weight', wInput) + '</div>'
-      + '<div class="log-inline-group"><span class="log-inline-label">' + (ex.unit ? ex.unit.charAt(0).toUpperCase() + ex.unit.slice(1) : 'Reps') + '</span>'
-      + withSteppers(rId, 'reps', rInput) + '</div>'
-      + '<button type="button" class="set-done-btn" id="done-' + slot + '-' + ex.id + '" data-ex="' + ex.id + '" data-slot="' + slot + '" onclick="markSetDone(this)">Done</button>'
-      + '</div></div>';
+      + '<span class="set-num">' + n + '</span>'
+      + '<button type="button" class="set-last" id="last-' + slot + '-' + ex.id + '" data-ex="' + ex.id + '" data-slot="' + slot + '" onclick="copyPrevSet(this)" aria-label="Copy last session into set ' + n + '"></button>'
+      + wInput.replace('class="log-inline-input"', 'class="log-inline-input set-cell"' + (noLoad ? ' placeholder="BW"' : '') + ' aria-label="Set ' + n + ' weight"')
+      + rInput.replace('class="log-inline-input"', 'class="log-inline-input set-cell" aria-label="Set ' + n + ' ' + (ex.unit || 'reps') + '"')
+      + '<button type="button" class="set-done-btn" id="done-' + slot + '-' + ex.id + '" data-ex="' + ex.id + '" data-slot="' + slot + '" onclick="markSetDone(this)" aria-label="Log set ' + n + '">\u2713</button>'
+      + '</div>';
+  }
+  function setTableHeadHTML(ex) {
+    var unit = ex.unit ? ex.unit.charAt(0).toUpperCase() + ex.unit.slice(1) : 'Reps';
+    return '<div class="set-table-head" aria-hidden="true"><span>Set</span><span>Previous</span><span>lbs</span><span>' + unit + '</span><span></span></div>';
   }
 
   //  Warm-up logging lives in its own block rather than inside .warmup-lines,
@@ -6270,19 +6287,19 @@ body.training-mode select.run-input { color: var(--accent); }
       + '<div class="lift-sets-reps" data-setslabel="' + ex.id + '">' + dispN + ' sets × ' + range + '</div>'
       //  Caption under the rep count. Static content off EXERCISES, so it
       //  never needs restoring or persisting.
-      + '<div class="simple-target simple-only" data-simpletarget="' + ex.id + '"></div>'
-      + (ex.repWhy ? '<div class="lift-rep-why adv-card">' + ex.repWhy + '</div>' : '')
+      + '<div class="simple-target" data-simpletarget="' + ex.id + '"></div>'
+      + (ex.repWhy ? '<div class="lift-rep-why detail">' + ex.repWhy + '</div>' : '')
       //  Why the builder put this exercise here. Only a string is a reason:
       //  older call sites still map liftRowHTML directly, which passes an index.
-      + (typeof reason === 'string' ? '<div class="adv-card lift-pick-why' + (typeof partnerId === 'string' ? ' superset' : '') + '">' + reason + '</div>' : '')
+      + (typeof reason === 'string' ? '<div class="detail lift-pick-why' + (typeof partnerId === 'string' ? ' superset' : '') + '">' + reason + '</div>' : '')
       + variantChipsHTML(ex)
-      + '<div class="warmup-lines adv-card" data-warmups="' + ex.id + '"></div>'
-      + '<div class="target-block adv-card" data-targets="' + ex.id + '"></div>'
+      + '<div class="warmup-lines detail" data-warmups="' + ex.id + '"></div>'
+      + '<div class="target-block detail" data-targets="' + ex.id + '"></div>'
       + '</div>'
-      + '<div class="lift-rest adv-card">' + ex.rest + '</div>'
-      + '<div class="lift-time adv-card">' + ex.time + '</div>'
+      + '<div class="lift-rest detail">' + ex.rest + '</div>'
+      + '<div class="lift-time detail">' + ex.time + '</div>'
       + '<div class="lift-log-inline">'
-      + '<div class="log-row adv-card">'
+      + '<div class="log-row detail">'
       + '<div class="log-inline-group"><span class="log-inline-label">Weight to use</span>'
       + withSteppers('w-' + ex.id, 'weight', '<input class="log-inline-input" type="number" inputmode="decimal" id="w-' + ex.id + '" data-ex="' + ex.id + '" oninput="onAimInput(this.dataset.ex)" onchange="onAimCommit(this.dataset.ex)">') + '</div>'
       + '<div class="log-inline-group"><span class="log-inline-label">Reps to aim for</span>'
@@ -6293,10 +6310,11 @@ body.training-mode select.run-input { color: var(--accent); }
       + '<button class="setcount-btn' + (n === 2 ? ' on' : '') + '" id="sc2-' + ex.id + '" data-ex="' + ex.id + '" data-n="2" onclick="setExerciseSets(this.dataset.ex, 2)">2</button>'
       + '<button class="setcount-btn' + (n === 3 ? ' on' : '') + '" id="sc3-' + ex.id + '" data-ex="' + ex.id + '" data-n="3" onclick="setExerciseSets(this.dataset.ex, 3)">3</button>'
       + '</div>'
-      + '<button type="button" class="log-planned-btn" id="planned-' + ex.id + '" data-ex="' + ex.id + '" onclick="logAsPlanned(this.dataset.ex)">Log as planned</button>'
+      + setTableHeadHTML(ex)
       + setRowHTML(ex, 1)
       + setRowHTML(ex, 2)
       + setRowHTML(ex, 3)
+      + '<button type="button" class="log-planned-btn" id="planned-' + ex.id + '" data-ex="' + ex.id + '" onclick="logAsPlanned(this.dataset.ex)">Log as planned</button>'
       + '<div class="log-row adv-card">'
       + '<button class="failure-toggle" id="f-' + ex.id + '" data-ex="' + ex.id + '" onclick="toggleFailure(this)">Failure · No</button>'
       + '<span class="autosave-flash" id="save-' + ex.id + '"></span>'
@@ -6308,7 +6326,7 @@ body.training-mode select.run-input { color: var(--accent); }
       + warmupLogHTML(ex)
       + '</div>'
       + '<div class="lift-status" data-status="' + ex.id + '" onclick="event.stopPropagation()"></div>'
-      + '<button type="button" class="card-more-btn simple-only" aria-expanded="false" data-ex="' + ex.id + '" onclick="toggleCardMore(this)">More options</button>'
+      + '<button type="button" class="card-more-btn" aria-expanded="false" data-ex="' + ex.id + '" onclick="toggleCardMore(this)">Swap and details</button>'
       + '</div>';
   }
 
@@ -6649,7 +6667,10 @@ body.training-mode select.run-input { color: var(--accent); }
         rEl.placeholder = refSet ? String(refSet.r) : 'reps';
       }
       var lastEl = document.getElementById('last-' + slot + '-' + ex.id);
-      if (lastEl) lastEl.textContent = refSet ? 'Last ' + (refSet.w ? refSet.w + ' \u00d7 ' : '') + refSet.r + (refSet.w ? '' : ' ' + (ex.unit || 'reps')) : '';
+      if (lastEl) {
+        lastEl.textContent = refSet ? (refSet.w ? refSet.w + ' \u00d7 ' : '') + refSet.r : '';
+        lastEl.disabled = !refSet;
+      }
       markDoneBtn(ex.id, slot, !!loggedSet);
       var stEl = document.querySelector('[data-simpletarget="' + ex.id + '"]');
       if (stEl && slot === 's1') stEl.innerHTML = simpleTargetText(ex, target, prevRef);
@@ -6811,7 +6832,7 @@ body.training-mode select.run-input { color: var(--accent); }
     var row = document.getElementById('row-' + btn.dataset.ex);
     if (!row) return;
     var open = row.classList.toggle('show-more');
-    btn.textContent = open ? 'Fewer options' : 'More options';
+    btn.textContent = open ? 'Hide details' : 'Swap and details';
     btn.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
   //  One plain sentence for simple mode: what weight to put on the bar.
@@ -6885,8 +6906,23 @@ body.training-mode select.run-input { color: var(--accent); }
     var b = document.getElementById('done-' + slot + '-' + exId);
     if (!b) return;
     b.classList.toggle('on', done);
-    b.textContent = done ? 'Logged' : 'Done';
     b.setAttribute('aria-pressed', done ? 'true' : 'false');
+    var row = b.closest ? b.closest('.set-row') : null;
+    if (row) row.classList.toggle('logged', done);
+  }
+  //  Tap Previous: last session's numbers for this set go into the boxes.
+  //  The check still logs it, so a copy is never a silent save.
+  function copyPrevSet(btn) {
+    var ex = EX_BY_ID[btn.dataset.ex], slot = btn.dataset.slot;
+    if (!ex) return;
+    var ref = prevWeekEntry(getHistory(ex.id), currentTrainWeek, ex);
+    var st = ref ? normSet(ref, ref[slot]) : null;
+    if (!st) return;
+    var wEl = document.getElementById(slot + 'w-' + ex.id), rEl = document.getElementById(slot + 'r-' + ex.id);
+    if (wEl && st.w) { wEl.value = st.w; wEl.dataset.dirty = 1; }
+    if (rEl) rEl.value = st.r;
+    var d = document.getElementById('done-' + slot + '-' + ex.id);
+    if (d) d.focus();
   }
   //  One tap logs the set as it reads: the weight box already holds the aim,
   //  and an empty reps box takes the aim reps, then last session's reps,
