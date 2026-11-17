@@ -34,7 +34,7 @@
      div below paints, the mark is very likely already in memory instead of
      popping in a beat after the dark background does. -->
 <link rel="preload" as="image" href="assets/brand/rtw-square-a.png">
-<link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;500;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;500;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
 <style>
   :root {
     --accent:      #F1EFE1;
@@ -77,7 +77,9 @@
     --card:   #232320;
     --font-display: 'Antonio', sans-serif;
     --font-body:    'DM Sans', sans-serif;
-    --font-mono:    'Space Mono', monospace;
+    --font-mono:    var(--font-body);
+    /* Type scale: seven sizes, used everywhere. */
+    --fs-1: 12px; --fs-2: 14px; --fs-3: 16px; --fs-4: 20px; --fs-5: 28px; --fs-6: 40px; --fs-7: 56px;
   }
   /* BLACK THEME. Surface tokens only. Accent, text, muted and dim stay put
      so every contrast ratio tuned against Dark still holds or improves. */
@@ -190,10 +192,10 @@
     display: flex; align-items: center; justify-content: flex-start; gap: 0;
   }
   .nav-logo {
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 900;
-    font-size: 22px;
-    letter-spacing: 0.08em;
+    font-size: var(--fs-4);
+    letter-spacing: 0.01em;
     color: var(--accent);
   }
   /* The wordmark PNG carries the brand background (var(--on-accent)), identical to the
@@ -240,7 +242,7 @@
     /* Spacing comes from the parent's flex gap now, not a one-sided margin —
        a margin-left only pushed the visual center of icon+wordmark right of
        the pill's true center. */
-    font-size: 15px;
+    font-size: var(--fs-3);
     transition: transform 0.2s; line-height: 1;
   }
   .nav-logo[aria-expanded="true"] .nav-logo-chevron { transform: rotate(180deg); }
@@ -252,10 +254,10 @@
   .nav-logo span { color: var(--accent); }
   .nav-links { display: flex; gap: 32px; }
   .nav-links a {
-    font-size: 12px;
+    font-size: var(--fs-1);
     font-weight: 600;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    
     color: var(--muted);
     text-decoration: none;
     transition: color 0.2s;
@@ -329,26 +331,26 @@
   }
   .ring-week-num {
     font-family: var(--font-display);
-    font-size: clamp(72px, 15vw, 108px);
+    font-size: var(--fs-7);
     font-weight: 700;
     line-height: 0.85;
     color: var(--accent);
     letter-spacing: -0.02em;
   }
   .ring-week-label {
-    font-family: var(--font-mono);
-    font-size: 11px;
+    font-family: var(--font-body);
+    font-size: var(--fs-1);
     color: var(--text-soft);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    
     margin-top: 10px;
   }
   .ring-days-done {
-    font-family: var(--font-mono);
-    font-size: 10px;
+    font-family: var(--font-body);
+    font-size: var(--fs-1);
     color: var(--accent);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    
     margin-top: 4px;
     min-height: 14px;
   }
@@ -357,15 +359,15 @@
     max-width: 380px;
   }
   .hero-eyebrow {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
+    font-family: var(--font-body);
+    font-size: var(--fs-1);
+    letter-spacing: 0.01em;
+    
     color: var(--text-soft);
     margin-bottom: 14px;
   }
   .hero-desc {
-    font-size: 15px;
+    font-size: var(--fs-3);
     color: var(--text);
     line-height: 1.75;
     margin-bottom: 36px;
@@ -378,11 +380,11 @@
     border: 1px solid var(--accent);
     color: var(--accent);
     text-decoration: none;
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
+    font-size: var(--fs-2);
+    letter-spacing: 0.01em;
+    
     padding: 14px 40px;
     border-radius: 2px;
     cursor: pointer;
@@ -390,7 +392,7 @@
   }
   .hero-cta:hover { background: var(--accent); color: var(--on-accent); }
   .hero-cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-  .hero-cta-arrow { font-size: 16px; transition: transform 0.2s; }
+  .hero-cta-arrow { font-size: var(--fs-3); transition: transform 0.2s; }
   .hero-cta:hover .hero-cta-arrow { transform: translateX(4px); }
   .hero-stats { display: none; }
   /* Brought back as real display type. It was retired with the old hero layout
@@ -399,10 +401,10 @@
   .hero-title {
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: clamp(34px, 6.2vw, 84px);
+    font-size: var(--fs-7);
     line-height: 0.95;
     letter-spacing: 0.01em;
-    text-transform: uppercase;
+    
     color: var(--text);
     text-align: center;
     max-width: 90vw;
@@ -415,7 +417,7 @@
   /* SECTION BASE */
   section { padding: 100px 60px; }
   .section-label {
-    font-size: 11px;
+    font-size: var(--fs-1);
     font-weight: 700;
     letter-spacing: 0.3em;
     text-transform: uppercase;
@@ -427,8 +429,8 @@
   .section-title {
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: clamp(48px, 6vw, 80px);
-    text-transform: uppercase;
+    font-size: var(--fs-7);
+    
     line-height: 0.95;
     letter-spacing: -0.01em;
     color: var(--accent);
@@ -445,7 +447,7 @@
     align-items: start;
   }
   .about-text p {
-    font-size: 16px;
+    font-size: var(--fs-3);
     color: var(--muted);
     line-height: 1.8;
     margin-bottom: 20px;
@@ -469,19 +471,19 @@
   }
   .pillar:hover { border-color: rgba(var(--ink-rgb),0.12); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.35); }
   .pillar-icon {
-    font-size: 24px;
+    font-size: var(--fs-5);
     margin-bottom: 12px;
   }
   .pillar-title {
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 700;
-    font-size: 18px;
+    font-size: var(--fs-4);
     letter-spacing: 0.05em;
-    text-transform: uppercase;
+    
     color: var(--accent);
     margin-bottom: 8px;
   }
-  .pillar-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .pillar-desc { font-size: var(--fs-2); color: var(--muted); line-height: 1.6; }
 
   /* WEEK OVERVIEW */
   #overview { background: var(--dark); border-top: 1px solid var(--border); }
@@ -496,11 +498,11 @@
     color: var(--muted);
     padding: 10px 24px;
     border-radius: 999px;
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 700;
-    font-size: 15px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-size: var(--fs-3);
+    letter-spacing: 0.01em;
+    
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -516,8 +518,8 @@
     display: flex; gap: 32px; flex-wrap: wrap;
   }
   .week-info-item {}
-  .week-info-label { font-size: 11px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-  .week-info-val { font-size: 15px; color: var(--text); }
+  .week-info-label { font-size: var(--fs-1); font-weight: 600; letter-spacing: 0.01em;  color: var(--muted); margin-bottom: 6px; }
+  .week-info-val { font-size: var(--fs-3); color: var(--text); }
 
   /* DAY CARDS */
   .day-grid {
@@ -548,33 +550,33 @@
   .day-card:hover::before { transform: scaleX(1); }
   .day-card:hover { border-color: rgba(var(--ink-rgb),0.12); background: var(--surface-2); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.35); }
   .day-card-tag {
-    font-size: 10px;
+    font-size: var(--fs-1);
     font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    
     color: var(--muted);
     margin-bottom: 8px;
   }
   .day-card-title {
     font-family: var(--font-display);
     font-weight: 800;
-    font-size: 32px;
+    font-size: var(--fs-5);
     letter-spacing: 0.03em;
-    text-transform: uppercase;
+    
     margin-bottom: 8px;
   }
-  .day-card-focus { font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 20px; }
+  .day-card-focus { font-size: var(--fs-2); color: var(--muted); line-height: 1.5; margin-bottom: 20px; }
   .day-card-meta { display: flex; gap: 16px; align-items: center; }
   .day-tag {
-    font-size: 11px;
+    font-size: var(--fs-1);
     font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    
     padding: 4px 12px;
     border-radius: 999px;
   }
-  .day-duration { font-size: 12px; color: var(--accent); font-weight: 600; }
-  .day-lift-count { font-size: 12px; color: var(--muted); }
+  .day-duration { font-size: var(--fs-1); color: var(--accent); font-weight: 600; }
+  .day-lift-count { font-size: var(--fs-1); color: var(--muted); }
 
   /* WORKOUT PLAN */
   #plan { background: var(--bg); border-top: 1px solid var(--border); }
@@ -589,11 +591,11 @@
     color: var(--muted);
     padding: 11px 22px;
     border-radius: 999px;
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-size: var(--fs-2);
+    letter-spacing: 0.01em;
+    
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -611,12 +613,12 @@
   .plan-day-title {
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: 64px;
+    font-size: var(--fs-7);
     line-height: 1;
-    text-transform: uppercase;
+    
     letter-spacing: -0.01em;
   }
-  .plan-day-focus { font-size: 15px; color: var(--muted); margin-top: 8px; max-width: 500px; line-height: 1.6; }
+  .plan-day-focus { font-size: var(--fs-3); color: var(--muted); margin-top: 8px; max-width: 500px; line-height: 1.6; }
   .plan-badges { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 
   /* WARMUP SECTION */
@@ -625,11 +627,11 @@
     border: 1px solid rgba(var(--ink-rgb),0.22);
     color: rgba(var(--ink-rgb),0.6);
     padding: 12px 24px;
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    font-size: var(--fs-2);
+    letter-spacing: 0.01em;
+    
     cursor: pointer;
     transition: all 0.15s;
     margin-bottom: 32px;
@@ -649,10 +651,10 @@
   }
   .warmup-panel.open { display: block; }
   .warmup-panel-title {
-    font-size: 11px;
+    font-size: var(--fs-1);
     font-weight: 700;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    
     color: var(--accent);
     margin-bottom: 24px;
   }
@@ -661,13 +663,13 @@
   .warmup-num {
     font-family: var(--font-display);
     font-weight: 800;
-    font-size: 20px;
+    font-size: var(--fs-4);
     color: var(--accent);
     min-width: 24px;
     line-height: 1.2;
   }
-  .warmup-step-text { font-size: 15px; color: var(--text); margin-bottom: 4px; font-weight: 500; }
-  .warmup-step-why { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .warmup-step-text { font-size: var(--fs-3); color: var(--text); margin-bottom: 4px; font-weight: 500; }
+  .warmup-step-why { font-size: var(--fs-2); color: var(--muted); line-height: 1.5; }
 
   /* LIFT TABLE */
   .lift-table-header {
@@ -679,10 +681,10 @@
     margin-bottom: 4px;
   }
   .lift-table-header span {
-    font-size: 11px;
+    font-size: var(--fs-1);
     font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    
     color: var(--muted);
   }
   .lift-row {
@@ -698,13 +700,13 @@
   }
   .lift-row:hover { background: rgba(var(--ink-rgb),0.04); }
   .lift-name {
-    font-size: 16px;
+    font-size: var(--fs-3);
     font-weight: 600;
     color: var(--text);
     margin-bottom: 6px;
   }
   .lift-sets-reps {
-    font-size: 13px;
+    font-size: var(--fs-2);
     color: var(--muted);
   }
   /* Why this movement uses this rep range. A caption: it should lose every
@@ -714,7 +716,7 @@
      2.05:1 against the row and is unreadable body copy at 11px on a phone in a
      gym; --muted is 5.41:1 and clears AA while still reading as a caption. */
   .lift-rep-why {
-    font-size: 11px;
+    font-size: var(--fs-1);
     color: var(--muted);
     line-height: 1.45;
     margin-top: 3px;
@@ -722,12 +724,12 @@
     letter-spacing: 0.01em;
   }
   .lift-alts {
-    font-size: 11px;
+    font-size: var(--fs-1);
     color: var(--muted);
     margin-top: 4px;
     letter-spacing: 0.02em;
   }
-  .ramp-hint { font-size: 11px; color: var(--muted); margin-top: 3px; letter-spacing: 0.01em; }
+  .ramp-hint { font-size: var(--fs-1); color: var(--muted); margin-top: 3px; letter-spacing: 0.01em; }
   .lift-alts span { color: var(--accent); font-weight: 600; margin-right: 4px; }
   /* Exercise variant toggle — pick the movement you actually do */
   .lift-variants {
@@ -735,12 +737,12 @@
     margin-top: 8px; align-items: center;
   }
   .lift-variants-label {
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 0.14em; text-transform: uppercase;
+    font-size: var(--fs-1); font-weight: 700;
+    letter-spacing: 0.01em; 
     color: var(--accent); margin-right: 2px;
   }
   .variant-chip {
-    font-size: 12px; font-weight: 600;
+    font-size: var(--fs-1); font-weight: 600;
     color: var(--text);
     background: rgba(var(--ink-rgb),0.04);
     border: 1px solid var(--muted);
@@ -755,8 +757,8 @@
     color: var(--on-accent); background: var(--accent);
     border-color: var(--accent); font-weight: 700;
   }
-  .lift-rest { font-size: 14px; color: var(--muted); font-weight: 600; padding-top: 2px; }
-  .lift-time { font-size: 14px; color: var(--muted); padding-top: 2px; }
+  .lift-rest { font-size: var(--fs-2); color: var(--muted); font-weight: 600; padding-top: 2px; }
+  .lift-time { font-size: var(--fs-2); color: var(--muted); padding-top: 2px; }
 
   /* PROGRESSION */
   #progression { background: var(--dark); border-top: 1px solid var(--border); }
@@ -775,8 +777,8 @@
   .prog-card-lift {
     font-family: var(--font-display);
     font-weight: 800;
-    font-size: 28px;
-    text-transform: uppercase;
+    font-size: var(--fs-5);
+    
     letter-spacing: 0.03em;
   }
   .prog-row {
@@ -791,15 +793,15 @@
   .prog-row:last-child { border-bottom: none; }
   .prog-row:hover { background: rgba(var(--ink-rgb),0.02); }
   .prog-row.highlight { background: rgba(var(--ink-rgb),0.06); border-left: 2px solid var(--accent); }
-  .prog-week { font-size: 13px; color: var(--muted); font-weight: 500; }
+  .prog-week { font-size: var(--fs-2); color: var(--muted); font-weight: 500; }
   .prog-week.active-week { color: var(--accent); font-weight: 700; }
   .prog-weight {
     font-family: var(--font-display);
     font-weight: 800;
-    font-size: 22px;
+    font-size: var(--fs-4);
     letter-spacing: 0.02em;
   }
-  .prog-note { font-size: 13px; color: var(--muted); line-height: 1.4; }
+  .prog-note { font-size: var(--fs-2); color: var(--muted); line-height: 1.4; }
   .prog-week-selector {
     display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap;
   }
@@ -809,11 +811,11 @@
     color: var(--muted);
     padding: 8px 22px;
     border-radius: 999px;
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 700;
-    font-size: 14px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-size: var(--fs-2);
+    letter-spacing: 0.01em;
+    
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -831,28 +833,28 @@
   .footer-logo {
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: 32px;
+    font-size: var(--fs-5);
     letter-spacing: 0.05em;
-    text-transform: uppercase;
+    
     color: var(--accent);
     margin-bottom: 8px;
   }
   .footer-logo img { height: 46px; width: auto; display: block; margin-bottom: 4px; }
   .footer-logo span { color: var(--accent); }
-  .footer-sub { font-size: 13px; color: var(--muted); }
+  .footer-sub { font-size: var(--fs-2); color: var(--muted); }
   .footer-rules { max-width: 400px; }
-  .footer-rules-title { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
-  .footer-rule { font-size: 13px; color: var(--muted); margin-bottom: 8px; display: flex; gap: 10px; line-height: 1.5; }
+  .footer-rules-title { font-size: var(--fs-1); font-weight: 700; letter-spacing: 0.01em;  color: var(--accent); margin-bottom: 16px; }
+  .footer-rule { font-size: var(--fs-2); color: var(--muted); margin-bottom: 8px; display: flex; gap: 10px; line-height: 1.5; }
   .footer-rule-num { color: var(--accent); flex-shrink: 0; font-weight: 700; }
 
   /* BADGE STYLES */
   .badge {
     display: inline-block;
     padding: 5px 14px;
-    font-size: 11px;
+    font-size: var(--fs-1);
     font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    
     border-radius: 999px;
   }
 
@@ -871,9 +873,9 @@
     /* Bigger and more obviously tappable on mobile, not smaller — this is the
        only way to switch sections, so it earns the extra footprint. Total
        pill height (img + padding + border) stays under the 48px nav row. */
-    nav .nav-logo { font-size: 15px; letter-spacing: 0.04em; flex: 0 1 auto; min-width: 0; padding: 7px 14px; gap: 8px; }
+    nav .nav-logo { font-size: var(--fs-3); letter-spacing: 0.04em; flex: 0 1 auto; min-width: 0; padding: 7px 14px; gap: 8px; }
     nav .nav-logo img { height: 27px; max-width: 100%; object-fit: contain; object-position: center; }
-    nav .nav-logo-chevron { font-size: 17px; }
+    nav .nav-logo-chevron { font-size: var(--fs-3); }
     .nav-links { display: none; }
     /* Three tiers of nav rules used to sit here — tab overflow at 768, the
        wordmark giving way to the square mark at 520, tighter tab padding at
@@ -888,8 +890,8 @@
       justify-content: flex-start;
     }
     .hero-number { display: none; }
-    .hero-eyebrow { font-size: 11px; margin-bottom: 14px; }
-    .hero-desc { font-size: 14px; margin-bottom: 28px; }
+    .hero-eyebrow { font-size: var(--fs-1); margin-bottom: 14px; }
+    .hero-desc { font-size: var(--fs-2); margin-bottom: 28px; }
     .hero-stats { gap: 24px; flex-wrap: wrap; }
     .hero-cta { margin-top: 28px; }
     .edge-section { padding: 80px 24px; }
@@ -897,11 +899,11 @@
     .pillars { grid-template-columns: 1fr; }
     .prog-grid { grid-template-columns: 1fr; }
     footer { padding: 40px 24px; }
-    .plan-day-title { font-size: 48px; }
+    .plan-day-title { font-size: var(--fs-7); }
     .lift-table-header, .lift-row { grid-template-columns: 1fr 70px 80px; }
     .lift-time { display: none; }
     .nav-sub { padding: 0 12px; }
-    .nav-sub button { padding: 12px 12px; font-size: 11px; }
+    .nav-sub button { padding: 12px 12px; font-size: var(--fs-1); }
     .settings-maxes-display { gap: 8px; }
     .settings-max-chip { padding: 5px 10px; }
   }
@@ -911,12 +913,12 @@
     .hero { padding: 32px 20px 40px; }
     .edge-section { padding: 60px 20px; }
     .hero-eyebrow { margin-bottom: 12px; }
-    .hero-desc { font-size: 13px; margin-bottom: 20px; }
+    .hero-desc { font-size: var(--fs-2); margin-bottom: 20px; }
     .hero-stats { gap: 12px; }
-    .stat-num { font-size: 32px; }
-    .stat-label { font-size: 10px; }
-    .hero-cta { margin-top: 20px; padding: 12px 24px; font-size: 14px; }
-    .section-title { font-size: clamp(36px, 10vw, 80px); }
+    .stat-num { font-size: var(--fs-5); }
+    .stat-label { font-size: var(--fs-1); }
+    .hero-cta { margin-top: 20px; padding: 12px 24px; font-size: var(--fs-2); }
+    .section-title { font-size: var(--fs-7); }
     /* body.training-mode .train-title's own clamp() floors at 56px, wider than
        this viewport wants, and the h2's default left-align then leaves dead
        space to the right of the shorter "THIS IS" line. Centering (one of the
@@ -924,18 +926,18 @@
        clamp or the hard-coded <br> line break. */
     .train-title { text-align: center; }
     .nav-sub { padding: 0 10px; }
-    .nav-sub button { padding: 12px 10px; font-size: 11px; }
-    .plan-nav-btn { font-size: 11px; padding: 7px 8px; }
+    .nav-sub button { padding: 12px 10px; font-size: var(--fs-1); }
+    .plan-nav-btn { font-size: var(--fs-1); padding: 7px 8px; }
     .settings-max-chip { padding: 4px 8px; gap: 6px; }
-    .settings-max-label { font-size: 9px; }
-    .settings-max-val { font-size: 14px; }
-    .settings-open-btn { font-size: 12px; padding: 8px 14px; }
+    .settings-max-label { font-size: var(--fs-1); }
+    .settings-max-val { font-size: var(--fs-2); }
+    .settings-open-btn { font-size: var(--fs-1); padding: 8px 14px; }
     .rest-timer-strip { padding: 10px 12px; gap: 6px; }
-    .rest-preset-btn { padding: 5px 10px; font-size: 12px; }
-    .rest-timer-strip-label { font-size: 9px; }
-    .prog-week-btn { padding: 5px 10px; font-size: 12px; }
+    .rest-preset-btn { padding: 5px 10px; font-size: var(--fs-1); }
+    .rest-timer-strip-label { font-size: var(--fs-1); }
+    .prog-week-btn { padding: 5px 10px; font-size: var(--fs-1); }
     .timer-inner { padding: 10px 14px; }
-    .timer-display { font-size: 40px; }
+    .timer-display { font-size: var(--fs-6); }
     footer { padding: 32px 20px; }
     section { padding: 60px 20px; }
   }
@@ -946,7 +948,7 @@
     nav { height: 48px; }
     .nav-sub { top: 48px; }
     .hero { min-height: auto; padding: 60px 32px 40px; }
-    .hero-title { font-size: clamp(24px, 4.6vw, 40px); margin-bottom: 8px; }
+    .hero-title { font-size: var(--fs-6); margin-bottom: 8px; }
     .hero-stats { gap: 20px; }
     .hero-cta { margin-top: 20px; padding: 12px 24px; }
     section { padding: 60px 32px; }
@@ -1030,10 +1032,10 @@
     flex-wrap: wrap;
   }
   .log-sets-label {
-    font-size: 11px;
+    font-size: var(--fs-1);
     font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    
     color: var(--muted);
     min-width: 50px;
   }
@@ -1043,12 +1045,12 @@
     border: 1px solid var(--border);
     background: transparent;
     color: var(--muted);
-    font-size: 12px;
+    font-size: var(--fs-1);
     font-weight: 700;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: all 0.15s;
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     letter-spacing: 0.05em;
     flex-shrink: 0;
     position: relative;
@@ -1065,20 +1067,20 @@
     align-items: center;
   }
   .last-session-label {
-    font-size: 10px;
+    font-size: var(--fs-1);
     font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    
     color: var(--muted);
   }
   .last-session-chip {
-    font-size: 12px;
+    font-size: var(--fs-1);
     color: var(--muted);
     padding: 3px 12px;
     background: var(--dark);
     border: 1px solid rgba(var(--ink-rgb),0.08);
     border-radius: 999px;
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 600;
     letter-spacing: 0.05em;
   }
@@ -1086,14 +1088,14 @@
   /* INLINE EXERCISE LOG — warm-ups, targets, one input area per lift */
   .warmup-lines { margin-top: 10px; }
   .warmup-title {
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 0.15em; text-transform: uppercase;
+    font-size: var(--fs-1); font-weight: 700;
+    letter-spacing: 0.01em; 
     color: var(--muted); margin-bottom: 2px;
   }
-  .warmup-lines .ramp-hint { font-family: var(--font-mono); margin-top: 2px; }
+  .warmup-lines .ramp-hint { font-family: var(--font-body); margin-top: 2px; }
   .target-block { margin-top: 10px; }
-  .target-msg { font-size: 11px; color: var(--accent); letter-spacing: 0.02em; margin-bottom: 4px; }
-  .target-line { font-size: 12px; color: var(--text); font-family: var(--font-mono); margin-top: 2px; }
+  .target-msg { font-size: var(--fs-1); color: var(--accent); letter-spacing: 0.02em; margin-bottom: 4px; }
+  .target-line { font-size: var(--fs-1); color: var(--text); font-family: var(--font-body); margin-top: 2px; }
   .lift-log-inline {
     grid-column: 1 / -1;
     display: flex; flex-direction: column; gap: 12px;
@@ -1107,8 +1109,8 @@
   .log-row { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
   .log-inline-group { display: flex; flex-direction: column; gap: 5px; }
   .log-inline-label {
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 0.12em; text-transform: uppercase;
+    font-size: var(--fs-1); font-weight: 700;
+    letter-spacing: 0.01em; 
     color: var(--muted);
   }
   .log-inline-input {
@@ -1116,8 +1118,8 @@
     border: 1px solid var(--input-border-idle);
     color: var(--accent);
     padding: 10px 12px;
-    font-family: var(--font-display);
-    font-size: 18px; font-weight: 700;
+    font-family: var(--font-body);
+    font-size: var(--fs-4); font-weight: 700;
     border-radius: 10px;
     width: 92px;
     outline: none;
@@ -1131,7 +1133,7 @@
     width: 44px; height: 44px; flex: 0 0 44px;
     display: flex; align-items: center; justify-content: center;
     background: rgba(var(--ink-rgb),0.06); border: 1px solid var(--field); color: var(--text);
-    font-family: var(--font-display); font-size: 20px; font-weight: 700; line-height: 1;
+    font-family: var(--font-body); font-size: var(--fs-4); font-weight: 700; line-height: 1;
     border-radius: 8px; cursor: pointer; touch-action: manipulation;
     -webkit-user-select: none; user-select: none;
   }
@@ -1143,18 +1145,18 @@
     color: var(--muted);
     padding: 12px 16px;
     border-radius: 999px;
-    font-family: var(--font-display);
-    font-weight: 700; font-size: 12px;
-    letter-spacing: 0.08em; text-transform: uppercase;
+    font-family: var(--font-body);
+    font-weight: 700; font-size: var(--fs-1);
+    letter-spacing: 0.01em; 
     cursor: pointer;
     transition: all 0.15s;
   }
   .failure-toggle:hover { border-color: var(--dim); color: var(--text); }
   .failure-toggle.on { border-color: var(--accent); color: var(--accent); background: rgba(var(--ink-rgb),0.10); }
   .autosave-flash {
-    font-family: var(--font-display);
-    font-size: 12px; font-weight: 700;
-    letter-spacing: 0.1em; text-transform: uppercase;
+    font-family: var(--font-body);
+    font-size: var(--fs-1); font-weight: 700;
+    letter-spacing: 0.01em; 
     color: var(--accent);
     min-width: 72px;
     align-self: center;
@@ -1170,9 +1172,9 @@
     min-width: 44px;
     padding: 8px 14px;
     border-radius: 999px;
-    font-family: var(--font-display);
-    font-weight: 800; font-size: 13px;
-    letter-spacing: 0.06em;
+    font-family: var(--font-body);
+    font-weight: 800; font-size: var(--fs-2);
+    letter-spacing: 0.01em;
     cursor: pointer;
     transition: all 0.15s;
   }
@@ -1188,17 +1190,17 @@
     border-top: 1px dashed var(--border);
   }
   .warmup-log-title {
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 0.12em; text-transform: uppercase;
+    font-size: var(--fs-1); font-weight: 700;
+    letter-spacing: 0.01em; 
     color: var(--muted);
     display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
   }
   .warmup-log-note {
-    font-size: 9px; font-weight: 600; letter-spacing: 0.06em;
+    font-size: var(--fs-1); font-weight: 600; letter-spacing: 0.01em;
     text-transform: none; color: var(--dim); opacity: 0.9;
   }
   .warmup-log .log-inline-input.warmup-input {
-    font-size: 15px;
+    font-size: var(--fs-3);
     padding: 8px 10px;
     width: 84px;
     background: rgba(var(--ink-rgb),0.05);
@@ -1207,9 +1209,9 @@
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
     color: var(--on-accent); border: none;
     padding: 12px 24px;
-    font-family: var(--font-display);
-    font-weight: 800; font-size: 13px;
-    letter-spacing: 0.12em; text-transform: uppercase;
+    font-family: var(--font-body);
+    font-weight: 800; font-size: var(--fs-2);
+    letter-spacing: 0.01em; 
     cursor: pointer;
     border-radius: 999px;
     transition: all 0.15s;
@@ -1220,36 +1222,36 @@
   .add-ex { grid-column: 1 / -1; padding: 4px 0 2px; }
   .add-ex-toggle {
     background: transparent; border: 1px dashed var(--border); color: var(--muted);
-    padding: 9px 16px; font-family: var(--font-display); font-weight: 700;
-    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 9px 16px; font-family: var(--font-body); font-weight: 700;
+    font-size: var(--fs-1); letter-spacing: 0.01em; 
     cursor: pointer; border-radius: 999px; transition: all 0.15s;
   }
   .add-ex-toggle:hover, .add-ex-toggle.open { border-color: var(--field); color: var(--text); }
   .add-ex-form { display: none; margin-top: 12px; }
   .add-ex-form.open { display: block; }
   .add-ex-row { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
-  .add-ex-name { width: 100%; font-size: 15px; }
+  .add-ex-name { width: 100%; font-size: var(--fs-3); }
   .add-ex-go {
     background: var(--accent); color: var(--on-accent); border: none;
-    padding: 11px 22px; font-family: var(--font-display); font-weight: 800;
-    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 11px 22px; font-family: var(--font-body); font-weight: 800;
+    font-size: var(--fs-1); letter-spacing: 0.01em; 
     cursor: pointer; border-radius: 999px; transition: all 0.15s;
   }
   .add-ex-go:hover { opacity: 0.88; }
-  .add-ex-hint { font-size: 11px; color: var(--muted); align-self: center; }
+  .add-ex-hint { font-size: var(--fs-1); color: var(--muted); align-self: center; }
   /* Remove, on custom rows only. Quiet by default so it is never the obvious
      thing to press, and only turns red once you are actually on it. */
   .remove-ex {
     background: transparent; border: 1px solid var(--border); color: var(--muted);
-    padding: 10px 16px; font-family: var(--font-display); font-weight: 700;
-    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 10px 16px; font-family: var(--font-body); font-weight: 700;
+    font-size: var(--fs-1); letter-spacing: 0.01em; 
     cursor: pointer; border-radius: 999px; margin-left: auto; transition: all 0.15s;
   }
   .remove-ex:hover { border-color: var(--accent); color: var(--accent); }
   .lift-status { grid-column: 1 / -1; margin-top: 10px; cursor: default; }
-  .soft-set-note { font-size: 12px; color: var(--muted); font-style: italic; margin-top: 6px; }
-  .seed-weight-note { font-size: 11px; color: var(--muted); font-style: italic; margin-top: 2px; opacity: 0.8; }
-  .stall-warning { font-size: 12px; color: var(--accent); font-weight: 700; margin-top: 6px; letter-spacing: 0.02em; }
+  .soft-set-note { font-size: var(--fs-1); color: var(--muted); font-style: italic; margin-top: 6px; }
+  .seed-weight-note { font-size: var(--fs-1); color: var(--muted); font-style: italic; margin-top: 2px; opacity: 0.8; }
+  .stall-warning { font-size: var(--fs-1); color: var(--accent); font-weight: 700; margin-top: 6px; letter-spacing: 0.02em; }
   /* LOG MODAL */
   .log-modal-overlay {
     position: fixed; inset: 0;
@@ -1269,18 +1271,18 @@
     box-shadow: 0 24px 64px rgba(0,0,0,0.6);
   }
   .log-modal-title {
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 800;
-    font-size: 11px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
+    font-size: var(--fs-1);
+    letter-spacing: 0.01em;
+    
     color: var(--accent);
     margin-bottom: 6px;
   }
   .log-modal-lift {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 20px;
+    font-size: var(--fs-4);
     color: var(--accent);
     margin-bottom: 24px;
     line-height: 1.2;
@@ -1293,10 +1295,10 @@
   }
   .log-input-group {}
   .log-input-label {
-    font-size: 10px;
+    font-size: var(--fs-1);
     font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    
     color: var(--muted);
     margin-bottom: 8px;
   }
@@ -1305,8 +1307,8 @@
     border: 1px solid var(--field);
     color: var(--accent);
     padding: 14px 16px;
-    font-family: var(--font-display);
-    font-size: 22px;
+    font-family: var(--font-body);
+    font-size: var(--fs-4);
     font-weight: 700;
     border-radius: 12px;
     width: 100%;
@@ -1319,11 +1321,11 @@
     color: var(--on-accent);
     border: none;
     padding: 14px;
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 800;
-    font-size: 15px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    font-size: var(--fs-3);
+    letter-spacing: 0.01em;
+    
     cursor: pointer;
     border-radius: 999px;
     width: 100%;
@@ -1337,11 +1339,11 @@
     color: var(--muted);
     border: 1px solid var(--border);
     padding: 10px;
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-size: var(--fs-2);
+    letter-spacing: 0.01em;
+    
     cursor: pointer;
     border-radius: 999px;
     width: 100%;
@@ -1354,11 +1356,11 @@
     color: var(--border-hi);
     cursor: pointer;
     padding: 6px 14px;
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 700;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-size: var(--fs-1);
+    letter-spacing: 0.01em;
+    
     border-radius: 999px;
     transition: all 0.15s;
     margin-left: 8px;
@@ -1402,16 +1404,16 @@
   }
   .timer-left { display: flex; align-items: center; gap: 18px; }
   .timer-label {
-    font-size: 10px;
+    font-size: var(--fs-1);
     font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    
     color: var(--muted);
   }
   .timer-lift-name {
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 700;
-    font-size: 15px;
+    font-size: var(--fs-3);
     color: var(--muted);
     max-width: 220px;
     white-space: nowrap;
@@ -1421,7 +1423,7 @@
   .timer-display {
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: 52px;
+    font-size: var(--fs-7);
     line-height: 1;
     letter-spacing: -0.02em;
     color: var(--accent);
@@ -1433,11 +1435,11 @@
   .timer-display.done { color: var(--accent); }
   .timer-right { display: flex; align-items: center; gap: 10px; }
   .timer-btn {
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 800;
-    font-size: 13px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-size: var(--fs-2);
+    letter-spacing: 0.01em;
+    
     border: 1px solid var(--border-hi);
     background: transparent;
     color: var(--muted);
@@ -1459,7 +1461,7 @@
   .timer-btn.danger:hover { border-color: var(--accent); color: var(--accent); }
   @media (max-width: 600px) {
     .timer-inner { padding: 12px 16px; gap: 12px; }
-    .timer-display { font-size: 44px; }
+    .timer-display { font-size: var(--fs-6); }
     .timer-lift-name { display: none; }
   }
 
@@ -1488,11 +1490,11 @@
     border-bottom: 2px solid transparent;
     color: var(--muted);
     padding: 12px 20px;
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-size: var(--fs-2);
+    letter-spacing: 0.01em;
+    
     cursor: pointer;
     transition: all 0.15s;
     white-space: nowrap;
@@ -1516,32 +1518,32 @@
     background: var(--dark);
     border: 1px solid var(--border);
     border-radius: 4px;
-    font-family: var(--font-display);
+    font-family: var(--font-body);
   }
   .settings-max-label {
-    font-size: 10px;
+    font-size: var(--fs-1);
     font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    
     color: var(--muted);
   }
   .settings-max-val {
-    font-size: 16px;
+    font-size: var(--fs-3);
     font-weight: 800;
     color: var(--accent);
     letter-spacing: 0.02em;
   }
-  .settings-max-val.unset { color: var(--muted); font-size: 13px; font-weight: 400; }
+  .settings-max-val.unset { color: var(--muted); font-size: var(--fs-2); font-weight: 400; }
   .settings-open-btn {
     background: transparent;
     border: 1px solid var(--border);
     color: var(--muted);
     padding: 9px 20px;
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-size: var(--fs-2);
+    letter-spacing: 0.01em;
+    
     cursor: pointer;
     border-radius: 2px;
     transition: all 0.15s;
@@ -1577,14 +1579,14 @@
   .settings-modal-title {
     font-family: var(--font-display);
     font-weight: 900;
-    font-size: 28px;
-    text-transform: uppercase;
+    font-size: var(--fs-5);
+    
     letter-spacing: 0.04em;
     color: var(--accent);
     margin-bottom: 6px;
   }
   .settings-modal-sub {
-    font-size: 13px;
+    font-size: var(--fs-2);
     color: var(--muted);
     line-height: 1.6;
     margin-bottom: 32px;
@@ -1593,24 +1595,24 @@
     margin-bottom: 24px;
   }
   .settings-input-label {
-    font-size: 11px;
+    font-size: var(--fs-1);
     font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    
     color: var(--muted);
     margin-bottom: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-  .settings-input-label span { color: var(--accent); font-size: 10px; }
+  .settings-input-label span { color: var(--accent); font-size: var(--fs-1); }
   .settings-input-field {
     background: var(--bg);
     border: 1px solid var(--input-border-idle);
     color: var(--accent);
     padding: 14px 18px;
-    font-family: var(--font-display);
-    font-size: 24px;
+    font-family: var(--font-body);
+    font-size: var(--fs-5);
     font-weight: 800;
     border-radius: 4px;
     width: 100%;
@@ -1620,7 +1622,7 @@
   }
   .settings-input-field:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(var(--ink-rgb),0.12); }
   .settings-input-hint {
-    font-size: 11px;
+    font-size: var(--fs-1);
     color: var(--muted);
     margin-top: 6px;
     line-height: 1.5;
@@ -1630,11 +1632,11 @@
     color: var(--on-accent);
     border: none;
     padding: 20px 16px;
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 900;
-    font-size: 16px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+    font-size: var(--fs-3);
+    letter-spacing: 0.01em;
+    
     cursor: pointer;
     border-radius: 999px;
     width: 100%;
@@ -1648,11 +1650,11 @@
     color: var(--muted);
     border: 1px solid var(--border);
     padding: 12px;
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-size: var(--fs-2);
+    letter-spacing: 0.01em;
+    
     cursor: pointer;
     border-radius: 3px;
     width: 100%;
@@ -1664,11 +1666,11 @@
     color: var(--accent);
     border: none;
     padding: 12px;
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 700;
-    font-size: 12px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-size: var(--fs-1);
+    letter-spacing: 0.01em;
+    
     cursor: pointer;
     width: 100%;
     margin-top: 6px;
@@ -1693,11 +1695,11 @@
     background: transparent;
     border: none;
     color: var(--muted);
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 700;
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-size: var(--fs-1);
+    letter-spacing: 0.01em;
+    
     cursor: pointer;
     border-radius: 2px;
     transition: all 0.15s;
@@ -1714,15 +1716,15 @@
   .settings-modal-card.maxes-mode-reps .maxes-1rm-input { display: none; }
   .maxes-reps-input-wrap { flex: 1; }
   .maxes-reps-label {
-    font-size: 10px;
+    font-size: var(--fs-1);
     font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    
     color: var(--muted);
     margin-bottom: 6px;
   }
   .maxes-est-1rm {
-    font-size: 11px;
+    font-size: var(--fs-1);
     color: var(--accent);
     margin-top: 8px;
     min-height: 16px;
@@ -1733,11 +1735,11 @@
 
   /* Onboarding — the two first-run steps share the settings modal shell */
   .onb-step {
-    font-family: var(--font-display);
-    font-size: 10px;
+    font-family: var(--font-body);
+    font-size: var(--fs-1);
     font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    
     color: var(--muted);
     margin-bottom: 14px;
   }
@@ -1750,15 +1752,15 @@
   .onb-choice {
     background: var(--bg); border: 1px solid var(--field); color: var(--accent);
     padding: 16px 8px; border-radius: 4px; cursor: pointer; transition: all 0.15s;
-    font-family: var(--font-display); font-weight: 800; font-size: 18px;
-    letter-spacing: 0.06em; text-transform: uppercase;
+    font-family: var(--font-display); font-weight: 800; font-size: var(--fs-4);
+    letter-spacing: 0.01em; 
   }
   .onb-choice.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-  .onb-q-hint { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 22px; min-height: 18px; }
-  .onb-summary { list-style: none; padding: 0; margin: 0 0 26px; display: grid; gap: 10px; font-size: 14px; line-height: 1.5; color: var(--text-soft); }
+  .onb-q-hint { font-size: var(--fs-1); color: var(--muted); line-height: 1.6; margin-bottom: 22px; min-height: 18px; }
+  .onb-summary { list-style: none; padding: 0; margin: 0 0 26px; display: grid; gap: 10px; font-size: var(--fs-2); line-height: 1.5; color: var(--text-soft); }
   .onb-summary strong { color: var(--accent); }
-  .onb-later { font-size: 12px; color: var(--muted); text-align: center; margin-top: 14px; }
-  .onb-restore { display: block; text-align: center; font-size: 12px; color: var(--muted); margin-top: 14px; cursor: pointer; text-decoration: underline; }
+  .onb-later { font-size: var(--fs-1); color: var(--muted); text-align: center; margin-top: 14px; }
+  .onb-restore { display: block; text-align: center; font-size: var(--fs-1); color: var(--muted); margin-top: 14px; cursor: pointer; text-decoration: underline; }
   .settings-save-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
   /* Weight badge on lift rows */
@@ -1769,9 +1771,9 @@
     color: var(--accent);
     padding: 2px 10px;
     border-radius: 2px;
-    font-family: var(--font-display);
+    font-family: var(--font-body);
     font-weight: 700;
-    font-size: 14px;
+    font-size: var(--fs-2);
     letter-spacing: 0.05em;
     margin-left: 10px;
     vertical-align: middle;
@@ -1783,12 +1785,12 @@
   .acc-input {
     width: 72px; background: rgba(var(--ink-rgb),0.08); border: 1px solid rgba(var(--ink-rgb),0.35);
     color: var(--accent); padding: 2px 8px; border-radius: 2px;
-    font-family: var(--font-display); font-weight: 700; font-size: 14px;
+    font-family: var(--font-body); font-weight: 700; font-size: var(--fs-2);
     text-align: center; outline: none; letter-spacing: 0.05em;
   }
   .acc-input:focus { border-color: rgba(var(--ink-rgb),0.7); background: rgba(var(--ink-rgb),0.12); }
   .acc-input::placeholder { color: rgba(var(--ink-rgb),0.35); }
-  .acc-rpe-hint { font-size: 10px; color: var(--muted); font-family: var(--font-display); letter-spacing: 0.06em; white-space: nowrap; }
+  .acc-rpe-hint { font-size: var(--fs-1); color: var(--muted); font-family: var(--font-body); letter-spacing: 0.01em; white-space: nowrap; }
 
 
   html, body { overflow-x: hidden; }
@@ -1800,13 +1802,13 @@
     background: var(--surface);
     border: 1px solid var(--border);
     color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: 11px;
+    font-family: var(--font-body);
+    font-size: var(--fs-1);
     letter-spacing: 0.04em;
     padding: 3px 10px;
   }
   .last-session-chip.has-data { color: var(--text); border-color: var(--border-hi); }
-  .ramp-hint { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .ramp-hint { font-size: var(--fs-1); color: var(--muted); margin-top: 3px; }
   /* ── INFO SUB-SECTIONS ──────────────────────────────────────────────────── */
 
 </style>
@@ -1822,13 +1824,13 @@
 }
 @media (max-width: 768px) {
   .nav-sub { top: 52px; padding: 0 12px; }
-  .nav-sub button { padding: 12px 12px; font-size: 11px; }
+  .nav-sub button { padding: 12px 12px; font-size: var(--fs-1); }
 }
 .nav-sub button {
   background: none; border: none; border-bottom: 2px solid transparent;
   color: var(--muted); padding: 12px 18px; cursor: pointer;
-  font-family: var(--font-display); font-weight: 700;
-  font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
+  font-family: var(--font-body); font-weight: 700;
+  font-size: var(--fs-2); letter-spacing: 0.01em; 
   white-space: nowrap;
 }
 .nav-sub button.on { color: var(--accent); border-bottom-color: var(--accent); }
@@ -1840,16 +1842,16 @@ body.training-mode .nav-logo { color: var(--accent); }
 body.training-mode .nav-logo span { color: var(--accent); }
 body.training-mode #plan { background: var(--bg); border-top: none; padding-top: 0; padding-bottom: 60px; }
 body.training-mode .settings-max-chip { background: var(--surface); border-color: rgba(var(--ink-rgb),0.2); gap: 10px; padding: 10px 18px; }
-body.training-mode .settings-max-label { color: var(--muted); font-size: 9px; letter-spacing: 0.18em; }
-body.training-mode .settings-max-val { color: var(--accent); font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
-body.training-mode .settings-max-val.unset { color: var(--muted); font-size: 13px; }
+body.training-mode .settings-max-label { color: var(--muted); font-size: var(--fs-1); letter-spacing: 0.01em; }
+body.training-mode .settings-max-val { color: var(--accent); font-size: var(--fs-4); font-weight: 800; letter-spacing: -0.01em; }
+body.training-mode .settings-max-val.unset { color: var(--muted); font-size: var(--fs-2); }
 body.training-mode .settings-open-btn {
   border-color: var(--accent);
   color: var(--on-accent);
   background: var(--accent);
-  font-size: 12px;
+  font-size: var(--fs-1);
   padding: 10px 22px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.01em;
 }
 body.training-mode .settings-open-btn:hover { background: var(--accent-hi); border-color: var(--accent-hi); }
 body.training-mode .rest-timer-strip { background: var(--surface); border-color: var(--border); }
@@ -1859,7 +1861,7 @@ body.training-mode .rest-preset-btn:hover,
 body.training-mode .rest-preset-btn.active-preset { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 body.training-mode .section-title { color: var(--accent); }
 body.training-mode .section-label { color: var(--accent); }
-body.training-mode .train-title { font-size: clamp(56px, 8vw, 100px); margin-bottom: 32px; }
+body.training-mode .train-title { font-size: var(--fs-7); margin-bottom: 32px; }
 body.training-mode .accent-word { color: var(--accent); text-shadow: 0 0 40px rgba(var(--ink-rgb),0.4); }
 body.training-mode .plan-day-focus { color: var(--muted); }
 body.training-mode .lift-table-header span { color: var(--muted); }
@@ -1909,13 +1911,13 @@ body.training-mode footer { display: none; }
   border: 1px solid var(--border);
 }
 .rest-modal-eyebrow {
-  font-size: 10px; font-weight: 700; letter-spacing: 0.3em;
-  text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
-  font-family: var(--font-display);
+  font-size: var(--fs-1); font-weight: 700; letter-spacing: 0.01em;
+   color: var(--muted); margin-bottom: 8px;
+  font-family: var(--font-body);
 }
 .rest-modal-lift {
   font-family: var(--font-display); font-weight: 700;
-  font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase;
+  font-size: var(--fs-4); letter-spacing: 0.01em; 
   color: var(--text); margin-bottom: 28px; min-height: 22px;
 }
 .rest-modal-ring-wrap {
@@ -1925,31 +1927,31 @@ body.training-mode footer { display: none; }
 .rest-modal-time {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
   font-family: var(--font-display); font-weight: 900;
-  font-size: 62px; line-height: 1; color: var(--text); letter-spacing: -0.02em;
+  font-size: var(--fs-7); line-height: 1; color: var(--text); letter-spacing: -0.02em;
 }
 .rest-modal-time.warning { color: var(--accent); }
-.rest-modal-time.done { color: var(--accent); font-size: 46px; }
+.rest-modal-time.done { color: var(--accent); font-size: var(--fs-6); }
 .rest-modal-status {
-  font-family: var(--font-display); font-weight: 700;
-  font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+  font-family: var(--font-body); font-weight: 700;
+  font-size: var(--fs-1); letter-spacing: 0.01em; 
   color: var(--muted); margin-bottom: 24px; min-height: 16px;
 }
 .rest-modal-status.ready { color: var(--accent); }
 .rest-modal-btns { display: flex; gap: 10px; justify-content: center; }
 .rest-modal-add {
   background: transparent; border: 1px solid var(--border); color: var(--muted);
-  padding: 12px 22px; font-family: var(--font-display);
-  font-weight: 700; font-size: 14px; letter-spacing: 0.1em;
+  padding: 12px 22px; font-family: var(--font-body);
+  font-weight: 700; font-size: var(--fs-2); letter-spacing: 0.01em;
   border-radius: 999px;
-  text-transform: uppercase; cursor: pointer; transition: all 0.15s;
+   cursor: pointer; transition: all 0.15s;
 }
 .rest-modal-add:hover { border-color: var(--border-hi); color: var(--text); }
 .rest-modal-skip {
   background: var(--surface); color: var(--accent); border: 1px solid var(--border);
-  padding: 12px 28px; font-family: var(--font-display);
-  font-weight: 700; font-size: 14px; letter-spacing: 0.1em;
+  padding: 12px 28px; font-family: var(--font-body);
+  font-weight: 700; font-size: var(--fs-2); letter-spacing: 0.01em;
   border-radius: 999px;
-  text-transform: uppercase; cursor: pointer; transition: all 0.15s; flex: 1;
+   cursor: pointer; transition: all 0.15s; flex: 1;
 }
 .asm { display: inline-block; perspective: 600px; }
 .asm span { display: inline-block; transition: transform 0.08s linear; will-change: transform; }
@@ -1967,7 +1969,7 @@ body.training-mode footer { display: none; }
      longer label anything once the columns are gone. */
   .lift-table-header { display: none; }
   .lift-row { grid-template-columns: 1fr; gap: 8px; padding: 18px 14px; }
-  .lift-rest { font-size: 11px; color: var(--muted); }
+  .lift-rest { font-size: var(--fs-1); color: var(--muted); }
   /* Below this a name plus its equipment tag cannot share a line at chip width,
      so each becomes a full-width row: name left, tag right, one line each. */
   .lift-variants { flex-direction: column; align-items: stretch; }
@@ -1977,8 +1979,8 @@ body.training-mode footer { display: none; }
   .variant-opt .variant-chip { flex: 1 1 auto; width: auto; }
 }
 .variant-eq {
-  font-family: var(--font-display); font-size: 8px; font-weight: 700;
-  letter-spacing: 0.12em; text-transform: uppercase;
+  font-family: var(--font-body); font-size: var(--fs-1); font-weight: 700;
+  letter-spacing: 0.01em; 
   padding: 1px 5px; border-radius: 2px;
   background: rgba(var(--ink-rgb),0.08); color: var(--muted);
   border: 1px solid var(--border-hi);
@@ -1991,39 +1993,39 @@ body.training-mode footer { display: none; }
 .variant-chip.variant-custom { border-style: dashed; }
 .equip-chip {
   background: transparent; border: 1px solid var(--field); color: var(--muted); border-radius: 999px;
-  padding: 7px 12px; font-size: 12px; cursor: pointer; font-family: var(--font-body); min-height: 34px;
+  padding: 7px 12px; font-size: var(--fs-1); cursor: pointer; font-family: var(--font-body); min-height: 34px;
 }
 .equip-chip.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
 /* SET TABLE. One 48px row per set: number, previous, weight, reps, check. */
 .set-table-head, .set-row {
-  display: grid; grid-template-columns: 22px minmax(0, 1fr) 64px 52px 46px; gap: 5px; align-items: center;
+  display: grid; grid-template-columns: 26px minmax(0, 1fr) 60px 58px 44px; gap: 4px; align-items: center;
 }
-.set-table-head { margin: 8px 0 2px; padding: 0 2px; font-size: 11px; font-weight: 600; color: var(--muted); }
+.set-table-head { margin: 8px 0 2px; padding: 0 2px; font-size: var(--fs-1); font-weight: 600; color: var(--muted); }
 .set-table-head span:nth-child(n+3) { text-align: center; }
 .set-row { padding: 3px 2px; border-radius: 10px; margin: 0; }
 .lift-row.sets-3 .set-row[data-setrow^="3-"] { display: grid; }
 .set-row.logged { background: rgba(var(--ink-rgb),0.06); }
-.set-num { font-family: var(--font-display); font-weight: 700; font-size: 16px; color: var(--muted); text-align: center; }
+.set-num { font-family: var(--font-body); font-weight: 700; font-size: var(--fs-3); color: var(--muted); text-align: center; }
 .set-last {
   min-height: 44px; background: none; border: none; padding: 0 2px; text-align: left; cursor: pointer;
-  font-family: var(--font-mono); font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-family: var(--font-body); font-size: var(--fs-1); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .set-last:not(:disabled):active { color: var(--text); }
 .set-last:disabled { cursor: default; }
-.log-inline-input.set-cell { width: 100%; min-height: 44px; padding: 6px 4px; text-align: center; font-size: 18px; border-radius: 8px; }
+.log-inline-input.set-cell { width: 100%; min-height: 44px; padding: 6px 4px; text-align: center; font-size: var(--fs-4); border-radius: 8px; }
 .set-done-btn {
-  width: 46px; height: 44px; border-radius: 10px; cursor: pointer; touch-action: manipulation;
+  width: 44px; height: 44px; border-radius: 10px; cursor: pointer; touch-action: manipulation;
   background: transparent; border: 1.5px solid var(--field); color: var(--muted);
-  font-size: 20px; font-weight: 700; line-height: 1;
+  font-size: var(--fs-4); font-weight: 700; line-height: 1;
 }
 .set-done-btn.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .failure-toggle, .setcount-btn { min-height: 44px; }
 .log-inline-input { min-height: 44px; }
 .pr-badge {
-  display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 11px; letter-spacing: 0.12em;
+  display: inline-block; font-family: var(--font-body); font-weight: 700; font-size: var(--fs-1); letter-spacing: 0.01em;
   background: var(--accent); color: var(--on-accent); border-radius: 4px; padding: 2px 7px; margin: 6px 8px 0 0;
 }
-.pr-note { font-size: 12px; color: var(--text); }
+.pr-note { font-size: var(--fs-1); color: var(--text); }
 .week-glance { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin: 0 0 18px; }
 .wg-day {
   background: var(--surface); border: 1px solid var(--field); border-radius: 8px; padding: 7px 2px 8px; min-width: 0;
@@ -2032,14 +2034,14 @@ body.training-mode footer { display: none; }
 .wg-day.rest { cursor: default; opacity: 0.6; }
 .wg-day.today { border-color: var(--accent); color: var(--text); box-shadow: 0 0 0 1px var(--accent) inset; }
 .wg-day.logged .wg-title { text-decoration: line-through; text-decoration-color: var(--dim); }
-.wg-dow { font-family: var(--font-display); font-weight: 700; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
-.wg-title { font-size: 9.5px; line-height: 1.25; margin-top: 3px; color: var(--text); overflow-wrap: normal; white-space: nowrap; overflow: hidden; text-overflow: clip; }
-.wg-time { font-size: 10px; margin-top: 3px; font-family: var(--font-mono); }
+.wg-dow { font-family: var(--font-body); font-weight: 700; font-size: var(--fs-1); letter-spacing: 0.01em;  }
+.wg-title { font-size: var(--fs-1); line-height: 1.25; margin-top: 3px; color: var(--text); overflow-wrap: normal; white-space: nowrap; overflow: hidden; text-overflow: clip; }
+.wg-time { font-size: var(--fs-1); margin-top: 3px; font-family: var(--font-body); }
 .maxes-est-1rm.warn { color: var(--warn); }
 .maxes-set-wrap { flex-basis: 100%; }
 .settings-modal-card.maxes-mode-reps .maxes-reps-row { flex-wrap: wrap; }
 .bw-chart { width: 100%; height: auto; display: block; margin: 10px 0 4px; }
-.bw-band-note { font-size: 13px; color: var(--text); margin-top: 6px; line-height: 1.5; }
+.bw-band-note { font-size: var(--fs-2); color: var(--text); margin-top: 6px; line-height: 1.5; }
 /* SIMPLE MODE is the default. .adv hides page level tools, .adv-card hides
    card extras until More options is tapped on that card, .simple-only shows
    only in simple mode. body.advanced brings everything back. */
@@ -2047,11 +2049,11 @@ body:not(.advanced) .adv { display: none !important; }
 body:not(.advanced) .lift-row:not(.show-more) .adv-card { display: none !important; }
 .lift-row:not(.show-more) .detail { display: none !important; }
 body.advanced .simple-only { display: none !important; }
-.simple-target { font-size: 15px; color: var(--text); margin: 6px 0 10px; line-height: 1.45; }
-.simple-target strong { font-family: var(--font-display); font-size: 18px; letter-spacing: 0.02em; }
+.simple-target { font-size: var(--fs-3); color: var(--text); margin: 6px 0 10px; line-height: 1.45; }
+.simple-target strong { font-family: var(--font-display); font-size: var(--fs-4); letter-spacing: 0.02em; }
 .card-more-btn {
   margin-top: 10px; min-height: 44px; width: 100%; background: transparent; border: 1px dashed var(--field);
-  color: var(--muted); border-radius: 10px; font-family: var(--font-body); font-size: 14px; cursor: pointer;
+  color: var(--muted); border-radius: 10px; font-family: var(--font-body); font-size: var(--fs-2); cursor: pointer;
 }
 .lift-row.show-more .card-more-btn { border-style: solid; }
 /* ── BOTTOM TAB BAR + TODAY ─────────────────────────────────────────────── */
@@ -2064,7 +2066,7 @@ body.advanced .simple-only { display: none !important; }
 .tabbar-btn {
   min-height: 52px; background: none; border: none; cursor: pointer; color: var(--muted);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
-  font-family: var(--font-body); font-size: 11px; font-weight: 600; -webkit-tap-highlight-color: transparent;
+  font-family: var(--font-body); font-size: var(--fs-1); font-weight: 600; -webkit-tap-highlight-color: transparent;
 }
 .tabbar-btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .tabbar-btn.current { color: var(--text); }
@@ -2077,58 +2079,58 @@ body { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
 /* Run logging on the calendar follows the Running setting. */
 body:not(.running) #tab-calendar .run-log { display: none; }
 #todaySection { padding: 24px 20px 32px; max-width: 640px; margin: 0 auto; }
-.today-date { font-family: var(--font-display); font-weight: 700; font-size: 34px; color: var(--text); margin-bottom: 14px; }
-.today-label { font-size: 13px; font-weight: 600; color: var(--muted); margin: 22px 0 8px; }
+.today-date { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-6); color: var(--text); margin-bottom: 14px; }
+.today-label { font-size: var(--fs-2); font-weight: 600; color: var(--muted); margin: 22px 0 8px; }
 .today-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
-.today-card-kicker { font-size: 13px; color: var(--muted); }
-.today-card-title { font-family: var(--font-display); font-weight: 700; font-size: 30px; color: var(--text); margin: 4px 0 6px; line-height: 1.05; }
-.today-card-meta { font-size: 14px; color: var(--muted); margin-bottom: 16px; }
+.today-card-kicker { font-size: var(--fs-2); color: var(--muted); }
+.today-card-title { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-5); color: var(--text); margin: 4px 0 6px; line-height: 1.05; }
+.today-card-meta { font-size: var(--fs-2); color: var(--muted); margin-bottom: 16px; }
 .today-start {
   width: 100%; min-height: 54px; border: none; border-radius: 12px; cursor: pointer;
   background: var(--accent); color: var(--on-accent); font-family: var(--font-display); font-weight: 700;
-  font-size: 18px; letter-spacing: 0.04em;
+  font-size: var(--fs-4); letter-spacing: 0.04em;
 }
-.today-secondary { margin-top: 10px; width: 100%; min-height: 44px; background: none; border: 1px solid var(--field); border-radius: 12px; color: var(--text); font-family: var(--font-body); font-size: 14px; cursor: pointer; }
+.today-secondary { margin-top: 10px; width: 100%; min-height: 44px; background: none; border: 1px solid var(--field); border-radius: 12px; color: var(--text); font-family: var(--font-body); font-size: var(--fs-2); cursor: pointer; }
 .today-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .today-mini { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 2px 14px 14px; }
 .today-mini-row { display: flex; align-items: center; gap: 8px; }
 .today-weight { width: 100%; min-height: 44px; }
-.today-mini-note { font-size: 12px; color: var(--muted); }
-.today-mini-big { font-family: var(--font-display); font-weight: 700; font-size: 22px; color: var(--text); }
-.today-link { margin-top: 8px; min-height: 40px; background: none; border: none; padding: 0; color: var(--text); text-decoration: underline; font-family: var(--font-body); font-size: 14px; cursor: pointer; }
+.today-mini-note { font-size: var(--fs-1); color: var(--muted); }
+.today-mini-big { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-4); color: var(--text); }
+.today-link { margin-top: 8px; min-height: 40px; background: none; border: none; padding: 0; color: var(--text); text-decoration: underline; font-family: var(--font-body); font-size: var(--fs-2); cursor: pointer; }
 /* ── GUIDED WORKOUT ─────────────────────────────────────────────────────── */
 .guided { position: fixed; inset: 0; z-index: 270; background: var(--bg); display: flex; flex-direction: column;
   padding: calc(14px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom)); overflow-y: auto; }
 .guided-top { display: flex; justify-content: space-between; align-items: center; }
-.guided-step { font-size: 14px; color: var(--muted); font-weight: 600; }
-.guided-close { min-height: 44px; min-width: 64px; background: none; border: 1px solid var(--field); border-radius: 10px; color: var(--text); font-family: var(--font-body); font-size: 14px; cursor: pointer; }
+.guided-step { font-size: var(--fs-2); color: var(--muted); font-weight: 600; }
+.guided-close { min-height: 44px; min-width: 64px; background: none; border: 1px solid var(--field); border-radius: 10px; color: var(--text); font-family: var(--font-body); font-size: var(--fs-2); cursor: pointer; }
 .guided-bar { height: 4px; background: var(--surface-2); border-radius: 2px; margin: 12px 0 22px; overflow: hidden; }
 .guided-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s ease; }
 .guided-body { flex: 1; display: flex; flex-direction: column; max-width: 520px; width: 100%; margin: 0 auto; }
-.guided-name { font-family: var(--font-display); font-weight: 700; font-size: 36px; line-height: 1.05; color: var(--text); }
-.guided-set { font-size: 16px; color: var(--muted); margin: 8px 0 4px; }
-.guided-target { font-size: 17px; color: var(--text); margin-bottom: 18px; line-height: 1.45; }
+.guided-name { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-6); line-height: 1.05; color: var(--text); }
+.guided-set { font-size: var(--fs-3); color: var(--muted); margin: 8px 0 4px; }
+.guided-target { font-size: var(--fs-3); color: var(--text); margin-bottom: 18px; line-height: 1.45; }
 .guided-how { margin-bottom: 18px; }
-.guided-how summary { cursor: pointer; color: var(--text); font-size: 15px; text-decoration: underline; min-height: 32px; }
-.guided-how p { font-size: 14px; color: var(--muted); line-height: 1.55; margin-top: 8px; }
+.guided-how summary { cursor: pointer; color: var(--text); font-size: var(--fs-3); text-decoration: underline; min-height: 32px; }
+.guided-how p { font-size: var(--fs-2); color: var(--muted); line-height: 1.55; margin-top: 8px; }
 .guided-fields { display: grid; gap: 14px; margin-bottom: 20px; }
-.guided-field-label { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+.guided-field-label { font-size: var(--fs-2); font-weight: 600; color: var(--muted); margin-bottom: 6px; }
 .guided-fields .stepper-row { display: grid; grid-template-columns: 56px minmax(0, 1fr) 56px; gap: 8px; }
-.guided-fields .stepper-btn { width: 56px; height: 56px; flex: 0 0 56px; font-size: 24px; }
-.guided-input { flex: 1; min-width: 0; min-height: 56px; text-align: center; font-family: var(--font-display); font-weight: 700; font-size: 28px;
+.guided-fields .stepper-btn { width: 56px; height: 56px; flex: 0 0 56px; font-size: var(--fs-5); }
+.guided-input { flex: 1; min-width: 0; min-height: 56px; text-align: center; font-family: var(--font-body); font-weight: 700; font-size: var(--fs-5);
   background: var(--surface); border: 1px solid var(--field); border-radius: 12px; color: var(--text); }
 .guided-done { margin-top: auto; width: 100%; min-height: 60px; border: none; border-radius: 14px; cursor: pointer;
-  background: var(--accent); color: var(--on-accent); font-family: var(--font-display); font-weight: 700; font-size: 20px; letter-spacing: 0.04em; }
-.guided-skip { margin-top: 10px; min-height: 44px; background: none; border: none; color: var(--muted); font-family: var(--font-body); font-size: 14px; text-decoration: underline; cursor: pointer; }
-.guided-msg { color: var(--warn); font-size: 14px; min-height: 20px; margin-bottom: 8px; }
-.guided-rest-time { font-family: var(--font-display); font-weight: 700; font-size: 96px; text-align: center; color: var(--text); margin: 24px 0 8px; font-variant-numeric: tabular-nums; }
-.guided-center { text-align: center; color: var(--muted); font-size: 16px; line-height: 1.5; }
+  background: var(--accent); color: var(--on-accent); font-family: var(--font-display); font-weight: 700; font-size: var(--fs-4); letter-spacing: 0.04em; }
+.guided-skip { margin-top: 10px; min-height: 44px; background: none; border: none; color: var(--muted); font-family: var(--font-body); font-size: var(--fs-2); text-decoration: underline; cursor: pointer; }
+.guided-msg { color: var(--warn); font-size: var(--fs-2); min-height: 20px; margin-bottom: 8px; }
+.guided-rest-time { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-7); text-align: center; color: var(--text); margin: 24px 0 8px; font-variant-numeric: tabular-nums; }
+.guided-center { text-align: center; color: var(--muted); font-size: var(--fs-3); line-height: 1.5; }
 .guided-row2 { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-top: auto; }
-.guided-ghost { min-height: 60px; background: none; border: 1px solid var(--field); border-radius: 14px; color: var(--text); font-family: var(--font-display); font-weight: 700; font-size: 17px; cursor: pointer; }
+.guided-ghost { min-height: 60px; background: none; border: 1px solid var(--field); border-radius: 14px; color: var(--text); font-family: var(--font-body); font-weight: 700; font-size: var(--fs-3); cursor: pointer; }
 .log-planned-btn {
   width: 100%; min-height: 48px; margin: 6px 0 10px; border-radius: 10px; cursor: pointer;
   background: var(--accent); color: var(--on-accent); border: none;
-  font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase;
+  font-family: var(--font-body); font-weight: 700; font-size: var(--fs-3); letter-spacing: 0.01em; 
 }
 .log-planned-btn.done { background: transparent; color: var(--muted); border: 1px solid var(--field); }
 details.warmup-log > summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; list-style: revert; }
@@ -2136,7 +2138,7 @@ details.warmup-log > summary { cursor: pointer; min-height: 44px; display: flex;
 .howto-link {
   flex: 0 0 auto; display: inline-flex; align-items: center; gap: 5px; min-height: 36px; padding: 0 10px;
   border: 1px solid var(--field); border-radius: 999px; color: var(--text); text-decoration: none;
-  font-family: var(--font-body); font-size: 12px; font-weight: 600;
+  font-family: var(--font-body); font-size: var(--fs-1); font-weight: 600;
 }
 .howto-link svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; }
 .howto-link svg path { fill: currentColor; stroke: none; }
@@ -2145,31 +2147,31 @@ details.warmup-log > summary { cursor: pointer; min-height: 44px; display: flex;
 .fresh-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 6px 14px; }
 .fresh-row {
   display: grid; grid-template-columns: 78px 54px minmax(0, 1fr) auto; column-gap: 8px; row-gap: 6px; align-items: center;
-  padding: 9px 0 10px; border-bottom: 1px solid var(--border); font-size: 13px;
+  padding: 9px 0 10px; border-bottom: 1px solid var(--border); font-size: var(--fs-2);
 }
 .fresh-row:last-child { border-bottom: none; }
 .fresh-name { font-weight: 600; color: var(--text); }
 .fresh-bar { grid-column: 1 / -1; grid-row: 2; height: 4px; background: var(--surface-2); border-radius: 2px; overflow: hidden; }
 .fresh-bar span { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
 .fresh-sets { color: var(--text); font-variant-numeric: tabular-nums; }
-.fresh-when { color: var(--muted); font-size: 12px; }
-.fresh-status { justify-self: end; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--field); color: var(--text); }
+.fresh-when { color: var(--muted); font-size: var(--fs-1); }
+.fresh-status { justify-self: end; font-size: var(--fs-1); font-weight: 700; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--field); color: var(--text); }
 .fresh-row.recovering .fresh-status { background: var(--surface-2); color: var(--muted); border-color: var(--border-hi); }
 /* Owner tools: hidden for everyone until a long press on the Settings version label. */
 body:not(.owner-tools) .owner-only { display: none !important; }
-.settings-version { margin-top: 18px; text-align: center; font-size: 12px; color: var(--muted); padding: 10px; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.settings-version { margin-top: 18px; text-align: center; font-size: var(--fs-1); color: var(--muted); padding: 10px; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 /* LIFT SCREEN, LEAN. */
-.lift-hero { font-family: var(--font-display); font-weight: 700; font-size: 28px; color: var(--text); margin: 0 0 12px; }
+.lift-hero { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-5); color: var(--text); margin: 0 0 12px; }
 .lift-toolbar { display: flex; align-items: center; gap: 6px; margin: 0 0 12px; flex-wrap: wrap; }
-.tool-arrow { width: 44px; height: 44px; border: 1px solid var(--field); border-radius: 10px; background: none; color: var(--text); font-size: 22px; cursor: pointer; }
-.tool-week { min-width: 84px; text-align: center; font-size: 15px; font-weight: 600; color: var(--text); }
-.tool-rest { margin-left: auto; min-height: 44px; padding: 0 14px; border: 1px solid var(--field); border-radius: 10px; background: none; color: var(--text); font-family: var(--font-body); font-size: 14px; cursor: pointer; }
+.tool-arrow { width: 44px; height: 44px; border: 1px solid var(--field); border-radius: 10px; background: none; color: var(--text); font-size: var(--fs-4); cursor: pointer; }
+.tool-week { min-width: 84px; text-align: center; font-size: var(--fs-3); font-weight: 600; color: var(--text); }
+.tool-rest { margin-left: auto; min-height: 44px; padding: 0 14px; border: 1px solid var(--field); border-radius: 10px; background: none; color: var(--text); font-family: var(--font-body); font-size: var(--fs-2); cursor: pointer; }
 .tool-rest.on { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
 .lift-toolbar .maintenance-quick { margin-left: 0; }
 .rest-timer-strip#restPresets { display: none; }
 .rest-timer-strip#restPresets.open { display: flex; }
-.lift-cue { font-size: 14px; color: var(--muted); line-height: 1.4; margin: 2px 0 6px; }
-.warmup-lines { font-size: 13px; color: var(--muted); margin: 0 0 6px; }
+.lift-cue { font-size: var(--fs-2); color: var(--muted); line-height: 1.4; margin: 2px 0 6px; }
+.warmup-lines { font-size: var(--fs-2); color: var(--muted); margin: 0 0 6px; }
 .warmup-lines .warmup-title { font-weight: 600; color: var(--text); }
 .lift-row:not(.show-swap) .swap-panel { display: none !important; }
 .card-foot { display: flex; gap: 6px; margin-top: 6px; }
@@ -2181,18 +2183,20 @@ body.training-mode #tab-training .lift-row { margin-bottom: 6px; }
 #tab-training .set-row { padding: 2px; }
 .card-foot .howto-link { justify-content: center; min-height: 44px; border-radius: 10px; padding: 0 6px; }
 .lift-cue { line-height: 1.35; }
-#tab-training .plan-day-title { font-size: 28px; line-height: 1.1; }
-#tab-training .plan-day-focus { font-size: 14px; margin-top: 4px; }
+/* The scroll assembled hero splits into letters, so it must fit one line. */
+.hero-title { font-size: var(--fs-6) !important; white-space: nowrap; }
+#tab-training .plan-day-title { font-size: var(--fs-5); line-height: 1.1; }
+#tab-training .plan-day-focus { font-size: var(--fs-2); margin-top: 4px; }
 #tab-training .plan-day-header { margin-bottom: 10px; padding-bottom: 8px; gap: 8px; }
 #tab-training .lift-log-inline { background: none; border: none; padding: 0; margin-top: 6px; gap: 6px; }
 #tab-training .simple-target { margin: 2px 0 4px; }
-.card-foot-btn { flex: 1; min-height: 44px; background: none; border: 1px solid var(--field); border-radius: 10px; color: var(--text); font-family: var(--font-body); font-size: 14px; cursor: pointer; }
+.card-foot-btn { flex: 1; min-height: 44px; background: none; border: 1px solid var(--field); border-radius: 10px; color: var(--text); font-family: var(--font-body); font-size: var(--fs-2); cursor: pointer; }
 .card-foot-btn.on { background: var(--surface-2); }
 .lift-tip { background: var(--surface); border: 1px solid var(--field); border-radius: 14px; padding: 14px 16px; margin: 0 0 14px; }
-.lift-tip-title { font-weight: 700; font-size: 16px; color: var(--text); margin-bottom: 6px; }
-.lift-tip ol { padding-left: 20px; margin: 0 0 10px; color: var(--text); font-size: 14px; line-height: 1.5; }
-.lift-tip-btn { min-height: 44px; padding: 0 18px; border: none; border-radius: 10px; background: var(--accent); color: var(--on-accent); font-family: var(--font-body); font-weight: 600; font-size: 14px; cursor: pointer; }
-.lift-pick-why { font-size: 12px; color: var(--muted); margin: 4px 0 8px; line-height: 1.45; padding-left: 8px; border-left: 2px solid var(--border-hi); }
+.lift-tip-title { font-weight: 700; font-size: var(--fs-3); color: var(--text); margin-bottom: 6px; }
+.lift-tip ol { padding-left: 20px; margin: 0 0 10px; color: var(--text); font-size: var(--fs-2); line-height: 1.5; }
+.lift-tip-btn { min-height: 44px; padding: 0 18px; border: none; border-radius: 10px; background: var(--accent); color: var(--on-accent); font-family: var(--font-body); font-weight: 600; font-size: var(--fs-2); cursor: pointer; }
+.lift-pick-why { font-size: var(--fs-1); color: var(--muted); margin: 4px 0 8px; line-height: 1.45; padding-left: 8px; border-left: 2px solid var(--border-hi); }
 .lift-pick-why.superset { border-left-color: var(--accent); }
 .variant-chip.variant-more-btn { border-style: dotted; color: var(--muted); }
 .variant-opt { display: inline-flex; align-items: stretch; gap: 2px; max-width: 100%; }
@@ -2200,42 +2204,42 @@ body.training-mode #tab-training .lift-row { margin-bottom: 6px; }
 .variant-opt.variant-more.open { display: inline-flex; }
 .variant-hide {
   min-width: 32px; background: transparent; border: 1px solid var(--field); color: var(--muted);
-  border-radius: 999px; font-size: 14px; cursor: pointer; padding: 0 8px;
+  border-radius: 999px; font-size: var(--fs-2); cursor: pointer; padding: 0 8px;
 }
 .variant-hide:hover { color: var(--text); border-color: var(--muted); }
 .hidden-ex-list { display: flex; flex-wrap: wrap; gap: 6px; width: 100%; }
 .hidden-ex-chip {
   background: transparent; border: 1px dashed var(--field); color: var(--muted); border-radius: 999px;
-  padding: 6px 12px; font-size: 12px; cursor: pointer; font-family: var(--font-body);
+  padding: 6px 12px; font-size: var(--fs-1); cursor: pointer; font-family: var(--font-body);
 }
 .hidden-ex-chip span { color: var(--text); font-weight: 600; margin-left: 4px; }
 .variant-custom-input {
   background: var(--bg); border: 1px solid var(--accent); color: var(--text);
-  padding: 5px 9px; font-family: var(--font-body); font-size: 12px;
+  padding: 5px 9px; font-family: var(--font-body); font-size: var(--fs-1);
   border-radius: 3px; outline: none; min-width: 180px; margin-left: 4px;
 }
 
 /* ── SHARED LIFT-DAYS CONTROL ────────────────────────────────────────────── */
 .liftdays-wrap { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .liftdays-label {
-  font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
-  text-transform: uppercase; color: var(--muted);
+  font-size: var(--fs-1); font-weight: 700; letter-spacing: 0.01em;
+   color: var(--muted);
 }
 .liftdays-group { display: flex; gap: 3px; background: var(--bg); border: 1px solid var(--border); border-radius: 5px; padding: 3px; }
 .liftdays-btn {
   min-width: 30px; padding: 6px 9px; background: transparent; border: none;
-  color: var(--muted); font-family: var(--font-display); font-weight: 700;
-  font-size: 13px; cursor: pointer; border-radius: 2px; transition: all 0.15s;
+  color: var(--muted); font-family: var(--font-body); font-weight: 700;
+  font-size: var(--fs-2); cursor: pointer; border-radius: 2px; transition: all 0.15s;
 }
 .liftdays-btn:hover { color: var(--text); }
 .liftdays-btn.on { background: var(--accent); color: var(--on-accent); }
-.liftdays-desc { font-size: 11px; color: var(--muted); }
+.liftdays-desc { font-size: var(--fs-1); color: var(--muted); }
 /* Reuses .liftdays-group/.liftdays-btn as-is (same pill look, same .on active
    state) — this modifier only adds wrapping, since five modes including two
    two-word labels (Carb Load, Race Prep) can run past .food-block's width on
    a phone, unlike the shorter day-count/split pickers that group serves. */
 .goal-mode-group { flex-wrap: wrap; }
-.storage-status { font-size: 11px; color: var(--muted); flex-basis: 100%; }
+.storage-status { font-size: var(--fs-1); color: var(--muted); flex-basis: 100%; }
 .storage-status.warn { color: var(--warn); }
 .week-complete-banner {
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
@@ -2243,13 +2247,13 @@ body.training-mode #tab-training .lift-row { margin-bottom: 6px; }
   border-radius: 6px; padding: 14px 16px; margin-bottom: 16px;
 }
 .week-complete-text {
-  font-family: var(--font-display); font-weight: 700; font-size: 14px;
+  font-family: var(--font-body); font-weight: 700; font-size: var(--fs-2);
   letter-spacing: 0.02em; color: var(--text);
 }
 .week-complete-btn {
   background: var(--accent); color: var(--on-accent); border: none; border-radius: 4px;
-  padding: 9px 16px; font-family: var(--font-display); font-weight: 700;
-  font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 9px 16px; font-family: var(--font-body); font-weight: 700;
+  font-size: var(--fs-1); letter-spacing: 0.01em; 
   cursor: pointer; white-space: nowrap;
 }
 /* ── QUICK LOG ───────────────────────────────────────────────────────────── */
@@ -2259,8 +2263,8 @@ body.training-mode #tab-training .lift-row { margin-bottom: 6px; }
 }
 .quicklog-lift-btn {
   background: var(--surface); border: 1px solid var(--border); color: var(--text);
-  border-radius: 8px; padding: 30px 16px; font-family: var(--font-display);
-  font-weight: 800; font-size: 22px; letter-spacing: 0.02em; cursor: pointer;
+  border-radius: 8px; padding: 30px 16px; font-family: var(--font-body);
+  font-weight: 800; font-size: var(--fs-4); letter-spacing: 0.02em; cursor: pointer;
   transition: border-color 0.15s, background 0.15s, transform 0.09s ease;
 }
 .quicklog-lift-btn:hover { border-color: var(--accent); background: var(--surface-2); }
@@ -2268,45 +2272,45 @@ body.training-mode #tab-training .lift-row { margin-bottom: 6px; }
 .quicklog-form { max-width: 400px; }
 .quicklog-back {
   background: transparent; border: none; color: var(--muted); cursor: pointer;
-  font-family: var(--font-body); font-size: 13px; padding: 0; margin-bottom: 18px;
+  font-family: var(--font-body); font-size: var(--fs-2); padding: 0; margin-bottom: 18px;
 }
 .quicklog-back:hover { color: var(--text); }
 .quicklog-form-title {
-  font-family: var(--font-display); font-weight: 800; font-size: 26px;
+  font-family: var(--font-display); font-weight: 800; font-size: var(--fs-5);
   color: var(--accent); margin-bottom: 18px;
 }
 .quicklog-field { margin-bottom: 16px; }
 .quicklog-field label {
-  display: block; font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
-  text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+  display: block; font-size: var(--fs-1); font-weight: 700; letter-spacing: 0.01em;
+   color: var(--muted); margin-bottom: 6px;
 }
 .quicklog-field input {
   width: 100%; box-sizing: border-box; background: var(--bg); border: 1px solid var(--input-border-idle);
-  color: var(--text); font-family: var(--font-body); font-size: 17px;
+  color: var(--text); font-family: var(--font-body); font-size: var(--fs-3);
   padding: 12px 14px; border-radius: 5px; outline: none;
 }
 .quicklog-field input:focus { border-color: var(--accent); }
 .quicklog-save-btn {
   width: 100%; background: var(--accent); color: var(--on-accent); border: none; border-radius: 5px;
-  padding: 18px 14px; font-family: var(--font-display); font-weight: 700; font-size: 15px;
-  letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; margin-top: 4px;
+  padding: 18px 14px; font-family: var(--font-body); font-weight: 700; font-size: var(--fs-3);
+  letter-spacing: 0.01em;  cursor: pointer; margin-top: 4px;
   box-shadow: inset 0 1px 0 rgba(var(--hi-rgb),0.1);
 }
 .quicklog-save-btn:active { transform: scale(0.98); }
 .quicklog-confirm {
-  margin-top: 14px; min-height: 18px; font-size: 14px; font-weight: 700; color: var(--accent);
+  margin-top: 14px; min-height: 18px; font-size: var(--fs-2); font-weight: 700; color: var(--accent);
 }
 .quicklog-recent { max-width: 480px; margin-top: 34px; }
 .quicklog-recent-title {
-  font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+  font-size: var(--fs-1); font-weight: 700; letter-spacing: 0.01em; 
   color: var(--muted); margin-bottom: 10px;
 }
 .quicklog-recent-row {
-  border-top: 1px solid var(--border); padding: 10px 0; font-size: 14px; color: var(--text);
+  border-top: 1px solid var(--border); padding: 10px 0; font-size: var(--fs-2); color: var(--text);
 }
 .quicklog-recent-row:last-child { border-bottom: 1px solid var(--border); }
-.quicklog-recent-notes { font-size: 12px; color: var(--muted); margin-top: 3px; }
-.quicklog-recent-empty { color: var(--muted); font-size: 13px; padding: 10px 0; }
+.quicklog-recent-notes { font-size: var(--fs-1); color: var(--muted); margin-top: 3px; }
+.quicklog-recent-empty { color: var(--muted); font-size: var(--fs-2); padding: 10px 0; }
 /* ── FOOD ─────────────────────────────────────────────────────────────────── */
 /* Built from the Quick Log and Run tab pieces; only the bar and the item row
    grid are new, and both use the same tokens. */
@@ -2318,10 +2322,10 @@ body.training-mode #tab-training .lift-row { margin-bottom: 6px; }
 .food-settings-grid { grid-template-columns: repeat(3, 1fr); width: 100%; }
 .food-draft { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
 .food-item-row { display: grid; grid-template-columns: 1fr 64px 64px 64px 32px; gap: 6px; align-items: end; margin-bottom: 8px; }
-.food-item-row label span { display: block; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
-.food-item-row .run-input { padding: 9px 6px; font-size: 14px; min-width: 0; }
+.food-item-row label span { display: block; font-size: var(--fs-1); letter-spacing: 0.01em;  color: var(--muted); margin-bottom: 3px; }
+.food-item-row .run-input { padding: 9px 6px; font-size: var(--fs-2); min-width: 0; }
 .food-item-row .food-item-name { font-family: var(--font-body); font-weight: 500; }
-.food-assumptions { margin: 12px 0 4px 18px; padding: 0; font-size: 12px; color: var(--muted); line-height: 1.55; }
+.food-assumptions { margin: 12px 0 4px 18px; padding: 0; font-size: var(--fs-1); color: var(--muted); line-height: 1.55; }
 .food-meal-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; cursor: pointer; }
 /* Filled, not dashed — these three are the primary way in, and a dashed
    outline read as too subtle to notice. Tag-qualified selectors
@@ -2346,8 +2350,8 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
 .more-list { max-width: 480px; }
 .more-list-item {
   display: block; width: 100%; text-align: left; background: transparent; border: none;
-  border-top: 1px solid var(--border); color: var(--text); font-family: var(--font-display);
-  font-weight: 700; font-size: 16px; letter-spacing: 0.02em; padding: 16px 4px; cursor: pointer;
+  border-top: 1px solid var(--border); color: var(--text); font-family: var(--font-body);
+  font-weight: 700; font-size: var(--fs-3); letter-spacing: 0.02em; padding: 16px 4px; cursor: pointer;
 }
 .more-list-item:last-child { border-bottom: 1px solid var(--border); }
 .more-list-item:active { background: var(--surface-2); }
@@ -2359,8 +2363,8 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
    recommendation text, not on its own line. */
 .food-apply-btn {
   display: inline-block; background: var(--accent); color: var(--on-accent); border: none;
-  border-radius: 5px; padding: 10px 14px; font-family: var(--font-display); font-weight: 700;
-  font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer;
+  border-radius: 5px; padding: 10px 14px; font-family: var(--font-body); font-weight: 700;
+  font-size: var(--fs-1); letter-spacing: 0.01em;  cursor: pointer;
   margin-left: 8px; box-shadow: inset 0 1px 0 rgba(var(--hi-rgb),0.1);
 }
 .food-apply-btn:active { transform: scale(0.98); }
@@ -2375,7 +2379,7 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
 .onb-flow-inner { width: 100%; max-width: 440px; }
 .onb-flow-bullets { list-style: none; margin: 0 0 28px; padding: 0; }
 .onb-flow-bullets li {
-  font-family: var(--font-body); font-size: 14px; color: var(--text);
+  font-family: var(--font-body); font-size: var(--fs-2); color: var(--text);
   line-height: 1.5; padding: 10px 0; border-top: 1px solid var(--border);
 }
 .onb-flow-bullets li:first-child { border-top: none; }
@@ -2387,8 +2391,8 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
 .food-barcode-wrap { max-width: 480px; margin-bottom: 14px; }
 .food-barcode-video { width: 100%; height: 200px; object-fit: cover; background: #000; border-radius: 8px; display: block; }
 .food-barcode-banner {
-  font-family: var(--font-display); font-weight: 700; font-size: 12px;
-  letter-spacing: 0.06em; text-transform: uppercase; text-align: center;
+  font-family: var(--font-body); font-weight: 700; font-size: var(--fs-1);
+  letter-spacing: 0.01em;  text-align: center;
   color: var(--accent); background: var(--surface-2); border-radius: 6px;
   padding: 8px 12px; margin-bottom: 8px;
 }
@@ -2403,7 +2407,7 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
 .maintenance-banner {
   display: flex; align-items: center; gap: 9px; background: rgba(110,136,168,0.14);
   border: 1px solid rgba(110,136,168,0.4); color: var(--calm); border-radius: 6px;
-  padding: 11px 14px; margin-bottom: 16px; font-size: 13px; line-height: 1.5;
+  padding: 11px 14px; margin-bottom: 16px; font-size: var(--fs-2); line-height: 1.5;
 }
 .maintenance-banner-dot {
   width: 7px; height: 7px; border-radius: 50%; background: var(--calm-2); flex: 0 0 auto;
@@ -2413,8 +2417,8 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
   background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
   padding: 14px 16px; margin: 4px 0 18px;
 }
-.maintenance-mode-title { font-family: var(--font-display); font-weight: 700; font-size: 14px; color: var(--text); }
-.maintenance-mode-sub { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.5; max-width: 300px; }
+.maintenance-mode-title { font-family: var(--font-body); font-weight: 700; font-size: var(--fs-2); color: var(--text); }
+.maintenance-mode-sub { font-size: var(--fs-1); color: var(--muted); margin-top: 3px; line-height: 1.5; max-width: 300px; }
 .maintenance-toggle {
   flex: 0 0 auto; width: 46px; height: 26px; border-radius: 13px; border: 1px solid var(--field);
   background: var(--surface); position: relative; cursor: pointer; padding: 0; transition: background 0.15s, border-color 0.15s;
@@ -2431,7 +2435,7 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
   border: 1px solid var(--border); border-radius: 16px; padding: 4px 6px 4px 12px; cursor: pointer;
 }
 .maintenance-quick:hover { border-color: var(--border-hi); }
-.maintenance-quick-label { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+.maintenance-quick-label { font-size: var(--fs-1); font-weight: 700; letter-spacing: 0.01em;  color: var(--muted); }
 .maintenance-quick:has(.maintenance-toggle.on) .maintenance-quick-label { color: var(--calm); }
 .maintenance-toggle-sm { display: inline-block; width: 36px; height: 20px; border-radius: 10px; }
 .maintenance-toggle-sm .maintenance-toggle-knob { top: 2px; left: 2px; width: 14px; height: 14px; }
@@ -2442,23 +2446,23 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
   flex-wrap: wrap; background: var(--surface); border: 1px solid var(--accent);
   border-radius: 6px; padding: 14px 16px; margin-bottom: 16px;
 }
-.backup-nudge-text { font-size: 13px; line-height: 1.5; color: var(--text); flex: 1 1 260px; }
+.backup-nudge-text { font-size: var(--fs-2); line-height: 1.5; color: var(--text); flex: 1 1 260px; }
 .backup-nudge-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
 .backup-nudge-btn {
   background: var(--accent); color: var(--on-accent); border: none; border-radius: 4px;
-  padding: 9px 16px; font-family: var(--font-display); font-weight: 700;
-  font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 9px 16px; font-family: var(--font-body); font-weight: 700;
+  font-size: var(--fs-1); letter-spacing: 0.01em; 
   cursor: pointer; white-space: nowrap;
 }
 .backup-nudge-dismiss {
   background: transparent; border: 1px solid var(--border); color: var(--muted);
-  width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 14px;
+  width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: var(--fs-2);
   display: flex; align-items: center; justify-content: center;
 }
 .backup-nudge-dismiss:hover { color: var(--text); border-color: var(--field); }
 .run-readonly {
   background: var(--surface); border: 1px solid var(--border); color: var(--text);
-  padding: 12px 14px; font-family: var(--font-display); font-size: 16px; font-weight: 800;
+  padding: 12px 14px; font-family: var(--font-body); font-size: var(--fs-3); font-weight: 800;
   border-radius: 4px; letter-spacing: 0.02em;
 }
 #altPlan .plan-content { display: none; }
@@ -2495,7 +2499,7 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
 .edge-arrow {
   background: transparent; border: 1px solid var(--field); color: var(--text);
   width: 40px; height: 40px; flex: 0 0 40px; border-radius: 50%;
-  font-size: 20px; line-height: 1; cursor: pointer;
+  font-size: var(--fs-4); line-height: 1; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.09s ease;
 }
@@ -2542,8 +2546,8 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
   width: 100%; min-height: 56px; background: none; border: 0; cursor: pointer;
   padding: 14px 18px; border-radius: 8px; text-align: left;
   border-left: 3px solid transparent;
-  font-family: var(--font-display); font-weight: 700; font-size: 15px;
-  letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+  font-family: var(--font-body); font-weight: 700; font-size: var(--fs-3);
+  letter-spacing: 0.01em;  color: var(--muted);
   transition: background 0.15s, color 0.15s, border-color 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
@@ -2551,8 +2555,8 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
 .navmenu-item:focus { outline: none; }
 .navmenu-item:active { background: var(--surface-2); }
 .navmenu-item.current { color: var(--text); border-left-color: var(--accent); background: rgba(var(--ink-rgb),0.06); }
-.navmenu-item.primary { font-size: 17px; color: var(--text); }
-.navmenu-tick { font-size: 10px; color: var(--accent); opacity: 0; }
+.navmenu-item.primary { font-size: var(--fs-3); color: var(--text); }
+.navmenu-tick { font-size: var(--fs-1); color: var(--accent); opacity: 0; }
 .navmenu-item.current .navmenu-tick { opacity: 1; }
 /* The letter-roll from the main tabs, reused here so a destination behaves the
    same whichever surface it is on — including being driven by a .rolling class
@@ -2568,7 +2572,7 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
   position: fixed; z-index: 400; max-width: 260px;
   background: var(--card); color: var(--text);
   border: 1px solid var(--border-hi); border-radius: 10px;
-  padding: 9px 12px; font-size: 12px; line-height: 1.5;
+  padding: 9px 12px; font-size: var(--fs-1); line-height: 1.5;
   box-shadow: 0 12px 32px rgba(0,0,0,0.55);
   pointer-events: none; opacity: 0; transform: scale(0.95);
   transition: opacity 0.13s ease, transform 0.13s ease;
@@ -2646,17 +2650,17 @@ input.smooth-input { caret-color: transparent; }
   border-bottom: 1px solid var(--border); margin-bottom: 28px;
 }
 .run-field-label {
-  font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+  font-size: var(--fs-1); font-weight: 700; letter-spacing: 0.01em; 
   color: var(--muted); margin-bottom: 8px;
   display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
 }
 .run-field-val {
-  font-family: var(--font-display); font-size: 17px; font-weight: 800;
+  font-family: var(--font-body); font-size: var(--fs-3); font-weight: 800;
   color: var(--accent); letter-spacing: 0.02em;
 }
 .run-input {
   background: var(--bg); border: 1px solid var(--input-border-idle); color: var(--accent);
-  padding: 12px 14px; font-family: var(--font-display); font-size: 17px; font-weight: 800;
+  padding: 12px 14px; font-family: var(--font-body); font-size: var(--fs-3); font-weight: 800;
   border-radius: 4px; width: 100%; outline: none; letter-spacing: 0.02em;
   transition: border-color 0.15s;
 }
@@ -2674,15 +2678,15 @@ input.smooth-input { caret-color: transparent; }
   width: 20px; height: 20px; border-radius: 50%; background: var(--accent);
   border: none; cursor: pointer;
 }
-.run-hint { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+.run-hint { font-size: var(--fs-1); color: var(--muted); margin-top: 6px; line-height: 1.5; }
 .run-toggle {
   display: flex; background: var(--bg); border: 1px solid var(--border);
   border-radius: 5px; padding: 3px; gap: 3px;
 }
 .run-toggle-btn {
   flex: 1; padding: 10px 5px; background: transparent; border: none; color: var(--muted);
-  font-family: var(--font-display); font-weight: 700; font-size: 11px;
-  letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer;
+  font-family: var(--font-body); font-weight: 700; font-size: var(--fs-1);
+  letter-spacing: 0.01em;  cursor: pointer;
   border-radius: 2px; transition: all 0.15s; line-height: 1.2;
 }
 .run-toggle-btn.on { background: var(--accent); color: var(--on-accent); }
@@ -2690,7 +2694,7 @@ input.smooth-input { caret-color: transparent; }
 .run-flag {
   padding: 13px 18px; border-radius: 0 12px 12px 0; border-left: 3px solid var(--accent);
   background: rgba(var(--ink-rgb),0.07); color: var(--text);
-  font-size: 13px; line-height: 1.65; margin-bottom: 8px;
+  font-size: var(--fs-2); line-height: 1.65; margin-bottom: 8px;
 }
 .run-flag strong { color: var(--accent); }
 .run-flag.soft { border-left-color: var(--border-hi); background: var(--surface); color: var(--muted); }
@@ -2699,43 +2703,43 @@ input.smooth-input { caret-color: transparent; }
   border-radius: 14px; padding: 20px 26px; margin-bottom: 26px;
 }
 .run-panel-title {
-  font-family: var(--font-display); font-weight: 900; font-size: 14px;
-  letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+  font-family: var(--font-body); font-weight: 900; font-size: var(--fs-2);
+  letter-spacing: 0.01em;  color: var(--accent); margin-bottom: 12px;
 }
 .run-pace-row {
   display: flex; justify-content: space-between; gap: 18px; padding: 9px 0;
-  border-bottom: 1px solid var(--border); font-size: 13px; color: var(--muted); line-height: 1.5;
+  border-bottom: 1px solid var(--border); font-size: var(--fs-2); color: var(--muted); line-height: 1.5;
 }
 .run-pace-row:last-child { border-bottom: none; }
-.run-pace-val { font-family: var(--font-mono); font-size: 12px; color: var(--text); white-space: nowrap; }
+.run-pace-val { font-family: var(--font-body); font-size: var(--fs-1); color: var(--text); white-space: nowrap; }
 .run-table-wrap { overflow-x: auto; padding-bottom: 8px; margin-bottom: 40px; }
 .run-week {
   display: grid; grid-template-columns: 116px repeat(7, minmax(172px, 1fr)) 76px;
   gap: 6px; margin-bottom: 6px; min-width: 1396px;
 }
 .run-head-cell {
-  font-family: var(--font-display); font-weight: 700; font-size: 11px;
-  letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); padding: 4px 10px 8px;
+  font-family: var(--font-body); font-weight: 700; font-size: var(--fs-1);
+  letter-spacing: 0.01em;  color: var(--muted); padding: 4px 10px 8px;
 }
 .run-cell-week { background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
-.run-cell-num { font-family: var(--font-display); font-weight: 900; font-size: 19px; color: var(--accent); line-height: 1; }
-.run-cell-dates { font-size: 10px; color: var(--muted); margin-top: 5px; line-height: 1.45; }
+.run-cell-num { font-family: var(--font-display); font-weight: 900; font-size: var(--fs-4); color: var(--accent); line-height: 1; }
+.run-cell-dates { font-size: var(--fs-1); color: var(--muted); margin-top: 5px; line-height: 1.45; }
 .run-phase {
   display: inline-block; margin-top: 7px; padding: 2px 7px; border-radius: 2px;
-  font-family: var(--font-display); font-size: 9px; font-weight: 700;
-  letter-spacing: 0.14em; text-transform: uppercase;
+  font-family: var(--font-body); font-size: var(--fs-1); font-weight: 700;
+  letter-spacing: 0.01em; 
   background: rgba(var(--ink-rgb),0.13); color: var(--accent); border: 1px solid rgba(var(--ink-rgb),0.3);
 }
 .run-phase.quiet { background: var(--surface); color: var(--muted); border-color: var(--border-hi); }
 .run-deload {
   display: inline-block; margin-top: 5px; padding: 2px 7px; border-radius: 2px;
-  font-family: var(--font-display); font-size: 9px; font-weight: 700;
-  letter-spacing: 0.14em; text-transform: uppercase;
+  font-family: var(--font-body); font-size: var(--fs-1); font-weight: 700;
+  letter-spacing: 0.01em; 
   background: var(--surface); color: var(--muted); border: 1px solid var(--border-hi);
 }
 .run-cell {
   background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-  padding: 10px 12px; font-size: 12px; line-height: 1.55; color: var(--text);
+  padding: 10px 12px; font-size: var(--fs-1); line-height: 1.55; color: var(--text);
 }
 .run-cell.has-run { border-left: 3px solid var(--accent); }
 /* Lifting days carry a quiet top rule — the cell text already says "Lift" */
@@ -2745,13 +2749,13 @@ input.smooth-input { caret-color: transparent; }
 .run-cell-miles {
   background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
   padding: 12px 6px; text-align: center;
-  font-family: var(--font-display); font-weight: 900; font-size: 19px; color: var(--accent);
+  font-family: var(--font-display); font-weight: 900; font-size: var(--fs-4); color: var(--accent);
 }
 .run-cell-miles span {
-  display: block; font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
+  display: block; font-size: var(--fs-1); font-weight: 700; letter-spacing: 0.01em;
   color: var(--muted); margin-top: 3px;
 }
-.run-empty { color: var(--muted); font-size: 14px; line-height: 1.75; max-width: 620px; }
+.run-empty { color: var(--muted); font-size: var(--fs-2); line-height: 1.75; max-width: 620px; }
 
 /* ── COMBINED WEEK CALENDAR — lift + run, one week, on the overview ─────── */
 .cal-head {
@@ -2759,13 +2763,13 @@ input.smooth-input { caret-color: transparent; }
   gap: 16px; flex-wrap: wrap; margin-bottom: 14px;
 }
 .cal-head-week {
-  font-family: var(--font-display); font-weight: 900; font-size: 15px;
-  letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--font-body); font-weight: 900; font-size: var(--fs-3);
+  letter-spacing: 0.01em;  color: var(--accent);
 }
 /* The race week is a different clock from the training week, so it is toned
    down rather than shown in the same weight — two peers would read as one. */
-.cal-head-race { color: var(--muted); font-size: 13px; }
-.cal-head-dates { font-size: 12px; color: var(--muted); margin-left: auto; }
+.cal-head-race { color: var(--muted); font-size: var(--fs-2); }
+.cal-head-dates { font-size: var(--fs-1); color: var(--muted); margin-left: auto; }
 .cal-grid {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(min(196px,100%),1fr));
   gap: 12px; margin-bottom: 40px;
@@ -2778,37 +2782,37 @@ input.smooth-input { caret-color: transparent; }
 .cal-day.has-work { border-left-color: var(--accent); }
 .cal-day.is-today { border-color: rgba(var(--ink-rgb),0.35); background: var(--surface-2); }
 .cal-dow {
-  font-size: 11px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+  font-size: var(--fs-1); font-weight: 600; letter-spacing: 0.01em; 
   color: var(--muted); display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
 }
 .cal-today-chip {
-  font-family: var(--font-display); font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
+  font-family: var(--font-body); font-size: var(--fs-1); font-weight: 700; letter-spacing: 0.01em;
   color: var(--accent); border: 1px solid rgba(var(--ink-rgb),0.4); border-radius: 2px; padding: 1px 6px;
 }
 .cal-lift-tag {
-  font-family: var(--font-display); font-size: 10px; font-weight: 700;
-  letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 3px;
+  font-family: var(--font-body); font-size: var(--fs-1); font-weight: 700;
+  letter-spacing: 0.01em;  color: var(--accent); margin-bottom: 3px;
 }
 .cal-lift-title {
-  font-family: var(--font-display); font-weight: 800; font-size: 19px;
-  letter-spacing: 0.02em; text-transform: uppercase; color: var(--text); line-height: 1.15;
+  font-family: var(--font-display); font-weight: 800; font-size: var(--fs-4);
+  letter-spacing: 0.02em;  color: var(--text); line-height: 1.15;
 }
 .cal-run {
   border-top: 1px solid rgba(var(--ink-rgb),0.07); padding-top: 9px;
-  font-size: 13px; color: var(--text); line-height: 1.5;
+  font-size: var(--fs-2); color: var(--text); line-height: 1.5;
 }
 .cal-run-tag {
-  font-family: var(--font-display); font-size: 10px; font-weight: 700;
-  letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px;
+  font-family: var(--font-body); font-size: var(--fs-1); font-weight: 700;
+  letter-spacing: 0.01em;  color: var(--muted); margin-bottom: 3px;
 }
 .cal-run.race { color: var(--accent); font-weight: 700; }
-.cal-rest { font-size: 13px; color: var(--muted); font-style: italic; line-height: 1.5; }
-.cal-note { font-size: 12px; color: var(--muted); line-height: 1.7; margin-bottom: 32px; max-width: 640px; }
+.cal-rest { font-size: var(--fs-2); color: var(--muted); font-style: italic; line-height: 1.5; }
+.cal-note { font-size: var(--fs-1); color: var(--muted); line-height: 1.7; margin-bottom: 32px; max-width: 640px; }
 .cal-note strong { color: var(--text); font-weight: 600; }
 .cal-fullview-btn {
   background: transparent; border: 1px solid var(--field); color: var(--text);
-  padding: 10px 20px; font-family: var(--font-display); font-weight: 700;
-  font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 10px 20px; font-family: var(--font-body); font-weight: 700;
+  font-size: var(--fs-1); letter-spacing: 0.01em; 
   cursor: pointer; border-radius: 2px; transition: all 0.15s; margin-bottom: 40px;
 }
 .cal-fullview-btn:hover { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
@@ -2820,14 +2824,14 @@ input.smooth-input { caret-color: transparent; }
 }
 .calfull-headings { flex: 1; min-width: 0; }
 .calfull-week {
-  font-family: var(--font-display); font-weight: 900; font-size: 20px;
-  letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); line-height: 1.2;
+  font-family: var(--font-display); font-weight: 900; font-size: var(--fs-4);
+  letter-spacing: 0.01em;  color: var(--accent); line-height: 1.2;
 }
-.calfull-dates { font-size: 12px; color: var(--muted); margin-top: 5px; }
+.calfull-dates { font-size: var(--fs-1); color: var(--muted); margin-top: 5px; }
 .calfull-arrow {
   background: transparent; border: 1px solid var(--field); color: var(--text);
   width: 42px; height: 42px; flex: 0 0 42px; border-radius: 50%;
-  font-size: 22px; line-height: 1; cursor: pointer; transition: all 0.15s;
+  font-size: var(--fs-4); line-height: 1; cursor: pointer; transition: all 0.15s;
   display: flex; align-items: center; justify-content: center;
 }
 .calfull-arrow:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
@@ -2836,8 +2840,8 @@ input.smooth-input { caret-color: transparent; }
 .cal-week-btn {
   padding: 6px 14px; background: var(--surface); border: 1px solid var(--border);
   color: var(--muted); border-radius: 3px;
-  font-family: var(--font-display); font-weight: 700; font-size: 12px;
-  letter-spacing: 0.08em; cursor: pointer; transition: all 0.15s;
+  font-family: var(--font-body); font-weight: 700; font-size: var(--fs-1);
+  letter-spacing: 0.01em; cursor: pointer; transition: all 0.15s;
 }
 .cal-week-btn:hover { border-color: var(--border-hi); color: var(--text); background: var(--surface-2); }
 .cal-week-btn.cwb-active {
@@ -2855,16 +2859,16 @@ body.training-mode #calendarfull { background: var(--bg); border-top: none; padd
 .run-log-row:last-child { margin-bottom: 0; }
 .run-log-group { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
 .run-log-label {
-  font-size: 9px; font-weight: 700; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--muted); white-space: nowrap;
+  font-size: var(--fs-1); font-weight: 700; letter-spacing: 0.01em;
+   color: var(--muted); white-space: nowrap;
 }
 .run-log-input {
   background: rgba(var(--ink-rgb),0.08);
   border: 1px solid var(--input-border-idle);
   color: var(--accent);
   padding: 6px 8px;
-  font-family: var(--font-display);
-  font-size: 14px; font-weight: 700;
+  font-family: var(--font-body);
+  font-size: var(--fs-2); font-weight: 700;
   border-radius: 8px;
   width: 100%; min-width: 0;
   outline: none;
@@ -2873,12 +2877,12 @@ body.training-mode #calendarfull { background: var(--bg); border-top: none; padd
 .run-log-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(var(--ink-rgb),0.12); }
 .run-log-input.logged { border-color: var(--accent); }
 .run-log-pace {
-  font-family: var(--font-mono); font-size: 10px; color: var(--muted);
+  font-family: var(--font-body); font-size: var(--fs-1); color: var(--muted);
   margin-top: 5px; min-height: 13px;
 }
 .run-log-pace.on { color: var(--text); }
 .run-adapt {
-  display: block; margin-top: 7px; font-size: 10px; line-height: 1.45;
+  display: block; margin-top: 7px; font-size: var(--fs-1); line-height: 1.45;
   color: var(--muted); border-left: 2px solid var(--field); padding-left: 7px;
 }
 
@@ -2892,35 +2896,35 @@ body.training-mode #calendarfull { background: var(--bg); border-top: none; padd
   display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
 }
 .run-chart-title {
-  font-family: var(--font-display); font-weight: 800; font-size: 24px;
-  text-transform: uppercase; letter-spacing: 0.03em; color: var(--text);
+  font-family: var(--font-display); font-weight: 800; font-size: var(--fs-5);
+   letter-spacing: 0.03em; color: var(--text);
 }
 .run-chart-legend { display: flex; gap: 14px; align-items: center; margin-left: auto; flex-wrap: wrap; }
 .run-legend-item {
   display: flex; align-items: center; gap: 6px;
-  font-size: 11px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase;
+  font-size: var(--fs-1); color: var(--muted); letter-spacing: 0.01em; 
 }
 .run-legend-swatch { width: 14px; height: 10px; border-radius: 2px; }
 .run-legend-swatch.planned { border: 1px solid var(--field); background: transparent; }
 .run-legend-swatch.actual { background: var(--accent); }
-.run-chart-desc { font-size: 12px; color: var(--muted); margin-top: 5px; line-height: 1.5; }
+.run-chart-desc { font-size: var(--fs-1); color: var(--muted); margin-top: 5px; line-height: 1.5; }
 .run-chart-body { padding: 20px 28px 14px; overflow-x: auto; }
 /* min-width keeps the value labels legible on a phone — the card scrolls
    sideways rather than shrinking the type into illegibility */
 .run-chart-body svg { display: block; width: 100%; min-width: 520px; height: auto; }
 .run-chart-footer {
   display: flex; align-items: center; gap: 8px;
-  padding: 0 28px 20px; font-size: 13px; color: var(--text); line-height: 1.5;
+  padding: 0 28px 20px; font-size: var(--fs-2); color: var(--text); line-height: 1.5;
 }
-.run-trend-arrow { font-size: 11px; color: var(--muted); }
+.run-trend-arrow { font-size: var(--fs-1); color: var(--muted); }
 .run-trend-arrow.up { color: var(--text); }
 .run-trend-arrow.down { color: var(--muted); }
 .run-trend-text { color: var(--muted); }
-.run-chart-empty { padding: 26px 28px; font-size: 13px; color: var(--muted); line-height: 1.7; }
+.run-chart-empty { padding: 26px 28px; font-size: var(--fs-2); color: var(--muted); line-height: 1.7; }
 .run-clear-btn {
   background: transparent; border: 1px solid var(--border); color: var(--muted);
-  padding: 7px 14px; font-family: var(--font-display); font-weight: 700;
-  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 7px 14px; font-family: var(--font-body); font-weight: 700;
+  font-size: var(--fs-1); letter-spacing: 0.01em; 
   cursor: pointer; border-radius: 2px; transition: all 0.15s;
 }
 .run-clear-btn:hover { border-color: var(--field); color: var(--text); }
@@ -2936,13 +2940,13 @@ body.training-mode #calendarfull { background: var(--bg); border-top: none; padd
 }
 .run-setup-toggle {
   background: transparent; border: 1px dashed var(--border); color: var(--muted);
-  padding: 9px 16px; font-family: var(--font-display); font-weight: 700;
-  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 9px 16px; font-family: var(--font-body); font-weight: 700;
+  font-size: var(--fs-1); letter-spacing: 0.01em; 
   cursor: pointer; border-radius: 999px; transition: all 0.15s; flex: 0 0 auto;
 }
 .run-setup-toggle:hover, .run-setup-toggle.open { border-color: var(--field); color: var(--text); }
 .run-setup-summary {
-  font-family: var(--font-display); font-weight: 700; font-size: 14px;
+  font-family: var(--font-body); font-weight: 700; font-size: var(--fs-2);
   color: var(--text); letter-spacing: 0.02em; min-width: 0;
 }
 .run-form.collapsed { display: none; }
@@ -2952,15 +2956,15 @@ body.training-mode #calendarfull { background: var(--bg); border-top: none; padd
 .run-missed { margin-top: 22px; }
 .run-missed-toggle {
   background: transparent; border: 1px dashed var(--border); color: var(--muted);
-  padding: 9px 16px; font-family: var(--font-display); font-weight: 700;
-  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 9px 16px; font-family: var(--font-body); font-weight: 700;
+  font-size: var(--fs-1); letter-spacing: 0.01em; 
   cursor: pointer; border-radius: 999px; transition: all 0.15s;
 }
 .run-missed-toggle:hover, .run-missed-toggle.open { border-color: var(--field); color: var(--text); }
 .run-missed-body { display: none; margin-top: 14px; max-width: 420px; }
 .run-missed-body.open { display: block; }
-.run-missed-lead { font-size: 12px; color: var(--muted); line-height: 1.55; margin-bottom: 12px; }
-.run-missed-hint { font-size: 11px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+.run-missed-lead { font-size: var(--fs-1); color: var(--muted); line-height: 1.55; margin-bottom: 12px; }
+.run-missed-hint { font-size: var(--fs-1); color: var(--muted); margin-top: 6px; line-height: 1.5; }
 body.training-mode #runplan { background: var(--bg); border-top: none; padding-top: 0; padding-bottom: 60px; }
 body.training-mode .run-field-label { color: var(--muted); }
 body.training-mode select.run-input { color: var(--accent); }
@@ -3039,7 +3043,7 @@ body.training-mode select.run-input { color: var(--accent); }
   <div class="onb-flow-inner">
 
     <div class="onb-flow-screen" id="onbFlowScreen1">
-      <div class="settings-modal-title" style="font-size:32px;">RUN THE WEIGHTS</div>
+      <div class="settings-modal-title" style="font-size:var(--fs-5);">RUN THE WEIGHTS</div>
       <div class="settings-modal-sub">Train like an athlete. Track everything.</div>
       <ul class="onb-flow-bullets">
         <li>Log every lift. Track sets, reps, and weight over time.</li>
@@ -3140,18 +3144,18 @@ body.training-mode select.run-input { color: var(--accent); }
 </section></div>
   <div id="sec-about" class="sub-sec"><section id="about">
   <div class="section-label">What This Is</div>
-  <h2 class="section-title">NOT FOR<br>EVERYONE</h2>
+  <h2 class="section-title">BUILT FOR<br>BOTH</h2>
   <div class="about-grid">
     <div class="about-text">
-      <p>Most men pick a lane. Get big and slow, or get lean and fast, and quietly let the other side go. <strong>Run the Weights does not make you choose.</strong> This is a hybrid athlete program built around your race date, your training days, and where you’re actually starting from, not a fixed calendar you have to fit yourself into. You add weight to the bar every week. You also show up to your 5k, your half marathon, or your century ride actually ready, not just surviving it.</p>
-      <p>The strength side is the same non-negotiable <strong>Arnold Split</strong> underneath everything here: three days on, one off, bench and squat adding load every single week for three weeks before a deload resets you for Wave 2. Underneath that runs a second engine, a running plan built off your actual race date, current mileage, and experience, that layers onto the same week without wrecking your legs before leg day or your legs before your long run. Hit chest and back in the morning, your easy run or tempo work the same day if the calendar calls for it. <strong>Nothing here is guesswork stitched together from two separate apps.</strong></p>
+      <p>Most people think they have to choose. Get stronger or keep running, and let the other side slide. <strong>Run the Weights does not make you choose.</strong> This is a hybrid athlete program built around your race date, your training days, and where you’re actually starting from, not a fixed calendar you have to fit yourself into. You add weight to the bar every week. You also show up to your 5k, your half marathon, or your century ride actually ready, not just surviving it.</p>
+      <p>The strength side is the <strong>Arnold Split</strong> underneath everything here: three days on, one off, bench and squat adding load every single week for three weeks before a deload resets you for Wave 2. Underneath that runs a second engine, a running plan built off your actual race date, current mileage, and experience, that layers onto the same week without wrecking your legs before leg day or your legs before your long run. Hit chest and back in the morning, your easy run or tempo work the same day if the calendar calls for it. <strong>Nothing here is guesswork stitched together from two separate apps.</strong></p>
       <p>This was built by a <strong>former Division 1 cross country captain</strong> who also spent years in the weight room, not a lifter guessing at running volume, and not a runner guessing at what a real hypertrophy block looks like. Both sides of this program come from <strong>actually having done both</strong>, including the mistakes that come from doing them wrong first.</p>
-      <p>By the time you hit your race, you squat heavier, press heavier, and you can still run the distance you signed up for. Most men never build both at once because they assume they have to choose. <strong>You do not.</strong></p>
+      <p>By the time you hit your race, you squat heavier, press heavier, and you can still run the distance you signed up for. Most people never build both at once because they assume they have to choose. <strong>You do not.</strong></p>
     </div>
     <div class="pillars">
       <div class="pillar fade-up">
         <div class="pillar-title">Strength First</div>
-        <div class="pillar-desc">Bench press, barbell squat, back squat, and OHP add load every single week of each wave. Not when you feel like it, every week. Progressive overload on the primary compounds is how your body changes. Everything else is secondary.</div>
+        <div class="pillar-desc">Bench press, barbell squat, back squat, and OHP add a little load each week of a wave. Small, steady steps on the main lifts are how your body changes.</div>
       </div>
       <div class="pillar fade-up">
         <div class="pillar-title">Twice a Week</div>
@@ -3173,10 +3177,10 @@ body.training-mode select.run-input { color: var(--accent); }
   </div>
 </section></div>
   <div id="sec-edge" class="sub-sec"><section id="edge" class="edge-section" style="background:var(--dark);border-top:1px solid var(--border);">
-  <div class="section-label">The Real ROI</div>
-  <h2 class="section-title" style="margin-bottom:24px;">YOUR BODY<br>OPENS DOORS</h2>
-  <p style="font-size:16px;color:var(--muted);max-width:600px;line-height:1.8;margin-bottom:72px;">
-    People say looks don't matter. Those people are lying to you. The world responds differently to a man who carries himself with physical authority. This is not vanity. This is strategy.
+  <div class="section-label">Why it matters</div>
+  <h2 class="section-title" style="margin-bottom:24px;">STRONG<br>FEELS GOOD</h2>
+  <p style="font-size:var(--fs-3);color:var(--muted);max-width:600px;line-height:1.8;margin-bottom:72px;">
+    Getting stronger is not about how you look to anyone else. It shows up in how you feel, how you sleep and how much you can handle in a day.
   </p>
 
   <div class="edge-carousel" id="edgeCarousel">
@@ -3184,40 +3188,40 @@ body.training-mode select.run-input { color: var(--accent); }
 
     <!-- Confidence -->
     <div class="edge-slide" style="background:var(--surface);border:1px solid rgba(var(--ink-rgb),0.06);border-radius:20px;padding:40px 36px;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:-10px;right:20px;font-family:'Antonio',sans-serif;font-weight:900;font-size:120px;color:rgba(var(--ink-rgb),0.05);line-height:1;user-select:none;">01</div>
-      <div style="font-family:'Antonio',sans-serif;font-weight:900;font-size:13px;letter-spacing:0.25em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;">Mental Edge</div>
-      <div style="font-family:'Antonio',sans-serif;font-weight:900;font-size:36px;text-transform:uppercase;letter-spacing:0.02em;color:var(--accent);line-height:1.1;margin-bottom:20px;">Confidence<br>Is Not Born.<br>It's Built.</div>
-      <p style="font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:16px;">
+      <div style="position:absolute;top:-10px;right:20px;font-family:var(--font-display);font-weight:900;font-size:var(--fs-7);color:rgba(var(--ink-rgb),0.05);line-height:1;user-select:none;">01</div>
+      <div style="font-family:var(--font-body);font-weight:900;font-size:var(--fs-2);letter-spacing:0.01em;color:var(--accent);margin-bottom:20px;">Mental Edge</div>
+      <div style="font-family:var(--font-display);font-weight:900;font-size:var(--fs-6);letter-spacing:0.02em;color:var(--accent);line-height:1.1;margin-bottom:20px;">Confidence<br>Is Not Born.<br>It's Built.</div>
+      <p style="font-size:var(--fs-2);color:var(--muted);line-height:1.8;margin-bottom:16px;">
         Every rep you finish when you wanted to stop is a deposit into your self-belief. Finish this program and you will walk into rooms differently. Not because you told yourself to. Because your body knows what you put into it.
       </p>
-      <p style="font-size:14px;color:var(--muted);line-height:1.8;">
-        The men who dominate in every area of life, in business, in social settings, in creative work, are not smarter than everyone else. They carry themselves like they've already won. <strong style="color:var(--text-soft);">That posture comes from the work you do in here.</strong>
+      <p style="font-size:var(--fs-2);color:var(--muted);line-height:1.8;">
+        Feeling strong changes how you carry yourself, at work, with friends and everywhere in between. <strong style="color:var(--text-soft);">That ease comes from the work you do in here.</strong>
       </p>
     </div>
 
     <!-- Social Status -->
     <div class="edge-slide" style="background:var(--surface);border:1px solid rgba(var(--ink-rgb),0.06);border-radius:20px;padding:40px 36px;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:-10px;right:20px;font-family:'Antonio',sans-serif;font-weight:900;font-size:120px;color:rgba(var(--ink-rgb),0.05);line-height:1;user-select:none;">02</div>
-      <div style="font-family:'Antonio',sans-serif;font-weight:900;font-size:13px;letter-spacing:0.25em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;">Social Capital</div>
-      <div style="font-family:'Antonio',sans-serif;font-weight:900;font-size:36px;text-transform:uppercase;letter-spacing:0.02em;color:var(--accent);line-height:1.1;margin-bottom:20px;">People Treat<br>You How You<br>Look.</div>
-      <p style="font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:16px;">
-        This is uncomfortable to say out loud. But you already know it's true. A physically imposing, well-built man is treated with more respect in every room he enters. In job interviews. In negotiations. On the street. At a party.
+      <div style="position:absolute;top:-10px;right:20px;font-family:var(--font-display);font-weight:900;font-size:var(--fs-7);color:rgba(var(--ink-rgb),0.05);line-height:1;user-select:none;">02</div>
+      <div style="font-family:var(--font-body);font-weight:900;font-size:var(--fs-2);letter-spacing:0.01em;color:var(--accent);margin-bottom:20px;">More Energy</div>
+      <div style="font-family:var(--font-display);font-weight:900;font-size:var(--fs-6);letter-spacing:0.02em;color:var(--accent);line-height:1.1;margin-bottom:20px;">More Left<br>For The Rest<br>Of Your Day.</div>
+      <p style="font-size:var(--fs-2);color:var(--muted);line-height:1.8;margin-bottom:16px;">
+        Regular strength work helps you sleep better, think clearer and handle long days. You feel it at your desk, on a night out and the morning after.
       </p>
-      <p style="font-size:14px;color:var(--muted);line-height:1.8;">
-        You cannot control how people are wired. You can control how you show up. <strong style="color:var(--text-soft);">Build the kind of body that commands attention before you say a word.</strong>
+      <p style="font-size:var(--fs-2);color:var(--muted);line-height:1.8;">
+        You cannot add hours to the day. You can have more energy for them. <strong style="color:var(--text-soft);">Two or three sessions a week is enough to feel it.</strong>
       </p>
     </div>
 
     <!-- Athletic Performance -->
     <div class="edge-slide" style="background:var(--surface);border:1px solid rgba(var(--ink-rgb),0.06);border-radius:20px;padding:40px 36px;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:-10px;right:20px;font-family:'Antonio',sans-serif;font-weight:900;font-size:120px;color:rgba(var(--ink-rgb),0.05);line-height:1;user-select:none;">03</div>
-      <div style="font-family:'Antonio',sans-serif;font-weight:900;font-size:13px;letter-spacing:0.25em;text-transform:uppercase;color:var(--accent);margin-bottom:20px;">Athletic Output</div>
-      <div style="font-family:'Antonio',sans-serif;font-weight:900;font-size:36px;text-transform:uppercase;letter-spacing:0.02em;color:var(--accent);line-height:1.1;margin-bottom:20px;">Strong Men<br>Are Useful<br>Men.</div>
-      <p style="font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:16px;">
-        Mobility work is baked into every session. You will be stronger and move better than 99% of men your age. Pick up anything. Sprint when it matters. Play any sport and be the most physically capable person on the field.
+      <div style="position:absolute;top:-10px;right:20px;font-family:var(--font-display);font-weight:900;font-size:var(--fs-7);color:rgba(var(--ink-rgb),0.05);line-height:1;user-select:none;">03</div>
+      <div style="font-family:var(--font-body);font-weight:900;font-size:var(--fs-2);letter-spacing:0.01em;color:var(--accent);margin-bottom:20px;">Athletic Output</div>
+      <div style="font-family:var(--font-display);font-weight:900;font-size:var(--fs-6);letter-spacing:0.02em;color:var(--accent);line-height:1.1;margin-bottom:20px;">Strong Is<br>Useful.</div>
+      <p style="font-size:var(--fs-2);color:var(--muted);line-height:1.8;margin-bottom:16px;">
+        Mobility work is built into every session. You will feel strong and move well in everyday life. Carry the groceries in one trip, take the stairs, join the game.
       </p>
-      <p style="font-size:14px;color:var(--muted);line-height:1.8;">
-        Weakness is a choice at this age. You have every resource you need. <strong style="color:var(--text-soft);">The only question is whether you actually want it badly enough to show up every day.</strong>
+      <p style="font-size:var(--fs-2);color:var(--muted);line-height:1.8;">
+        You do not need a perfect week. <strong style="color:var(--text-soft);">Show up when you can and the strength adds up.</strong>
       </p>
     </div>
 
@@ -3231,10 +3235,10 @@ body.training-mode select.run-input { color: var(--accent); }
 
   <!-- Pull quote -->
   <div style="border-left:4px solid var(--accent);border-radius:0 16px 16px 0;padding:36px 44px;background:var(--dark);max-width:800px;">
-    <div style="font-family:'Antonio',sans-serif;font-weight:900;font-size:clamp(28px,4vw,48px);line-height:1.15;color:var(--accent);margin-bottom:20px;letter-spacing:0.01em;">
-      "The average man will never know what he was capable of. He was too comfortable to find out."
+    <div style="font-family:var(--font-display);font-weight:900;font-size:var(--fs-7);line-height:1.15;color:var(--accent);margin-bottom:20px;letter-spacing:0.01em;">
+      "You do not have to be extreme. You just have to keep coming back."
     </div>
-    <div style="font-size:12px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);">
+    <div style="font-size:var(--fs-1);font-weight:700;letter-spacing:0.01em;color:var(--accent);">
       Run the Weights — The Arnold Split, Built Around You.
     </div>
   </div>
@@ -3253,7 +3257,7 @@ body.training-mode select.run-input { color: var(--accent); }
   <button class="cal-fullview-btn" onclick="goTab('calendar')">View full calendar →</button>
 
   <div class="section-label">The Battle Plan</div>
-  <h2 class="section-title">EVERY WEEK.<br>NO EXCUSES.</h2>
+  <h2 class="section-title">EVERY WEEK.<br>YOUR PACE.</h2>
 
   <div class="week-tabs" id="weekTabs" style="flex-wrap:wrap;"></div>
 
@@ -3266,8 +3270,8 @@ body.training-mode select.run-input { color: var(--accent); }
   <div class="section-label">Your Numbers</div>
   <h2 class="section-title">BEAT YOUR<br>LAST SELF</h2>
 
-  <div id="prog-intro" style="margin-bottom:28px;font-size:15px;color:var(--muted);max-width:560px;line-height:1.7">
-    Every lift runs on <strong style="color:var(--text)">double progression</strong>: two working sets, taken to failure. When your best set hits the top of the rep range on a true failure set, the app prompts the next weight jump — 5 lbs upper body, 10 lbs lower body. Until then the target is simple: beat last session by one rep. Reps dropping back after a weight increase is expected — that is a step up, not a setback. The cards below track every lift you log: this week vs last, the 4-session trend, all-time gain, and how often you actually took your top set to failure.
+  <div id="prog-intro" style="margin-bottom:28px;font-size:var(--fs-3);color:var(--muted);max-width:560px;line-height:1.7">
+    Every lift runs on <strong style="color:var(--text)">double progression</strong>: two sets, the last one taken close to your limit. When your best set reaches the top of the rep range, the app suggests the next weight: 5 lbs for upper body, 10 lbs for lower body. Until then, aim for one more rep than last time. Reps dipping after a weight increase is normal. That is a step up, not a setback. The cards below show every lift you log: this week against last, the trend over four sessions, your total gain, and how often your heaviest set reached failure.
   </div>
 
   <div class="prog-grid" id="progressCards"></div>
@@ -3275,16 +3279,16 @@ body.training-mode select.run-input { color: var(--accent); }
 </section><footer>
   <div>
     <div class="footer-logo"><img src="assets/brand/rtw-wordmark.png" alt="Run the Weights"></div>
-    <div class="footer-sub">Do the work. Become undeniable.</div>
+    <div class="footer-sub">Show up when you can. Pick up where you left off.</div>
   </div>
   <div class="footer-rules">
     <div class="footer-rules-title">The Code</div>
     <div class="footer-rule"><span class="footer-rule-num">01</span>Hard lifting and hard running never share a day. One of them always gives.</div>
     <div class="footer-rule"><span class="footer-rule-num">02</span>Hip mobility every leg day. It's not just your squat. It's your stride.</div>
-    <div class="footer-rule"><span class="footer-rule-num">03</span>Full rest on main lifts, full recovery on hard running days. Cutting either short is for amateurs.</div>
-    <div class="footer-rule"><span class="footer-rule-num">04</span>Deload every 4th week, lifting and running both. The weak skip it. You won't.</div>
+    <div class="footer-rule"><span class="footer-rule-num">03</span>Rest fully between heavy sets and after hard runs. Recovery is part of the work.</div>
+    <div class="footer-rule"><span class="footer-rule-num">04</span>Every fourth week, ease off, lifting and running both. Rest is how you keep going.</div>
     <div class="footer-rule"><span class="footer-rule-num">05</span>Log every set. If you're not tracking, you're not progressing.</div>
-    <div class="footer-rule"><span class="footer-rule-num">06</span>Built around your race, your days, your equipment. Adjust the plan. Never skip the work.</div>
+    <div class="footer-rule"><span class="footer-rule-num">06</span>Built around your days and your equipment. Adjust the plan when life changes.</div>
   </div>
 </footer></div>
 </div>
@@ -3318,7 +3322,7 @@ body.training-mode select.run-input { color: var(--accent); }
 
 <section id="plan">
   <!-- STORAGE WARNING -->
-  <div id="storageWarn" style="display:none;padding:12px 16px;margin-bottom:16px;border:1px solid var(--accent);border-radius:12px;background:rgba(var(--ink-rgb),0.10);color:var(--accent);font-size:13px;font-weight:600">
+  <div id="storageWarn" style="display:none;padding:12px 16px;margin-bottom:16px;border:1px solid var(--accent);border-radius:12px;background:rgba(var(--ink-rgb),0.10);color:var(--accent);font-size:var(--fs-2);font-weight:600">
     ⚠ This device is blocking storage — logs will not survive closing the app. Tap Backup now, and check private-browsing or storage settings.
   </div>
   <div class="section-label adv">Run the Weights — Daily Training</div>
@@ -3330,14 +3334,14 @@ body.training-mode select.run-input { color: var(--accent); }
     <span class="tool-week" id="toolWeek">Week 1</span>
     <button type="button" class="tool-arrow" onclick="stepTrainWeek(1)" aria-label="Next week">&#8250;</button>
     <button type="button" class="tool-rest" id="toolRestBtn" aria-expanded="false" onclick="toggleRestPresets()">Rest timer</button>
-    <button class="maintenance-quick" id="maintenanceQuickBtn" role="switch" aria-checked="false" onclick="toggleMaintenanceMode()" aria-label="Maintenance Mode">
+    <button class="maintenance-quick" id="maintenanceQuickBtn" role="switch" aria-checked="false" onclick="toggleMaintenanceMode()" aria-label="Easy week mode">
       <span class="maintenance-quick-label">Easy week</span>
       <span class="maintenance-toggle maintenance-toggle-sm" aria-hidden="true"><span class="maintenance-toggle-knob"></span></span>
     </button>
   </div>
   <!-- Ten week pills, kept for the week renderer but not shown. -->
   <div style="display:none">
-    <span style="font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);">Training Week</span>
+    <span style="font-size:var(--fs-1);font-weight:700;letter-spacing:0.01em;color:var(--muted);">Training Week</span>
     <div style="display:flex;gap:4px;flex-wrap:wrap;" id="trainWeekSelector"></div>
   </div>
   <div id="backupNudgeBanner" class="backup-nudge-banner" style="display:none">
@@ -3358,7 +3362,7 @@ body.training-mode select.run-input { color: var(--accent); }
   </div>
   <div class="week-glance" id="weekGlance" aria-label="This week at a glance"></div>
   <div id="maintenanceBanner" class="maintenance-banner" style="display:none">
-    <span class="maintenance-banner-dot"></span> Maintenance Mode — reduced volume &amp; weight this week. Logging is never restricted.
+    <span class="maintenance-banner-dot"></span> Easy week mode is on. Targets are lighter this week. Logging works the same.
   </div>
   <div id="weekCompleteBanner" class="week-complete-banner" style="display:none">
     <div class="week-complete-text">Week <span id="weekCompleteNum"></span> complete — every lifting day logged.</div>
@@ -3564,12 +3568,12 @@ body.training-mode select.run-input { color: var(--accent); }
       <button class="clear-day-btn adv" onclick="clearDayLogs('rest'); return false;">Clear Logs</button>
     </div>
     <div style="padding:24px 28px;background:rgba(var(--ink-rgb),0.05);border:1px solid rgba(var(--ink-rgb),0.18);border-left:4px solid var(--accent);border-radius:0 16px 16px 0;margin-bottom:32px">
-      <div style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-soft);margin-bottom:16px">Start with 5 min foam rolling: quads, hip flexors, t-spine. Then 10 deep diaphragmatic breaths.</div>
+      <div style="font-size:var(--fs-1);font-weight:700;letter-spacing:0.01em;color:var(--text-soft);margin-bottom:16px">Start with 5 min foam rolling: quads, hip flexors, t-spine. Then 10 deep diaphragmatic breaths.</div>
       <div style="display:flex;flex-wrap:wrap;gap:8px">
-        <span style="font-size:13px;color:var(--muted)">No heavy loading.</span>
-        <span style="font-size:13px;color:var(--muted)">Hip work is the priority.</span>
-        <span style="font-size:13px;color:var(--muted)">Face pulls are mandatory.</span>
-        <span style="font-size:13px;color:var(--muted)">45 min max.</span>
+        <span style="font-size:var(--fs-2);color:var(--muted)">No heavy loading.</span>
+        <span style="font-size:var(--fs-2);color:var(--muted)">Hip work is the priority.</span>
+        <span style="font-size:var(--fs-2);color:var(--muted)">Face pulls are mandatory.</span>
+        <span style="font-size:var(--fs-2);color:var(--muted)">45 min max.</span>
       </div>
     </div>
     <div class="lift-table-header adv"><span>Movement</span><span>Hold</span><span>Time</span><span></span></div>
@@ -3659,8 +3663,8 @@ body.training-mode select.run-input { color: var(--accent); }
       <div class="run-hint">Pick the day you actually have the time.</div>
     </div>
     <div>
-      <div class="run-field-label">Current PR / Recent Race <span style="color:var(--muted);font-size:10px">Optional</span></div>
-      <input class="run-input" type="text" id="run-pr" placeholder="22:30 5k" oninput="onRunInput()" style="font-size:15px">
+      <div class="run-field-label">Current PR / Recent Race <span style="color:var(--muted);font-size:var(--fs-1)">Optional</span></div>
+      <input class="run-input" type="text" id="run-pr" placeholder="22:30 5k" oninput="onRunInput()" style="font-size:var(--fs-3)">
       <div class="run-hint">Leave blank for effort-based zones and a time trial prompt.</div>
     </div>
     <div>
@@ -3798,7 +3802,7 @@ body.training-mode select.run-input { color: var(--accent); }
 <section id="quicklogSection">
   <div class="section-label">Run the Weights — Quick Log</div>
   <h2 class="section-title train-title">ONE LIFT.<br>ONE <span class="accent-word">SET</span>.</h2>
-  <p style="color:var(--muted);font-size:13px;line-height:1.6;margin:-8px 0 20px;max-width:480px;">
+  <p style="color:var(--muted);font-size:var(--fs-2);line-height:1.6;margin:-8px 0 20px;max-width:480px;">
     For taper weeks and short-on-time days — log one set on an anchor lift without opening the full workout.
   </p>
 
@@ -3867,13 +3871,13 @@ body.training-mode select.run-input { color: var(--accent); }
       <img src="assets/brand/rtw-square-a.png" alt="" aria-hidden="true">
       <div class="settings-modal-title">Enter Run the Weights</div>
     </div>
-    <div class="settings-modal-sub">Enter your max weights — your 1-rep max or best heavy single. They set the suggested starting weight on every lift. You can edit them anytime, and every lift's aim stays adjustable as you go. Stored locally on your device.</div>
+    <div class="settings-modal-sub">Your max is the most you can lift once with good form. It sets your starting weights. Not sure? Use Estimate it with a recent set, or skip this. Your first logged sets do the same job.</div>
 
     <!-- Don't know your max? Enter a set you actually hit and the app estimates
          the 1RM off it. Both modes write the same number to the same place. -->
     <div class="maxes-mode-toggle" role="group" aria-label="How to enter your maxes">
-      <button class="mode-toggle-btn active" id="mode-btn-1rm" onclick="setMaxesMode('1rm')">I Know My 1RM</button>
-      <button class="mode-toggle-btn" id="mode-btn-reps" onclick="setMaxesMode('reps')">Estimate It</button>
+      <button class="mode-toggle-btn active" id="mode-btn-1rm" onclick="setMaxesMode('1rm')">I know my max</button>
+      <button class="mode-toggle-btn" id="mode-btn-reps" onclick="setMaxesMode('reps')">Estimate it</button>
     </div>
 
     <div class="settings-input-group">
@@ -3934,12 +3938,12 @@ body.training-mode select.run-input { color: var(--accent); }
       </div>
       <div class="maxes-est-1rm" id="est-1rm-ohp"></div>
     </div>
-    <div class="settings-input-hint" id="maxes-epley-note" style="display:none;margin-bottom:22px;">Estimated with the Epley formula — 1RM = weight × (1 + reps ÷ 30). Accurate up to about 10 reps; past that it flatters you.</div>
+    <div class="settings-input-hint" id="maxes-epley-note" style="display:none;margin-bottom:22px;">Estimated from your set with the Epley formula. Most accurate up to about 10 reps.</div>
     <button class="settings-save-btn" onclick="saveMaxes()">Save &amp; Enter</button>
     <button class="settings-cancel-btn" onclick="skipMaxes()">Skip for now</button>
     <div class="maintenance-mode-row" id="maintenanceModeRow">
       <div class="maintenance-mode-label">
-        <div class="maintenance-mode-title">Maintenance Mode</div>
+        <div class="maintenance-mode-title">Easy week mode</div>
         <div class="maintenance-mode-sub">Reduced volume &amp; weight for taper, deload, or a recovery week — never restricts logging.</div>
       </div>
       <button class="maintenance-toggle" id="maintenanceToggleBtn" role="switch" aria-checked="false" onclick="toggleMaintenanceMode()">
@@ -3947,7 +3951,7 @@ body.training-mode select.run-input { color: var(--accent); }
       </button>
     </div>
     <button class="settings-danger-btn" id="changePlanBtn" onclick="openChangePlanModal()">Change Training Plan</button>
-    <button class="settings-danger-btn" id="resetMaxesBtn" onclick="resetMaxes()">Reset 1RMs</button>
+    <button class="settings-danger-btn" id="resetMaxesBtn" onclick="resetMaxes()">Reset maxes</button>
     <button class="settings-danger-btn" id="startCycleBtn" onclick="startNewCycle()">Start New Cycle</button>
   </div>
 </div>
@@ -4012,16 +4016,16 @@ body.training-mode select.run-input { color: var(--accent); }
         <span class="settings-max-val unset" id="chip-bench">Not set</span>
       </div>
       <div class="settings-max-chip">
-        <span class="settings-max-label">DB Press</span>
+        <span class="settings-max-label">Shoulder press</span>
         <span class="settings-max-val unset" id="chip-ohp">Not set</span>
       </div>
     </div>
     <button class="settings-open-btn" id="settingsOpenBtn" onclick="openMaxesModal()" style="margin-bottom:24px;">
-      ⚙ Set Your Maxes
+      ⚙ Set your maxes
     </button>
     <div class="liftdays-wrap" style="margin-bottom:24px;">
       <span class="liftdays-label">Split</span>
-      <div class="liftdays-group">
+      <div class="liftdays-group goal-mode-group">
         <button class="liftdays-btn" data-split="arnold" onclick="setSplit('arnold')">Arnold</button>
         <button class="liftdays-btn" data-split="ppl" onclick="setSplit('ppl')">PPL</button>
         <button class="liftdays-btn" data-split="pplul" onclick="setSplit('pplul')">PPLUL</button>
@@ -4096,7 +4100,7 @@ body.training-mode select.run-input { color: var(--accent); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.07</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.08</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -4141,8 +4145,8 @@ body.training-mode select.run-input { color: var(--accent); }
         <div class="run-hint">One long run anchors the weekend. Everything else builds around it.</div>
       </div>
       <div>
-        <div class="run-field-label">Current PR / Recent Race <span style="color:var(--muted);font-size:10px">Optional</span></div>
-        <input class="run-input" type="text" id="onb-run-pr" placeholder="22:30 5k" oninput="onbRunSync()" style="font-size:15px">
+        <div class="run-field-label">Current PR / Recent Race <span style="color:var(--muted);font-size:var(--fs-1)">Optional</span></div>
+        <input class="run-input" type="text" id="onb-run-pr" placeholder="22:30 5k" oninput="onbRunSync()" style="font-size:var(--fs-3)">
         <div class="run-hint">Leave blank for effort-based zones and a time trial prompt.</div>
       </div>
       <div class="run-hint" id="onb-run-mileage-hint"></div>
@@ -4676,15 +4680,15 @@ body.training-mode select.run-input { color: var(--accent); }
   //  liftDaysPerWeek for (run-plan merge, etc.) — setSplit() keeps that
   //  variable in sync with whichever template is active.
   const SPLIT_TEMPLATES = {
-    arnold: { days: 6, label: 'Arnold Split', note: '3 on · 1 off · every group twice',
+    arnold: { days: 6, label: 'Arnold Split', note: '6 days. Chest and back, shoulders and arms, legs, then again.',
          week: ['chest','arms','legs','rest','chest-b','arms-b','legs-b'] },
-    ppl: { days: 6, label: 'PPL (Push / Pull / Legs)', note: '6 on · rest Thu · every group twice',
+    ppl: { days: 6, label: 'PPL (Push / Pull / Legs)', note: '6 days. Push, pull, legs, then again.',
          week: ['push','pull','legs','rest','push-b','pull-b','legs-b'] },
-    pplul: { days: 5, label: 'Push / Pull / Legs + Upper / Lower', note: 'PPLUL · every group twice',
+    pplul: { days: 5, label: 'Push / Pull / Legs + Upper / Lower', note: '5 days. Push, pull, legs, upper body, lower body.',
          week: ['push','pull','legs','upper','lower','rest','rest'] },
-    'upper-lower': { days: 4, label: 'Upper / Lower', note: 'Upper and lower each twice',
+    'upper-lower': { days: 4, label: 'Upper / Lower', note: '4 days. Upper body, lower body, twice each.',
          week: ['upper-a','lower-a','rest','upper-b','lower-b','rest','rest'] },
-    'full-body': { days: 3, label: 'Full Body', note: 'Every group three times',
+    'full-body': { days: 3, label: 'Full Body', note: '3 days, full body each time.',
          week: ['fb-a','rest','fb-b','rest','fb-c','rest','rest'] }
   };
   //  Single source of truth for "what splits exist at this day count" —
@@ -4997,7 +5001,10 @@ body.training-mode select.run-input { color: var(--accent); }
       //  first word of the title, keeping a trailing B. Full title is in the
       //  aria label and one tap away.
       var title = rest ? 'Rest' : String(d.title || '');
-      var short = title.split(' ')[0] + (/ B$/.test(title) ? ' B' : '');
+      //  Words longer than the column swap to the shorter word of the title.
+      var SHORT = { Shoulders: 'Arms', Mobility: 'Core' };
+      var first = title.split(' ')[0];
+      var short = (SHORT[first] || first) + (/ B$/.test(title) ? ' B' : '');
       return '<button type="button" class="' + cls + '"' + (rest ? ' disabled' : ' onclick="switchDay(\'' + id + '\')"')
         + ' aria-label="' + WG_DOWS[i] + ', ' + (d.title || 'Rest') + (logged ? ', logged' : '') + (i === today ? ', today' : '') + '">'
         + '<div class="wg-dow">' + WG_DOWS[i] + '</div>'
@@ -5352,7 +5359,7 @@ body.training-mode select.run-input { color: var(--accent); }
     { wave: "Wave 2", phase: "LOAD", intensity: "79–83%",
       explosive: "Full explosive circuit before each leg day, 15 min",
       focus: "Load — highest volume week of the program",
-      mindset: "This is where most guys quit. You don't quit." },
+      mindset: "The hardest week of the block. Take it one session at a time." },
     { wave: "Wave 2", phase: "OVERLOAD", intensity: "83–88%",
       explosive: "Reduced, box jumps 3x3 only, save CNS for main lifts",
       focus: "Overload — push into new territory, heaviest sets yet",
@@ -5360,7 +5367,7 @@ body.training-mode select.run-input { color: var(--accent); }
     { wave: "Wave 2", phase: "PEAK", intensity: "88–93%",
       explosive: "None, full CNS focus on peak lifts",
       focus: "Peak — near-max effort, minimal volume, maximum intensity",
-      mindset: "Top sets only. 2-3 heavy sets on main lifts. This is your test week." },
+      mindset: "Heaviest sets only. Two or three heavy sets on the main lifts. This is your test week." },
     { wave: "Wave 2", phase: "DELOAD", intensity: "~55–60%",
       explosive: "Mobility only, foam roll, stretch, move well",
       focus: "Final Deload, recover, reflect, come back and test maxes",
@@ -5388,7 +5395,7 @@ body.training-mode select.run-input { color: var(--accent); }
     { focus: 'Overload — push past the territory the last lap called new',
       mindset: "Beat your week 8 numbers this time, not just week 3's." },
     { focus: "Peak — test week, measured against your own best, not the program's",
-      mindset: 'Top sets only. The number to beat is the one you set last peak.' },
+      mindset: 'Heaviest sets only. The number to beat is the one you set last peak.' },
     { focus: 'Final deload of this lap — recover, then test maxes and go again',
       mindset: 'You finished another one. Recover completely, retest, and start the next lap heavier.' }
   ];
@@ -6314,10 +6321,10 @@ body.training-mode select.run-input { color: var(--accent); }
     var mw = userMaxes[ex.maxKey] > 0 ? roundToNearestFive(userMaxes[ex.maxKey] * MAINTENANCE_MAIN_LIFT_PCT) : null;
     if (mw == null) {
       return { mode: target.mode, weight: target.weight, reps: reps,
-        msg: 'Maintenance Mode — set your ' + MAX_LABELS[ex.maxKey] + ' max for an accurate target. ' + target.msg };
+        msg: 'Easy week mode. Set your ' + MAX_LABELS[ex.maxKey] + ' max for an accurate target. ' + target.msg };
     }
     return { mode: 'maintenance', weight: mw, reps: reps,
-      msg: 'Maintenance Mode — ' + mw + ' lbs (~' + Math.round(MAINTENANCE_MAIN_LIFT_PCT * 100) + '% of your ' + MAX_LABELS[ex.maxKey] + ' max), ' + range[0] + '–' + range[1] + ' reps.' };
+      msg: 'Easy week mode: ' + mw + ' lbs (~' + Math.round(MAINTENANCE_MAIN_LIFT_PCT * 100) + '% of your ' + MAX_LABELS[ex.maxKey] + ' max), ' + range[0] + '–' + range[1] + ' reps.' };
   }
 
   //     Stall = 3 straight failure-marked sessions, same weight, no rep gain
@@ -6583,9 +6590,9 @@ body.training-mode select.run-input { color: var(--accent); }
       + '<div class="lift-time detail">' + ex.time + '</div>'
       + '<div class="lift-log-inline">'
       + '<div class="log-row detail">'
-      + '<div class="log-inline-group"><span class="log-inline-label">Weight to use</span>'
+      + '<div class="log-inline-group"><span class="log-inline-label">Target weight</span>'
       + withSteppers('w-' + ex.id, 'weight', '<input class="log-inline-input" type="number" inputmode="decimal" id="w-' + ex.id + '" data-ex="' + ex.id + '" oninput="onAimInput(this.dataset.ex)" onchange="onAimCommit(this.dataset.ex)">') + '</div>'
-      + '<div class="log-inline-group"><span class="log-inline-label">Reps to aim for</span>'
+      + '<div class="log-inline-group"><span class="log-inline-label">Target reps</span>'
       + withSteppers('r-' + ex.id, 'reps', '<input class="log-inline-input" type="number" inputmode="numeric" id="r-' + ex.id + '" data-ex="' + ex.id + '" oninput="onAimInput(this.dataset.ex)" onchange="onAimCommit(this.dataset.ex)">') + '</div>'
       + '</div>'
       + '<div class="log-row setcount-row adv-card">'
@@ -6599,7 +6606,7 @@ body.training-mode select.run-input { color: var(--accent); }
       + setRowHTML(ex, 3)
       + '<button type="button" class="log-planned-btn adv-card" id="planned-' + ex.id + '" data-ex="' + ex.id + '" onclick="logAsPlanned(this.dataset.ex)">Log as planned</button>'
       + '<div class="log-row adv-card">'
-      + '<button class="failure-toggle" id="f-' + ex.id + '" data-ex="' + ex.id + '" onclick="toggleFailure(this)">Failure · No</button>'
+      + '<button class="failure-toggle" id="f-' + ex.id + '" data-ex="' + ex.id + '" onclick="toggleFailure(this)">Went to failure: no</button>'
       + '<span class="autosave-flash" id="save-' + ex.id + '"></span>'
       //  Only ever on a custom row. A programmed exercise has no remove button
       //  at all, so there is nothing to mis-click on the ones that ship.
@@ -6817,7 +6824,7 @@ body.training-mode select.run-input { color: var(--accent); }
       b.classList.toggle('on', b.dataset.split === activeSplitId);
     });
     var lbl = document.getElementById('liftDaysLabel');
-    if (lbl) lbl.textContent = activeSplit().label + ' · ' + activeSplit().note;
+    if (lbl) lbl.textContent = activeSplit().note;
     var mirror = document.getElementById('run-lift-days-readout');
     if (mirror) mirror.textContent = splitSummary();
     var eyebrow = document.getElementById('heroEyebrow');
@@ -7033,10 +7040,10 @@ body.training-mode select.run-input { color: var(--accent); }
       out += '<span class="last-session-chip has-data">' + label + ': ' + setsTxt + fTxt + '</span>';
     }
     if (wkEntry && wkEntry.failure === false) {
-      out += '<div class="soft-set-note">No failure set logged. Soft sets are maintenance, not growth.</div>';
+      out += '<div class="soft-set-note">No set went to failure this week. For growth, take the last set close to your limit.</div>';
     }
     var pr = prState(hist, ex);
-    if (pr) out += '<span class="pr-badge">PR</span><span class="pr-note">Est 1RM ' + pr.now + ' lbs, up from ' + pr.before + '.</span>';
+    if (pr) out += '<span class="pr-badge">PR</span><span class="pr-note">Estimated max ' + pr.now + ' lbs, up from ' + pr.before + '.</span>';
     var stall = getStallState(hist.filter(function(e) { return entryVariant(e, ex) === activeVariant(ex); }));
     if (stall) {
       out += '<div class="stall-warning">Stalled: 3 sessions at ' + stall.weight + ' lbs with no rep gain. Check sleep and food, or drop to ' + stall.drop + ' lbs for one session.</div>';
@@ -7088,7 +7095,7 @@ body.training-mode select.run-input { color: var(--accent); }
 
   function setFailureBtn(btn, on) {
     btn.classList.toggle('on', on);
-    btn.textContent = on ? 'Failure · Yes' : 'Failure · No';
+    btn.textContent = on ? 'Went to failure: yes' : 'Went to failure: no';
   }
   function toggleFailure(btn) {
     setFailureBtn(btn, !btn.classList.contains('on'));
@@ -8133,7 +8140,7 @@ body.training-mode select.run-input { color: var(--accent); }
       var out = document.getElementById('est-1rm-' + k);
       var warn = est == null ? '' : epleyWarning((document.getElementById('reps-count-' + k) || {}).value);
       if (out) {
-        out.textContent = est == null ? '' : '≈ ' + est + ' lbs estimated 1RM' + (warn ? '. ' + warn : '');
+        out.textContent = est == null ? '' : 'About ' + est + ' lbs estimated max' + (warn ? '. ' + warn : '');
         out.classList.toggle('warn', !!warn);
       }
       if (est == null) return;
@@ -8273,7 +8280,7 @@ body.training-mode select.run-input { color: var(--accent); }
   //  same as any other value this codebase throws away — see the versioned-key
   //  rule above commitMaxes(). Leaves the screen open, blank, ready to re-enter.
   function resetMaxes() {
-    if (!confirm('This will clear all 1RM values. Continue?')) return;
+    if (!confirm('Clear all your maxes? Your logged sets stay.')) return;
     if (Object.keys(userMaxes).length) {
       var hist = [];
       try { hist = JSON.parse(localStorage.getItem(PR_HISTORY_KEY)) || []; } catch(e) { hist = []; }
@@ -8348,7 +8355,7 @@ body.training-mode select.run-input { color: var(--accent); }
       else { el.textContent = 'Not set'; el.classList.add('unset'); }
     });
     var btn = document.getElementById('settingsOpenBtn');
-    if (btn) btn.textContent = hasAny ? '⚙ Edit Maxes' : '⚙ Set Your Maxes';
+    if (btn) btn.textContent = hasAny ? '⚙ Edit your maxes' : '⚙ Set your maxes';
   }
   document.addEventListener('keydown', function(e) {
     //  Escape is "get me out of here", not "next step" — it ends the whole
@@ -8783,7 +8790,7 @@ body.training-mode select.run-input { color: var(--accent); }
         break;
       case 'maxes':
         title = 'Your 1RMs';
-        sub = 'Current 1-rep max or best heavy single, in pounds. These set the starting weight on every lift.';
+        sub = 'The most you can lift once with good form, in pounds. These set your starting weights.';
         body = MAX_KEYS.map(function(k) {
           var v = onbNum(onb[k]);
           return '<div class="settings-input-group"><div class="settings-input-label">' + ONB_MAX_LABELS[k] + ' <span>lbs</span></div>'
@@ -9116,7 +9123,7 @@ body.training-mode select.run-input { color: var(--accent); }
       var sign = delta > 0 ? '+' : '';
       var deltaTxt = delta === 0 ? '±0 lbs' : sign + delta + ' lbs';
       var note = prev.weight + ' → ' + latest.weight + ' lbs '
-        + '<span style="font-size:11px;color:var(--muted)">(' + sign + pct.toFixed(1) + '%)</span>';
+        + '<span style="font-size:var(--fs-1);color:var(--muted)">(' + sign + pct.toFixed(1) + '%)</span>';
       if (delta > 0 && latest.reps < prev.reps) note += ' — reps reset after the jump. Step up, not a dip.';
       rows += progRow('This Week', deltaTxt, note, true);
       if (latest.weight === prev.weight && latest.reps > prev.reps) {
@@ -9127,7 +9134,7 @@ body.training-mode select.run-input { color: var(--accent); }
     }
     var trend = hist.slice(-4).map(function(e) { return e.weight; }).join(' → ');
     rows += progRow('Trend', latest.weight + ' lbs',
-      '<span style="font-family:var(--font-mono);font-size:12px">' + trend + '</span> — working weight, last ' + Math.min(hist.length, 4) + ' sessions', false);
+      '<span style="font-family:var(--font-body);font-size:var(--fs-1)">' + trend + '</span> — working weight, last ' + Math.min(hist.length, 4) + ' sessions', false);
     var start = hist[0].weight;
     var total = latest.weight - start;
     //  earliestByExId comes from archived cycles only, always older than the
@@ -9153,7 +9160,7 @@ body.training-mode select.run-input { color: var(--accent); }
       rows += progRow('Stall', stall.weight + ' lbs', '3 failure sessions with no rep gain. Check recovery, or drop to ' + stall.drop + ' lbs for one session.', false);
     }
     return '<div class="prog-card">'
-      + '<div class="prog-card-header"><div class="prog-card-lift" style="font-size:22px">' + ex.name + '</div>'
+      + '<div class="prog-card-header"><div class="prog-card-lift" style="font-size:var(--fs-4)">' + ex.name + '</div>'
       + '<span class="badge" style="background:rgba(var(--ink-rgb),0.12);color:var(--accent);border:1px solid rgba(var(--ink-rgb),0.28);margin-left:auto">' + (DAY_LABELS[ex.day] || '') + '</span></div>'
       + rows + '</div>';
   }
@@ -9198,7 +9205,7 @@ body.training-mode select.run-input { color: var(--accent); }
       if (hist.length) cards.push(progressCardHTML(ex, hist, earliestByExId));
     });
     host.innerHTML = cards.length ? cards.join('')
-      : '<div style="grid-column:1/-1;color:var(--muted);font-size:14px;line-height:1.7">No sessions logged yet. Log a lift in the Train tab and its progress — this week vs last, 4-session trend, all-time gain, and failure rate — shows up here.</div>';
+      : '<div style="grid-column:1/-1;color:var(--muted);font-size:var(--fs-2);line-height:1.7">No sessions logged yet. Log a lift in the Train tab and its progress — this week vs last, 4-session trend, all-time gain, and failure rate — shows up here.</div>';
   }
 
   //     CURRENT WEEK — one pointer, three displays. The Train tab's buttons and
@@ -9250,7 +9257,7 @@ body.training-mode select.run-input { color: var(--accent); }
         var a = weekArcFor(i);
         out += '<button class="week-tab' + (i === currentTrainWeek ? ' active' : '')
           + '" onclick="selectWeek(' + i + ', this)" style="position:relative;">'
-          + '<span style="font-size:9px;color:inherit;opacity:0.62;display:block;letter-spacing:0.15em;margin-bottom:2px;">'
+          + '<span style="font-size:var(--fs-1);color:inherit;opacity:0.62;display:block;letter-spacing:0.01em;margin-bottom:2px;">'
           + (a.wave || '') + '</span>Week ' + (i + 1) + '</button>';
       }
       tabs.innerHTML = out;
@@ -9262,7 +9269,7 @@ body.training-mode select.run-input { color: var(--accent); }
       for (var j = 0; j < total; j++) {
         o2 += '<button onclick="setTrainWeek(' + j + ')" class="train-week-btn'
           + (j === currentTrainWeek ? ' twb-active' : '')
-          + '" style="padding:5px 13px;font-family:\'Antonio\',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.08em;cursor:pointer;transition:all 0.15s;">W'
+          + '" style="padding:5px 13px;font-family:var(--font-body);font-weight:700;font-size:var(--fs-1);letter-spacing:0.01em;cursor:pointer;transition:all 0.15s;">W'
           + (j + 1) + '</button>';
       }
       sel.innerHTML = o2;
@@ -9280,7 +9287,7 @@ body.training-mode select.run-input { color: var(--accent); }
           + item('Phase', '<span style="background:' + (quiet ? 'var(--surface)' : 'rgba(var(--ink-rgb),0.13)')
               + ';color:' + (quiet ? 'var(--muted)' : 'var(--accent)') + ';border:1px solid '
               + (quiet ? 'var(--border-hi)' : 'rgba(var(--ink-rgb),0.3)')
-              + ';padding:2px 10px;border-radius:2px;font-size:12px;font-weight:700;letter-spacing:0.1em;">'
+              + ';padding:2px 10px;border-radius:2px;font-size:var(--fs-1);font-weight:700;letter-spacing:0.01em;">'
               + w.phase + '</span>')
           + item('Focus', w.focus)
           + item('Intensity', w.intensity)
@@ -9799,7 +9806,7 @@ body.training-mode select.run-input { color: var(--accent); }
     var cal = foodNum(foodTargets.cal), pro = foodNum(foodTargets.protein);
     var html;
     if (!cal && !pro) {
-      html = '<div class="run-hint" style="font-size:13px;margin-bottom:10px;">Set your daily calories and protein to start</div>'
+      html = '<div class="run-hint" style="font-size:var(--fs-2);margin-bottom:10px;">Set your daily calories and protein to start</div>'
         + '<div class="food-inline-targets">'
         + '<input class="run-input" type="number" inputmode="numeric" id="foodInlineCal" placeholder="Calories" onchange="saveFoodTargetsFrom(\'foodInlineCal\', \'foodInlineProtein\')">'
         + '<input class="run-input" type="number" inputmode="numeric" id="foodInlineProtein" placeholder="Protein g" onchange="saveFoodTargetsFrom(\'foodInlineCal\', \'foodInlineProtein\')">'
@@ -11637,14 +11644,14 @@ body.training-mode select.run-input { color: var(--accent); }
       var bothShown = r.actual > 0;
       var plannedLabelY = py - 7 - (bothShown && Math.abs(py - ay) < 13 ? 10 : 0);
       svg += '<text x="' + (px + bw / 2).toFixed(1) + '" y="' + plannedLabelY.toFixed(1) + '" text-anchor="middle" '
-        + 'font-size="9" style="fill:var(--muted)" font-family="monospace">' + chartNum(r.planned) + '</text>';
+        + 'font-size="9" style="fill:var(--muted)" font-family="DM Sans, sans-serif">' + chartNum(r.planned) + '</text>';
       if (bothShown) {
         svg += '<text x="' + (ax + bw / 2).toFixed(1) + '" y="' + (ay - 7).toFixed(1)
-          + '" text-anchor="middle" font-size="9" style="fill:var(--accent)" font-family="monospace" '
+          + '" text-anchor="middle" font-size="9" style="fill:var(--accent)" font-family="DM Sans, sans-serif" '
           + 'font-weight="700">' + chartNum(r.actual) + '</text>';
       }
       svg += '<text x="' + cx.toFixed(1) + '" y="' + (H - 8)
-        + '" text-anchor="middle" font-size="9" style="fill:var(--muted)" font-family="monospace">'
+        + '" text-anchor="middle" font-size="9" style="fill:var(--muted)" font-family="DM Sans, sans-serif">'
         + r.label + '</text>';
     });
     svg += '</svg>';
@@ -12412,8 +12419,11 @@ var TOOLTIP_TARGETS = [
   ['.cal-today-chip', 'Today. The calendar always opens on the week containing the current date.'],
   ['.run-phase', 'Where this week sits in the block: Build, Cutback, Peak, Taper or the race itself.'],
   ['.run-trend-arrow', 'Change in logged mileage between your two most recently logged weeks.'],
-  ['.settings-max-val', 'Your one-rep max. Every starting weight is derived from it until you have logged history.'],
-  ['.failure-toggle', 'Mark the top set if it went to genuine failure. Progression only advances off failure sets.'],
+  ['.settings-max-val', 'Your max: the most you can lift once with good form. Starting weights come from it until you have logged history.'],
+  ['.failure-toggle', 'Failure means you could not do one more clean rep. Mark it when your heaviest set got there. Weight only goes up after a set like that.'],
+  ['.maintenance-quick', 'Easy week mode lightens every target for a taper or a recovery week. Logging still works the same.'],
+  ['.maintenance-mode-title', 'Easy week mode lightens every target for a taper or a recovery week. Logging still works the same.'],
+  ['.mode-toggle-btn', 'Your max is the most weight you can lift once with good form. Not sure? Use Estimate it.'],
   ['.cal-head-race', 'The race clock, counting down from today. Separate from the training week, which is a pointer you set.']
 ];
 
