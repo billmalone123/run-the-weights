@@ -1934,6 +1934,13 @@ body.training-mode footer { display: none; }
 }
 .variant-chip.active .variant-eq { background: rgba(26,26,24,0.18); color: #1A1A18; border-color: rgba(26,26,24,0.3); }
 .variant-chip.variant-custom { border-style: dashed; }
+.equip-chip {
+  background: transparent; border: 1px solid var(--border-hi); color: var(--muted); border-radius: 999px;
+  padding: 7px 12px; font-size: 12px; cursor: pointer; font-family: var(--font-body); min-height: 34px;
+}
+.equip-chip.on { background: var(--accent); border-color: var(--accent); color: #1A1A18; font-weight: 600; }
+.lift-pick-why { font-size: 12px; color: var(--muted); margin: 4px 0 8px; line-height: 1.45; padding-left: 8px; border-left: 2px solid var(--border-hi); }
+.lift-pick-why.superset { border-left-color: var(--accent); }
 .variant-chip.variant-more-btn { border-style: dotted; color: var(--muted); }
 .variant-opt { display: inline-flex; align-items: stretch; gap: 2px; max-width: 100%; }
 .variant-opt.variant-more { display: none; }
@@ -2996,7 +3003,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
 </section><footer>
   <div>
     <div class="footer-logo"><img src="assets/brand/rtw-wordmark.png" alt="Run the Weights"></div>
-    <div class="footer-sub">Do the work. Become undeniable. <span style="opacity:0.45">· build 7.93</span></div>
+    <div class="footer-sub">Do the work. Become undeniable. <span style="opacity:0.45">· build 7.94</span></div>
   </div>
   <div class="footer-rules">
     <div class="footer-rules-title">The Code</div>
@@ -3017,7 +3024,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
   <div id="storageWarn" style="display:none;padding:12px 16px;margin-bottom:16px;border:1px solid var(--accent);border-radius:12px;background:rgba(241,239,225,0.10);color:var(--accent);font-size:13px;font-weight:600">
     ⚠ This device is blocking storage — logs will not survive closing the app. Tap Backup now, and check private-browsing or storage settings.
   </div>
-  <div class="section-label">Run the Weights — Daily Training <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.93</span></div>
+  <div class="section-label">Run the Weights — Daily Training <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.94</span></div>
   <h2 class="section-title train-title">THIS IS<br>WHERE YOU <span class="accent-word">WIN</span></h2>
 
   <!-- WEEK SELECTOR FOR TRAINING -->
@@ -3076,7 +3083,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
       </div>
       <div class="plan-badges">
         <span class="badge" style="background:rgba(241,239,225,0.12);color:#F1EFE1;border:1px solid rgba(241,239,225,0.28)">Day 1</span>
-        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:20</span>
+        <span class="badge" data-est="chest" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:20</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('chest'); return false;">Clear Logs</button>
     </div>
@@ -3103,7 +3110,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
       </div>
       <div class="plan-badges">
         <span class="badge" style="background:rgba(241,239,225,0.12);color:#F1EFE1;border:1px solid rgba(241,239,225,0.28)">Day 2</span>
-        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:15</span>
+        <span class="badge" data-est="arms" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:15</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('arms'); return false;">Clear Logs</button>
     </div>
@@ -3130,7 +3137,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
       </div>
       <div class="plan-badges">
         <span class="badge" style="background:rgba(241,239,225,0.12);color:#F1EFE1;border:1px solid rgba(241,239,225,0.28)">Day 3</span>
-        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:25</span>
+        <span class="badge" data-est="legs" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:25</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('legs'); return false;">Clear Logs</button>
     </div>
@@ -3157,7 +3164,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
       </div>
       <div class="plan-badges">
         <span class="badge" style="background:rgba(241,239,225,0.12);color:#F1EFE1;border:1px solid rgba(241,239,225,0.28)">1B</span>
-        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:20</span>
+        <span class="badge" data-est="chest-b" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:20</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('chest-b'); return false;">Clear Logs</button>
     </div>
@@ -3184,7 +3191,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
       </div>
       <div class="plan-badges">
         <span class="badge" style="background:rgba(241,239,225,0.12);color:#F1EFE1;border:1px solid rgba(241,239,225,0.28)">2B</span>
-        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:15</span>
+        <span class="badge" data-est="arms-b" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:15</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('arms-b'); return false;">Clear Logs</button>
     </div>
@@ -3211,7 +3218,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
       </div>
       <div class="plan-badges">
         <span class="badge" style="background:rgba(241,239,225,0.12);color:#F1EFE1;border:1px solid rgba(241,239,225,0.28)">3B</span>
-        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:00</span>
+        <span class="badge" data-est="legs-b" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:00</span>
       </div>
       <button class="clear-day-btn" onclick="clearDayLogs('legs-b'); return false;">Clear Logs</button>
     </div>
@@ -3269,7 +3276,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
 <div id="tab-running" class="tab-main" style="background:var(--bg)">
 
 <section id="runplan">
-  <div class="section-label">Run the Weights — Running Plan <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.93</span></div>
+  <div class="section-label">Run the Weights — Running Plan <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.94</span></div>
   <h2 class="section-title train-title">RACE DAY IS<br>A <span class="accent-word">DEADLINE</span></h2>
 
   <!-- Race setup collapses once there is a raceDate, so a returning user lands
@@ -3387,7 +3394,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
 <div id="tab-calendar" class="tab-main" style="background:var(--bg)">
 
 <section id="calendarfull">
-  <div class="section-label">Full Calendar <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.93</span></div>
+  <div class="section-label">Full Calendar <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.94</span></div>
   <h2 class="section-title train-title">EVERY WEEK.<br>BOTH <span class="accent-word">PLANS</span>.</h2>
 
   <div class="calfull-nav">
@@ -3409,7 +3416,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
 <div id="tab-food" class="tab-main" style="background:var(--bg)">
 
 <section id="foodSection">
-  <div class="section-label">Run the Weights — Food <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.93</span></div>
+  <div class="section-label">Run the Weights — Food <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.94</span></div>
   <h2 class="section-title train-title">EVERY MEAL.<br>TO <span class="accent-word">200</span>.</h2>
 
   <div class="calfull-nav">
@@ -3472,7 +3479,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
 <div id="tab-quicklog" class="tab-main" style="background:var(--bg)">
 
 <section id="quicklogSection">
-  <div class="section-label">Run the Weights — Quick Log <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.93</span></div>
+  <div class="section-label">Run the Weights — Quick Log <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.94</span></div>
   <h2 class="section-title train-title">ONE LIFT.<br>ONE <span class="accent-word">SET</span>.</h2>
   <p style="color:var(--muted);font-size:13px;line-height:1.6;margin:-8px 0 20px;max-width:480px;">
     For taper weeks and short-on-time days — log one set on an anchor lift without opening the full workout.
@@ -3522,7 +3529,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
      they render changed, only how you get to them. -->
 <div id="tab-more" class="tab-main" style="display:none">
 <section id="moreSection">
-  <div class="section-label">Run the Weights — More <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.93</span></div>
+  <div class="section-label">Run the Weights — More <span style="opacity:0.45;text-transform:none;letter-spacing:0.05em">· build 7.94</span></div>
   <h2 class="section-title train-title">EVERYTHING<br>ELSE.</h2>
   <div class="more-list">
     <button class="more-list-item" onclick="goTab('info'); goSec('home');">Home</button>
@@ -3700,6 +3707,20 @@ body.training-mode select.run-input { color: #F1EFE1; }
         <button class="liftdays-btn" data-theme-btn="dark" onclick="setTheme('dark')">Dark</button>
         <button class="liftdays-btn" data-theme-btn="black" onclick="setTheme('black')">Black</button>
       </div>
+    </div>
+    <div class="liftdays-wrap" style="margin-bottom:16px;">
+      <span class="liftdays-label">Exercises per session</span>
+      <div class="liftdays-group goal-mode-group" id="sessionSizeGroup"></div>
+    </div>
+    <div class="liftdays-wrap" style="margin-bottom:16px;">
+      <span class="liftdays-label">Time budget</span>
+      <div class="liftdays-group goal-mode-group" id="sessionBudgetGroup"></div>
+      <span class="liftdays-desc">Past the budget, accessories pair into supersets.</span>
+    </div>
+    <div class="liftdays-wrap" style="margin-bottom:24px;">
+      <span class="liftdays-label">Equipment you have</span>
+      <div class="hidden-ex-list" id="equipOwnedList"></div>
+      <span class="liftdays-desc">The builder only adds library exercises you can do with these.</span>
     </div>
     <div class="liftdays-wrap" style="margin-bottom:24px;">
       <span class="liftdays-label">Hidden exercises</span>
@@ -4391,13 +4412,219 @@ body.training-mode select.run-input { color: #F1EFE1; }
   //  to. This is the single assembly point for both render paths — the 6-day
   //  branch of renderDaySections() used to filter EXERCISES inline, which would
   //  have meant appending customs in two places.
-  function splitDayExercises(dayId) {
+  function programmedDayExercises(dayId) {
     var d = SPLIT_DAYS[dayId];
     if (!d) return [];
-    var base = d.pool
+    return d.pool
       ? EXERCISES.filter(function(ex) { return ex.day === d.pool; })
       : (d.ex || []).map(function(id) { return EX_BY_ID[id]; }).filter(Boolean);
-    return base.concat(customExercisesFor(dayId));
+  }
+  function splitDayExercises(dayId) {
+    if (!SPLIT_DAYS[dayId]) return [];
+    return buildSession(dayId, currentTrainWeek).list;
+  }
+
+  //     SESSION BUILDER. Every day is four kinds of slot: a main compound, a
+  //     secondary compound, accessories, and a finisher. With Session size on
+  //     Default the slots are filled from the day's own program in its own
+  //     order, so the list is exactly what it always was. Set a size and the
+  //     builder trims or fills: extra accessories and the finisher come from
+  //     the library, limited to equipment you own, aimed at whichever of the
+  //     day's muscles has the least work so far, and rotated by week so no
+  //     session repeats the one before it. Each pick records the rule that
+  //     chose it, and the reason line under the exercise is built from that
+  //     record, never from canned copy.
+  const SESSION_SIZE_KEY = 'monk_session_size_v1';
+  const SESSION_BUDGET_KEY = 'monk_session_budget_v1';
+  const EQUIP_OWNED_KEY = 'monk_equipment_v1';
+  var SESSION_SIZES = [4, 5, 6, 7, 8, 9, 10];
+  var SESSION_BUDGETS = [45, 60, 75, 90];
+  var EQUIP_ALL = ['barbell','dumbbell','cable','machine','smith','band','bodyweight','pullup-bar','sled','tire','skierg','medball','rope'];
+  var sessionSize = null;     // null = Default, the day's own count
+  var sessionBudget = null;   // null = Off, no supersets
+  var equipOwned = EQUIP_ALL.slice();
+  function loadSessionPrefs() {
+    try { var n = parseInt(localStorage.getItem(SESSION_SIZE_KEY), 10); sessionSize = SESSION_SIZES.indexOf(n) !== -1 ? n : null; } catch(e) { sessionSize = null; }
+    try { var b = parseInt(localStorage.getItem(SESSION_BUDGET_KEY), 10); sessionBudget = SESSION_BUDGETS.indexOf(b) !== -1 ? b : null; } catch(e) { sessionBudget = null; }
+    try {
+      var q = JSON.parse(localStorage.getItem(EQUIP_OWNED_KEY));
+      equipOwned = Array.isArray(q) ? q.filter(function(x) { return EQUIP_ALL.indexOf(x) !== -1; }) : EQUIP_ALL.slice();
+    } catch(e) { equipOwned = EQUIP_ALL.slice(); }
+  }
+  function persistSessionPrefs() {
+    try {
+      if (sessionSize == null) localStorage.removeItem(SESSION_SIZE_KEY); else localStorage.setItem(SESSION_SIZE_KEY, String(sessionSize));
+      if (sessionBudget == null) localStorage.removeItem(SESSION_BUDGET_KEY); else localStorage.setItem(SESSION_BUDGET_KEY, String(sessionBudget));
+      localStorage.setItem(EQUIP_OWNED_KEY, JSON.stringify(equipOwned));
+    } catch(e) {}
+    idbSet('sessionPrefs', { size: sessionSize, budget: sessionBudget, equip: equipOwned });
+  }
+  var MUSCLE_LABEL = { chest:'Chest', lats:'Lats', 'upper-back':'Upper back', delts:'Shoulders', 'side-delts':'Side delts',
+    'rear-delts':'Rear delts', biceps:'Biceps', triceps:'Triceps', quads:'Quads', hamstrings:'Hamstrings', glutes:'Glutes',
+    calves:'Calves', core:'Core', 'full-body':'Full body' };
+  var PATTERN_VERB = { push:'pressing', pull:'pulling', squat:'squatting', hinge:'hinging', carry:'carrying', core:'core work', conditioning:'conditioning' };
+  function exMinutes(ex) {
+    var m = parseInt(String(ex.time || '').replace(/[^0-9]/g, ''), 10);
+    if (isNaN(m)) m = 8;
+    return m * (setsFor(ex.id) / 2);
+  }
+  function ownsAll(ex) { return (ex.equip || []).every(function(q) { return equipOwned.indexOf(q) !== -1; }); }
+  //  Deterministic weekly rotation through a ranked list: week w takes the
+  //  k items starting at w*k. Two weeks in a row can only match when the
+  //  list holds k or fewer, in which case there is nothing to rotate.
+  function rotatePick(list, k, week, offset) {
+    if (!list.length) return [];
+    var out = [], start = ((week * k + (offset || 0)) % list.length + list.length) % list.length;
+    for (var i = 0; i < Math.min(k, list.length); i++) out.push(list[(start + i) % list.length]);
+    return out;
+  }
+  var _buildCache = {};
+  function buildSession(dayId, week) {
+    var ck = dayId + '|' + week + '|' + sessionSize + '|' + sessionBudget + '|' + equipOwned.join(',') + '|' + hiddenEx.join(',') + '|' + JSON.stringify(customEx[dayId] || []) + '|' + JSON.stringify(setCounts) + '|' + JSON.stringify(variantChoice);
+    if (_buildCache[ck]) return _buildCache[ck];
+    var base = programmedDayExercises(dayId);
+    var reasons = {}, supersets = {}, list = [];
+    var mainEx = base.filter(function(e) { return e.tag === 'primary'; })[0]
+      || base.filter(function(e) { return e.kind === 'compound'; })[0] || base[0];
+    if (!mainEx) return { list: customExercisesFor(dayId), reasons: {}, supersets: {}, minutes: 0 };
+    reasons[mainEx.id] = 'Main compound. First ' + (mainEx.tag === 'primary' ? 'primary lift' : 'compound') + ' on this day, so it goes first while you are fresh.';
+    var secEx = base.filter(function(e) { return e !== mainEx && e.kind === 'compound'; })[0] || null;
+    if (secEx) reasons[secEx.id] = 'Secondary compound. Next compound in this day\'s program, more ' + (PATTERN_VERB[secEx.pattern] || 'work') + ' for ' + MUSCLE_LABEL[secEx.muscle].toLowerCase() + '.';
+    var rest = base.filter(function(e) { return e !== mainEx && e !== secEx; });
+    //  Finisher: an isolation for the main lift's own muscle, because its
+    //  compound pattern is already covered. Programmed one first.
+    var finEx = rest.filter(function(e) { return e.kind === 'isolation' && e.muscle === mainEx.muscle; }).pop()
+      || rest.filter(function(e) { return e.kind === 'isolation'; }).pop() || null;
+    var accPool = rest.filter(function(e) { return e !== finEx; });
+    var target = sessionSize == null ? base.length : sessionSize;
+    var fixed = [mainEx].concat(secEx ? [secEx] : []);
+    var accCount = Math.max(0, target - fixed.length - 1);
+    var acc = [];
+    if (sessionSize == null || accPool.length === accCount) {
+      acc = accPool.slice();
+      acc.forEach(function(e) { reasons[e.id] = 'Accessory. Programmed for this day, adds ' + MUSCLE_LABEL[e.muscle].toLowerCase() + ' work.'; });
+    } else if (accPool.length > accCount) {
+      acc = rotatePick(accPool, accCount, week);
+      var out = accPool.filter(function(e) { return acc.indexOf(e) === -1; }).map(function(e) { return activeVariant(e); });
+      //  Keep program order so a trimmed day still reads top to bottom.
+      acc = accPool.filter(function(e) { return acc.indexOf(e) !== -1; });
+      acc.forEach(function(e) { reasons[e.id] = 'Accessory. Kept by the weekly rotation for a ' + target + ' exercise session; ' + out.join(', ') + (out.length === 1 ? ' sits' : ' sit') + ' out this week.'; });
+    } else {
+      acc = accPool.slice();
+      acc.forEach(function(e) { reasons[e.id] = 'Accessory. Programmed for this day, adds ' + MUSCLE_LABEL[e.muscle].toLowerCase() + ' work.'; });
+    }
+    var picked = fixed.concat(acc).concat(finEx ? [finEx] : []);
+    function used(e) { return picked.indexOf(e) !== -1 || picked.some(function(p) { return normName(activeVariant(p)) === normName(e.name); }); }
+    function libCandidates(filter) {
+      return EXERCISES.filter(function(e) {
+        return e.day === 'library' && !used(e) && !isHiddenName(e.name) && ownsAll(e) && filter(e);
+      });
+    }
+    //  Fill any accessory shortfall one slot at a time, always toward the
+    //  day's least covered muscle.
+    if (sessionSize != null && finEx == null) accCount = Math.max(0, target - fixed.length - 1);
+    var dayMuscles = [];
+    base.forEach(function(e) { if (dayMuscles.indexOf(e.muscle) === -1) dayMuscles.push(e.muscle); });
+    var fillIdx = 0;
+    while (sessionSize != null && acc.length < accCount) {
+      var cover = {};
+      dayMuscles.forEach(function(m) { cover[m] = 0; });
+      fixed.concat(acc).forEach(function(e) { if (cover[e.muscle] != null) cover[e.muscle]++; });
+      var order = dayMuscles.slice().sort(function(a, b) { return cover[a] - cover[b] || dayMuscles.indexOf(a) - dayMuscles.indexOf(b); });
+      //  Isolation first across every muscle in coverage order; a compound
+      //  only fills an accessory slot when no isolation is left anywhere.
+      var got = null;
+      for (var pass = 0; pass < 2 && !got; pass++)
+      for (var oi = 0; oi < order.length && !got; oi++) {
+        var m = order[oi];
+        var cands = libCandidates(function(e) { return e.muscle === m && (pass === 1 || e.kind === 'isolation'); });
+        if (cands.length) {
+          got = rotatePick(cands, 1, week, fillIdx)[0];
+          reasons[got.id] = 'Accessory. ' + MUSCLE_LABEL[m] + ' had ' + (cover[m] === 0 ? 'no' : cover[m]) + ' exercise' + (cover[m] === 1 ? '' : 's') + ' so far today, the least of this day\'s muscles; rotated in for week ' + (week + 1) + '.';
+        }
+      }
+      if (!got) break;
+      acc.push(got); picked.push(got); fillIdx++;
+    }
+    if (!finEx && sessionSize != null) {
+      var fc = libCandidates(function(e) { return e.muscle === mainEx.muscle && e.kind === 'isolation'; });
+      if (fc.length) { finEx = rotatePick(fc, 1, week)[0]; picked.push(finEx); }
+    }
+    if (finEx) {
+      reasons[finEx.id] = 'Finisher. ' + MUSCLE_LABEL[finEx.muscle] + ' isolation'
+        + (finEx.muscle === mainEx.muscle ? ', ' + (PATTERN_VERB[mainEx.pattern] || 'the main pattern') + ' already covered by ' + activeVariant(mainEx) + '.' : ', last so it never costs the compounds.');
+    }
+    //  Default keeps the program's own order exactly; only the reasons are new.
+    list = sessionSize == null ? base.slice() : fixed.concat(acc).concat(finEx ? [finEx] : []);
+    //  Supersets only when a budget is set and the plain session runs past it.
+    //  Accessories pair with the next accessory of a different muscle, so one
+    //  rests while the other works.
+    var minutes = list.reduce(function(t, e) { return t + exMinutes(e); }, 0) + 10;
+    if (sessionBudget != null && minutes > sessionBudget) {
+      //  Isolation accessories only: a compound keeps its full rest.
+      var pool = acc.filter(function(e) { return e.kind === 'isolation'; });
+      for (var i = 0; i < pool.length && minutes > sessionBudget; i++) {
+        var a = pool[i]; if (supersets[a.id]) continue;
+        for (var j = i + 1; j < pool.length; j++) {
+          var b2 = pool[j];
+          if (supersets[b2.id] || b2.muscle === a.muscle) continue;
+          supersets[a.id] = b2.id; supersets[b2.id] = a.id;
+          var saved = Math.min(exMinutes(a), exMinutes(b2)) * 0.6;
+          minutes -= saved;
+          reasons[a.id] += ' Superset with ' + activeVariant(b2) + ' to cut time toward your ' + sessionBudget + ' min budget.';
+          reasons[b2.id] += ' Superset with ' + activeVariant(a) + ' to cut time toward your ' + sessionBudget + ' min budget.';
+          break;
+        }
+      }
+    }
+    var customs = customExercisesFor(dayId);
+    customs.forEach(function(e) { reasons[e.id] = 'Custom. You added this to this day.'; minutes += exMinutes(e); });
+    var result = { list: list.concat(customs), reasons: reasons, supersets: supersets, minutes: Math.round(minutes) };
+    _buildCache[ck] = result;
+    return result;
+  }
+  function invalidateBuild() { _buildCache = {}; }
+  function renderSessionPrefs() {
+    var g = document.getElementById('sessionSizeGroup');
+    if (g) g.innerHTML = '<button class="liftdays-btn' + (sessionSize == null ? ' on' : '') + '" onclick="setSessionSize(null)">Default</button>'
+      + SESSION_SIZES.map(function(n) { return '<button class="liftdays-btn' + (sessionSize === n ? ' on' : '') + '" onclick="setSessionSize(' + n + ')">' + n + '</button>'; }).join('');
+    var bg = document.getElementById('sessionBudgetGroup');
+    if (bg) bg.innerHTML = '<button class="liftdays-btn' + (sessionBudget == null ? ' on' : '') + '" onclick="setSessionBudget(null)">Off</button>'
+      + SESSION_BUDGETS.map(function(n) { return '<button class="liftdays-btn' + (sessionBudget === n ? ' on' : '') + '" onclick="setSessionBudget(' + n + ')">' + n + '</button>'; }).join('');
+    var eq = document.getElementById('equipOwnedList');
+    if (eq) eq.innerHTML = EQUIP_ALL.map(function(q) {
+      var on = equipOwned.indexOf(q) !== -1;
+      return '<button class="equip-chip' + (on ? ' on' : '') + '" aria-pressed="' + on + '" onclick="toggleEquipOwned(\'' + q + '\')">' + EQUIP_LABEL[q] + '</button>';
+    }).join('');
+  }
+  function afterSessionPrefChange() {
+    persistSessionPrefs(); invalidateBuild(); renderSessionPrefs();
+    renderDaySections(); renderAllRowStates();
+    if (typeof renderRing === 'function') renderRing();
+    if (typeof renderWeekCalendar === 'function') renderWeekCalendar();
+  }
+  function setSessionSize(n) { sessionSize = SESSION_SIZES.indexOf(n) !== -1 ? n : null; afterSessionPrefChange(); }
+  function setSessionBudget(n) { sessionBudget = SESSION_BUDGETS.indexOf(n) !== -1 ? n : null; afterSessionPrefChange(); }
+  function toggleEquipOwned(q) {
+    var i = equipOwned.indexOf(q);
+    if (i === -1) equipOwned.push(q); else equipOwned.splice(i, 1);
+    afterSessionPrefChange();
+  }
+  function sessionMinutesText(dayId) {
+    var m = buildSession(dayId, currentTrainWeek).minutes;
+    if (!m) return '';
+    m = Math.round(m / 5) * 5;
+    return '~' + (m >= 60 ? Math.floor(m / 60) + ':' + ('0' + (m % 60)).slice(-2) : m + ' min');
+  }
+  function liftRowsForDay(dayId) {
+    var b = buildSession(dayId, currentTrainWeek);
+    return b.list.map(function(ex) { return liftRowHTML(ex, b.reasons[ex.id], b.supersets[ex.id]); }).join('');
+  }
+  function updateSessionEstimates() {
+    document.querySelectorAll('[data-est]').forEach(function(el) {
+      var t = sessionMinutesText(el.dataset.est);
+      if (t) el.textContent = '\u23F1 ' + t;
+    });
   }
 
   //     WEEK ARC — the ten-week narrative, previously ten hardcoded markup
@@ -5523,7 +5750,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
   }
 
   //     RENDER LIFT ROWS FROM CONFIG
-  function liftRowHTML(ex) {
+  function liftRowHTML(ex, reason, partnerId) {
     //  n is the REAL set count — it drives the sets-3 class, which is what
     //  makes the third log-input row exist at all. Maintenance mode must
     //  never touch that (logging is never restricted); only the displayed
@@ -5538,6 +5765,9 @@ body.training-mode select.run-input { color: #F1EFE1; }
       //  Caption under the rep count. Static content off EXERCISES, so it
       //  never needs restoring or persisting.
       + (ex.repWhy ? '<div class="lift-rep-why">' + ex.repWhy + '</div>' : '')
+      //  Why the builder put this exercise here. Only a string is a reason:
+      //  older call sites still map liftRowHTML directly, which passes an index.
+      + (typeof reason === 'string' ? '<div class="lift-pick-why' + (typeof partnerId === 'string' ? ' superset' : '') + '">' + reason + '</div>' : '')
       + variantChipsHTML(ex)
       + '<div class="warmup-lines" data-warmups="' + ex.id + '"></div>'
       + '<div class="target-block" data-targets="' + ex.id + '"></div>'
@@ -5598,11 +5828,11 @@ body.training-mode select.run-input { color: #F1EFE1; }
       //  SPLIT_DAYS['chest'].pool === 'chest', so for the six pool days this
       //  returns the identical array the inline filter did.
       host.innerHTML = sixDay
-        ? splitDayExercises(dayId).map(liftRowHTML).join('') + addExerciseHTML(dayId)
+        ? liftRowsForDay(dayId) + addExerciseHTML(dayId)
         : '';
     });
     if (!alt) return;
-    if (sixDay) { alt.innerHTML = ''; return; }
+    if (sixDay) { alt.innerHTML = ''; updateSessionEstimates(); return; }
     var ids = splitDayIds();
     var nav = '<div class="plan-nav" id="altPlanNav">' + ids.map(function(id, i) {
       var d = SPLIT_DAYS[id];
@@ -5611,17 +5841,18 @@ body.training-mode select.run-input { color: #F1EFE1; }
     }).join('') + '</div>';
     var body = ids.map(function(id, i) {
       var d = SPLIT_DAYS[id];
-      var rows = splitDayExercises(id).map(liftRowHTML).join('');
+      var rows = liftRowsForDay(id);
       return '<div class="plan-content' + (i === 0 ? ' active' : '') + '" id="altday-' + id + '">'
         + '<div class="plan-day-header"><div>'
         + '<div class="plan-day-title" style="color:var(--accent)">' + d.title.toUpperCase() + '</div>'
         + '<div class="plan-day-focus">' + (d.focus || '') + '</div></div>'
         + '<div class="plan-badges"><span class="badge" style="background:rgba(241,239,225,0.12);color:var(--accent);border:1px solid rgba(241,239,225,0.28)">'
-        + d.tag + '</span></div></div>'
+        + d.tag + '</span><span class="badge" data-est="' + id + '" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">\u23F1 ' + sessionMinutesText(id) + '</span></div></div>'
         + '<div class="lift-table-header"><span>Exercise</span><span>Rest</span><span>Time</span><span></span></div>'
         + '<div class="lift-rows">' + rows + addExerciseHTML(id) + '</div></div>';
     }).join('');
     alt.innerHTML = nav + body;
+    updateSessionEstimates();
   }
 
   function switchAltDay(dayId) {
@@ -6196,8 +6427,8 @@ body.training-mode select.run-input { color: #F1EFE1; }
   function clearDayLogs(dayId) {
     if (!confirm("Clear this week's logs for this day?")) return;
     syncFromDisk();
-    EXERCISES.forEach(function(ex) {
-      if (ex.day !== dayId || !sessions[ex.id]) return;
+    splitDayExercises(dayId).forEach(function(ex) {
+      if (!sessions[ex.id]) return;
       sessions[ex.id] = sessions[ex.id].filter(function(e) { return e.week !== currentTrainWeek; });
       if (!sessions[ex.id].length) delete sessions[ex.id];
     });
@@ -6926,6 +7157,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
     fillFoodSettings();
     markThemeButtons();
     renderHiddenExList();
+    renderSessionPrefs();
     var m = document.getElementById('settingsModal');
     if (m) m.style.display = 'flex';
   }
@@ -7686,7 +7918,8 @@ body.training-mode select.run-input { color: #F1EFE1; }
       //  MEAL_PASS_KEY is left out on purpose: a backup file is not a place
       //  for a credential.
       foodLogs: foodLogs, foodTargets: foodTargets, bodyweight: bodyweight, goalMode: goalMode,
-      hiddenEx: hiddenEx
+      hiddenEx: hiddenEx,
+      sessionPrefs: { size: sessionSize, budget: sessionBudget, equip: equipOwned }
     };
     var blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
     var a = document.createElement('a');
@@ -7759,6 +7992,13 @@ body.training-mode select.run-input { color: #F1EFE1; }
         }
         //  Absent on every backup older than the library. Absent leaves the
         //  current hidden list alone rather than clearing it.
+        if (data.sessionPrefs && typeof data.sessionPrefs === 'object') {
+          var sp = data.sessionPrefs;
+          sessionSize = SESSION_SIZES.indexOf(sp.size) !== -1 ? sp.size : null;
+          sessionBudget = SESSION_BUDGETS.indexOf(sp.budget) !== -1 ? sp.budget : null;
+          if (Array.isArray(sp.equip)) equipOwned = sp.equip.filter(function(x) { return EQUIP_ALL.indexOf(x) !== -1; });
+          persistSessionPrefs(); invalidateBuild();
+        }
         if (Array.isArray(data.hiddenEx)) {
           hiddenEx = data.hiddenEx.filter(function(x) { return typeof x === 'string'; });
           persistHiddenEx();
@@ -10741,6 +10981,7 @@ body.training-mode select.run-input { color: #F1EFE1; }
     loadMaxes();
     loadVariants();
     loadHiddenEx();
+    loadSessionPrefs();
     loadAims();
     loadSetCounts();
     loadWarmupLogs();

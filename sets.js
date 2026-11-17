@@ -389,8 +389,11 @@ var altHTML = ev('liftRowHTML(EX_BY_ID["' + altEx + '"])');
 ok('shorter-split row has a third set slot', altHTML.indexOf('id="s3w-' + altEx + '"') > -1);
 ok('shorter-split row has the set-count control', altHTML.indexOf('id="sc3-' + altEx + '"') > -1);
 ok('shorter-split row has warm-up logging', altHTML.indexOf('id="wu0w-' + altEx + '"') > -1);
+// Both paths now fill through liftRowsForDay(), which maps the built session
+// through liftRowHTML. Check both links of that chain.
 eq('the 6-day host is filled by the same generator',
-   /host\.innerHTML[\s\S]{0,160}liftRowHTML/.test(html), true);
+   /host\.innerHTML[\s\S]{0,160}liftRowsForDay\(dayId\)/.test(html)
+   && /function liftRowsForDay[\s\S]{0,200}buildSession[\s\S]{0,120}liftRowHTML/.test(html), true);
 
 section('10. Backup carries the new stores, and restore tolerates their absence');
 reset();
@@ -596,9 +599,12 @@ eq('removeCustomExercise refuses a programmed exercise',
 eq('and left its history alone', JSON.stringify(ctx.sessions[prog] || null), progHistBefore);
 
 // Both render paths reach the add control through one assembly point.
-eq('6-day branch now goes through splitDayExercises',
-   /sixDay\s*\?\s*splitDayExercises\(dayId\)/.test(html), true);
-ok('add control rendered on the 6-day path', /splitDayExercises\(dayId\)[\s\S]{0,80}addExerciseHTML\(dayId\)/.test(html));
+// The single assembly point is buildSession(); splitDayExercises() and
+// liftRowsForDay() both read it, and customs are appended there once.
+eq('6-day branch now goes through the shared assembly point',
+   /sixDay\s*\?\s*liftRowsForDay\(dayId\)/.test(html)
+   && /function splitDayExercises[\s\S]{0,120}buildSession\(dayId/.test(html), true);
+ok('add control rendered on the 6-day path', /liftRowsForDay\(dayId\)[\s\S]{0,80}addExerciseHTML\(dayId\)/.test(html));
 ok('add control rendered on the shorter-split path', /rows \+ addExerciseHTML\(id\)/.test(html));
 
 // The refactor's own regression risk: with no customs, routing the 6-day path
