@@ -860,7 +860,7 @@ ok('and the fields were still rendered for it',
 eq('calWeekGrid takes an opts argument', /function calWeekGrid\(monday, opts\)/.test(html), true);
 eq('the Calendar tab asks for logs', /calWeekGrid\(monday, \{ logs: true, scope: 'cal' \}\)/.test(html), true);
 eq('and the log block is keyed off the cell date',
-   /if \(o\.logs\) parts\.push\(runLogInputsHTML\(\{ date: date \}, o\.scope \|\| 'cal'\)\)/.test(html), true);
+   /if \(o\.logs && \(run \|\| runLogs\[dateKeyOfRun\(date\)\]\)\) parts\.push\(runLogInputsHTML\(\{ date: date \}, o\.scope \|\| 'cal'\)\)/.test(html), true);
 
 // Scoped ids: the same date on two surfaces must not collide.
 var dk = ctx.dateKeyOfRun(cElapsed.date);
