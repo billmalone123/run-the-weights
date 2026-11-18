@@ -882,5 +882,23 @@ ok('and a save pushes the result into every other copy on screen',
    /syncRunLogCells\(k, entry\)/.test(html));
 ok('a re-render is held while a field still has focus', /if \(runLogHasFocus\(\)\)/.test(html));
 
+// 8.19: a time choice only counts on the local date it was made on.
+var tdk = ev('todayKey()');
+eq('a valid record survives cleaning', JSON.stringify(ev("cleanDayMode({date:'" + tdk + "',week:0,day:'lower-a',mode:'time',min:30})")),
+   JSON.stringify({ date: tdk, week: 0, day: 'lower-a', mode: 'time', min: 30 }));
+[["'short'", 'wrong type'], ["{date:'2026-02-30',week:0,day:'lower-a',mode:'time',min:30}", 'bad date'],
+ ["{date:'" + tdk + "',week:0,day:'lower-a',mode:'time',min:7}", 'minutes 7'],
+ ["{date:'" + tdk + "',week:0,day:'lower-a',mode:'time',min:9999}", 'minutes 9999'],
+ ["{date:'" + tdk + "',week:0,day:'__proto__',mode:'time',min:30}", 'unknown day'],
+ ["{date:'" + tdk + "',week:-1,day:'lower-a',mode:'full',min:null}", 'negative week'],
+ ["{date:'" + tdk + "',week:0,day:'lower-a',mode:'nap',min:null}", 'unknown mode']].forEach(function (c) {
+  eq('a bad record is dropped: ' + c[1], ev('cleanDayMode(' + c[0] + ')'), null);
+});
+ev("timeBoxes['0|lower-a'] = 30; saveDayMode({date:'2001-01-01',week:0,day:'lower-a',mode:'time',min:30}); invalidateBuild()");
+eq('a choice from another date is not honored', ev("boxChoice('lower-a', 0)"), undefined);
+ev("saveDayMode({date: todayKey(), week:0, day:'lower-a', mode:'time', min:30}); invalidateBuild()");
+eq('the same choice made today is honored', ev("boxChoice('lower-a', 0)"), 30);
+ev("saveDayMode(null); delete timeBoxes['0|lower-a']; invalidateBuild()");
+
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);

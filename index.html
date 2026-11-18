@@ -3140,7 +3140,8 @@ button, input, select, textarea { font-family: inherit; }
 #todayRest { margin-bottom: 12px; }
 #plan.plan-resting > .plan-content, #plan.plan-resting #altPlan, #plan.plan-resting #planNav { display: none !important; }
 .wg-day.rest { cursor: pointer; opacity: 0.75; }
-.wg-day.picked { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; opacity: 1; }
+.wg-day.picked { box-shadow: inset 0 -4px 0 var(--accent); opacity: 1; color: var(--text); }
+.wg-day.today.picked { box-shadow: 0 0 0 1px var(--accent) inset, inset 0 -4px 0 var(--accent); }
 
 /* 8.15 PLAN SETUP. One row per option with a plain line and a week strip. */
 .plan-days-options { display: flex; flex-direction: column; gap: 6px; }
@@ -3752,7 +3753,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
 <div id="tab-training" class="tab-main" style="background:var(--bg)">
 
 <section id="plan">
-  <div class="section-label adv">Run the Weights — Daily Training</div>
+  <div class="section-label adv">Run the Weights: Daily Training</div>
   <h2 class="lift-hero adv">This is where you win.</h2>
 
   <!-- COMPACT WEEK + REST ROW. One week shown; arrows change it. -->
@@ -4611,7 +4612,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.18</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.19</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -5315,7 +5316,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     try { localStorage.setItem(WEEK_MOVES_KEY, JSON.stringify(weekMoves)); localStorage.setItem(SHORT_DAYS_KEY, JSON.stringify(shortDays)); } catch(e) {}
     idbSet('lifeHappens', { moves: weekMoves, short: shortDays });
   }
-  function isShortDay(dayId, week) { return !!(shortDays && shortDays[week + '|' + dayId]); }
+  function isShortDay(dayId, week) { return !!(shortDays && shortDays[week + '|' + dayId] && choiceCounts(dayId, week)); }
   //  Arnold's six pool days have hand written markup; every other split renders
   //  through the generated path.
   function usesStaticPlan() { return activeSplitId === 'arnold'; }
@@ -5446,10 +5447,86 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
   //  The minutes a day must fit in, or null for the full session. A choice
   //  made for this day wins; otherwise the usual length from setup.
   function dayBox(dayId, week) {
-    var v = timeBoxes[week + '|' + dayId];
+    var v = boxChoice(dayId, week);
     if (v === 'full') return null;
     if (TIME_BOX_CHOICES.indexOf(v) !== -1) return v;
     return usualMinutes && usualMinutes < 90 ? usualMinutes : null;
+  }
+  //  TODAY'S TIME CHOICE. Short on time, a Quick Log length and a quick
+  //  workout are kept per week and day slot (timeBoxes, shortDays,
+  //  quickSessions), and they only count on the local calendar date they
+  //  were made on. One small record names that date:
+  //    monk_day_mode = { date: 'YYYY-MM-DD', week: n, day: '<day id>',
+  //                      mode: 'time' | 'short' | 'quick' | 'full', min: 20 | 30 | 45 | 60 | null }
+  //  On any other date the day shows the full workout. A slot that already
+  //  has sets logged keeps the shape it was done in, so a finished short day
+  //  still counts as done. Entries saved before this record existed have no
+  //  date, so they are not honored; nothing is deleted. A later first open of
+  //  the day check in can write this same record.
+  const DAY_MODE_KEY = 'monk_day_mode';
+  var DAY_MODES = ['time', 'short', 'quick', 'full'];
+  var dayMode = null, _dayModeLoaded = false, _ignoreDayChoice = false;
+  function validDateKey(v) {
+    var m = typeof v === 'string' && /^(\d{4})-(\d{2})-(\d{2})$/.exec(v);
+    if (!m) return false;
+    var d = new Date(+m[1], +m[2] - 1, +m[3]);
+    return d.getFullYear() === +m[1] && d.getMonth() === +m[2] - 1 && d.getDate() === +m[3];
+  }
+  function cleanDayMode(r) {
+    if (!r || typeof r !== 'object' || !validDateKey(r.date)) return null;
+    var wk = r.week;
+    if (typeof wk !== 'number' || wk % 1 !== 0 || wk < 0 || wk > 200) return null;
+    if (typeof r.day !== 'string' || !Object.prototype.hasOwnProperty.call(SPLIT_DAYS, r.day)) return null;
+    if (DAY_MODES.indexOf(r.mode) === -1) return null;
+    var min = r.min == null ? null : r.min;
+    if (min !== null && TIME_BOX_CHOICES.indexOf(min) === -1) return null;
+    if ((r.mode === 'time' || r.mode === 'quick') && min === null) return null;
+    return { date: r.date, week: wk, day: r.day, mode: r.mode, min: min };
+  }
+  function currentDayMode() {
+    if (!_dayModeLoaded) {
+      _dayModeLoaded = true;
+      try { dayMode = cleanDayMode(JSON.parse(localStorage.getItem(DAY_MODE_KEY))); } catch(e) { dayMode = null; }
+    }
+    return dayMode;
+  }
+  function saveDayMode(r) {
+    dayMode = cleanDayMode(r); _dayModeLoaded = true;
+    try { localStorage.setItem(DAY_MODE_KEY, JSON.stringify(dayMode)); } catch(e) {}
+  }
+  function liveDayKey() { var m = currentDayMode(); return m && m.date === todayKey() ? m.week + '|' + m.day : null; }
+  function slotHasLogs(dayId, week) {
+    var ids = {};
+    try { programmedDayExercises(dayId).forEach(function(e) { ids[e.id] = 1; }); } catch(e) {}
+    var q = quickSessions[week + '|' + dayId];
+    if (q && Array.isArray(q.ids)) q.ids.forEach(function(id) { ids[id] = 1; });
+    return Object.keys(ids).some(function(id) {
+      return (sessions[id] || []).some(function(e) { return e && e.week === week && !e.quickLog; });
+    });
+  }
+  //  Does a stored choice for this slot count right now?
+  function choiceCounts(dayId, week) {
+    if (_ignoreDayChoice) return false;
+    var k = week + '|' + dayId;
+    if (k === liveDayKey()) return true;
+    if (timeBoxes[k] === undefined && !shortDays[k] && !quickSessions[k]) return false;
+    return slotHasLogs(dayId, week);
+  }
+  function boxChoice(dayId, week) { return choiceCounts(dayId, week) ? timeBoxes[week + '|' + dayId] : undefined; }
+  //  Before a new choice for today: an expired choice on the same slot is
+  //  cleared so it cannot mix with the new one. Logged slots keep theirs.
+  function claimDayChoice(dayId) {
+    var k = boxKey(dayId);
+    if (k === liveDayKey() || slotHasLogs(dayId, currentTrainWeek)) return;
+    delete timeBoxes[k]; delete shortDays[k]; delete quickSessions[k];
+  }
+  function stampDayChoice(dayId, mode, min) {
+    saveDayMode({ date: todayKey(), week: currentTrainWeek, day: dayId, mode: mode, min: min == null ? null : min });
+  }
+  //  The full workout's length, whatever today's choice is.
+  function fullMinutes(dayId, week) {
+    _ignoreDayChoice = true;
+    try { return buildSession(dayId, week).minutes; } finally { _ignoreDayChoice = false; }
   }
   //     REST BETWEEN SETS. One source of truth for every rest value the app
   //  shows, starts or counts: a choice for one exercise wins, then a choice
@@ -5813,7 +5890,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     return { kind: q.kind, min: q.min, list: list, caps: caps, drops: drops, est: estimateMinutes(list, caps, drops), gaps: [] };
   }
   function quickFor(dayId, week) {
-    var k = week + '|' + dayId, q = quickSessions[k];
+    var k = week + '|' + dayId, q = choiceCounts(dayId, week) ? quickSessions[k] : null;
     //  Saved before quick workouts kept their exercise list: freeze it now,
     //  from the same recipe, without leaving out lifts it already logged.
     if (q && !Array.isArray(q.ids) && QUICK_KINDS.some(function(x) { return x.id === q.kind; }) && TIME_BOX_CHOICES.indexOf(q.min) !== -1) {
@@ -5831,7 +5908,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     var out = {};
     Object.keys(quickSessions).forEach(function(k) {
       var parts = k.split('|');
-      if (+parts[0] !== week || parts[1] === dayId || !validQuick(quickSessions[k])) return;
+      if (+parts[0] !== week || parts[1] === dayId || !quickFor(parts[1], week)) return;
       buildSession(parts[1], week).list.forEach(function(e) { out[e.id] = true; });
     });
     return out;
@@ -5993,8 +6070,10 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
   }
   function toggleShortDay(dayId) {
     var k = currentTrainWeek + '|' + dayId;
+    claimDayChoice(dayId);
     if (shortDays[k]) delete shortDays[k]; else shortDays[k] = true;
-    persistLifeHappens(); invalidateBuild();
+    stampDayChoice(dayId, shortDays[k] ? 'short' : 'full', null);
+    persistQuick(); persistSessionShape(); persistLifeHappens(); invalidateBuild();
     renderDaySections(); renderAllRowStates();
     if (typeof switchDay === 'function') switchDay(dayId);
     if (typeof renderToday === 'function') renderToday();
@@ -6044,6 +6123,13 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
   //  Nothing is stored until Start.
   var _ss = null;
   function boxKey(dayId) { return currentTrainWeek + '|' + dayId; }
+  //  Says plainly what the day holds right now, and that it can be changed.
+  function shortLabel(dayId) {
+    var q = quickFor(dayId, currentTrainWeek), b = boxChoice(dayId, currentTrainWeek);
+    if (q) return 'Quick, ' + q.min + ' min';
+    if (TIME_BOX_CHOICES.indexOf(b) !== -1) return buildSession(dayId, currentTrainWeek).minutes < fullMinutes(dayId, currentTrainWeek) ? 'Short, ' + b + ' min' : 'Fits ' + b + ' min';
+    return 'Short session';
+  }
   //  Build a day as if a choice were already made, then put everything back.
   function previewSession(dayId, mode, pick) {
     var k = boxKey(dayId), oldBox = timeBoxes[k], oldShort = shortDays[k], oldQuick = quickSessions[k];
@@ -6078,12 +6164,12 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
       if (!d || d === 'rest' || !SPLIT_DAYS[d] || SPLIT_DAYS[d].rest) return false;
       //  A day already running a quick workout or a time limit stays the
       //  target after its first set, so it can be changed or undone.
-      var shaped = !!quickFor(d, week) || TIME_BOX_CHOICES.indexOf(timeBoxes[week + '|' + d]) !== -1;
+      var shaped = !!quickFor(d, week) || TIME_BOX_CHOICES.indexOf(boxChoice(d, week)) !== -1;
       return shaped || !hasLogsForDay(d, week);
     };
     if (open(_qlDay)) return _qlDay;
     var part = partialDayThisWeek();
-    if (part && (quickFor(part, week) || TIME_BOX_CHOICES.indexOf(timeBoxes[week + '|' + part]) !== -1)) return part;
+    if (part && (quickFor(part, week) || TIME_BOX_CHOICES.indexOf(boxChoice(part, week)) !== -1)) return part;
     var todays = activeSplit().week[mondayIndex(startOfToday())];
     if (open(todays)) return todays;
     return findNextUnloggedDay();
@@ -6106,7 +6192,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
         host.innerHTML = '<div class="today-card-kicker">This week</div><div class="ql-rest-line">Every workout this week is logged. Nice work.</div>';
       } else {
         var b = previewSession(day, 'time', quickMinutes);
-        var active = !!quickFor(day, currentTrainWeek) || TIME_BOX_CHOICES.indexOf(timeBoxes[boxKey(day)]) !== -1 || isShortDay(day, currentTrainWeek);
+        var active = !!quickFor(day, currentTrainWeek) || TIME_BOX_CHOICES.indexOf(boxChoice(day, currentTrainWeek)) !== -1 || isShortDay(day, currentTrainWeek);
         host.innerHTML = '<div class="today-card-kicker">Today\'s plan, trimmed to your time</div>'
           + '<div class="today-card-title">' + SPLIT_DAYS[day].title + '</div>'
           + sessionListHTML(b)
@@ -6147,8 +6233,10 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     var day = quickTargetDay();
     if (!day) return;
     var k = boxKey(day);
+    claimDayChoice(day);
     delete quickSessions[k]; delete shortDays[k];
     timeBoxes[k] = quickMinutes;
+    stampDayChoice(day, 'time', quickMinutes);
     afterQuickChange(day);
   }
   function startQuick(kind) {
@@ -6157,6 +6245,8 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     var k = boxKey(day);
     var w = quickWorkout(kind, quickMinutes, currentTrainWeek);
     if (!w.list.length) return;
+    claimDayChoice(day);
+    stampDayChoice(day, 'quick', quickMinutes);
     quickSessions[k] = { kind: kind, min: quickMinutes, ids: w.list.map(function(e) { return e.id; }), drop: Object.keys(w.drops)[0] || null };
     delete shortDays[k]; delete timeBoxes[k];
     afterQuickChange(day);
@@ -6165,8 +6255,10 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     var day = quickTargetDay();
     if (!day) return;
     var k = boxKey(day);
+    claimDayChoice(day);
     delete quickSessions[k]; delete shortDays[k];
     timeBoxes[k] = 'full';
+    stampDayChoice(day, 'full', null);
     persistQuick(); persistSessionShape(); persistLifeHappens(); invalidateBuild();
     renderDaySections(); renderAllRowStates();
     renderQuickLog();
@@ -6195,10 +6287,10 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
         qn.textContent = 'Quick workout. Counts as your ' + SPLIT_DAYS[dayId].title + ' day.';
         head.parentNode.insertBefore(qn, head.nextSibling);
       }
-      var short = isShortDay(dayId, currentTrainWeek) || !!quickFor(dayId, currentTrainWeek) || TIME_BOX_CHOICES.indexOf(timeBoxes[boxKey(dayId)]) !== -1;
+      var short = isShortDay(dayId, currentTrainWeek) || !!quickFor(dayId, currentTrainWeek) || TIME_BOX_CHOICES.indexOf(boxChoice(dayId, currentTrainWeek)) !== -1;
       var div = document.createElement('span');
       div.className = 'day-actions';
-      div.innerHTML = '<button type="button" class="day-action' + (short ? ' on' : '') + '" onclick="openQuickLog(null, \'' + dayId + '\')">' + (short ? 'Quick workout' : 'Short on time') + '</button>'
+      div.innerHTML = '<button type="button" class="day-action' + (short ? ' on' : '') + '"' + (short ? ' aria-label="' + shortLabel(dayId).replace(' min', ' minutes') + '. Change"' : '') + ' onclick="openQuickLog(null, \'' + dayId + '\')">' + (short ? shortLabel(dayId) : 'Short on time') + '</button>'
         + '<button type="button" class="day-action" onclick="openGoingOut(\'' + dayId + '\')">Going out?</button>';
       //  Into the badge row when there is one, so it costs no extra height.
       var badges = head.querySelector('.plan-badges');
@@ -6222,12 +6314,18 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     if (!r) return;
     var open = r.classList.toggle('open');
     if (b) { b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.classList.toggle('on', open); }
+    if (open) { var f = r.querySelector('button'); if (f) f.focus(); }
   }
-  //  The presets are a popover: a tap outside or Escape closes them.
+  //  The presets are a popover: a tap outside or Escape closes them. The
+  //  outside tap is caught before it reaches anything underneath, so it only
+  //  closes the popover. Added once, at load.
   document.addEventListener('click', function(e) {
     var r = document.getElementById('restPresets');
-    if (r && r.classList.contains('open') && !e.target.closest('#restPresets, #toolRestBtn')) toggleRestPresets();
-  });
+    if (!r || !r.classList.contains('open') || (e.target.closest && e.target.closest('#restPresets, #toolRestBtn'))) return;
+    e.stopPropagation(); e.preventDefault();
+    toggleRestPresets();
+    var b = document.getElementById('toolRestBtn'); if (b) b.focus();
+  }, true);
   document.addEventListener('keydown', function(e) {
     var r = document.getElementById('restPresets');
     if (e.key === 'Escape' && r && r.classList.contains('open')) { toggleRestPresets(); var b = document.getElementById('toolRestBtn'); if (b) b.focus(); }
@@ -6254,7 +6352,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
   }
   var REST_OPTS = {
     walk: { text: 'Easy walk, 20 to 30 minutes', short: 'Walk' },
-    stretch: { text: 'Stretch or mobility, 10 minutes', short: 'Stretch' },
+    stretch: { text: 'Flex: stretch or mobility, 10 minutes', short: 'Flex' },
     rest: { text: 'Full rest. That counts too.', short: 'Rest' },
     run: { text: 'Easy run if you feel like it.', short: 'Run' }
   };
@@ -6304,25 +6402,40 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
       + (next ? '<button type="button" class="today-secondary" onclick="switchDay(\'' + next + '\')">See ' + (SPLIT_DAYS[next] || {}).title + '</button>' : '');
     host.style.display = '';
     plan.classList.add('plan-resting');
-    document.querySelectorAll('#weekGlance .wg-day').forEach(function(b, i) { b.classList.toggle('picked', i === slot); });
+    markViewedDay();
+  }
+  //  The strip has two markers: an outline for today's date and a bar along
+  //  the bottom for the day open below it. Logged days are struck through.
+  function viewedGlanceSlot() {
+    if (_planRestSlot != null) return _planRestSlot;
+    var d = null;
+    try { d = localStorage.getItem(LAST_DAY_KEY); } catch(e) {}
+    return d ? activeSplit().week.indexOf(d) : -1;
+  }
+  function markViewedDay() {
+    var v = viewedGlanceSlot();
+    document.querySelectorAll('#weekGlance .wg-day').forEach(function(b, i) {
+      b.classList.toggle('picked', i === v);
+      if (i === v) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+    });
   }
   function hidePlanRestDay() {
     _planRestSlot = null;
     var host = document.getElementById('planRestDay'), plan = document.getElementById('plan');
     if (host) host.style.display = 'none';
     if (plan) plan.classList.remove('plan-resting');
-    document.querySelectorAll('#weekGlance .wg-day.picked').forEach(function(b) { b.classList.remove('picked'); });
+    markViewedDay();
   }
 
   function renderWeekGlance() {
     var hosts = document.querySelectorAll('#weekGlance, [data-glance]');
     if (!hosts.length) return;
-    var week = activeSplit().week, today = mondayIndex(startOfToday());
+    var week = activeSplit().week, today = mondayIndex(startOfToday()), viewedSlot = viewedGlanceSlot();
     var html = week.map(function(id, i) {
       var d = SPLIT_DAYS[id] || {}, rest = id === 'rest' || d.rest;
       var logged = !rest && hasLogsForDay(id, currentTrainWeek);
-      var cls = 'wg-day' + (rest ? ' rest' : '') + (i === today ? ' today' : '') + (logged ? ' logged' : '');
-      var mins = rest ? 0 : buildSession(id, currentTrainWeek).minutes;
+      var cls = 'wg-day' + (rest ? ' rest' : '') + (i === today ? ' today' : '') + (logged ? ' logged' : '') + (i === viewedSlot ? ' picked' : '');
+      var mins = rest ? 0 : (currentTrainWeek + '|' + id) === liveDayKey() ? buildSession(id, currentTrainWeek).minutes : fullMinutes(id, currentTrainWeek);
       var time = mins ? (mins >= 60 ? Math.floor(mins / 60) + ':' + ('0' + (mins % 60)).slice(-2) : mins + 'm') : '';
       //  Seven columns on a phone leave about 40px each, so the label is the
       //  first word of the title, keeping a trailing B. Full title is in the
@@ -6331,7 +6444,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
       //  Words longer than the column (about 36px at 360 wide) swap to a
       //  shorter word. A day letter (A, B, C) stays on the word's line when
       //  it fits and wraps to its own line when it does not, so it never clips.
-      var SHORT = { Shoulders: 'Arms', Mobility: 'Core', Stretch: 'Flex' };
+      var SHORT = { Shoulders: 'Arms', Mobility: 'Core' };
       var first = title.split(' ')[0];
       var letter = (title.match(/ ([A-C])$/) || [])[1];
       var short = (SHORT[first] || first) + (letter ? ' <span class="wg-letter">' + letter + '</span>' : '');
@@ -6342,6 +6455,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
         + (time ? '<div class="wg-time">' + time + '</div>' : '') + '</button>';
     }).join('');
     hosts.forEach(function(h) { h.innerHTML = html; });
+    markViewedDay();
   }
 
   //     TODAY. Home for everyone: the next workout and one button to start
@@ -6941,6 +7055,12 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     //  fallback pass in renderProgressView() is what still surfaces its card.
     { id:"deadlift", day:"anchor", muscle:"glutes", pattern:"hinge", kind:"compound", name:"Barbell Deadlift", tag:"primary", repRange:[1,5], repWhy:"Quick Log only, so the reps track whatever you actually pulled that day.", increment:10, rest:"3–4 min", time:"~10 min", note:"Logged only through Quick Log, not scheduled into a training day. Track singles or working sets here whenever you pull." },
   ];
+  //  EXERCISE ID RULES. Logged sets live in monk_sessions_v1 keyed by
+  //  exercise id, and history is read by id and by movement name across
+  //  every plan, slot and week. So an id, once shipped, never changes, is
+  //  never reused for a different movement, and is never removed while a
+  //  log may hold it. A library import adds new ids only; it must not
+  //  renumber or rename existing ids or names.
   const EX_BY_ID = {};
   EXERCISES.forEach(function(ex){ EX_BY_ID[ex.id] = ex; });
 
@@ -9865,6 +9985,23 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     return true;
   }
 
+  //  The app left open past midnight: on return, today's choice may have
+  //  expired, so the plan is drawn again for the new date.
+  var _shownDay = todayKey();
+  function refreshIfNewDay() {
+    var t = todayKey();
+    if (t === _shownDay) return;
+    _shownDay = t;
+    try {
+      invalidateBuild();
+      if (typeof renderDaySections === 'function') renderDaySections();
+      if (typeof renderAllRowStates === 'function') renderAllRowStates();
+      if (typeof renderWeekGlance === 'function') renderWeekGlance();
+      if (typeof renderToday === 'function') renderToday();
+    } catch(e) {}
+  }
+  document.addEventListener('visibilitychange', function() { if (!document.hidden) refreshIfNewDay(); });
+  window.addEventListener('pageshow', refreshIfNewDay);
   document.addEventListener('visibilitychange', function() {
     if (document.hidden) return;
     try {
@@ -10979,7 +11116,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
       quick: { sessions: quickSessions, minutes: quickMinutes },
       rest: restPrefs, swapsToday: swapsToday,
       runPrefs: { units: runUnits, lastType: runLastType },
-      aboutSeen: aboutSeen()
+      aboutSeen: aboutSeen(), dayMode: currentDayMode()
     };
     var blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
     var a = document.createElement('a');
@@ -11083,6 +11220,9 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
           if (TIME_BOX_CHOICES.indexOf(qb.minutes) !== -1) quickMinutes = qb.minutes;
           persistQuick(); invalidateBuild();
         }
+        //  Today's time choice: only a valid record comes back; anything
+        //  else, or a backup from before it existed, means the full workout.
+        saveDayMode(data.dayMode); invalidateBuild();
         //  Rest times outside 15 seconds to 10 minutes are dropped, not used.
         if (data.rest && typeof data.rest === 'object') { restPrefs = cleanRestPrefs(data.rest); persistRestPrefs(); invalidateBuild(); }
         if (data.swapsToday && typeof data.swapsToday === 'object') { swapsToday = cleanSwapsToday(data.swapsToday); persistSwapsToday(); }
@@ -11423,6 +11563,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
       switchAltDay(dayId);
       try { localStorage.setItem(LAST_DAY_KEY, dayId); } catch(e) {}
     idbSet('lastDay', dayId);
+      if (typeof markViewedDay === 'function') markViewedDay();
       if (typeof updateWeekCompleteBanner === 'function') updateWeekCompleteBanner();
       return;
     }
@@ -11434,6 +11575,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     if (btn) btn.classList.add('active');
     try { localStorage.setItem(LAST_DAY_KEY, dayId); } catch(e) {}
     idbSet('lastDay', dayId);
+    if (typeof markViewedDay === 'function') markViewedDay();
     if (typeof updateWeekCompleteBanner === 'function') updateWeekCompleteBanner();
   }
 
@@ -14513,7 +14655,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
         var st, lab;
         if (id === 'rest') { st = 'rest'; lab = 'Rest'; }
         else if (hasLogsForDay(id, currentTrainWeek)) {
-          var shortened = !!quickFor(id, currentTrainWeek) || TIME_BOX_CHOICES.indexOf(timeBoxes[boxKey(id)]) !== -1 || isShortDay(id, currentTrainWeek);
+          var shortened = !!quickFor(id, currentTrainWeek) || TIME_BOX_CHOICES.indexOf(boxChoice(id, currentTrainWeek)) !== -1 || isShortDay(id, currentTrainWeek);
           st = shortened ? 'short' : 'done'; lab = shortened ? 'Shortened' : 'Done'; done++;
         } else { st = 'up'; lab = 'Upcoming'; }
         return '<div class="pw-day ' + st + (i === today ? ' today' : '') + '"><span class="pw-dow">' + WG_DOWS[i] + '</span><span class="pw-st">' + lab + '</span></div>';
@@ -15501,8 +15643,10 @@ window.addEventListener('resize', function() { if (navMenuOpen()) positionNavMen
 
 //  Names the bar has used, and plain names, mapped onto the real tab ids.
 var TAB_ALIASES = { workout: 'training', plan: 'training', progress: 'calendar', settings: 'more', about: 'info', run: 'running' };
-//  The bar has four buttons. Every other tab lights the one it lives under.
+//  The bar has four buttons. More lights for More and the pages listed in
+//  it. Quick Log and Progress are not under any button, so none lights.
 function tabBarOwner(t) {
+  if (t === 'quicklog' || t === 'calendar') return null;
   return (t === 'today' || t === 'training' || t === 'food' || t === 'running') ? t : 'more';
 }
 function goTab(t) {

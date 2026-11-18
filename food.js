@@ -760,7 +760,8 @@ eq('lands on tab-quicklog', ctx.document.getElementById('tab-quicklog').style.di
   noThrow('goTab(\'' + p[0] + '\') runs', function () { ctx.goTab(p[0]); });
   eq('goTab(\'' + p[0] + '\') shows tab-' + p[1], ctx.document.getElementById('tab-' + p[1]).style.display, 'block');
 });
-eq('Progress, info and Quick Log light More', ['calendar', 'info', 'quicklog', 'more'].map(function (t) { return ctx.tabBarOwner(t); }).join(), 'more,more,more,more');
+//  8.19: Progress and Quick Log are not under any bar button, so none lights.
+eq('info and More light More; Progress and Quick Log light none', ['calendar', 'info', 'quicklog', 'more'].map(function (t) { return String(ctx.tabBarOwner(t)); }).join(), 'null,more,null,more');
 // The dropdown's "current tab" tick now maps info/quicklog onto More —
 // verified as source logic above (dynamically-created menu nodes aren't
 // discoverable via this stub's getElementById, so this can't be driven
