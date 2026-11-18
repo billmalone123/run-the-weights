@@ -1,3 +1,7 @@
 # Local Claude Code tooling config — machine-specific, not part of the app
 .claude/
 screens/
+
+# Build progress notes for the master prompt, local only
+build_state.md
+exercise_import_proposal.md
