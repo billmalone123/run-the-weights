@@ -2176,7 +2176,7 @@ body:not(.owner-tools) .owner-only { display: none !important; }
 .lift-row:not(.show-swap) .swap-panel { display: none !important; }
 .card-foot { display: flex; gap: 6px; margin-top: 6px; }
 .lift-row:not(.show-wu) .wu-panel { display: none !important; }
-.wu-panel.warmup-lines:empty::before { content: 'Add a weight to see a warm up ramp.'; }
+.warmup-lines:empty::before { content: 'Add a weight to see a warm up ramp.'; }
 /* Lean card: no nested box around the sets, tighter padding. */
 #tab-training .lift-row { padding: 10px 12px 10px; gap: 2px; }
 body.training-mode #tab-training .lift-row { margin-bottom: 4px; }
@@ -2210,6 +2210,53 @@ body:not(.advanced) #tab-training .plan-day-focus { display: none; }
 .onb-welcome-line { font-size: var(--fs-4); line-height: 1.35; color: var(--text); margin: 6px 0 24px; }
 .onb-optional summary { cursor: pointer; font-size: var(--fs-2); color: var(--text); text-decoration: underline; min-height: 44px; display: flex; align-items: center; }
 .onb-optional-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 8px; }
+/* ── CLEAR CONTROLS ─────────────────────────────────────────────────────
+   One language everywhere: anything that opens something below it shows a
+   chevron that flips when open; the open control fills solid; every tap
+   visibly presses in; keyboard focus always shows a ring. */
+button, summary, a.howto-link, .wg-day { -webkit-tap-highlight-color: transparent; }
+button:active:not(:disabled), summary:active, a.howto-link:active { transform: scale(0.97); }
+button:focus-visible, summary:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.card-foot-btn, .tool-rest, .warmup-toggle-btn, .variant-more-btn, .day-action { transition: background 0.12s, color 0.12s, border-color 0.12s, transform 0.08s; }
+.card-foot-btn:active, .tool-rest:active, .day-action:active, .warmup-toggle-btn:active { background: var(--surface-2); }
+.card-foot-btn[data-panel]::after, .tool-rest::after, .warmup-toggle-btn::after, .variant-more-btn::after {
+  content: '\25BE'; display: inline-block; margin-left: 6px; font-size: 0.9em; transition: transform 0.15s;
+}
+.card-foot-btn[aria-expanded="true"]::after, .tool-rest[aria-expanded="true"]::after, .warmup-toggle-btn[aria-expanded="true"]::after { transform: rotate(180deg); }
+.card-foot-btn[aria-expanded="true"], .tool-rest[aria-expanded="true"],
+body.training-mode .warmup-toggle-btn.open, .warmup-toggle-btn.open, .day-action.on {
+  background: var(--accent) !important; color: var(--on-accent) !important; border-color: var(--accent) !important;
+}
+.card-foot-btn.on { background: var(--accent); }
+.card-foot { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr) minmax(0, 0.95fr) minmax(0, 1fr); gap: 5px; }
+.card-foot .card-foot-btn { white-space: nowrap; padding: 0 4px; font-size: var(--fs-2); }
+.card-foot-btn[data-panel]::after { margin-left: 3px; }
+.card-foot .howto-link svg { flex: 0 0 auto; }
+@media (max-width: 340px) { .card-foot .card-foot-btn { font-size: var(--fs-1); } .card-foot .howto-link svg { display: none; } }
+/* Panels sit under the footer and read as part of the button that opened them. */
+.card-panel { display: none; margin-top: 8px; padding: 12px; border: 1.5px solid var(--accent); border-radius: 12px; background: var(--bg); }
+.lift-row.show-swap .swap-panel-wrap, .lift-row.show-wu .wu-panel, .lift-row.show-more .card-panel.detail { display: block !important; }
+.lift-row:not(.show-more) .card-panel.detail { display: none !important; }
+.card-panel .lift-variants { margin: 0; }
+.card-panel-title { font-weight: 700; font-size: var(--fs-3); color: var(--text); margin-bottom: 6px; }
+.panel-meta { font-size: var(--fs-2); color: var(--muted); margin: 6px 0; }
+.card-panel .log-row { margin-top: 8px; }
+/* Every collapsible section looks like a button you can press. */
+details > summary { list-style: none; cursor: pointer; }
+details > summary::-webkit-details-marker { display: none; }
+details.warmup-log > summary, .guided-how > summary, .onb-optional > summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; padding: 0 14px;
+  border: 1px solid var(--field); border-radius: 10px; background: none; color: var(--text);
+  font-family: var(--font-body); font-size: var(--fs-2); font-weight: 600; text-decoration: none; margin-top: 8px;
+}
+details.warmup-log > summary::after, .guided-how > summary::after, .onb-optional > summary::after { content: '\25BE'; transition: transform 0.15s; }
+details[open].warmup-log > summary, details[open].guided-how > summary, details[open].onb-optional > summary {
+  background: var(--accent); color: var(--on-accent); border-color: var(--accent);
+}
+details[open].warmup-log > summary::after, details[open].guided-how > summary::after, details[open].onb-optional > summary::after { transform: rotate(180deg); }
+/* The RTW menu button fills while its menu is open. */
+.nav-logo[aria-expanded="true"] { background: rgba(var(--ink-rgb),0.35) !important; border-color: var(--accent) !important; box-shadow: 0 0 0 2px var(--accent); }
+.nav-logo:active { transform: scale(0.97); }
 .lift-pick-why { font-size: var(--fs-1); color: var(--muted); margin: 4px 0 8px; line-height: 1.45; padding-left: 8px; border-left: 2px solid var(--border-hi); }
 .lift-pick-why.superset { border-left-color: var(--accent); }
 .variant-chip.variant-more-btn { border-style: dotted; color: var(--muted); }
@@ -3436,7 +3483,7 @@ body.training-mode select.run-input { color: var(--accent); }
       </div>
       <button class="clear-day-btn adv" onclick="clearDayLogs('chest'); return false;">Clear Logs</button>
     </div>
-    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-chest', this)">▶ Show Warm-Up</button>
+    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-chest', this)" aria-expanded="false">Show warm-up</button>
     <div class="warmup-panel" id="wu-chest">
       <div class="warmup-panel-title">Warm-Up. Complete Before First Work Set</div>
       <div class="warmup-steps">
@@ -3463,7 +3510,7 @@ body.training-mode select.run-input { color: var(--accent); }
       </div>
       <button class="clear-day-btn adv" onclick="clearDayLogs('arms'); return false;">Clear Logs</button>
     </div>
-    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-arms', this)">▶ Show Warm-Up</button>
+    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-arms', this)" aria-expanded="false">Show warm-up</button>
     <div class="warmup-panel" id="wu-arms">
       <div class="warmup-panel-title">Warm-Up. Complete Before First Work Set</div>
       <div class="warmup-steps">
@@ -3490,7 +3537,7 @@ body.training-mode select.run-input { color: var(--accent); }
       </div>
       <button class="clear-day-btn adv" onclick="clearDayLogs('legs'); return false;">Clear Logs</button>
     </div>
-    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-legs', this)">▶ Show Warm-Up</button>
+    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-legs', this)" aria-expanded="false">Show warm-up</button>
     <div class="warmup-panel" id="wu-legs">
       <div class="warmup-panel-title">Warm-Up. Complete Before First Work Set</div>
       <div class="warmup-steps">
@@ -3517,7 +3564,7 @@ body.training-mode select.run-input { color: var(--accent); }
       </div>
       <button class="clear-day-btn adv" onclick="clearDayLogs('chest-b'); return false;">Clear Logs</button>
     </div>
-    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-chest-b', this)">▶ Show Warm-Up</button>
+    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-chest-b', this)" aria-expanded="false">Show warm-up</button>
     <div class="warmup-panel" id="wu-chest-b">
       <div class="warmup-panel-title">Warm-Up. Complete Before First Work Set</div>
       <div class="warmup-steps">
@@ -3544,7 +3591,7 @@ body.training-mode select.run-input { color: var(--accent); }
       </div>
       <button class="clear-day-btn adv" onclick="clearDayLogs('arms-b'); return false;">Clear Logs</button>
     </div>
-    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-arms-b', this)">▶ Show Warm-Up</button>
+    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-arms-b', this)" aria-expanded="false">Show warm-up</button>
     <div class="warmup-panel" id="wu-arms-b">
       <div class="warmup-panel-title">Warm-Up. Complete Before First Work Set</div>
       <div class="warmup-steps">
@@ -3571,7 +3618,7 @@ body.training-mode select.run-input { color: var(--accent); }
       </div>
       <button class="clear-day-btn adv" onclick="clearDayLogs('legs-b'); return false;">Clear Logs</button>
     </div>
-    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-legs-b', this)">▶ Show Warm-Up</button>
+    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-legs-b', this)" aria-expanded="false">Show warm-up</button>
     <div class="warmup-panel" id="wu-legs-b">
       <div class="warmup-panel-title">Warm-Up. Complete Before First Work Set</div>
       <div class="warmup-steps">
@@ -4148,7 +4195,7 @@ body.training-mode select.run-input { color: var(--accent); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.11</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.12</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -5874,7 +5921,7 @@ body.training-mode select.run-input { color: var(--accent); }
     if (isFavName(name)) favEx = favEx.filter(function(n) { return n !== name; }); else favEx.push(name);
     persistFavEx();
     rerenderVariantChips(exId);
-    var row = document.getElementById('row-' + exId); if (row) row.classList.add('show-swap');
+    keepSwapOpen(exId);
   }
 
   const VARIANTS_KEY = 'monk_variants_v1';
@@ -6173,7 +6220,7 @@ body.training-mode select.run-input { color: var(--accent); }
     hiddenEx.push(name);
     persistHiddenEx();
     rerenderVariantChips(exId);
-    var hrow = document.getElementById('row-' + exId); if (hrow) hrow.classList.add('show-swap');
+    keepSwapOpen(exId);
     renderHiddenExList();
   }
   function unhideExercise(name) {
@@ -6649,7 +6696,7 @@ body.training-mode select.run-input { color: var(--accent); }
     //  Collapsed by default: six boxes nobody needs to fill every day. Opens
     //  on its own once a warm-up for this week is already logged.
     var anyWu = storedWarmups(ex).some(Boolean);
-    return '<details class="warmup-log wu-panel" id="wulog-' + ex.id + '"' + (anyWu ? ' open' : '') + '>'
+    return '<details class="warmup-log" id="wulog-' + ex.id + '"' + (anyWu ? ' open' : '') + '>'
       + '<summary class="warmup-log-title">Log warm-ups</summary>'
       + rows
       + '<span class="autosave-flash" id="wusave-' + ex.id + '"></span>'
@@ -6756,23 +6803,8 @@ body.training-mode select.run-input { color: var(--accent); }
       //  Caption under the rep count. Static content off EXERCISES, so it
       //  never needs restoring or persisting.
       + '<div class="simple-target" data-simpletarget="' + ex.id + '"></div>'
-      + (ex.repWhy ? '<div class="lift-rep-why detail">' + ex.repWhy + '</div>' : '')
-      //  Why the builder put this exercise here. Only a string is a reason:
-      //  older call sites still map liftRowHTML directly, which passes an index.
-      + (typeof reason === 'string' ? '<div class="detail lift-pick-why' + (typeof partnerId === 'string' ? ' superset' : '') + '">' + reason + '</div>' : '')
-      + variantChipsHTML(ex)
-      + '<div class="warmup-lines wu-panel" data-warmups="' + ex.id + '"></div>'
-      + '<div class="target-block detail" data-targets="' + ex.id + '"></div>'
       + '</div>'
-      + '<div class="lift-rest detail">' + ex.rest + '</div>'
-      + '<div class="lift-time detail">' + ex.time + '</div>'
       + '<div class="lift-log-inline">'
-      + '<div class="log-row detail">'
-      + '<div class="log-inline-group"><span class="log-inline-label">Target weight</span>'
-      + withSteppers('w-' + ex.id, 'weight', '<input class="log-inline-input" type="number" inputmode="decimal" id="w-' + ex.id + '" data-ex="' + ex.id + '" oninput="onAimInput(this.dataset.ex)" onchange="onAimCommit(this.dataset.ex)">') + '</div>'
-      + '<div class="log-inline-group"><span class="log-inline-label">Target reps</span>'
-      + withSteppers('r-' + ex.id, 'reps', '<input class="log-inline-input" type="number" inputmode="numeric" id="r-' + ex.id + '" data-ex="' + ex.id + '" oninput="onAimInput(this.dataset.ex)" onchange="onAimCommit(this.dataset.ex)">') + '</div>'
-      + '</div>'
       + '<div class="log-row setcount-row adv-card">'
       + '<span class="log-inline-label">Sets</span>'
       + '<button class="setcount-btn' + (n === 2 ? ' on' : '') + '" id="sc2-' + ex.id + '" data-ex="' + ex.id + '" data-n="2" onclick="setExerciseSets(this.dataset.ex, 2)">2</button>'
@@ -6791,14 +6823,35 @@ body.training-mode select.run-input { color: var(--accent); }
       + (ex.custom ? '<button class="remove-ex" data-ex="' + ex.id + '" data-day="' + ex.day
           + '" onclick="removeCustomExercise(this.dataset.ex, this.dataset.day)">Remove</button>' : '')
       + '</div>'
-      + warmupLogHTML(ex)
       + '</div>'
       + '<div class="lift-status" data-status="' + ex.id + '" onclick="event.stopPropagation()"></div>'
       + '<div class="card-foot">'
-      + '<button type="button" class="card-foot-btn" aria-expanded="false" data-ex="' + ex.id + '" data-panel="show-swap" onclick="toggleCardPanel(this)">Swap</button>'
-      + '<button type="button" class="card-foot-btn" aria-expanded="false" data-ex="' + ex.id + '" data-panel="show-wu" onclick="toggleCardPanel(this)">Warm-up</button>'
-      + '<button type="button" class="card-foot-btn" aria-expanded="false" data-ex="' + ex.id + '" data-panel="show-more" onclick="toggleCardPanel(this)">Notes</button>'
+      + '<button type="button" class="card-foot-btn" aria-expanded="false" aria-controls="pnl-swap-' + ex.id + '" data-ex="' + ex.id + '" data-panel="show-swap" onclick="toggleCardPanel(this)">Swap</button>'
+      + '<button type="button" class="card-foot-btn" aria-expanded="false" aria-controls="pnl-wu-' + ex.id + '" data-ex="' + ex.id + '" data-panel="show-wu" onclick="toggleCardPanel(this)">Warm-up</button>'
+      + '<button type="button" class="card-foot-btn" aria-expanded="false" aria-controls="pnl-more-' + ex.id + '" data-ex="' + ex.id + '" data-panel="show-more" onclick="toggleCardPanel(this)">Notes</button>'
       + howToLinkHTML(ex, 'card-foot-btn howto-link')
+      + '</div>'
+      //  Every panel opens directly under the button that opened it, one at a
+      //  time, so it is always clear which box you are in.
+      + '<div class="card-panel swap-panel-wrap" id="pnl-swap-' + ex.id + '">' + (variantChipsHTML(ex) || '<div class="panel-meta">No swaps for this one yet.</div>') + '</div>'
+      + '<div class="card-panel wu-panel" id="pnl-wu-' + ex.id + '">'
+      + '<div class="warmup-lines" data-warmups="' + ex.id + '"></div>'
+      + warmupLogHTML(ex)
+      + '</div>'
+      + '<div class="card-panel detail" id="pnl-more-' + ex.id + '">'
+      + '<div class="card-panel-title">Notes</div>'
+      + (ex.repWhy ? '<div class="lift-rep-why">' + ex.repWhy + '</div>' : '')
+      //  Why the builder put this exercise here. Only a string is a reason:
+      //  older call sites still map liftRowHTML directly, which passes an index.
+      + (typeof reason === 'string' ? '<div class="lift-pick-why' + (typeof partnerId === 'string' ? ' superset' : '') + '">' + reason + '</div>' : '')
+      + '<div class="target-block" data-targets="' + ex.id + '"></div>'
+      + '<div class="panel-meta">Rest ' + ex.rest + '. About ' + String(ex.time).replace('~', '') + '.</div>'
+      + '<div class="log-row">'
+      + '<div class="log-inline-group"><span class="log-inline-label">Target weight</span>'
+      + withSteppers('w-' + ex.id, 'weight', '<input class="log-inline-input" type="number" inputmode="decimal" id="w-' + ex.id + '" data-ex="' + ex.id + '" oninput="onAimInput(this.dataset.ex)" onchange="onAimCommit(this.dataset.ex)">') + '</div>'
+      + '<div class="log-inline-group"><span class="log-inline-label">Target reps</span>'
+      + withSteppers('r-' + ex.id, 'reps', '<input class="log-inline-input" type="number" inputmode="numeric" id="r-' + ex.id + '" data-ex="' + ex.id + '" oninput="onAimInput(this.dataset.ex)" onchange="onAimCommit(this.dataset.ex)">') + '</div>'
+      + '</div>'
       + '</div>'
       + '</div>';
   }
@@ -7316,12 +7369,26 @@ body.training-mode select.run-input { color: var(--accent); }
   }
   //  Swap opens the like for like list; Notes opens the coaching notes, the
   //  pick reason, the target detail and the advanced boxes. Each is a toggle.
+  function keepSwapOpen(exId) {
+    var row = document.getElementById('row-' + exId); if (!row) return;
+    row.classList.add('show-swap');
+    var b = row.querySelector('.card-foot-btn[data-panel="show-swap"]');
+    if (b) { b.classList.add('on'); b.setAttribute('aria-expanded', 'true'); }
+  }
   function toggleCardPanel(btn) {
     var row = document.getElementById('row-' + btn.dataset.ex);
     if (!row) return;
-    var open = row.classList.toggle(btn.dataset.panel);
-    btn.classList.toggle('on', open);
-    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    var open = !row.classList.contains(btn.dataset.panel);
+    row.querySelectorAll('.card-foot-btn[data-panel]').forEach(function(b) {
+      row.classList.remove(b.dataset.panel);
+      b.classList.remove('on');
+      b.setAttribute('aria-expanded', 'false');
+    });
+    if (open) {
+      row.classList.add(btn.dataset.panel);
+      btn.classList.add('on');
+      btn.setAttribute('aria-expanded', 'true');
+    }
   }
   //  One plain sentence for simple mode: what weight to put on the bar.
   function simpleTargetText(ex, target, prevRef) {
@@ -9624,7 +9691,8 @@ body.training-mode select.run-input { color: var(--accent); }
     var isOpen = panel.classList.contains('open');
     panel.classList.toggle('open');
     btn.classList.toggle('open');
-    btn.textContent = isOpen ? '  Show Warm-Up' : '  Hide Warm-Up';
+    btn.textContent = isOpen ? 'Show warm-up' : 'Hide warm-up';
+    btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
   }
 
   //     WEEK SELECTORS                                                          
