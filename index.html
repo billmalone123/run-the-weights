@@ -3158,6 +3158,41 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
 #tab-training .plan-badges .day-actions { margin-left: 0; flex-wrap: wrap; }
 #tab-training .warmup-toggle-btn.day-action { padding: 0 14px; margin: 0; border: 1px solid var(--field); border-radius: 999px; background: none; color: var(--text); font-size: var(--fs-2); font-weight: 400; letter-spacing: 0; text-transform: none; }
 
+/* PLAN POLISH. One notice at a time above the workout, a toolbar that is only
+   the week and the rest timer, and a week strip that never fades or clips. */
+.plan-notices { margin: 0 0 8px; }
+.plan-notices:not(:has(> [data-want="1"])) { display: none; }
+.plan-notice { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-height: 52px; margin: 0; padding: 3px 4px 3px 12px; border: 1px solid var(--field); border-radius: 12px; background: var(--surface); color: var(--text); font-family: var(--font-body); font-size: var(--fs-2); line-height: 1.35; }
+.plan-notice-text { flex: 1 1 0; min-width: 0; font-weight: 600; }
+.plan-notice-btn { flex: 0 0 auto; min-height: 44px; padding: 0 14px; border: none; border-radius: 10px; background: var(--accent); color: var(--on-accent); font-family: var(--font-body); font-size: var(--fs-2); font-weight: 600; letter-spacing: 0; white-space: nowrap; cursor: pointer; }
+.plan-notice-x, .plan-notice-more { flex: 0 0 auto; min-width: 44px; min-height: 44px; padding: 0 10px; border: 0; border-radius: 10px; background: none; color: var(--text); font-family: var(--font-body); font-size: var(--fs-2); cursor: pointer; }
+.plan-notice-more { text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
+.plan-notice-x { width: 44px; height: 44px; color: var(--muted); }
+.plan-notice-btn:focus-visible, .plan-notice-x:focus-visible, .plan-notice-more:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.plan-notice-steps { flex-basis: 100%; margin: 2px 0 6px; padding-left: 20px; font-size: var(--fs-2); line-height: 1.5; }
+.plan-notice.warn { border-color: var(--warn); color: var(--warn); }
+.plan-notice.warn .plan-notice-btn { background: var(--warn); color: var(--on-accent); }
+.plan-notice-icon { flex: 0 0 auto; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.plan-notice.maintenance-banner { gap: 9px; padding-right: 12px; color: var(--calm); background: rgba(110,136,168,0.14); border-color: rgba(110,136,168,0.4); }
+.plan-notice.week-complete-banner { border-color: var(--accent); }
+.plan-notice .maintenance-quick { margin-left: 0; }
+/* Rest timer presets: a popover under the toolbar, out of the page flow. */
+.lift-toolbar { position: relative; }
+.lift-toolbar .rest-timer-strip#restPresets.open { position: absolute; top: calc(100% + 6px); right: 0; z-index: 30; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; max-width: 100%; margin: 0; padding: 8px; border: 1px solid var(--field); border-radius: 12px; background: var(--bg); box-shadow: 0 6px 20px rgba(0,0,0,0.18); }
+.lift-toolbar .rest-preset-btn { min-width: 52px; min-height: 44px; }
+/* Week strip. Rest days get a dashed outline on the page color, never a fade,
+   so the 12px labels keep full contrast. */
+.week-glance { margin-bottom: 12px; }
+.wg-day.rest, .wg-day.rest.picked { opacity: 1; background: var(--bg); border-style: dashed; }
+#weekGlance .wg-title, [data-glance] .wg-title { white-space: normal; }
+.wg-letter { white-space: nowrap; }
+/* Day titles and badges, formerly inline. */
+.plan-day-title { color: var(--accent); }
+.plan-day-title.is-rest { color: var(--text-soft); }
+.badge.badge-day { background: rgba(var(--ink-rgb),0.12); color: var(--accent); border: 1px solid rgba(var(--ink-rgb),0.28); }
+.badge.badge-est { background: var(--surface); color: var(--accent); border: 1px solid var(--border); }
+.clear-day-btn { min-height: 44px; }
+
 /* 8.14 TAP TARGETS. 44 px minimum on everything a thumb has to hit. */
 .day-action, .today-link, .liftdays-btn, .cal-week-btn, .food-apply-btn, .settings-open-btn, .run-toggle-btn { min-height: 44px; }
 .calfull-arrow { min-width: 44px; min-height: 44px; }
@@ -3694,10 +3729,6 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
 <div id="tab-training" class="tab-main" style="background:var(--bg)">
 
 <section id="plan">
-  <!-- STORAGE WARNING -->
-  <div id="storageWarn" style="display:none;padding:12px 16px;margin-bottom:16px;border:1px solid var(--accent);border-radius:12px;background:rgba(var(--ink-rgb),0.10);color:var(--accent);font-size:var(--fs-2);font-weight:600">
-    ⚠ This device is blocking storage — logs will not survive closing the app. Tap Backup now, and check private-browsing or storage settings.
-  </div>
   <div class="section-label adv">Run the Weights — Daily Training</div>
   <h2 class="lift-hero adv">This is where you win.</h2>
 
@@ -3706,55 +3737,62 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     <button type="button" class="tool-arrow" onclick="stepTrainWeek(-1)" aria-label="Previous week">&#8249;</button>
     <span class="tool-week" id="toolWeek">Week 1</span>
     <button type="button" class="tool-arrow" onclick="stepTrainWeek(1)" aria-label="Next week">&#8250;</button>
-    <button type="button" class="tool-rest" id="toolRestBtn" aria-expanded="false" onclick="toggleRestPresets()">Rest timer</button>
-    <button class="maintenance-quick" id="maintenanceQuickBtn" role="switch" aria-checked="false" onclick="toggleMaintenanceMode()" aria-label="Easy week mode">
-      <span class="maintenance-quick-label">Easy week</span>
-      <span class="maintenance-toggle maintenance-toggle-sm" aria-hidden="true"><span class="maintenance-toggle-knob"></span></span>
-    </button>
+    <button type="button" class="tool-rest" id="toolRestBtn" aria-expanded="false" aria-controls="restPresets" onclick="toggleRestPresets()">Rest timer</button>
+    <!-- REST TIMER QUICK-START. A one-off timer that leaves every exercise's
+         saved rest alone, and the only timer on a rest day. The card's rest
+         chip covers 30s to 3 min but changes the saved rest, so this stays.
+         It opens as a popover so it never pushes the workout down. -->
+    <div class="rest-timer-strip" id="restPresets" role="group" aria-label="Start a rest timer">
+      <button class="rest-preset-btn" onclick="quickStartTimer(60, this)">1:00</button>
+      <button class="rest-preset-btn" onclick="quickStartTimer(90, this)">1:30</button>
+      <button class="rest-preset-btn" onclick="quickStartTimer(120, this)">2:00</button>
+      <button class="rest-preset-btn" onclick="quickStartTimer(180, this)">3:00</button>
+      <button class="rest-preset-btn" onclick="quickStartTimer(240, this)">4:00</button>
+    </div>
   </div>
   <!-- Ten week pills, kept for the week renderer but not shown. -->
   <div style="display:none">
     <span style="font-size:var(--fs-1);font-weight:700;letter-spacing:0.01em;color:var(--muted);">Training Week</span>
     <div style="display:flex;gap:4px;flex-wrap:wrap;" id="trainWeekSelector"></div>
   </div>
-  <div id="backupNudgeBanner" class="backup-nudge-banner" style="display:none">
-    <div class="backup-nudge-text">Back up your data. Save the file to Google Drive or email it to yourself — a backup that only lives on this device won't survive a lost or wiped phone.</div>
-    <div class="backup-nudge-actions">
-      <button class="backup-nudge-btn" onclick="exportData()">⇩ Backup Now</button>
-      <button class="backup-nudge-dismiss" onclick="dismissBackupNudge()" aria-label="Dismiss">✕</button>
+  <div class="week-glance" id="weekGlance" aria-label="This week at a glance"></div>
+  <!-- PLAN NOTICES. At most one shows; updatePlanNotices() picks it in this
+       order: storage, week done, backup, logging tip, easy week. Each one's
+       own check only says whether it wants to show (data-want). -->
+  <div class="plan-notices" id="planNotices">
+    <div id="storageWarn" class="plan-notice warn" role="alert" style="display:none" data-want="0">
+      <svg class="plan-notice-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 2.5 20h19L12 3.5z"/><path d="M12 10v4.5M12 17.5v.01"/></svg>
+      <span class="plan-notice-text">Storage is blocked here. Logs won't save.</span>
+      <button class="plan-notice-btn" onclick="exportData()">Back up</button>
+    </div>
+    <div id="weekCompleteBanner" class="plan-notice week-complete-banner" style="display:none" data-want="0">
+      <span class="plan-notice-text">Week <span id="weekCompleteNum"></span> done.</span>
+      <button class="maintenance-quick" id="maintenanceQuickBtn" role="switch" aria-checked="false" onclick="toggleMaintenanceMode()" aria-label="Easy week mode">
+        <span class="maintenance-quick-label">Easy week</span>
+        <span class="maintenance-toggle maintenance-toggle-sm" aria-hidden="true"><span class="maintenance-toggle-knob"></span></span>
+      </button>
+      <button class="plan-notice-btn week-complete-btn" onclick="advanceToNextWeek()">Start week <span id="weekCompleteNext"></span></button>
+    </div>
+    <div id="backupNudgeBanner" class="plan-notice backup-nudge-banner" style="display:none" data-want="0">
+      <span class="plan-notice-text">Save a backup of your logs.</span>
+      <button class="plan-notice-btn backup-nudge-btn" onclick="exportData()">Back up</button>
+      <button class="plan-notice-x backup-nudge-dismiss" onclick="dismissBackupNudge()" aria-label="Dismiss backup reminder">&#10005;</button>
+    </div>
+    <div class="plan-notice lift-tip" id="liftTip" role="note" style="display:none" data-want="0">
+      <span class="plan-notice-text">New here? Tap the check after each set.</span>
+      <button type="button" class="plan-notice-more" aria-expanded="false" aria-controls="liftTipSteps" onclick="toggleLiftTipSteps(this)">How</button>
+      <button type="button" class="plan-notice-btn lift-tip-btn" onclick="dismissLiftTip()">Got it</button>
+      <ol class="plan-notice-steps" id="liftTipSteps" hidden>
+        <li>A set is one round of reps, like 8 squats in a row.</li>
+        <li>Check the weight and reps on the row. Change them if you did different.</li>
+        <li>Tap the check when you finish the set. That logs it.</li>
+      </ol>
+    </div>
+    <div id="maintenanceBanner" class="plan-notice maintenance-banner" style="display:none" data-want="0">
+      <span class="maintenance-banner-dot"></span><span class="plan-notice-text">Easy week is on. Targets are lighter.</span>
     </div>
   </div>
-  <div class="lift-tip" id="liftTip" role="note" style="display:none">
-    <div class="lift-tip-title">How logging works</div>
-    <ol>
-      <li>A set is one round of reps, like 8 squats in a row.</li>
-      <li>Check the weight and reps on the row. Change them if you did different.</li>
-      <li>Tap the check when you finish the set. That logs it.</li>
-    </ol>
-    <button type="button" class="lift-tip-btn" onclick="dismissLiftTip()">Got it</button>
-  </div>
-  <div class="week-glance" id="weekGlance" aria-label="This week at a glance"></div>
   <div id="planRestDay" style="display:none"></div>
-  <div id="maintenanceBanner" class="maintenance-banner" style="display:none">
-    <span class="maintenance-banner-dot"></span> Easy week mode is on. Targets are lighter this week. Logging works the same.
-  </div>
-  <div id="weekCompleteBanner" class="week-complete-banner" style="display:none">
-    <div class="week-complete-text">Week <span id="weekCompleteNum"></span> complete — every lifting day logged.</div>
-    <button class="week-complete-btn" onclick="advanceToNextWeek()">Start Week <span id="weekCompleteNext"></span> →</button>
-  </div>
-  <!-- REST TIMER QUICK-START — kept inline (not moved into #settingsModal with
-       the rest of the settings bar) since it's a one-tap workout utility, not
-       configuration; burying it behind a modal open would cost every rest
-       period an extra tap. Still satisfies "nothing but the hero above the
-       fold" since it now sits below it, not above. -->
-  <div class="rest-timer-strip" id="restPresets">
-    <span class="rest-timer-strip-label">Rest Timer</span>
-    <button class="rest-preset-btn" onclick="quickStartTimer(60, this)">1:00</button>
-    <button class="rest-preset-btn" onclick="quickStartTimer(90, this)">1:30</button>
-    <button class="rest-preset-btn" onclick="quickStartTimer(120, this)">2:00</button>
-    <button class="rest-preset-btn" onclick="quickStartTimer(180, this)">3:00</button>
-    <button class="rest-preset-btn" onclick="quickStartTimer(240, this)">4:00</button>
-  </div>
   <div id="altPlan"></div>
   <div class="plan-nav adv" id="planNav">
     <button class="plan-nav-btn active" onclick="switchDay('chest')" id="btn-chest">1A · Chest + Back</button>
@@ -3770,12 +3808,12 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
   <div class="plan-content active" id="day-chest">
     <div class="plan-day-header">
       <div>
-        <div class="plan-day-title" style="color:var(--accent)">CHEST + BACK</div>
+        <div class="plan-day-title">CHEST + BACK</div>
         <div class="plan-day-focus">Horizontal push and pull. Balanced pressing and rowing volume.</div>
       </div>
       <div class="plan-badges">
-        <span class="badge" style="background:rgba(var(--ink-rgb),0.12);color:var(--accent);border:1px solid rgba(var(--ink-rgb),0.28)">Day 1</span>
-        <span class="badge" data-est="chest" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:20</span>
+        <span class="badge badge-day">Day 1</span>
+        <span class="badge badge-est" data-est="chest">⏱ ~1:20</span>
       </div>
       <button class="clear-day-btn adv" onclick="clearDayLogs('chest'); return false;">Clear Logs</button>
     </div>
@@ -3797,12 +3835,12 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
   <div class="plan-content" id="day-arms">
     <div class="plan-day-header">
       <div>
-        <div class="plan-day-title" style="color:var(--accent)">SHOULDERS + ARMS</div>
+        <div class="plan-day-title">SHOULDERS + ARMS</div>
         <div class="plan-day-focus">Overhead pressing, lateral delt volume, bicep and tricep isolation.</div>
       </div>
       <div class="plan-badges">
-        <span class="badge" style="background:rgba(var(--ink-rgb),0.12);color:var(--accent);border:1px solid rgba(var(--ink-rgb),0.28)">Day 2</span>
-        <span class="badge" data-est="arms" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:15</span>
+        <span class="badge badge-day">Day 2</span>
+        <span class="badge badge-est" data-est="arms">⏱ ~1:15</span>
       </div>
       <button class="clear-day-btn adv" onclick="clearDayLogs('arms'); return false;">Clear Logs</button>
     </div>
@@ -3824,12 +3862,12 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
   <div class="plan-content" id="day-legs">
     <div class="plan-day-header">
       <div>
-        <div class="plan-day-title" style="color:var(--accent)">LEGS + ABS</div>
+        <div class="plan-day-title">LEGS + ABS</div>
         <div class="plan-day-focus">Quad dominance, posterior chain, and core stability.</div>
       </div>
       <div class="plan-badges">
-        <span class="badge" style="background:rgba(var(--ink-rgb),0.12);color:var(--accent);border:1px solid rgba(var(--ink-rgb),0.28)">Day 3</span>
-        <span class="badge" data-est="legs" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:25</span>
+        <span class="badge badge-day">Day 3</span>
+        <span class="badge badge-est" data-est="legs">⏱ ~1:25</span>
       </div>
       <button class="clear-day-btn adv" onclick="clearDayLogs('legs'); return false;">Clear Logs</button>
     </div>
@@ -3851,12 +3889,12 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
   <div class="plan-content" id="day-chest-b">
     <div class="plan-day-header">
       <div>
-        <div class="plan-day-title" style="color:var(--accent)">CHEST + BACK</div>
+        <div class="plan-day-title">CHEST + BACK</div>
         <div class="plan-day-focus">Incline focus, machine rows, cable isolation. Different angles from Day 1A.</div>
       </div>
       <div class="plan-badges">
-        <span class="badge" style="background:rgba(var(--ink-rgb),0.12);color:var(--accent);border:1px solid rgba(var(--ink-rgb),0.28)">1B</span>
-        <span class="badge" data-est="chest-b" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:20</span>
+        <span class="badge badge-day">1B</span>
+        <span class="badge badge-est" data-est="chest-b">⏱ ~1:20</span>
       </div>
       <button class="clear-day-btn adv" onclick="clearDayLogs('chest-b'); return false;">Clear Logs</button>
     </div>
@@ -3878,12 +3916,12 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
   <div class="plan-content" id="day-arms-b">
     <div class="plan-day-header">
       <div>
-        <div class="plan-day-title" style="color:var(--accent)">SHOULDERS + ARMS</div>
+        <div class="plan-day-title">SHOULDERS + ARMS</div>
         <div class="plan-day-focus">Arnold press, cable lateral work, isolation for bis and tris from different angles.</div>
       </div>
       <div class="plan-badges">
-        <span class="badge" style="background:rgba(var(--ink-rgb),0.12);color:var(--accent);border:1px solid rgba(var(--ink-rgb),0.28)">2B</span>
-        <span class="badge" data-est="arms-b" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:15</span>
+        <span class="badge badge-day">2B</span>
+        <span class="badge badge-est" data-est="arms-b">⏱ ~1:15</span>
       </div>
       <button class="clear-day-btn adv" onclick="clearDayLogs('arms-b'); return false;">Clear Logs</button>
     </div>
@@ -3905,12 +3943,12 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
   <div class="plan-content" id="day-legs-b">
     <div class="plan-day-header">
       <div>
-        <div class="plan-day-title" style="color:var(--accent)">MOBILITY + CORE</div>
+        <div class="plan-day-title">MOBILITY + CORE</div>
         <div class="plan-day-focus">Basement day — dumbbell and bodyweight legs for mobility, depth and contraction, plus heavy loaded core. No machines required.</div>
       </div>
       <div class="plan-badges">
-        <span class="badge" style="background:rgba(var(--ink-rgb),0.12);color:var(--accent);border:1px solid rgba(var(--ink-rgb),0.28)">3B</span>
-        <span class="badge" data-est="legs-b" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~1:00</span>
+        <span class="badge badge-day">3B</span>
+        <span class="badge badge-est" data-est="legs-b">⏱ ~1:00</span>
       </div>
       <button class="clear-day-btn adv" onclick="clearDayLogs('legs-b'); return false;">Clear Logs</button>
     </div>
@@ -3932,12 +3970,12 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
   <div class="plan-content" id="day-rest">
     <div class="plan-day-header">
       <div>
-        <div class="plan-day-title" style="color:var(--text-soft)">REST + STRETCH</div>
+        <div class="plan-day-title is-rest">REST + STRETCH</div>
         <div class="plan-day-focus">Recovery, mobility, and shoulder maintenance. No heavy loading.</div>
       </div>
       <div class="plan-badges">
         <span class="badge" style="background:rgba(var(--ink-rgb),0.12);color:var(--text-soft);border:1px solid rgba(var(--ink-rgb),0.28)">Day 4</span>
-        <span class="badge" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">⏱ ~45 min</span>
+        <span class="badge badge-est">⏱ ~45 min</span>
       </div>
       <button class="clear-day-btn adv" onclick="clearDayLogs('rest'); return false;">Clear Logs</button>
     </div>
@@ -4470,6 +4508,14 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
       </div>
       <span class="liftdays-desc">On adds the Run plan to the menu.</span>
     </div>
+    <div class="liftdays-wrap" style="margin-bottom:16px;">
+      <span class="liftdays-label">Easy week</span>
+      <div class="liftdays-group" role="group" aria-label="Easy week mode">
+        <button class="liftdays-btn" data-easy-btn="off" aria-pressed="true" onclick="setEasyWeek(false)">Off</button>
+        <button class="liftdays-btn" data-easy-btn="on" aria-pressed="false" onclick="setEasyWeek(true)">On</button>
+      </div>
+      <span class="liftdays-desc">On lightens every target for a taper or a recovery week. Logging works the same.</span>
+    </div>
     <div class="liftdays-wrap" style="margin-bottom:24px;">
       <span class="liftdays-label">Theme</span>
       <div class="liftdays-group">
@@ -4536,7 +4582,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.16</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.17</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -4748,8 +4794,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
       storageOK = localStorage.getItem(SESSIONS_KEY) === payload;
     } catch (e) { storageOK = false; }
     idbSet('sessions', sessions);   // durable mirror — survives localStorage eviction
-    var warn = document.getElementById('storageWarn');
-    if (warn) warn.style.display = storageOK ? 'none' : 'block';
+    setPlanNotice(document.getElementById('storageWarn'), !storageOK);
   }
 
   //     DURABLE STORAGE MIRROR (IndexedDB)
@@ -4835,8 +4880,35 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     updateBackupNudgeUI();
   }
   function updateBackupNudgeUI() {
-    var el = document.getElementById('backupNudgeBanner');
-    if (el) el.style.display = shouldShowBackupNudge() ? '' : 'none';
+    setPlanNotice(document.getElementById('backupNudgeBanner'), shouldShowBackupNudge());
+  }
+  //     PLAN NOTICES. One at a time, above the workout. Each notice's own
+  //  check calls setPlanNotice() to say whether it wants to show; this picks
+  //  the highest one that does. A lower one waits, then appears once the
+  //  higher one is dismissed or resolved. Nothing is dropped.
+  function setPlanNotice(el, want) {
+    if (!el) return;
+    el.setAttribute('data-want', want ? '1' : '0');
+    updatePlanNotices();
+  }
+  function updatePlanNotices() {
+    //  Kept inside so a save during start up, before this line has run,
+    //  still works.
+    var order = ['storageWarn', 'weekCompleteBanner', 'backupNudgeBanner', 'liftTip', 'maintenanceBanner'];
+    var shown = false;
+    order.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var show = !shown && el.getAttribute('data-want') === '1';
+      el.style.display = show ? '' : 'none';
+      if (show) shown = true;
+    });
+  }
+  function toggleLiftTipSteps(btn) {
+    var ol = document.getElementById('liftTipSteps');
+    if (!ol) return;
+    ol.hidden = !ol.hidden;
+    if (btn) btn.setAttribute('aria-expanded', ol.hidden ? 'false' : 'true');
   }
   function entryCount(o) {
     return Object.keys(o || {}).reduce(function(n, k) { return n + ((o[k] || []).length); }, 0); }
@@ -5884,11 +5956,11 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     if (!el) return;
     var seen = false;
     try { seen = localStorage.getItem(LIFT_TIP_KEY) === '1'; } catch(e) {}
-    el.style.display = (!seen && !hasAnyHistory()) ? '' : 'none';
+    setPlanNotice(el, !seen && !hasAnyHistory());
   }
   function dismissLiftTip() {
     try { localStorage.setItem(LIFT_TIP_KEY, '1'); } catch(e) {}
-    var el = document.getElementById('liftTip'); if (el) el.style.display = 'none';
+    setPlanNotice(document.getElementById('liftTip'), false);
   }
   function toggleShortDay(dayId) {
     var k = currentTrainWeek + '|' + dayId;
@@ -6113,15 +6185,28 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
   function updateLiftToolbar() {
     var w = document.getElementById('toolWeek');
     if (w) w.textContent = 'Week ' + (currentTrainWeek + 1) + (isDeloadWeek(currentTrainWeek) ? ', easy' : '');
-    //  Easy week mode is a race taper tool: only on screen with a race set.
-    var m = document.getElementById('maintenanceQuickBtn');
-    if (m) m.style.display = (runningEnabled && runPlan && runPlan.raceDate) ? '' : 'none';
+    //  The Easy week switch now lives in the week done notice and in
+    //  Settings, so the toolbar is only the week control and the rest timer.
   }
   function toggleRestPresets() {
     var r = document.getElementById('restPresets'), b = document.getElementById('toolRestBtn');
     if (!r) return;
     var open = r.classList.toggle('open');
     if (b) { b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.classList.toggle('on', open); }
+  }
+  //  The presets are a popover: a tap outside or Escape closes them.
+  document.addEventListener('click', function(e) {
+    var r = document.getElementById('restPresets');
+    if (r && r.classList.contains('open') && !e.target.closest('#restPresets, #toolRestBtn')) toggleRestPresets();
+  });
+  document.addEventListener('keydown', function(e) {
+    var r = document.getElementById('restPresets');
+    if (e.key === 'Escape' && r && r.classList.contains('open')) { toggleRestPresets(); var b = document.getElementById('toolRestBtn'); if (b) b.focus(); }
+  });
+  //  Settings Off/On for Easy week. Same flag as every other switch.
+  function setEasyWeek(on) {
+    if (!!on !== maintenanceMode) toggleMaintenanceMode();
+    else updateMaintenanceModeUI();
   }
   //     WEEK AT A GLANCE. The split's seven slots run Monday to Sunday, the
   //  same mapping the calendar uses. Today is outlined, logged days are
@@ -6214,10 +6299,13 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
       //  first word of the title, keeping a trailing B. Full title is in the
       //  aria label and one tap away.
       var title = rest ? REST_OPTS[restPlanFor(i, currentTrainWeek).list[0]].short : String(d.title || '');
-      //  Words longer than the column swap to the shorter word of the title.
-      var SHORT = { Shoulders: 'Arms', Mobility: 'Core' };
+      //  Words longer than the column (about 36px at 360 wide) swap to a
+      //  shorter word. A day letter (A, B, C) stays on the word's line when
+      //  it fits and wraps to its own line when it does not, so it never clips.
+      var SHORT = { Shoulders: 'Arms', Mobility: 'Core', Stretch: 'Flex' };
       var first = title.split(' ')[0];
-      var short = (SHORT[first] || first) + (/ B$/.test(title) ? ' B' : '');
+      var letter = (title.match(/ ([A-C])$/) || [])[1];
+      var short = (SHORT[first] || first) + (letter ? ' <span class="wg-letter">' + letter + '</span>' : '');
       return '<button type="button" class="' + cls + '"' + (rest ? ' onclick="goTab(\'training\'); showPlanRestDay(' + i + ')"' : ' onclick="switchDay(\'' + id + '\')"')
         + ' aria-label="' + WG_DOWS[i] + ', ' + (rest ? (restPlanFor(i, currentTrainWeek).recovery ? 'recovery day' : 'rest day') + ', ' + REST_OPTS[restPlanFor(i, currentTrainWeek).list[0]].text : d.title) + (logged ? ', logged' : '') + (i === today ? ', today' : '') + '">'
         + '<div class="wg-dow">' + WG_DOWS[i] + '</div>'
@@ -8344,10 +8432,10 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
       var rows = liftRowsForDay(id);
       return '<div class="plan-content' + (i === 0 ? ' active' : '') + '" id="altday-' + id + '">'
         + '<div class="plan-day-header"><div>'
-        + '<div class="plan-day-title" style="color:var(--accent)">' + d.title.toUpperCase() + '</div>'
+        + '<div class="plan-day-title">' + d.title.toUpperCase() + '</div>'
         + '<div class="plan-day-focus">' + (d.focus || '') + '</div></div>'
-        + '<div class="plan-badges"><span class="badge" style="background:rgba(var(--ink-rgb),0.12);color:var(--accent);border:1px solid rgba(var(--ink-rgb),0.28)">'
-        + d.tag + '</span><span class="badge" data-est="' + id + '" style="background:var(--surface);color:var(--accent);border:1px solid var(--border)">\u23F1 ' + sessionMinutesText(id) + '</span></div></div>'
+        + '<div class="plan-badges"><span class="badge badge-day">'
+        + d.tag + '</span><span class="badge badge-est" data-est="' + id + '">\u23F1 ' + sessionMinutesText(id) + '</span></div></div>'
         + '<div class="lift-table-header adv"><span>Exercise</span><span>Rest</span><span>Time</span><span></span></div>'
         + '<div class="lift-rows">' + rows + addExerciseHTML(id) + '</div></div>';
     }).join('');
@@ -8532,8 +8620,13 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
   //  the settings-bar relocation — the banner already covers the same
   //  at-a-glance purpose from a spot that isn't the bug being fixed.)
   function updateMaintenanceModeUI() {
-    var banner = document.getElementById('maintenanceBanner');
-    if (banner) banner.style.display = maintenanceMode ? '' : 'none';
+    setPlanNotice(document.getElementById('maintenanceBanner'), maintenanceMode);
+    //  The Off/On pair in Settings.
+    document.querySelectorAll('[data-easy-btn]').forEach(function(b) {
+      var on = (b.dataset.easyBtn === 'on') === maintenanceMode;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
     //  Two switches now: the one in the maxes modal and the quick one on the
     //  Train tab. Sync every .maintenance-toggle so they never disagree.
     document.querySelectorAll('.maintenance-toggle').forEach(function(t) {
@@ -9666,6 +9759,8 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     if (btn) btn.classList.add('active-preset');
     startTimer(seconds, 'Manual Rest');
     setTimeout(function() { if (btn) btn.classList.remove('active-preset'); }, 500);
+    var r = document.getElementById('restPresets');
+    if (r && r.classList.contains('open')) toggleRestPresets();
   }
 
   function dismissTimer() {
@@ -14650,7 +14745,7 @@ function updateWeekCompleteBanner() {
   var banner = document.getElementById('weekCompleteBanner');
   if (!banner) return;
   var done = !findNextUnloggedDay();
-  banner.style.display = done ? '' : 'none';
+  setPlanNotice(banner, done);
   if (done) {
     var numEl = document.getElementById('weekCompleteNum');
     var nextEl = document.getElementById('weekCompleteNext');
