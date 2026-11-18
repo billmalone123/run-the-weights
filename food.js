@@ -710,8 +710,12 @@ ctx.closeNavMenu();
 section('2m. Navigation: bottom bar is primary, the logo menu indexes everything, nothing lost');
 eq('MAIN_TABS adds today and keeps every older tab', ev('MAIN_TABS').join(','), 'today,info,training,running,calendar,food,quicklog,more');
 var menuHtml = ctx.buildNavMenu().innerHTML;
-['Today', 'Plan', 'Food', 'Progress', 'Quick Log', 'About and more'].forEach(function (label) {
+['Today', 'Plan', 'Food', 'Quick Log', 'About'].forEach(function (label) {
   ok(label + ' is in the logo menu', menuHtml.indexOf('>' + label + '<') > -1);
+});
+// Progress is on Today and Settings behind the gear, so neither is listed.
+['Progress', 'Settings', 'About and more'].forEach(function (label) {
+  eq(label + ' is not in the logo menu', menuHtml.indexOf('>' + label + '<') > -1, false);
 });
 eq('Run stays out of the menu while running is off', menuHtml.indexOf('>Run<') > -1, false);
 ['today', 'training', 'food', 'more'].forEach(function (t) {
@@ -721,14 +725,18 @@ eq('bottom bar markup has four tabs plus Run', (html.match(/class="tabbar-btn"/g
 ok('Run sits between Plan and Food', /data-tab="training"[\s\S]*?data-tab="running"[\s\S]*?data-tab="food"/.test(html));
 ok('Run is hidden unless running is on', html.indexOf('body:not(.running) .tabbar-btn[data-tab="running"] { display: none; }') > -1);
 ok('the Workout tab is labelled Plan', /data-tab="training"[^\n]*<span>Plan<\/span>/.test(html));
-ok('More opens Settings', html.indexOf('onclick="openSettingsModal();"><span class="more-row-title">Settings<') > -1);
-// The More tab still reaches every older destination.
+// Settings sits behind the header gear, which is in the nav on every tab.
+ok('the header gear opens Settings', /<nav>[\s\S]*?id="navGear" aria-label="Settings" onclick="openSettingsModal\(\)"[\s\S]*?<\/nav>/.test(html));
+// More is four rows, in order. Progress moved to Today.
+var moreHtml = html.slice(html.indexOf('id="tab-more"'), html.indexOf('id="aboutIntro"'));
+eq('More has exactly four rows, in order', (moreHtml.match(/more-row-title">([^<]+)</g) || []).map(function (m) { return m.replace(/.*">|<$/g, ''); }).join(','), 'About,Week review,The Edge,Home');
 [['Home', "goTab('info'); goSec('home');"], ['About', "goTab('info'); goSec('about');"],
- ['The Edge', "goTab('info'); goSec('edge');"], ['Week Overview', "goTab('info'); goSec('overview');"],
- ['Progress', "goTab('calendar');"]
+ ['The Edge', "goTab('info'); goSec('edge');"], ['Week review', "goTab('info'); goSec('overview');"]
 ].forEach(function (p) {
-  ok('More has a working link to ' + p[0], html.indexOf('onclick="' + p[1] + '"><span class="more-row-title">' + p[0] + '<') > -1);
+  ok('More has a working link to ' + p[0], moreHtml.indexOf('onclick="' + p[1] + '"><span class="more-row-title">' + p[0] + '<') > -1);
 });
+var todayHtml = html.slice(html.indexOf('id="tab-today"'), html.indexOf('id="tab-training"'));
+ok('Today has a working link to Progress', todayHtml.indexOf('onclick="goTab(\'calendar\');"><span class="more-row-title">Progress<') > -1);
 // goTab('more') itself: must not fall through to the run-plan renderer,
 // which the final catch-all in goTab is really "assume this is Run".
 reset(); boot();

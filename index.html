@@ -3193,6 +3193,22 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
 .badge.badge-est { background: var(--surface); color: var(--accent); border: 1px solid var(--border); }
 .clear-day-btn { min-height: 44px; }
 
+/* MORE AND ABOUT TRIM. Settings behind a gear on every tab, Progress on
+   Today, About trust first. */
+nav .nav-gear { margin-left: auto; flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 10px; background: none; color: var(--text); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+nav .nav-gear svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+nav .nav-gear:active { background: var(--surface-2); }
+nav .nav-gear:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.today-progress { margin: 14px 0 18px; }
+.about-short .about-lead { font-size: var(--fs-4); line-height: 1.4; font-weight: 600; margin-bottom: 14px; }
+.about-follow { font-size: var(--fs-2); color: var(--text); margin: 4px 0 0; }
+.about-ig { display: inline-flex; align-items: center; min-height: 44px; color: var(--text); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.about-ig:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.about-intro-card p { font-size: var(--fs-3); line-height: 1.55; margin: 0 0 12px; color: var(--text); }
+.about-intro-card .about-lead { font-size: var(--fs-4); line-height: 1.4; font-weight: 600; }
+.about-intro-card .about-note, .about-intro-card .about-follow { font-size: var(--fs-2); }
+.about-intro-card .about-note { color: var(--muted); }
+
 /* 8.14 TAP TARGETS. 44 px minimum on everything a thumb has to hit. */
 .day-action, .today-link, .liftdays-btn, .cal-week-btn, .food-apply-btn, .settings-open-btn, .run-toggle-btn { min-height: 44px; }
 .calfull-arrow { min-width: 44px; min-height: 44px; }
@@ -3531,6 +3547,9 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     <img class="nav-logo-mark" src="assets/brand/rtw-square-a.png" alt="" aria-hidden="true">
     <span class="nav-logo-chevron" aria-hidden="true">≡</span>
   </button>
+  <button type="button" class="nav-gear" id="navGear" aria-label="Settings" onclick="openSettingsModal()">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+  </button>
   <!-- The logo dropdown is the whole nav now. The horizontal tab row and its
        sliding indicator were removed in build 7.32; goTab() is untouched and
        every destination lives in #navMenu, built in buildNavMenu(). -->
@@ -3541,7 +3560,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     <button id="sb-home" class="on" onclick="goSec('home')">Home</button>
     <button id="sb-about" onclick="goSec('about')">About</button>
     <button id="sb-edge" onclick="goSec('edge')">The Edge</button>
-    <button id="sb-overview" onclick="goSec('overview')">Week Overview</button>
+    <button id="sb-overview" onclick="goSec('overview')">Week review</button>
     <button id="sb-progression" onclick="goSec('progression')">Progression</button>
   </div>
   <div id="sec-home" class="sub-sec on"><section class="hero" id="home">
@@ -3576,11 +3595,12 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
   </div>
 </section></div>
   <div id="sec-about" class="sub-sec"><section id="about" class="about-short">
-  <h2 class="about-title">About Run the Weights</h2>
-  <p>I'm Billy. I built this plan myself.</p>
-  <p>I've lifted and run for years, and I captained Division 1 cross country in college. I put this plan together from what I learned doing that, plus research with online tools.</p>
-  <p>I tested it on myself first. It's built for real schedules. Short on time? Going out tonight? The plan bends. You don't fall behind.</p>
+  <h2 class="about-title sr-only">About Run the Weights</h2>
+  <p class="about-lead">I'm Billy. I captained Division 1 cross country in college, and I've lifted and run for years.</p>
+  <p>I built this plan myself and tested it on myself first.</p>
+  <p>It's built for real schedules. Short on time? Going out tonight? The plan bends. You don't fall behind.</p>
   <p class="about-note">This is not medical advice. If something hurts, stop and check with a doctor.</p>
+  <p class="about-follow">Follow along on Instagram: <a class="about-ig" href="https://www.instagram.com/run_the_weights" target="_blank" rel="noopener noreferrer">@run_the_weights</a></p>
 </section></div>
   <div id="sec-edge" class="sub-sec"><section id="edge" class="edge-section" style="background:var(--dark);border-top:1px solid var(--border);">
   <div class="section-label">Why it matters</div>
@@ -3707,6 +3727,9 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
   <div class="today-card" id="todayWorkout"></div>
   <div class="today-label">This week</div>
   <div class="week-glance" data-glance aria-label="This week at a glance"></div>
+  <div class="more-list today-progress">
+    <button class="more-list-item" onclick="goTab('calendar');"><span class="more-row-title">Progress</span><span class="more-row-sub">Your weeks, lifts and weight.</span></button>
+  </div>
   <div class="today-label">Muscles, last 7 days</div>
   <div class="fresh-card" id="todayFresh"></div>
   <div class="today-grid">
@@ -4313,17 +4336,23 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
 <div id="tab-more" class="tab-main" style="display:none">
 <section id="moreSection">
   <h2 class="section-title train-title more-title">MORE</h2>
+  <!-- Progress now lives on Today and Settings behind the header gear. -->
   <div class="more-list">
-    <button class="more-list-item" onclick="goTab('calendar');"><span class="more-row-title">Progress</span><span class="more-row-sub">Your weeks, lifts and weight.</span></button>
-    <button class="more-list-item" onclick="openSettingsModal();"><span class="more-row-title">Settings</span><span class="more-row-sub">Plan, food targets, theme and backup.</span></button>
-    <button class="more-list-item" onclick="goTab('info'); goSec('about');"><span class="more-row-title">About</span><span class="more-row-sub">What this is and how it works.</span></button>
-  </div>
-  <div class="more-list more-list-minor">
-    <button class="more-list-item" onclick="goTab('info'); goSec('overview');"><span class="more-row-title">Week Overview</span></button>
-    <button class="more-list-item" onclick="goTab('info'); goSec('edge');"><span class="more-row-title">The Edge</span></button>
-    <button class="more-list-item" onclick="goTab('info'); goSec('home');"><span class="more-row-title">Home</span></button>
+    <button class="more-list-item" onclick="goTab('info'); goSec('about');"><span class="more-row-title">About</span><span class="more-row-sub">Who built this plan and why.</span></button>
+    <button class="more-list-item" onclick="goTab('info'); goSec('overview');"><span class="more-row-title">Week review</span><span class="more-row-sub">How a week of training fits together.</span></button>
+    <button class="more-list-item" onclick="goTab('info'); goSec('edge');"><span class="more-row-title">The Edge</span><span class="more-row-sub">Why getting stronger feels good.</span></button>
+    <button class="more-list-item" onclick="goTab('info'); goSec('home');"><span class="more-row-title">Home</span><span class="more-row-sub">The welcome screen.</span></button>
   </div>
 </section>
+</div>
+
+<!-- ABOUT, ONCE. Shown a single time right after onboarding. Its body is
+     copied from #about when it opens, so the words live in one place. -->
+<div class="settings-modal-overlay" id="aboutIntro" style="display:none;" role="dialog" aria-modal="true" aria-label="About Run the Weights">
+  <div class="settings-modal-card about-intro-card">
+    <div id="aboutIntroBody"></div>
+    <button class="settings-save-btn" id="aboutIntroClose" onclick="closeAboutIntro()">Got it</button>
+  </div>
 </div>
 
 <!-- MAXES MODAL -->
@@ -4582,7 +4611,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.17</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.18</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -10552,13 +10581,43 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     if (el) el.style.display = 'none';
     if (tab) goTab(tab);
     if (typeof maybeStartOnboarding === 'function') maybeStartOnboarding();
+    maybeShowAboutIntro();
   }
   function onbFlowSkip() {
     markOnboardedFlowDone();
     var el = document.getElementById('onbFlow');
     if (el) el.style.display = 'none';
     if (typeof maybeStartOnboarding === 'function') maybeStartOnboarding();
+    maybeShowAboutIntro();
   }
+  //     ABOUT, ONCE. Right after onboarding, a single time. After that About
+  //  lives only in More. The flag is in backups and restored as a boolean.
+  const ABOUT_SEEN_KEY = 'monk_about_seen_v1';
+  function aboutSeen() {
+    try { return localStorage.getItem(ABOUT_SEEN_KEY) === '1'; } catch(e) { return false; }
+  }
+  function setAboutSeen(on) {
+    try { if (on) localStorage.setItem(ABOUT_SEEN_KEY, '1'); else localStorage.removeItem(ABOUT_SEEN_KEY); } catch(e) {}
+  }
+  function maybeShowAboutIntro() {
+    if (aboutSeen()) return;
+    setAboutSeen(true);
+    var m = document.getElementById('aboutIntro'), body = document.getElementById('aboutIntroBody'), src = document.getElementById('about');
+    if (!m || !body || !src) return;
+    //  Static markup from #about, copied so the words live in one place.
+    body.innerHTML = src.innerHTML;
+    m.style.display = 'flex';
+    var btn = document.getElementById('aboutIntroClose');
+    if (btn) btn.focus();
+  }
+  function closeAboutIntro() {
+    var m = document.getElementById('aboutIntro');
+    if (m) m.style.display = 'none';
+  }
+  document.addEventListener('keydown', function(e) {
+    var m = document.getElementById('aboutIntro');
+    if (e.key === 'Escape' && m && m.style.display === 'flex') closeAboutIntro();
+  });
   //  The one teaser link on screen 3 — same finish sequence as the two CTA
   //  buttons next to it, just landing on the About section of Overview
   //  instead of Food or Training.
@@ -10568,6 +10627,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     if (el) el.style.display = 'none';
     goTab('info');
     goSec('about');
+    setAboutSeen(true);
     if (typeof maybeStartOnboarding === 'function') maybeStartOnboarding();
   }
 
@@ -10918,7 +10978,8 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
       restDays: { done: restDone, goingOut: goingOutDays },
       quick: { sessions: quickSessions, minutes: quickMinutes },
       rest: restPrefs, swapsToday: swapsToday,
-      runPrefs: { units: runUnits, lastType: runLastType }
+      runPrefs: { units: runUnits, lastType: runLastType },
+      aboutSeen: aboutSeen()
     };
     var blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
     var a = document.createElement('a');
@@ -10977,6 +11038,8 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
           updateMaintenanceModeUI();
           renderDaySections();
         }
+        //  Only a real boolean is accepted. Absent on older backups.
+        if (typeof data.aboutSeen === 'boolean') setAboutSeen(data.aboutSeen);
         if (data.runLogs && typeof data.runLogs === 'object') {
           runLogs = data.runLogs;
           persistRunLogs();
@@ -15273,17 +15336,15 @@ function buildNavMenu() {
   el.className = 'navmenu';
   el.id = 'navMenu';
   el.setAttribute('role', 'menu');
-  //  Streamlined to five destinations. Info (Home/About/The Edge/Week
-  //  Overview/Progression) and Quick Log still exist and still work exactly
-  //  as before via goTab()/goSec() — they're just no longer listed here
-  //  directly, reached instead through More (see #tab-more).
+  //  Today, Plan, Food, Run (when on), Quick Log and About. Progress lives
+  //  on Today and Settings behind the header gear, so neither is listed.
+  //  About opens the About page; the rest of Info is in the More tab.
   var items = [
     { id: 'today', label: 'Today' },
     { id: 'training', label: 'Plan' },
-    { id: 'food', label: 'Food' },
-    { id: 'calendar', label: 'Progress' }
+    { id: 'food', label: 'Food' }
   ].concat(runningEnabled ? [{ id: 'running', label: 'Run' }] : [])
-   .concat([{ id: 'quicklog', label: 'Quick Log' }, { id: 'more', label: 'About and more' }]);
+   .concat([{ id: 'quicklog', label: 'Quick Log' }, { id: 'about', label: 'About' }]);
   //  No header row here — the trigger pill itself (the wordmark you just
   //  tapped) already says what this is; a repeated "Run the Weights" label
   //  inside the panel was redundant and cost every item extra scroll room.
@@ -15294,8 +15355,7 @@ function buildNavMenu() {
   el.innerHTML = items.map(function(it) {
     return '<button class="navmenu-item' + (it.primary ? ' primary' : '') + '" role="menuitem"'
       + ' data-tab="' + it.id + '">' + it.label + '<span class="navmenu-tick">&#9679;</span></button>';
-  }).join('') + '<hr class="divider" style="margin:6px 4px;">'
-    + '<button class="navmenu-item" role="menuitem" data-action="settings">Settings</button>';
+  }).join('');
   document.body.appendChild(el);
   el.querySelectorAll('.navmenu-item').forEach(function(b) {
     b.addEventListener('click', function(e) {
@@ -15342,13 +15402,16 @@ function openNavMenu() {
   trigger.classList.remove('nav-hint');
   try { localStorage.setItem(NAV_HINT_KEY, '1'); } catch(e) {}
   var el = buildNavMenu();
-  //  Mark the tab you are already on. Info and Quick Log have no entry of
-  //  their own any more — both live behind More now, so that's what ticks
-  //  when either of them is the actual current tab.
+  //  Mark the tab you are already on. Quick Log ticks itself. The About
+  //  entry ticks only on the About page; the rest of Info and the More tab
+  //  have no entry here, so nothing ticks there.
   var current = null;
   try { current = localStorage.getItem(LAST_TAB_KEY); } catch (e) {}
   if (MAIN_TABS.indexOf(current) === -1) current = 'info';
-  if (current === 'info' || current === 'quicklog') current = 'more';
+  if (current === 'info') {
+    var aboutOn = document.getElementById('sec-about');
+    current = (aboutOn && aboutOn.style.display === 'block') ? 'about' : null;
+  }
   el.querySelectorAll('.navmenu-item').forEach(function(b) {
     b.classList.toggle('current', b.dataset.tab === current);
     //  The panel is built once and reused, so clear any roll left over from the
