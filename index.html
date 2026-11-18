@@ -3164,6 +3164,24 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
 .liftdays-btn { min-width: 44px; }
 .nav-logo { min-height: 44px; }
 .quicklog-back { min-height: 44px; }
+
+/* QUICK LOG. One question, today's plan trimmed, then fixed quick workouts. */
+.ql-heading { font-family: var(--font-display); font-size: var(--fs-5); font-weight: 700; line-height: 1.1; margin: 8px 0 12px; text-transform: uppercase; }
+#qlTimes { margin-bottom: 14px; }
+.ql-today { margin-bottom: 18px; }
+.ql-rest-line { font-size: var(--fs-2); color: var(--muted); line-height: 1.45; margin-top: 4px; }
+.ql-others { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.ql-card { border: 1px solid var(--border); border-radius: 14px; background: var(--surface); }
+.ql-card.open { border-color: var(--field); }
+.ql-card-head { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "name est" "prev prev"; gap: 2px 10px; width: 100%; min-height: 64px; padding: 12px 14px; background: none; border: 0; color: var(--text); text-align: left; cursor: pointer; border-radius: 14px; }
+.ql-card-name { grid-area: name; font-weight: 700; font-size: var(--fs-3); }
+.ql-card-est { grid-area: est; font-size: var(--fs-2); color: var(--muted); white-space: nowrap; }
+.ql-card-preview { grid-area: prev; font-size: var(--fs-2); color: var(--muted); line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ql-card .session-list, .ql-card .session-note { margin-left: 14px; margin-right: 14px; }
+.ql-card .today-start { margin: 12px 14px 14px; width: calc(100% - 28px); }
+.ql-old-link { display: block; margin: 6px 0 10px; text-decoration: underline; text-underline-offset: 3px; }
+.quick-note { font-size: var(--fs-2); color: var(--muted); margin: -4px 0 10px; }
+.ql-old-lead { font-size: var(--fs-2); color: var(--muted); margin: 0 0 12px; }
 </style>
 </head>
 <body style="background:var(--bg)">
@@ -3184,16 +3202,6 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     <button type="button" class="today-secondary" onclick="goingOutShort()">Make it a short session</button>
     <div class="run-hint" id="goingOutMsg" role="status"></div>
     <button type="button" class="settings-cancel-btn" onclick="closeGoingOut()">Cancel</button>
-  </div>
-</div>
-<!-- HOW LONG DO YOU HAVE. Short on time and Going out both land here. -->
-<div class="settings-modal-overlay" id="sessionSheet" style="display:none" onclick="if (event.target === this) closeSessionSheet()">
-  <div class="settings-modal-card session-sheet" role="dialog" aria-modal="true" aria-labelledby="sessionSheetTitle">
-    <div class="settings-modal-title" id="sessionSheetTitle">How long do you have?</div>
-    <div class="liftdays-group time-box-group" id="sessionTimeChoices" role="group" aria-label="Session length"></div>
-    <div class="session-preview" id="sessionPreview" aria-live="polite"></div>
-    <button type="button" class="today-start" onclick="startSessionSheet()">Start</button>
-    <button type="button" class="settings-cancel-btn" onclick="closeSessionSheet()">Cancel</button>
   </div>
 </div>
 <!-- GUIDED WORKOUT. One exercise, one set at a time. -->
@@ -4042,11 +4050,14 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
 <div id="tab-quicklog" class="tab-main" style="background:var(--bg)">
 
 <section id="quicklogSection">
-  <div class="section-label">Run the Weights — Quick Log</div>
-  <h2 class="section-title train-title">ONE LIFT.<br>ONE <span class="accent-word">SET</span>.</h2>
-  <p style="color:var(--muted);font-size:var(--fs-2);line-height:1.6;margin:-8px 0 20px;max-width:480px;">
-    For taper weeks and short-on-time days — log one set on an anchor lift without opening the full workout.
-  </p>
+  <h2 class="ql-heading" id="qlHeading">How long do you have?</h2>
+  <div class="liftdays-group time-box-group" id="qlTimes" role="group" aria-labelledby="qlHeading"></div>
+  <div class="today-card ql-today" id="qlToday"></div>
+  <div class="today-label">Other quick workouts</div>
+  <div class="ql-others" id="qlOthers"></div>
+  <button type="button" class="quicklog-back ql-old-link" id="qlOldBtn" aria-expanded="false" aria-controls="qlOld" onclick="toggleOldQuickLog()">Log a workout I already did</button>
+  <div id="qlOld" style="display:none">
+  <p class="ql-old-lead">Log one set of a main lift you already did.</p>
 
   <div id="quicklogPicker" class="quicklog-picker">
     <button class="quicklog-lift-btn" onclick="selectQuickLogLift('flat-bb-bench')">Bench</button>
@@ -4081,6 +4092,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   <div class="quicklog-recent">
     <div class="quicklog-recent-title">Recent Quick Logs</div>
     <div id="quicklogRecent"></div>
+  </div>
   </div>
 </section>
 
@@ -5124,8 +5136,8 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   //     TIME BOXES, SHORT SESSIONS AND DROP SETS (8.15).
   //
   //  Estimate: every working set costs about 40 seconds of work plus the
-  //  exercise's own rest timer value, and a drop set adds 40 seconds with no
-  //  rest. A rest given as a range ("3–4 min") makes the estimate a range,
+  //  exercise's own rest timer value, every exercise adds 45 seconds to set
+  //  up and move, and a drop set adds 40 seconds with no rest. A rest given as a range ("3–4 min") makes the estimate a range,
   //  and a time box only counts as met when the high end fits.
   const TIME_BOX_KEY = 'monk_time_boxes_v1';     // { 'week|dayId': 20|30|45|60|'full' }
   const USUAL_MIN_KEY = 'monk_usual_minutes_v1';  // 30|45|60|90, from onboarding or Settings
@@ -5134,6 +5146,9 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   var TIME_BOX_CHOICES = [20, 30, 45, 60];
   var USUAL_CHOICES = [30, 45, 60, 90];
   var SET_WORK_SEC = 40;
+  //  Setting up and moving between stations, once per exercise. There is no
+  //  warm up switch in the app, so no warm up time is added.
+  var EX_SETUP_SEC = 45;
   var timeBoxes = {}, usualMinutes = null, liftExperience = null, dropLogs = {};
   function loadSessionShape() {
     try { timeBoxes = JSON.parse(localStorage.getItem(TIME_BOX_KEY)) || {}; } catch(e) { timeBoxes = {}; }
@@ -5177,8 +5192,8 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     (list || []).forEach(function(ex) {
       var n = caps && caps[ex.id] != null ? caps[ex.id] : storedSets(ex.id);
       var r = restRange(ex.rest);
-      lo += n * (SET_WORK_SEC + r[0]);
-      hi += n * (SET_WORK_SEC + r[1]);
+      lo += n * (SET_WORK_SEC + r[0]) + EX_SETUP_SEC;
+      hi += n * (SET_WORK_SEC + r[1]) + EX_SETUP_SEC;
       if (drops && drops[ex.id]) { lo += SET_WORK_SEC; hi += SET_WORK_SEC; }
     });
     return { lo: Math.round(lo / 60), hi: Math.round(hi / 60) };
@@ -5287,7 +5302,137 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     if (ex) { applySetCountUI(ex); renderDropRow(ex); renderRowStatus(ex); }
   }
 
+  //     QUICK WORKOUTS (Quick Log). Fixed recipes built from the exercise
+  //  data: same time and same equipment always give the same workout. Each
+  //  slot names a muscle group, the muscles it prefers, and whether it wants
+  //  a compound. Exercises from the plan's own days come before the library,
+  //  then the data's own order.
+  const QUICK_SESSIONS_KEY = 'monk_quick_sessions_v1';  // { 'week|dayId': { kind, min } }
+  const QUICK_MIN_KEY = 'monk_quick_minutes_v1';        // last time chosen in Quick Log
+  var QUICK_KINDS = [
+    { id: 'upper', label: 'Upper body' }, { id: 'legs', label: 'Legs' }, { id: 'push', label: 'Push' },
+    { id: 'pull', label: 'Pull' }, { id: 'full', label: 'Full body' }
+  ];
+  var quickSessions = {}, quickMinutes = 30;
+  try { quickSessions = JSON.parse(localStorage.getItem(QUICK_SESSIONS_KEY)) || {}; } catch(e) { quickSessions = {}; }
+  try { var _qm = parseInt(localStorage.getItem(QUICK_MIN_KEY), 10); if (TIME_BOX_CHOICES.indexOf(_qm) !== -1) quickMinutes = _qm; } catch(e) {}
+  function persistQuick() {
+    try { localStorage.setItem(QUICK_SESSIONS_KEY, JSON.stringify(quickSessions)); localStorage.setItem(QUICK_MIN_KEY, String(quickMinutes)); } catch(e) {}
+  }
+  function validQuick(q) {
+    return !!q && QUICK_KINDS.some(function(k) { return k.id === q.kind; }) && TIME_BOX_CHOICES.indexOf(q.min) !== -1;
+  }
+  var SINGLE_LEG_RE = /single leg|split squat|lunge|step up|cossack/i;
+  var QUICK_SLOTS = {
+    upper: [{ g: 'chest', m: ['chest'], c: 1 }, { g: 'chest', m: ['chest'] }, { g: 'back', m: ['lats'], c: 1 }, { g: 'back', m: ['upper-back'], c: 1 },
+            { g: 'shoulders', m: ['delts'], c: 1 }, { g: 'shoulders', m: ['side-delts', 'rear-delts'] }, { g: 'biceps', m: ['biceps'] }, { g: 'triceps', m: ['triceps'] }],
+    push:  [{ g: 'chest', m: ['chest'], c: 1 }, { g: 'chest', m: ['chest'] }, { g: 'shoulders', m: ['delts'], c: 1 }, { g: 'shoulders', m: ['side-delts'] }, { g: 'triceps', m: ['triceps'] }],
+    pull:  [{ g: 'back', m: ['lats'], c: 1 }, { g: 'back', m: ['upper-back'], c: 1 }, { g: 'shoulders', m: ['rear-delts'] }, { g: 'biceps', m: ['biceps'] }],
+    //  Ordered so that trimming from the end still leaves lower body, a push
+    //  and a pull.
+    full:  [{ g: 'legs', m: ['quads'], c: 1 }, { g: 'chest', m: ['chest'], c: 1 }, { g: 'back', m: ['lats', 'upper-back'], c: 1 }, { g: 'legs', m: ['hamstrings', 'glutes'], c: 1 }, { g: 'shoulders', m: ['delts'], c: 1 }]
+  };
+  //  Legs scale with time: quad, then hinge, glute, calves, then one single
+  //  leg exercise. The data has no inner or outer thigh exercises.
+  function legSlots(min) {
+    var all = [{ g: 'legs', m: ['quads'], c: 1 }, { g: 'legs', m: ['hamstrings'], c: 1 }, { g: 'legs', m: ['glutes'] },
+               { g: 'calves', m: ['calves'] }, { g: 'legs', m: ['quads', 'hamstrings', 'glutes'], single: 1 }];
+    var n = min >= 60 ? 5 : min >= 45 ? 4 : min >= 30 ? 3 : 2;
+    return all.slice(0, n);
+  }
+  function quickCandidates(test) {
+    var plan = [], lib = [];
+    EXERCISES.forEach(function(e) {
+      if (e.custom || !e.muscle || !ownsAll(e) || isHiddenName(e.name) || !test(e)) return;
+      (e.day === 'library' || e.day === 'anchor' ? lib : plan).push(e);
+    });
+    return plan.concat(lib);
+  }
+  function pickSlot(slot, used, gaps) {
+    var free = function(e) { return used.indexOf(e.id) === -1 && used.indexOf(normName(e.name)) === -1; };
+    var tries = [
+      function(e) { return slot.m.indexOf(e.muscle) !== -1 && (!slot.c || e.kind === 'compound') && (!slot.single || SINGLE_LEG_RE.test(e.name)); },
+      function(e) { return slot.m.indexOf(e.muscle) !== -1 && (!slot.single || SINGLE_LEG_RE.test(e.name)); },
+      function(e) { return slot.m.indexOf(e.muscle) !== -1; },
+      function(e) { return (MUSCLE_GROUP[e.muscle] === slot.g) || (slot.g === 'legs' && MUSCLE_GROUP[e.muscle] === 'calves'); }
+    ];
+    for (var i = 0; i < tries.length; i++) {
+      var c = quickCandidates(function(e) { return free(e) && tries[i](e); });
+      if (c.length) {
+        if (i >= 2 && gaps) gaps.push(slot.m.join('/') + (slot.single ? ' single leg' : '') + ' filled with ' + c[0].id);
+        return c[0];
+      }
+    }
+    if (gaps) gaps.push(slot.m.join('/') + ' has no exercise for this equipment');
+    return null;
+  }
+  //  One quick workout: the recipe, 2 to 3 sets each, an extra accessory per
+  //  muscle at 45 and 60 minutes when it still fits, then trimmed to the time.
+  function quickWorkout(kind, min) {
+    var slots = kind === 'legs' ? legSlots(min) : (QUICK_SLOTS[kind] || QUICK_SLOTS.full);
+    var used = [], list = [], gaps = [];
+    slots.forEach(function(sl) {
+      var e = pickSlot(sl, used, gaps);
+      if (e) { list.push(e); used.push(e.id, normName(e.name)); }
+    });
+    var caps = {};
+    list.forEach(function(e) { if (storedSets(e.id) > 3) caps[e.id] = 3; });
+    var drops = {};
+    if (kind !== 'legs' && min >= 45) {
+      //  One extra isolation for a muscle already in the workout.
+      var muscles = [];
+      list.forEach(function(e) { if (muscles.indexOf(e.muscle) === -1) muscles.push(e.muscle); });
+      muscles.forEach(function(mu) {
+        var extra = quickCandidates(function(e) { return e.muscle === mu && e.kind === 'isolation' && used.indexOf(e.id) === -1 && used.indexOf(normName(e.name)) === -1; })[0];
+        if (!extra) return;
+        var trial = list.concat([extra]);
+        if (estimateMinutes(trial, caps, drops).hi <= min) { list = trial; used.push(extra.id, normName(extra.name)); }
+      });
+    }
+    list = fitToBox(list, min, caps, drops);
+    //  A drop set only on the last set of the last exercise, only on a
+    //  machine, cable or dumbbell, only when drop sets are on, and only when
+    //  the extra 40 seconds still fits.
+    var last = list[list.length - 1];
+    if (last && dropSetsOn() && dropAllowed(last)) {
+      var withDrop = {}; withDrop[last.id] = true;
+      if (estimateMinutes(list, caps, withDrop).hi <= min) drops = withDrop;
+    }
+    return { kind: kind, min: min, list: list, caps: caps, drops: drops, est: estimateMinutes(list, caps, drops), gaps: gaps };
+  }
+  function quickFor(dayId, week) {
+    var q = quickSessions[week + '|' + dayId];
+    return validQuick(q) ? q : null;
+  }
+  function quickLabel(kind) { var k = QUICK_KINDS.filter(function(x) { return x.id === kind; })[0]; return k ? k.label : 'Quick workout'; }
+  //  Exercises a quick workout put on another day this week. Those rows are
+  //  left off the other days so no exercise appears twice on the page.
+  function quickIdsElsewhere(dayId, week) {
+    if (week == null) week = currentTrainWeek;
+    var out = {};
+    Object.keys(quickSessions).forEach(function(k) {
+      var parts = k.split('|');
+      if (+parts[0] !== week || parts[1] === dayId || !validQuick(quickSessions[k])) return;
+      buildSession(parts[1], week).list.forEach(function(e) { out[e.id] = true; });
+    });
+    return out;
+  }
+  //  A day's own exercises for counting, minus any a quick workout on another
+  //  day this week already used, so one log never finishes two days.
+  function dayCountList(dayId, week) {
+    var skip = quickIdsElsewhere(dayId, week);
+    return buildSession(dayId, week).list.filter(function(e) { return !skip[e.id]; });
+  }
+
   function buildSession(dayId, week) {
+    var q = quickFor(dayId, week);
+    if (q) {
+      var qk = 'quick|' + dayId + '|' + week + '|' + q.kind + '|' + q.min + '|' + equipOwned.join(',') + '|' + hiddenEx.join(',') + '|' + JSON.stringify(setCounts) + '|' + JSON.stringify(variantChoice) + '|' + dropSetsOn();
+      if (_buildCache[qk]) return _buildCache[qk];
+      var qw = quickWorkout(q.kind, q.min), qr = {};
+      qw.list.forEach(function(e) { qr[e.id] = 'Quick workout: ' + quickLabel(q.kind) + ', ' + q.min + ' minutes. Counts as this day.'; });
+      return (_buildCache[qk] = { list: qw.list, reasons: qr, supersets: {}, minutes: qw.est.hi, est: qw.est, caps: qw.caps, drops: qw.drops, box: q.min, short: false, quick: q.kind });
+    }
     var ck = dayId + '|' + week + '|' + (isShortDay(dayId, week) ? 'short' : '') + '|' + sessionSize + '|' + sessionBudget + '|' + equipOwned.join(',') + '|' + hiddenEx.join(',') + '|' + JSON.stringify(customEx[dayId] || []) + '|' + JSON.stringify(setCounts) + '|' + JSON.stringify(variantChoice)
       + '|' + dayBox(dayId, week) + '|' + (isShortDay(dayId, week) && dropSetsOn() ? 'drops' : '');
     if (_buildCache[ck]) return _buildCache[ck];
@@ -5471,20 +5616,14 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     setTimeout(closeGoingOut, 1200);
   }
   function goingOutShort() {
-    var d = _goingOutDay;
     closeGoingOut();
-    openSessionSheet(d, 'short');
+    openQuickLog();
   }
   //     HOW LONG DO YOU HAVE. One picker for Today, Short on time and Going
   //  out. 'short' starts from the short recipe; 'time' trims today's plan.
   //  Nothing is stored until Start.
   var _ss = null;
   function boxKey(dayId) { return currentTrainWeek + '|' + dayId; }
-  function timeChoiceHTML(cur, fn) {
-    return TIME_BOX_CHOICES.map(function(m) {
-      return '<button type="button" class="liftdays-btn' + (cur === m ? ' on' : '') + '" aria-pressed="' + (cur === m) + '" onclick="' + fn + '(' + m + ')">' + m + ' min</button>';
-    }).join('') + '<button type="button" class="liftdays-btn' + (cur === 'full' ? ' on' : '') + '" aria-pressed="' + (cur === 'full') + '" onclick="' + fn + '(\'full\')">Full session</button>';
-  }
   //  Build a day as if a choice were already made, then put everything back.
   function previewSession(dayId, mode, pick) {
     var k = boxKey(dayId), oldBox = timeBoxes[k], oldShort = shortDays[k];
@@ -5502,52 +5641,93 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
         + n + ' set' + (n === 1 ? '' : 's') + (b.drops[ex.id] ? ' + drop' : '') + '</span></li>';
     }).join('') + '</ol>';
   }
-  function sessionNotesHTML(b, mode) {
-    var out = '<div class="session-est">About ' + estText(b.est) + '</div>';
-    if (mode === 'short' && b.short) {
-      if (Object.keys(b.drops).length) out += '<div class="session-note">Drop sets are a time saver.</div>';
-      else if (!dropSetsOn()) out += '<div class="session-note">Drop sets: added after your first month.</div>';
+  function openQuickLog(min) {
+    if (TIME_BOX_CHOICES.indexOf(min) !== -1) { quickMinutes = min; persistQuick(); }
+    goTab('quicklog');
+  }
+  function pickTodayTime(v) { openQuickLog(v); }
+  //  The day a quick workout stands in for: whatever Today calls the next
+  //  workout. On a rest day that is the next workout of the week.
+  function quickTargetDay() { return partialDayThisWeek() || findNextUnloggedDay(); }
+  var _qlOpen = null;
+  function setQuickMinutes(m) { quickMinutes = m; _qlOpen = null; persistQuick(); renderQuickLog(); }
+  function renderQuickLog() {
+    var t = document.getElementById('qlTimes');
+    if (!t) return;
+    t.innerHTML = TIME_BOX_CHOICES.map(function(m) {
+      return '<button type="button" class="liftdays-btn' + (quickMinutes === m ? ' on' : '') + '" aria-pressed="' + (quickMinutes === m) + '" onclick="setQuickMinutes(' + m + ')">' + m + ' min</button>';
+    }).join('');
+    var day = quickTargetDay(), slot = activeSplit().week[mondayIndex(startOfToday())];
+    var host = document.getElementById('qlToday');
+    if (host) {
+      if (slot === 'rest') {
+        host.innerHTML = '<div class="today-card-kicker">Rest day today</div>'
+          + '<div class="ql-rest-line">Resting counts. If you feel like moving, a quick workout below works too' + (day ? ' and counts as your ' + SPLIT_DAYS[day].title + ' day.' : '.') + '</div>';
+      } else if (!day) {
+        host.innerHTML = '<div class="today-card-kicker">This week</div><div class="ql-rest-line">Every workout this week is logged. A quick workout below still works.</div>';
+      } else {
+        var b = previewSession(day, 'time', quickMinutes);
+        var active = quickFor(day, currentTrainWeek) || timeBoxes[boxKey(day)] || isShortDay(day, currentTrainWeek);
+        host.innerHTML = '<div class="today-card-kicker">Today\'s plan, trimmed to your time</div>'
+          + '<div class="today-card-title">' + SPLIT_DAYS[day].title + '</div>'
+          + sessionListHTML(b)
+          + '<div class="session-est">About ' + estText(b.est) + '</div>'
+          + '<button type="button" class="today-start" onclick="startQuickToday()">Start</button>'
+          + (active ? '<button type="button" class="quicklog-back" onclick="useFullPlan()">Use the full plan instead</button>' : '');
+      }
     }
-    if (b.box || b.short) out += '<div class="session-note">This counts as your workout for the day.</div>';
-    return out;
+    var others = document.getElementById('qlOthers');
+    if (others) others.innerHTML = QUICK_KINDS.map(function(k) {
+      var w = quickWorkout(k.id, quickMinutes), open = _qlOpen === k.id;
+      return '<div class="ql-card' + (open ? ' open' : '') + '">'
+        + '<button type="button" class="ql-card-head" aria-expanded="' + open + '" onclick="toggleQuickCard(\'' + k.id + '\')">'
+        + '<span class="ql-card-name">' + k.label + '</span><span class="ql-card-est">About ' + estText(w.est) + '</span>'
+        + '<span class="ql-card-preview">' + w.list.map(function(e) { return activeVariant(e); }).join(', ') + '</span></button>'
+        + (open ? sessionListHTML({ list: w.list, caps: w.caps, drops: w.drops })
+          + (Object.keys(w.drops).length ? '<div class="session-note">Drop sets are a time saver.</div>' : (dropSetsOn() ? '' : '<div class="session-note">Drop sets: added after your first month.</div>'))
+          + '<button type="button" class="today-start" onclick="startQuick(\'' + k.id + '\')">Start</button>' : '')
+        + '</div>';
+    }).join('');
   }
-  function openSessionSheet(dayId, mode) {
-    var k = boxKey(dayId), cur = timeBoxes[k];
-    _ss = { day: dayId, mode: mode, pick: TIME_BOX_CHOICES.indexOf(cur) !== -1 ? cur : (mode === 'short' ? 30 : 'full') };
-    renderSessionSheet();
-    var m = document.getElementById('sessionSheet');
-    if (m) m.style.display = 'flex';
+  function toggleQuickCard(kind) { _qlOpen = _qlOpen === kind ? null : kind; renderQuickLog(); }
+  function toggleOldQuickLog() {
+    var el = document.getElementById('qlOld'), b = document.getElementById('qlOldBtn');
+    if (!el) return;
+    var open = el.style.display === 'none';
+    el.style.display = open ? '' : 'none';
+    if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
   }
-  function pickSessionTime(v) { if (_ss) { _ss.pick = v; renderSessionSheet(); } }
-  function renderSessionSheet() {
-    if (!_ss) return;
-    var c = document.getElementById('sessionTimeChoices');
-    if (c) c.innerHTML = timeChoiceHTML(_ss.pick, 'pickSessionTime');
-    var b = previewSession(_ss.day, _ss.mode, _ss.pick);
-    var p = document.getElementById('sessionPreview');
-    if (p) p.innerHTML = sessionListHTML(b) + sessionNotesHTML(b, _ss.mode);
-  }
-  function closeSessionSheet() { var m = document.getElementById('sessionSheet'); if (m) m.style.display = 'none'; }
-  function applySessionChoice(dayId, mode, pick) {
-    var k = boxKey(dayId);
-    timeBoxes[k] = pick;
-    if (pick === 'full') delete shortDays[k]; else if (mode === 'short') shortDays[k] = true;
-    persistSessionShape(); persistLifeHappens(); invalidateBuild();
+  function afterQuickChange(day) {
+    persistQuick(); persistSessionShape(); persistLifeHappens(); invalidateBuild();
     renderDaySections(); renderAllRowStates();
     if (typeof renderToday === 'function') renderToday();
+    goTab('training'); switchDay(day);
   }
-  function startSessionSheet() {
-    if (!_ss) return;
-    var d = _ss.day;
-    applySessionChoice(d, _ss.mode, _ss.pick);
-    closeSessionSheet();
-    goTab('training'); switchDay(d);
+  function startQuickToday() {
+    var day = quickTargetDay();
+    if (!day) return;
+    var k = boxKey(day);
+    delete quickSessions[k]; delete shortDays[k];
+    timeBoxes[k] = quickMinutes;
+    afterQuickChange(day);
   }
-  //  Today's inline picker: the choice shows straight away on the card.
-  function pickTodayTime(v) {
-    var d = _todayDay;
-    if (!d) return;
-    applySessionChoice(d, 'time', v);
+  function startQuick(kind) {
+    var day = quickTargetDay() || activeSplit().week.filter(function(id) { return id !== 'rest'; })[0];
+    if (!day) return;
+    var k = boxKey(day);
+    quickSessions[k] = { kind: kind, min: quickMinutes };
+    delete shortDays[k]; delete timeBoxes[k];
+    afterQuickChange(day);
+  }
+  function useFullPlan() {
+    var day = quickTargetDay();
+    if (!day) return;
+    var k = boxKey(day);
+    delete quickSessions[k]; delete shortDays[k];
+    timeBoxes[k] = 'full';
+    persistQuick(); persistSessionShape(); persistLifeHappens(); invalidateBuild();
+    renderDaySections(); renderAllRowStates();
+    renderQuickLog();
   }
   //  Day actions under each day header, on both render paths.
   function addDayActions() {
@@ -5559,10 +5739,24 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
       var wu = el.querySelector('.warmup-toggle-btn');
       var old = el.querySelector('.day-actions'); if (old) old.remove();
       var head = el.querySelector('.plan-day-header'); if (!head) return;
-      var short = isShortDay(dayId, currentTrainWeek);
+      //  A quick workout names itself in the header and says which day it
+      //  stands in for.
+      var tEl = head.querySelector('.plan-day-title'), q = quickFor(dayId, currentTrainWeek);
+      if (tEl) {
+        if (!tEl.dataset.title) tEl.dataset.title = tEl.textContent;
+        tEl.textContent = q ? (quickLabel(q.kind) + ', ' + q.min + ' min').toUpperCase() : tEl.dataset.title;
+      }
+      var qn = el.querySelector('.quick-note'); if (qn) qn.remove();
+      if (q) {
+        qn = document.createElement('div');
+        qn.className = 'quick-note';
+        qn.textContent = 'Quick workout. Counts as your ' + SPLIT_DAYS[dayId].title + ' day.';
+        head.parentNode.insertBefore(qn, head.nextSibling);
+      }
+      var short = isShortDay(dayId, currentTrainWeek) || !!quickFor(dayId, currentTrainWeek) || TIME_BOX_CHOICES.indexOf(timeBoxes[boxKey(dayId)]) !== -1;
       var div = document.createElement('span');
       div.className = 'day-actions';
-      div.innerHTML = '<button type="button" class="day-action' + (short ? ' on' : '') + '" onclick="openSessionSheet(\'' + dayId + '\', \'short\')">' + (short ? 'Short session' : 'Short on time') + '</button>'
+      div.innerHTML = '<button type="button" class="day-action' + (short ? ' on' : '') + '" onclick="openQuickLog()">' + (short ? 'Quick workout' : 'Short on time') + '</button>'
         + '<button type="button" class="day-action" onclick="openGoingOut(\'' + dayId + '\')">Going out?</button>';
       //  Into the badge row when there is one, so it costs no extra height.
       var badges = head.querySelector('.plan-badges');
@@ -5723,18 +5917,18 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
         var restToday = slot === 'rest';
         var prog = partial ? dayProgress(next) : null;
         _todayDay = next;
-        var tb = timeBoxes[boxKey(next)], curPick = TIME_BOX_CHOICES.indexOf(tb) !== -1 ? tb : (tb === 'full' || !b.box ? 'full' : b.box);
-        var trimmed = !!(b.box || b.short);
+        var qk = quickFor(next, currentTrainWeek);
         host.innerHTML = (daysSinceLastLog() >= 3 ? '<div class="welcome-back">Welcome back. Pick up where you left off.</div>' : '')
           + '<div class="today-card-kicker">' + (partial ? 'In progress' : restToday ? 'Next workout' : (slot === next ? 'Today' : 'Next workout')) + '</div>'
-          + '<div class="today-card-title">' + d.title + '</div>'
+          + '<div class="today-card-title">' + (qk ? 'Quick workout: ' + quickLabel(qk.kind) : d.title) + '</div>'
           + '<div class="today-card-meta">' + (prog ? prog.done + ' of ' + prog.total + ' sets done' : b.list.length + ' exercises, about ' + estText(b.est)) + '</div>'
           + (partial ? '' : '<div class="today-time"><div class="today-time-q" id="todayTimeQ">How long do you have?</div>'
-            + '<div class="liftdays-group time-box-group" role="group" aria-labelledby="todayTimeQ">' + timeChoiceHTML(curPick, 'pickTodayTime') + '</div>'
-            + (trimmed ? sessionListHTML(b) + sessionNotesHTML(b, b.short ? 'short' : 'time') : '') + '</div>')
+            + '<div class="liftdays-group time-box-group" role="group" aria-labelledby="todayTimeQ">'
+            + TIME_BOX_CHOICES.map(function(m) { return '<button type="button" class="liftdays-btn" onclick="openQuickLog(' + m + ')">' + m + ' min</button>'; }).join('')
+            + '</div></div>')
           + '<button class="today-start" onclick="startWorkout(\'' + next + '\')">' + (partial ? 'Continue workout' : 'Start workout') + '</button>'
           + '<button class="today-secondary" onclick="goTab(\'training\'); switchDay(\'' + next + '\');">See all exercises</button>'
-          + '<div class="today-row2"><button class="today-link" onclick="openSessionSheet(\'' + next + '\', \'short\')">' + (b.short ? 'Short session' : 'Short on time') + '</button>'
+          + '<div class="today-row2"><button class="today-link" onclick="openQuickLog()">Short on time</button>'
           + '<button class="today-link" onclick="openGoingOut(\'' + next + '\')">Going out?</button></div>';
       }
     }
@@ -5845,7 +6039,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   //  boxed day is complete when its own sets are in.
   function dayProgress(dayId) {
     var done = 0, total = 0;
-    buildSession(dayId, currentTrainWeek).list.forEach(function(ex) {
+    dayCountList(dayId, currentTrainWeek).forEach(function(ex) {
       for (var n = 1; n <= shownSets(ex.id); n++) { total++; if (slotLogged(ex, 's' + n)) done++; }
     });
     return { done: done, total: total };
@@ -6038,7 +6232,8 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   var _rowDrops = {};
   function liftRowsForDay(dayId) {
     var b = buildSession(dayId, currentTrainWeek);
-    programmedDayExercises(dayId).concat(b.list).forEach(function(ex) { delete _setCaps[ex.id]; delete _rowDrops[ex.id]; });
+    var skip = quickIdsElsewhere(dayId);
+    programmedDayExercises(dayId).concat(b.list).forEach(function(ex) { if (!skip[ex.id]) { delete _setCaps[ex.id]; delete _rowDrops[ex.id]; } });
     Object.keys(b.caps || {}).forEach(function(id) {
       //  A set already logged past the cap stays on screen.
       var ex = EX_BY_ID[id], e = ex ? entryForWeek(getHistory(id), currentTrainWeek, ex) : null;
@@ -6046,7 +6241,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
       if (!loggedPast) _setCaps[id] = b.caps[id];
     });
     Object.keys(b.drops || {}).forEach(function(id) { _rowDrops[id] = true; });
-    return b.list.map(function(ex) { return liftRowHTML(ex, b.reasons[ex.id], b.supersets[ex.id]); }).join('');
+    return b.list.filter(function(ex) { return !skip[ex.id]; }).map(function(ex) { return liftRowHTML(ex, b.reasons[ex.id], b.supersets[ex.id]); }).join('');
   }
   function updateSessionEstimates() {
     document.querySelectorAll('[data-est]').forEach(function(el) {
@@ -10131,7 +10326,8 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
       sessionPrefs: { size: sessionSize, budget: sessionBudget, equip: equipOwned },
       bwBand: bwBand, weekMoves: weekMoves, shortDays: shortDays, profile: userProfile, favEx: favEx,
       sessionShape: { timeBoxes: timeBoxes, usualMinutes: usualMinutes, liftExperience: liftExperience, dropLogs: dropLogs, sessionSets: sessionSets },
-      restDays: { done: restDone, goingOut: goingOutDays }
+      restDays: { done: restDone, goingOut: goingOutDays },
+      quick: { sessions: quickSessions, minutes: quickMinutes }
     };
     var blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
     var a = document.createElement('a');
@@ -10222,6 +10418,16 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
           if (USUAL_CHOICES.indexOf(sh.usualMinutes) !== -1) usualMinutes = sh.usualMinutes;
           if (sh.liftExperience === 'yes' || sh.liftExperience === 'no') liftExperience = sh.liftExperience;
           persistSessionShape(); invalidateBuild();
+        }
+        //  Quick workouts: only known kinds and times come back.
+        var qb = data.quick;
+        if (qb && typeof qb === 'object') {
+          if (qb.sessions && typeof qb.sessions === 'object') {
+            quickSessions = {};
+            Object.keys(qb.sessions).forEach(function(k) { if (/^\d+\|[\w-]+$/.test(k) && validQuick(qb.sessions[k])) quickSessions[k] = { kind: qb.sessions[k].kind, min: qb.sessions[k].min }; });
+          }
+          if (TIME_BOX_CHOICES.indexOf(qb.minutes) !== -1) quickMinutes = qb.minutes;
+          persistQuick(); invalidateBuild();
         }
         var rd = data.restDays;
         if (rd && typeof rd === 'object') {
@@ -14292,6 +14498,7 @@ function goTab(t) {
     }
     else if (t === 'quicklog') {
       if (typeof resetQuickLog === 'function') resetQuickLog();
+      if (typeof renderQuickLog === 'function') renderQuickLog();
     }
     else if (t === 'more') {
       var runRow = document.getElementById('moreRunRow');
@@ -14373,8 +14580,11 @@ function hasLogsForDay(dayId, week) {
   //  always came back empty for every split shorter than Arnold's 6 days.
   //  splitDayExercises() already knows how to resolve both pool-backed and
   //  explicit ex-list days into real exercises.
-  var exs = (typeof splitDayExercises === 'function') ? splitDayExercises(dayId)
+  var exs = (typeof quickFor === 'function' && quickFor(dayId, week)) ? buildSession(dayId, week).list
+    : (typeof splitDayExercises === 'function') ? splitDayExercises(dayId)
     : EXERCISES.filter(function(ex) { return ex.day === dayId; });
+  //  An exercise a quick workout on another day used does not count here.
+  if (typeof quickIdsElsewhere === 'function') { var qSkip = quickIdsElsewhere(dayId, week); exs = exs.filter(function(ex) { return !qSkip[ex.id]; }); }
   return exs.some(function(ex) {
     //  Quick Log entries don't count as "did the planned day" — they're a
     //  one-off anchor-lift set, not the structured session this (and the
