@@ -3086,14 +3086,71 @@ button, input, select, textarea { font-family: inherit; }
 .lift-body { padding: 0 12px 12px; }
 #tab-training .lift-body .simple-target { margin: 0 0 4px; font-size: var(--fs-2); }
 #tab-training .lift-body .lift-log-inline { margin-top: 0; }
-.lift-row:not(.show-extra) .lift-extra { display: none !important; }
-.lift-extra { margin-top: 8px; }
-.lift-extra .lift-cue { margin: 0 0 8px; }
 .lift-quick { display: flex; gap: 8px; margin-top: 8px; }
-.rest-chip, .lift-more-btn { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--field); background: none; color: var(--text); font-size: var(--fs-2); font-weight: 600; cursor: pointer; }
-.rest-chip:active, .lift-more-btn:active { background: var(--surface-2); }
-.lift-more-btn { margin-left: auto; min-width: 88px; }
-.lift-more-btn[aria-expanded="true"] { background: var(--surface-2); }
+.rest-chip { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--field); background: none; color: var(--text); font-size: var(--fs-2); font-weight: 600; cursor: pointer; }
+.rest-chip:active { background: var(--surface-2); }
+
+/* 8.15 OPEN CARD ACTIONS. One row of plain, secondary buttons: two on top,
+   three below, every one 44 px. The set rows stay the loudest thing. */
+.lift-actions { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
+.lift-act { grid-column: span 2; min-height: 44px; padding: 0 6px; border: 1px solid var(--border); border-radius: 10px; background: none; color: var(--text); font-size: var(--fs-2); font-weight: 500; cursor: pointer; white-space: nowrap; }
+.lift-act.span3 { grid-column: span 3; }
+.lift-act:active:not(:disabled) { background: var(--surface-2); }
+.lift-act:disabled { opacity: 0.4; cursor: default; }
+.lift-actions .card-foot-btn { flex: none; }
+.lift-actions .card-foot-btn[data-panel]::after { margin-left: 4px; }
+.lift-act[aria-expanded="true"] { background: var(--surface-2); border-color: var(--field); }
+.rm-confirm { align-items: center; gap: 8px; margin-top: 8px; padding: 8px 10px; border: 1.5px solid var(--accent); border-radius: 12px; }
+.rm-confirm-text { flex: 1; font-size: var(--fs-2); font-weight: 600; }
+.rm-confirm .lift-act { flex: 0 0 auto; padding: 0 14px; }
+.rm-confirm .rm-yes { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.lift-cue-line { margin-top: 10px; font-size: var(--fs-2); color: var(--muted); line-height: 1.4; }
+.lift-cue-line .lift-cue { display: inline; margin: 0; font-size: var(--fs-2); }
+.lift-cue-line .lift-cue-link { display: flex; width: max-content; align-items: center; gap: 6px; min-height: 44px; margin-top: 2px; padding: 0; border: 0; background: none; color: var(--text); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.lift-cue-link svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+/* On the card: the PR badge and the stall note only, when they apply. */
+#tab-training .lift-status .last-session-chip, #tab-training .lift-status .soft-set-note { display: none; }
+#tab-training .lift-status:empty { display: none; }
+#tab-training .lift-status { margin-top: 4px; font-size: var(--fs-2); }
+#tab-training .lift-status .stall-warning { margin-top: 4px; font-size: var(--fs-2); }
+.drop-row { padding: 3px 2px; border-radius: 10px; display: grid; grid-template-columns: 26px minmax(0, 1fr) 60px 58px 44px; gap: 4px; align-items: center; border-top: 1px dashed var(--field); margin-top: 4px; }
+.drop-row .drop-tag { grid-column: 1 / span 2; font-size: var(--fs-1); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); }
+.drop-row .set-last { display: none; }
+.drop-row.logged { background: rgba(var(--ink-rgb),0.06); }
+.drop-note { margin: 2px 2px 0; font-size: var(--fs-1); color: var(--muted); line-height: 1.4; }
+
+/* 8.15 HOW LONG DO YOU HAVE. */
+.time-box-group { display: flex; flex-wrap: wrap; gap: 6px; }
+.session-sheet .time-box-group { margin: 12px 0; }
+.session-list { list-style: none; margin: 8px 0 0; padding: 0; }
+.session-list li { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-top: 1px solid var(--border); font-size: var(--fs-2); }
+.session-list li:first-child { border-top: none; }
+.session-list-sets { color: var(--muted); white-space: nowrap; }
+.session-est { margin-top: 10px; font-weight: 700; font-size: var(--fs-3); }
+.session-note { margin-top: 4px; font-size: var(--fs-2); color: var(--muted); }
+.session-sheet .today-start { margin-top: 14px; }
+.today-time { margin: 10px 0 4px; }
+.today-time-q { font-size: var(--fs-2); font-weight: 600; margin-bottom: 6px; }
+
+/* 8.15 REST DAYS. */
+.rest-main { font-size: var(--fs-3); font-weight: 700; margin: 4px 0 4px; }
+.rest-alts { font-size: var(--fs-2); color: var(--muted); line-height: 1.45; margin-bottom: 10px; }
+.rest-done-btn.on { background: var(--surface-2); }
+#planRestDay { margin: 12px 0; }
+#todayRest { margin-bottom: 12px; }
+#plan.plan-resting > .plan-content, #plan.plan-resting #altPlan, #plan.plan-resting #planNav { display: none !important; }
+.wg-day.rest { cursor: pointer; opacity: 0.75; }
+.wg-day.picked { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; opacity: 1; }
+
+/* 8.15 PLAN SETUP. One row per option with a plain line and a week strip. */
+.plan-days-options { display: flex; flex-direction: column; gap: 6px; }
+.plan-days-opt { display: grid; grid-template-columns: 64px 1fr; grid-template-areas: "n line" "n strip"; column-gap: 10px; row-gap: 4px; align-items: center; min-height: 64px; padding: 10px 12px; text-align: left; border: 1px solid var(--border); border-radius: 12px; background: none; color: var(--text); cursor: pointer; }
+.plan-days-opt.on { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; background: var(--surface-2); }
+.plan-days-n { grid-area: n; font-weight: 700; font-size: var(--fs-3); }
+.plan-days-line { grid-area: line; font-size: var(--fs-2); line-height: 1.35; }
+.week-strip { grid-area: strip; display: flex; gap: 3px; }
+.ws-day { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 5px; font-size: var(--fs-1); color: var(--muted); border: 1px solid var(--border); }
+.ws-day.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
 /* The tag badge repeats the day title. Advanced keeps it. */
 /* The tag badge repeats the day title and the time is already in the week
    strip above. Advanced keeps both. */
@@ -3127,6 +3184,16 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     <button type="button" class="today-secondary" onclick="goingOutShort()">Make it a short session</button>
     <div class="run-hint" id="goingOutMsg" role="status"></div>
     <button type="button" class="settings-cancel-btn" onclick="closeGoingOut()">Cancel</button>
+  </div>
+</div>
+<!-- HOW LONG DO YOU HAVE. Short on time and Going out both land here. -->
+<div class="settings-modal-overlay" id="sessionSheet" style="display:none" onclick="if (event.target === this) closeSessionSheet()">
+  <div class="settings-modal-card session-sheet" role="dialog" aria-modal="true" aria-labelledby="sessionSheetTitle">
+    <div class="settings-modal-title" id="sessionSheetTitle">How long do you have?</div>
+    <div class="liftdays-group time-box-group" id="sessionTimeChoices" role="group" aria-label="Session length"></div>
+    <div class="session-preview" id="sessionPreview" aria-live="polite"></div>
+    <button type="button" class="today-start" onclick="startSessionSheet()">Start</button>
+    <button type="button" class="settings-cancel-btn" onclick="closeSessionSheet()">Cancel</button>
   </div>
 </div>
 <!-- GUIDED WORKOUT. One exercise, one set at a time. -->
@@ -3208,9 +3275,17 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
       </div>
       <div class="run-field-label" style="margin-top:18px;"><span>What do you want most?</span></div>
       <div class="liftdays-group goal-mode-group" id="onbFlowGoalPills"></div>
-      <div class="run-field-label" style="margin-top:18px;"><span>Days a week to lift</span></div>
-      <div class="liftdays-group" id="onbFlowLiftDaysPills"></div>
-      <div class="liftdays-desc" id="onbFlowLiftDaysDesc" style="margin-top:6px;"></div>
+      <div class="run-field-label" style="margin-top:18px;"><span id="onbDaysQ">How many days can you train?</span></div>
+      <div class="plan-days-options" id="onbFlowLiftDaysPills" role="radiogroup" aria-labelledby="onbDaysQ"></div>
+      <div class="liftdays-desc" id="onbFlowLiftDaysDesc" style="display:none"></div>
+      <div class="run-field-label" style="margin-top:18px;"><span id="onbExpQ">Have you lifted weights before?</span></div>
+      <div class="run-toggle" role="group" aria-labelledby="onbExpQ">
+        <button type="button" class="run-toggle-btn" id="onbFlowExpYes" onclick="onbFlowSetExp('yes')">Yes</button>
+        <button type="button" class="run-toggle-btn" id="onbFlowExpNo" onclick="onbFlowSetExp('no')">Not yet</button>
+      </div>
+      <div class="run-field-label" style="margin-top:18px;"><span id="onbLenQ">How long do you usually have for a workout? (optional)</span></div>
+      <div class="liftdays-group" id="onbFlowLenPills" role="group" aria-labelledby="onbLenQ"></div>
+      <div class="liftdays-desc" style="margin-top:6px;">You can change this any time in More.</div>
       <details class="onb-optional" style="margin-top:18px;">
         <summary>Optional: height, age and sex for a better calorie estimate</summary>
         <div class="onb-optional-grid">
@@ -3450,6 +3525,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
 <div id="tab-today" class="tab-main" style="background:var(--bg);display:none">
 <section id="todaySection">
   <div class="today-date" id="todayDate"></div>
+  <div class="today-card rest-card" id="todayRest" style="display:none"></div>
   <div class="today-card" id="todayWorkout"></div>
   <div class="today-label">This week</div>
   <div class="week-glance" data-glance aria-label="This week at a glance"></div>
@@ -3515,6 +3591,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     <button type="button" class="lift-tip-btn" onclick="dismissLiftTip()">Got it</button>
   </div>
   <div class="week-glance" id="weekGlance" aria-label="This week at a glance"></div>
+  <div id="planRestDay" style="display:none"></div>
   <div id="maintenanceBanner" class="maintenance-banner" style="display:none">
     <span class="maintenance-banner-dot"></span> Easy week mode is on. Targets are lighter this week. Logging works the same.
   </div>
@@ -4137,13 +4214,8 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
 
     <div id="cpStep1">
       <div class="settings-modal-sub" id="cpCurrentPlanText"></div>
-      <div class="settings-input-label">How many days a week do you want to lift?</div>
-      <div class="liftdays-group" style="margin-bottom:32px;">
-        <button class="liftdays-btn" onclick="changePlanPickDays(3)">3</button>
-        <button class="liftdays-btn" onclick="changePlanPickDays(4)">4</button>
-        <button class="liftdays-btn" onclick="changePlanPickDays(5)">5</button>
-        <button class="liftdays-btn" onclick="changePlanPickDays(6)">6</button>
-      </div>
+      <div class="settings-input-label" id="cpDaysQ">How many days can you train?</div>
+      <div class="plan-days-options" id="cpDaysOptions" role="radiogroup" aria-labelledby="cpDaysQ" style="margin-bottom:24px;"></div>
     </div>
 
     <div id="cpStep2" style="display:none;">
@@ -4225,6 +4297,11 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
         <button class="liftdays-btn" data-theme-btn="black" onclick="setTheme('black')">Black</button>
       </div>
     </div>
+    <div class="liftdays-wrap" style="margin-bottom:16px;">
+      <span class="liftdays-label" id="usualLenLabel">Usual workout length</span>
+      <div class="liftdays-group" id="usualLenGroup" role="group" aria-labelledby="usualLenLabel"></div>
+      <span class="liftdays-desc">Sessions are trimmed to fit. 90 min keeps them whole.</span>
+    </div>
     <div class="liftdays-wrap adv" style="margin-bottom:16px;">
       <span class="liftdays-label">Exercises per session</span>
       <div class="liftdays-group goal-mode-group" id="sessionSizeGroup"></div>
@@ -4274,7 +4351,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.14</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.15</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -5044,8 +5121,175 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     return out;
   }
   var _buildCache = {};
+  //     TIME BOXES, SHORT SESSIONS AND DROP SETS (8.15).
+  //
+  //  Estimate: every working set costs about 40 seconds of work plus the
+  //  exercise's own rest timer value, and a drop set adds 40 seconds with no
+  //  rest. A rest given as a range ("3–4 min") makes the estimate a range,
+  //  and a time box only counts as met when the high end fits.
+  const TIME_BOX_KEY = 'monk_time_boxes_v1';     // { 'week|dayId': 20|30|45|60|'full' }
+  const USUAL_MIN_KEY = 'monk_usual_minutes_v1';  // 30|45|60|90, from onboarding or Settings
+  const LIFT_EXP_KEY = 'monk_lift_experience_v1'; // 'yes' | 'no'
+  const DROP_LOG_KEY = 'monk_drop_logs_v1';       // { 'week|exId': { w, r } }
+  var TIME_BOX_CHOICES = [20, 30, 45, 60];
+  var USUAL_CHOICES = [30, 45, 60, 90];
+  var SET_WORK_SEC = 40;
+  var timeBoxes = {}, usualMinutes = null, liftExperience = null, dropLogs = {};
+  function loadSessionShape() {
+    try { timeBoxes = JSON.parse(localStorage.getItem(TIME_BOX_KEY)) || {}; } catch(e) { timeBoxes = {}; }
+    try { dropLogs = JSON.parse(localStorage.getItem(DROP_LOG_KEY)) || {}; } catch(e) { dropLogs = {}; }
+    var u = null, x = null;
+    try { u = parseInt(localStorage.getItem(USUAL_MIN_KEY), 10); x = localStorage.getItem(LIFT_EXP_KEY); } catch(e) {}
+    usualMinutes = USUAL_CHOICES.indexOf(u) !== -1 ? u : null;
+    liftExperience = x === 'yes' || x === 'no' ? x : null;
+  }
+  function persistSessionShape() {
+    try {
+      localStorage.setItem(TIME_BOX_KEY, JSON.stringify(timeBoxes));
+      localStorage.setItem(DROP_LOG_KEY, JSON.stringify(dropLogs));
+      if (usualMinutes) localStorage.setItem(USUAL_MIN_KEY, String(usualMinutes)); else localStorage.removeItem(USUAL_MIN_KEY);
+      if (liftExperience) localStorage.setItem(LIFT_EXP_KEY, liftExperience); else localStorage.removeItem(LIFT_EXP_KEY);
+    } catch(e) {}
+  }
+  loadSessionShape();
+  //  The minutes a day must fit in, or null for the full session. A choice
+  //  made for this day wins; otherwise the usual length from setup.
+  function dayBox(dayId, week) {
+    var v = timeBoxes[week + '|' + dayId];
+    if (v === 'full') return null;
+    if (TIME_BOX_CHOICES.indexOf(v) !== -1) return v;
+    return usualMinutes && usualMinutes < 90 ? usualMinutes : null;
+  }
+  function restRange(restStr) {
+    var t = String(restStr || '').toLowerCase();
+    var m = t.match(/^(\d+)\s*[–\-]\s*(\d+)\s*min/);
+    if (m) return [parseInt(m[1], 10) * 60, parseInt(m[2], 10) * 60];
+    var one = parseRestToSeconds(restStr);
+    return [one, one];
+  }
+  //  Raw stored count, never the time box cap.
+  function storedSets(exId) {
+    var n = parseInt(setCounts[exId], 10);
+    return (n >= MIN_SETS && n <= MAX_SETS) ? n : 2;
+  }
+  function estimateMinutes(list, caps, drops) {
+    var lo = 0, hi = 0;
+    (list || []).forEach(function(ex) {
+      var n = caps && caps[ex.id] != null ? caps[ex.id] : storedSets(ex.id);
+      var r = restRange(ex.rest);
+      lo += n * (SET_WORK_SEC + r[0]);
+      hi += n * (SET_WORK_SEC + r[1]);
+      if (drops && drops[ex.id]) { lo += SET_WORK_SEC; hi += SET_WORK_SEC; }
+    });
+    return { lo: Math.round(lo / 60), hi: Math.round(hi / 60) };
+  }
+  function estText(e) {
+    if (!e || !(e.hi > 0)) return '';
+    return e.lo === e.hi ? e.hi + ' min' : e.lo + ' to ' + e.hi + ' min';
+  }
+  //  Muscle groups for the short session recipe and the cut order.
+  var MUSCLE_GROUP = { chest: 'chest', lats: 'back', 'upper-back': 'back', 'rear-delts': 'shoulders',
+    delts: 'shoulders', 'side-delts': 'shoulders', quads: 'legs', hamstrings: 'legs', glutes: 'legs',
+    biceps: 'biceps', triceps: 'triceps', calves: 'calves', core: 'core', 'full-body': 'full-body' };
+  var SHORT_RECIPE = { chest: 2, back: 2, shoulders: 2, legs: 2, biceps: 1, triceps: 1 };
+  //  The minimum per muscle that still does most of the work, only for the
+  //  muscles already in today's plan, in the plan's own order. Legs take one
+  //  quad exercise and one hamstring or glute exercise when both exist.
+  function shortRecipe(list) {
+    var take = [], count = {}, quad = false, hinge = false;
+    list.forEach(function(e) {
+      var g = MUSCLE_GROUP[e.muscle];
+      if (!SHORT_RECIPE[g]) return;
+      if (g === 'legs') {
+        if (e.muscle === 'quads' && !quad) { quad = true; take.push(e); count.legs = (count.legs || 0) + 1; }
+        else if ((e.muscle === 'hamstrings' || e.muscle === 'glutes') && !hinge) { hinge = true; take.push(e); count.legs = (count.legs || 0) + 1; }
+        return;
+      }
+      if ((count[g] || 0) < SHORT_RECIPE[g]) { take.push(e); count[g] = (count[g] || 0) + 1; }
+    });
+    //  A leg day with only quad work (or only hinge work) still gets two.
+    list.forEach(function(e) {
+      if (MUSCLE_GROUP[e.muscle] === 'legs' && (count.legs || 0) < 2 && take.indexOf(e) === -1) { take.push(e); count.legs = (count.legs || 0) + 1; }
+    });
+    if (!take.length) take = list.slice(0, 2);
+    return list.filter(function(e) { return take.indexOf(e) !== -1; });
+  }
+  //  Drop sets: machines, cables and dumbbells only. Anything with a barbell
+  //  is out, which covers squat, deadlift and bench by construction.
+  var DROP_EQUIP = { machine: 1, cable: 1, dumbbell: 1 };
+  function dropAllowed(ex) {
+    var q = ex.equip || [];
+    return q.length > 0 && q.indexOf('barbell') === -1 && q.some(function(k) { return DROP_EQUIP[k]; })
+      && q.every(function(k) { return DROP_EQUIP[k] || k === 'bodyweight'; });
+  }
+  function firstLogDaysAgo() {
+    var first = null;
+    Object.keys(sessions || {}).forEach(function(k) { (sessions[k] || []).forEach(function(e) { if (e && e.d && (!first || e.d < first)) first = e.d; }); });
+    var d = first ? parseDateKey(first) : null;
+    return d ? dayDiff(d, startOfToday()) : 0;
+  }
+  //  On for anyone who has lifted before, and for everyone after a month of
+  //  logging.
+  function dropSetsOn() { return liftExperience === 'yes' || firstLogDaysAgo() >= 28; }
+  //  Biceps and triceps: the last set of their one exercise. Chest and back:
+  //  the last set of the second exercise.
+  function pickDrops(list) {
+    var drops = {}, seen = {};
+    list.forEach(function(e) {
+      var g = MUSCLE_GROUP[e.muscle];
+      seen[g] = (seen[g] || 0) + 1;
+      var slot = (g === 'biceps' || g === 'triceps') ? seen[g] === 1 : ((g === 'chest' || g === 'back') && seen[g] === 2);
+      if (slot && dropAllowed(e)) drops[e.id] = true;
+    });
+    return drops;
+  }
+  //  Fit a list into a time box. Cut order: accessories that are not a
+  //  muscle's first exercise, then extra sets down to 2, then other non-first
+  //  exercises from the end, then first exercises from the end. A muscle's
+  //  first exercise never goes before another muscle's second. One exercise
+  //  always stays.
+  function fitToBox(list, box, caps, drops) {
+    var out = list.slice(), rank = {}, seen = {};
+    //  Quads and the hamstring and glute side rank as separate muscles, so a
+    //  leg day keeps one of each before anything else.
+    list.forEach(function(e) {
+      var g = e.muscle === 'quads' ? 'quads' : (e.muscle === 'hamstrings' || e.muscle === 'glutes') ? 'hinge' : (MUSCLE_GROUP[e.muscle] || e.muscle);
+      rank[e.id] = seen[g] || 0; seen[g] = (seen[g] || 0) + 1;
+    });
+    function over() { return estimateMinutes(out, caps, drops).hi > box; }
+    function cutFromEnd(test) {
+      for (var i = out.length - 1; i >= 0 && over() && out.length > 1; i--) {
+        if (test(out[i])) { delete drops[out[i].id]; out.splice(i, 1); }
+      }
+    }
+    cutFromEnd(function(e) { return e.kind === 'isolation' && rank[e.id] >= 1; });
+    for (var i = out.length - 1; i >= 0 && over(); i--) {
+      var id = out[i].id, n = caps[id] != null ? caps[id] : storedSets(id);
+      if (n > 2) caps[id] = 2;
+    }
+    cutFromEnd(function(e) { return rank[e.id] >= 1; });
+    cutFromEnd(function(e) { return e.kind === 'isolation'; });
+    cutFromEnd(function() { return true; });
+    return out;
+  }
+  //  Caps from the session on screen. setsFor() reads them, so a trimmed day
+  //  shows, logs and completes at its trimmed count. Add set on a capped
+  //  exercise lifts the cap for that exercise.
+  var _setCaps = {};
+  const SESSION_SETS_KEY = 'monk_session_sets_v1';  // { 'week|exId': n }, Add or Remove on a capped card
+  var sessionSets = {};
+  try { sessionSets = JSON.parse(localStorage.getItem(SESSION_SETS_KEY)) || {}; } catch(e) { sessionSets = {}; }
+  function persistSessionSets() { try { localStorage.setItem(SESSION_SETS_KEY, JSON.stringify(sessionSets)); } catch(e) {} }
+  function setShownSets(exId, n) {
+    sessionSets[currentTrainWeek + '|' + exId] = Math.max(MIN_SETS, Math.min(MAX_SETS, n));
+    persistSessionSets();
+    var ex = EX_BY_ID[exId];
+    if (ex) { applySetCountUI(ex); renderDropRow(ex); renderRowStatus(ex); }
+  }
+
   function buildSession(dayId, week) {
-    var ck = dayId + '|' + week + '|' + (isShortDay(dayId, week) ? 'short' : '') + '|' + sessionSize + '|' + sessionBudget + '|' + equipOwned.join(',') + '|' + hiddenEx.join(',') + '|' + JSON.stringify(customEx[dayId] || []) + '|' + JSON.stringify(setCounts) + '|' + JSON.stringify(variantChoice);
+    var ck = dayId + '|' + week + '|' + (isShortDay(dayId, week) ? 'short' : '') + '|' + sessionSize + '|' + sessionBudget + '|' + equipOwned.join(',') + '|' + hiddenEx.join(',') + '|' + JSON.stringify(customEx[dayId] || []) + '|' + JSON.stringify(setCounts) + '|' + JSON.stringify(variantChoice)
+      + '|' + dayBox(dayId, week) + '|' + (isShortDay(dayId, week) && dropSetsOn() ? 'drops' : '');
     if (_buildCache[ck]) return _buildCache[ck];
     var base = programmedDayExercises(dayId);
     var reasons = {}, supersets = {}, list = [];
@@ -5123,9 +5367,11 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     list = sessionSize == null ? base.slice() : fixed.concat(acc).concat(finEx ? [finEx] : []);
     //  Short on time: the main lifts only, for this day and week. The plan
     //  itself does not change, and finishing these counts as a full day.
-    if (isShortDay(dayId, week)) {
-      list = fixed.slice();
-      list.forEach(function(e) { reasons[e.id] = 'Short session. Main lifts only today; the rest of the plan is unchanged.'; });
+    //  Short on time or going out: the short recipe, from today's own list.
+    var shortDay = isShortDay(dayId, week);
+    if (shortDay) {
+      list = shortRecipe(list);
+      list.forEach(function(e) { reasons[e.id] = 'Short session. The fewest exercises per muscle that still do most of the work; the rest of the plan is unchanged.'; });
     }
     //  Supersets only when a budget is set and the plain session runs past it.
     //  Accessories pair with the next accessory of a different muscle, so one
@@ -5149,8 +5395,20 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
       }
     }
     var customs = customExercisesFor(dayId);
-    customs.forEach(function(e) { reasons[e.id] = 'Custom. You added this to this day.'; minutes += exMinutes(e); });
-    var result = { list: list.concat(customs), reasons: reasons, supersets: supersets, minutes: Math.round(minutes) };
+    customs.forEach(function(e) { reasons[e.id] = 'Custom. You added this to this day.'; });
+    //  Caps: short sessions run 2 to 3 sets; a time box can lower extra sets
+    //  to 2. Drop sets only on short sessions, only when switched on.
+    var caps = {};
+    if (shortDay) list.forEach(function(e) { if (storedSets(e.id) > 3) caps[e.id] = 3; });
+    var drops = shortDay && dropSetsOn() ? pickDrops(list) : {};
+    var box = dayBox(dayId, week);
+    if (box) {
+      var customEst = estimateMinutes(customs, {}, {}).hi;
+      list = fitToBox(list, Math.max(5, box - customEst), caps, drops);
+    }
+    var full = list.concat(customs);
+    var est = estimateMinutes(full, caps, drops);
+    var result = { list: full, reasons: reasons, supersets: supersets, minutes: est.hi, est: est, caps: caps, drops: drops, box: box, short: shortDay };
     _buildCache[ck] = result;
     return result;
   }
@@ -5188,6 +5446,8 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     if (to === -1) return -1;
     week[to] = dayId; week[from] = 'rest';
     weekMoves[currentTrainWeek] = week;
+    goingOutDays[currentTrainWeek + '|' + from] = true;
+    persistRestState();
     persistLifeHappens(); invalidateBuild();
     renderDaySections(); renderAllRowStates();
     if (typeof renderWeekCalendar === 'function') renderWeekCalendar();
@@ -5211,8 +5471,83 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     setTimeout(closeGoingOut, 1200);
   }
   function goingOutShort() {
-    if (!isShortDay(_goingOutDay, currentTrainWeek)) toggleShortDay(_goingOutDay);
+    var d = _goingOutDay;
     closeGoingOut();
+    openSessionSheet(d, 'short');
+  }
+  //     HOW LONG DO YOU HAVE. One picker for Today, Short on time and Going
+  //  out. 'short' starts from the short recipe; 'time' trims today's plan.
+  //  Nothing is stored until Start.
+  var _ss = null;
+  function boxKey(dayId) { return currentTrainWeek + '|' + dayId; }
+  function timeChoiceHTML(cur, fn) {
+    return TIME_BOX_CHOICES.map(function(m) {
+      return '<button type="button" class="liftdays-btn' + (cur === m ? ' on' : '') + '" aria-pressed="' + (cur === m) + '" onclick="' + fn + '(' + m + ')">' + m + ' min</button>';
+    }).join('') + '<button type="button" class="liftdays-btn' + (cur === 'full' ? ' on' : '') + '" aria-pressed="' + (cur === 'full') + '" onclick="' + fn + '(\'full\')">Full session</button>';
+  }
+  //  Build a day as if a choice were already made, then put everything back.
+  function previewSession(dayId, mode, pick) {
+    var k = boxKey(dayId), oldBox = timeBoxes[k], oldShort = shortDays[k];
+    timeBoxes[k] = pick;
+    if (pick === 'full') delete shortDays[k]; else if (mode === 'short') shortDays[k] = true;
+    var b = buildSession(dayId, currentTrainWeek);
+    if (oldBox === undefined) delete timeBoxes[k]; else timeBoxes[k] = oldBox;
+    if (oldShort === undefined) delete shortDays[k]; else shortDays[k] = oldShort;
+    return b;
+  }
+  function sessionListHTML(b) {
+    return '<ol class="session-list">' + b.list.map(function(ex) {
+      var n = b.caps[ex.id] != null ? Math.min(b.caps[ex.id], storedSets(ex.id)) : storedSets(ex.id);
+      return '<li><span class="session-list-name">' + activeVariant(ex) + '</span><span class="session-list-sets">'
+        + n + ' set' + (n === 1 ? '' : 's') + (b.drops[ex.id] ? ' + drop' : '') + '</span></li>';
+    }).join('') + '</ol>';
+  }
+  function sessionNotesHTML(b, mode) {
+    var out = '<div class="session-est">About ' + estText(b.est) + '</div>';
+    if (mode === 'short' && b.short) {
+      if (Object.keys(b.drops).length) out += '<div class="session-note">Drop sets are a time saver.</div>';
+      else if (!dropSetsOn()) out += '<div class="session-note">Drop sets: added after your first month.</div>';
+    }
+    if (b.box || b.short) out += '<div class="session-note">This counts as your workout for the day.</div>';
+    return out;
+  }
+  function openSessionSheet(dayId, mode) {
+    var k = boxKey(dayId), cur = timeBoxes[k];
+    _ss = { day: dayId, mode: mode, pick: TIME_BOX_CHOICES.indexOf(cur) !== -1 ? cur : (mode === 'short' ? 30 : 'full') };
+    renderSessionSheet();
+    var m = document.getElementById('sessionSheet');
+    if (m) m.style.display = 'flex';
+  }
+  function pickSessionTime(v) { if (_ss) { _ss.pick = v; renderSessionSheet(); } }
+  function renderSessionSheet() {
+    if (!_ss) return;
+    var c = document.getElementById('sessionTimeChoices');
+    if (c) c.innerHTML = timeChoiceHTML(_ss.pick, 'pickSessionTime');
+    var b = previewSession(_ss.day, _ss.mode, _ss.pick);
+    var p = document.getElementById('sessionPreview');
+    if (p) p.innerHTML = sessionListHTML(b) + sessionNotesHTML(b, _ss.mode);
+  }
+  function closeSessionSheet() { var m = document.getElementById('sessionSheet'); if (m) m.style.display = 'none'; }
+  function applySessionChoice(dayId, mode, pick) {
+    var k = boxKey(dayId);
+    timeBoxes[k] = pick;
+    if (pick === 'full') delete shortDays[k]; else if (mode === 'short') shortDays[k] = true;
+    persistSessionShape(); persistLifeHappens(); invalidateBuild();
+    renderDaySections(); renderAllRowStates();
+    if (typeof renderToday === 'function') renderToday();
+  }
+  function startSessionSheet() {
+    if (!_ss) return;
+    var d = _ss.day;
+    applySessionChoice(d, _ss.mode, _ss.pick);
+    closeSessionSheet();
+    goTab('training'); switchDay(d);
+  }
+  //  Today's inline picker: the choice shows straight away on the card.
+  function pickTodayTime(v) {
+    var d = _todayDay;
+    if (!d) return;
+    applySessionChoice(d, 'time', v);
   }
   //  Day actions under each day header, on both render paths.
   function addDayActions() {
@@ -5227,7 +5562,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
       var short = isShortDay(dayId, currentTrainWeek);
       var div = document.createElement('span');
       div.className = 'day-actions';
-      div.innerHTML = '<button type="button" class="day-action' + (short ? ' on' : '') + '" onclick="toggleShortDay(\'' + dayId + '\')">' + (short ? 'Show full session' : 'Short on time') + '</button>'
+      div.innerHTML = '<button type="button" class="day-action' + (short ? ' on' : '') + '" onclick="openSessionSheet(\'' + dayId + '\', \'short\')">' + (short ? 'Short session' : 'Short on time') + '</button>'
         + '<button type="button" class="day-action" onclick="openGoingOut(\'' + dayId + '\')">Going out?</button>';
       //  Into the badge row when there is one, so it costs no extra height.
       var badges = head.querySelector('.plan-badges');
@@ -5257,6 +5592,78 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   //  same mapping the calendar uses. Today is outlined, logged days are
   //  struck through, and a tap opens that day.
   var WG_DOWS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  //     REST DAYS. Never blank: each one says what to do, rotating through
+  //  the week so no two read the same. Marking one done is optional and
+  //  nothing counts against anyone who does not.
+  const REST_DONE_KEY = 'monk_rest_done_v1';   // { 'YYYY-MM-DD': true }
+  const GOING_OUT_KEY = 'monk_going_out_v1';   // { 'week|slot': true }, the day a session moved off
+  var restDone = {}, goingOutDays = {};
+  try { restDone = JSON.parse(localStorage.getItem(REST_DONE_KEY)) || {}; } catch(e) { restDone = {}; }
+  try { goingOutDays = JSON.parse(localStorage.getItem(GOING_OUT_KEY)) || {}; } catch(e) { goingOutDays = {}; }
+  function persistRestState() {
+    try { localStorage.setItem(REST_DONE_KEY, JSON.stringify(restDone)); localStorage.setItem(GOING_OUT_KEY, JSON.stringify(goingOutDays)); } catch(e) {}
+  }
+  var REST_OPTS = {
+    walk: { text: 'Easy walk, 20 to 30 minutes', short: 'Walk' },
+    stretch: { text: 'Stretch or mobility, 10 minutes', short: 'Stretch' },
+    rest: { text: 'Full rest. That counts too.', short: 'Rest' },
+    run: { text: 'Easy run if you feel like it.', short: 'Run' }
+  };
+  //  Options for one rest slot, best first. After a night out the gentlest
+  //  comes first and the card reads Recovery.
+  function restPlanFor(slot, week) {
+    var ids = ['walk', 'stretch', 'rest'].concat(runningEnabled ? ['run'] : []);
+    var recovery = !!goingOutDays[week + '|' + slot];
+    if (recovery) return { recovery: true, list: ['rest', 'walk', 'stretch'].concat(runningEnabled ? ['run'] : []) };
+    var restSlots = [], wk = activeSplit().week;
+    wk.forEach(function(id, i) { if (id === 'rest') restSlots.push(i); });
+    var nth = Math.max(0, restSlots.indexOf(slot));
+    var start = (nth + week) % ids.length;
+    return { recovery: false, list: ids.slice(start).concat(ids.slice(0, start)) };
+  }
+  function slotDateKey(slot) {
+    var d = startOfToday();
+    d.setDate(d.getDate() - mondayIndex(d) + slot);
+    return dateKeyOfRun(d);
+  }
+  function restCardHTML(slot) {
+    var rp = restPlanFor(slot, currentTrainWeek), key = slotDateKey(slot), done = !!restDone[key];
+    var main = REST_OPTS[rp.list[0]], alts = rp.list.slice(1).map(function(id) { return REST_OPTS[id].text; });
+    return '<div class="today-card-kicker">' + (rp.recovery ? 'Recovery' : 'Rest day') + ' · ' + TODAY_DOWS[slot] + '</div>'
+      + '<div class="rest-main">' + main.text + '</div>'
+      + '<div class="rest-alts">Or: ' + alts.join(' · ') + '</div>'
+      + '<button type="button" class="today-secondary rest-done-btn' + (done ? ' on' : '') + '" aria-pressed="' + done + '" onclick="toggleRestDone(' + slot + ')">' + (done ? 'Done ✓' : 'Mark done') + '</button>';
+  }
+  function toggleRestDone(slot) {
+    var key = slotDateKey(slot);
+    if (restDone[key]) delete restDone[key]; else restDone[key] = true;
+    persistRestState();
+    if (typeof renderToday === 'function') renderToday();
+    if (_planRestSlot === slot) showPlanRestDay(slot);
+  }
+  //  Plan: tapping a rest day in the week strip shows its card in place of
+  //  the exercises. Tapping a workout day brings them back.
+  var _planRestSlot = null;
+  function showPlanRestDay(slot) {
+    _planRestSlot = slot;
+    var host = document.getElementById('planRestDay');
+    var plan = document.getElementById('plan');
+    if (!host || !plan) return;
+    var next = findNextUnloggedDay();
+    host.innerHTML = '<div class="today-card rest-card">' + restCardHTML(slot) + '</div>'
+      + (next ? '<button type="button" class="today-secondary" onclick="switchDay(\'' + next + '\')">See ' + (SPLIT_DAYS[next] || {}).title + '</button>' : '');
+    host.style.display = '';
+    plan.classList.add('plan-resting');
+    document.querySelectorAll('#weekGlance .wg-day').forEach(function(b, i) { b.classList.toggle('picked', i === slot); });
+  }
+  function hidePlanRestDay() {
+    _planRestSlot = null;
+    var host = document.getElementById('planRestDay'), plan = document.getElementById('plan');
+    if (host) host.style.display = 'none';
+    if (plan) plan.classList.remove('plan-resting');
+    document.querySelectorAll('#weekGlance .wg-day.picked').forEach(function(b) { b.classList.remove('picked'); });
+  }
+
   function renderWeekGlance() {
     var hosts = document.querySelectorAll('#weekGlance, [data-glance]');
     if (!hosts.length) return;
@@ -5265,18 +5672,18 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
       var d = SPLIT_DAYS[id] || {}, rest = id === 'rest' || d.rest;
       var logged = !rest && hasLogsForDay(id, currentTrainWeek);
       var cls = 'wg-day' + (rest ? ' rest' : '') + (i === today ? ' today' : '') + (logged ? ' logged' : '');
-      var mins = rest ? 0 : Math.round(buildSession(id, currentTrainWeek).minutes / 5) * 5;
+      var mins = rest ? 0 : buildSession(id, currentTrainWeek).minutes;
       var time = mins ? (mins >= 60 ? Math.floor(mins / 60) + ':' + ('0' + (mins % 60)).slice(-2) : mins + 'm') : '';
       //  Seven columns on a phone leave about 40px each, so the label is the
       //  first word of the title, keeping a trailing B. Full title is in the
       //  aria label and one tap away.
-      var title = rest ? 'Rest' : String(d.title || '');
+      var title = rest ? REST_OPTS[restPlanFor(i, currentTrainWeek).list[0]].short : String(d.title || '');
       //  Words longer than the column swap to the shorter word of the title.
       var SHORT = { Shoulders: 'Arms', Mobility: 'Core' };
       var first = title.split(' ')[0];
       var short = (SHORT[first] || first) + (/ B$/.test(title) ? ' B' : '');
-      return '<button type="button" class="' + cls + '"' + (rest ? ' disabled' : ' onclick="switchDay(\'' + id + '\')"')
-        + ' aria-label="' + WG_DOWS[i] + ', ' + (d.title || 'Rest') + (logged ? ', logged' : '') + (i === today ? ', today' : '') + '">'
+      return '<button type="button" class="' + cls + '"' + (rest ? ' onclick="goTab(\'training\'); showPlanRestDay(' + i + ')"' : ' onclick="switchDay(\'' + id + '\')"')
+        + ' aria-label="' + WG_DOWS[i] + ', ' + (rest ? (restPlanFor(i, currentTrainWeek).recovery ? 'recovery day' : 'rest day') + ', ' + REST_OPTS[restPlanFor(i, currentTrainWeek).list[0]].text : d.title) + (logged ? ', logged' : '') + (i === today ? ', today' : '') + '">'
         + '<div class="wg-dow">' + WG_DOWS[i] + '</div>'
         + '<div class="wg-title">' + short + '</div>'
         + (time ? '<div class="wg-time">' + time + '</div>' : '') + '</button>';
@@ -5287,9 +5694,18 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   //     TODAY. Home for everyone: the next workout and one button to start
   //  it, the week, today's weight and today's food. Nothing else.
   var TODAY_DOWS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  var _todayDay = null;
   function renderToday() {
     var dEl = document.getElementById('todayDate');
     if (dEl) dEl.textContent = TODAY_DOWS[mondayIndex(startOfToday())];
+    //  A rest day today gets its own card first. The next workout stays
+    //  underneath for anyone who wants it.
+    var rEl = document.getElementById('todayRest'), todaySlot = mondayIndex(startOfToday());
+    if (rEl) {
+      var isRest = activeSplit().week[todaySlot] === 'rest';
+      rEl.style.display = isRest ? '' : 'none';
+      rEl.innerHTML = isRest ? restCardHTML(todaySlot) : '';
+    }
     var host = document.getElementById('todayWorkout');
     if (host) {
       //  A workout started and not finished comes first: one set logged
@@ -5306,13 +5722,19 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
         var d = SPLIT_DAYS[next] || {}, b = buildSession(next, currentTrainWeek);
         var restToday = slot === 'rest';
         var prog = partial ? dayProgress(next) : null;
+        _todayDay = next;
+        var tb = timeBoxes[boxKey(next)], curPick = TIME_BOX_CHOICES.indexOf(tb) !== -1 ? tb : (tb === 'full' || !b.box ? 'full' : b.box);
+        var trimmed = !!(b.box || b.short);
         host.innerHTML = (daysSinceLastLog() >= 3 ? '<div class="welcome-back">Welcome back. Pick up where you left off.</div>' : '')
-          + '<div class="today-card-kicker">' + (partial ? 'In progress' : restToday ? 'Rest day today. Next up' : (slot === next ? 'Today' : 'Next workout')) + '</div>'
+          + '<div class="today-card-kicker">' + (partial ? 'In progress' : restToday ? 'Next workout' : (slot === next ? 'Today' : 'Next workout')) + '</div>'
           + '<div class="today-card-title">' + d.title + '</div>'
-          + '<div class="today-card-meta">' + (prog ? prog.done + ' of ' + prog.total + ' sets done' : b.list.length + ' exercises, about ' + sessionMinutesText(next).replace('~', '')) + '</div>'
+          + '<div class="today-card-meta">' + (prog ? prog.done + ' of ' + prog.total + ' sets done' : b.list.length + ' exercises, about ' + estText(b.est)) + '</div>'
+          + (partial ? '' : '<div class="today-time"><div class="today-time-q" id="todayTimeQ">How long do you have?</div>'
+            + '<div class="liftdays-group time-box-group" role="group" aria-labelledby="todayTimeQ">' + timeChoiceHTML(curPick, 'pickTodayTime') + '</div>'
+            + (trimmed ? sessionListHTML(b) + sessionNotesHTML(b, b.short ? 'short' : 'time') : '') + '</div>')
           + '<button class="today-start" onclick="startWorkout(\'' + next + '\')">' + (partial ? 'Continue workout' : 'Start workout') + '</button>'
           + '<button class="today-secondary" onclick="goTab(\'training\'); switchDay(\'' + next + '\');">See all exercises</button>'
-          + '<div class="today-row2"><button class="today-link" onclick="toggleShortDay(\'' + next + '\')">' + (isShortDay(next, currentTrainWeek) ? 'Show full session' : 'Short on time') + '</button>'
+          + '<div class="today-row2"><button class="today-link" onclick="openSessionSheet(\'' + next + '\', \'short\')">' + (b.short ? 'Short session' : 'Short on time') + '</button>'
           + '<button class="today-link" onclick="openGoingOut(\'' + next + '\')">Going out?</button></div>';
       }
     }
@@ -5399,7 +5821,9 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   }
   function startWorkout(dayId) {
     goTab('training'); switchDay(dayId);
-    var list = splitDayExercises(dayId);
+    //  The session as built for today, so a short or time boxed day guides
+    //  through exactly what is on the Plan screen.
+    var list = buildSession(dayId, currentTrainWeek).list;
     if (!list.length) return;
     _g = { day: dayId, list: list, i: 0, n: 1, logged: 0 };
     guidedSeekFirstOpen();
@@ -5411,16 +5835,18 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   function guidedSeekFirstOpen() {
     for (var i = 0; i < _g.list.length; i++) {
       var ex = _g.list[i];
-      for (var n = 1; n <= setsFor(ex.id); n++) {
+      for (var n = 1; n <= shownSets(ex.id); n++) {
         if (!slotLogged(ex, 's' + n)) { _g.i = i; _g.n = n; return; }
       }
     }
     _g.i = _g.list.length; _g.n = 1;
   }
+  //  Counts the session the person actually has today, so a short or time
+  //  boxed day is complete when its own sets are in.
   function dayProgress(dayId) {
     var done = 0, total = 0;
-    splitDayExercises(dayId).forEach(function(ex) {
-      for (var n = 1; n <= setsFor(ex.id); n++) { total++; if (slotLogged(ex, 's' + n)) done++; }
+    buildSession(dayId, currentTrainWeek).list.forEach(function(ex) {
+      for (var n = 1; n <= shownSets(ex.id); n++) { total++; if (slotLogged(ex, 's' + n)) done++; }
     });
     return { done: done, total: total };
   }
@@ -5433,10 +5859,10 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     }
     return null;
   }
-  function guidedTotalSets() { return _g.list.reduce(function(t, ex) { return t + setsFor(ex.id); }, 0); }
+  function guidedTotalSets() { return _g.list.reduce(function(t, ex) { return t + shownSets(ex.id); }, 0); }
   function guidedDoneSets() {
     var d = 0;
-    _g.list.forEach(function(ex) { for (var n = 1; n <= setsFor(ex.id); n++) if (slotLogged(ex, 's' + n)) d++; });
+    _g.list.forEach(function(ex) { for (var n = 1; n <= shownSets(ex.id); n++) if (slotLogged(ex, 's' + n)) d++; });
     return d;
   }
   function renderGuided(msg) {
@@ -5452,7 +5878,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
       body.querySelector('.guided-done').focus();
       return;
     }
-    var ex = _g.list[_g.i], slot = 's' + _g.n, sets = setsFor(ex.id);
+    var ex = _g.list[_g.i], slot = 's' + _g.n, sets = shownSets(ex.id);
     renderLiftRowState(ex);
     var hist = getHistory(ex.id), target = effectiveTarget(ex, hist), prevRef = movementPrevEntry(hist, currentTrainWeek, ex);
     var wEl = document.getElementById(slot + 'w-' + ex.id), rEl = document.getElementById(slot + 'r-' + ex.id);
@@ -5494,8 +5920,8 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     if (!slotLogged(ex, slot)) { renderGuided('That set did not save. Check the weight and try again.'); return; }
     renderLiftRowState(ex);
     //  Rest after every set except the very last one of the workout.
-    var lastSetOfEx = _g.n >= setsFor(ex.id), lastEx = _g.i >= _g.list.length - 1;
-    var nextLabel = lastSetOfEx ? (lastEx ? '' : activeVariant(_g.list[_g.i + 1])) : 'Set ' + (_g.n + 1) + ' of ' + setsFor(ex.id);
+    var lastSetOfEx = _g.n >= shownSets(ex.id), lastEx = _g.i >= _g.list.length - 1;
+    var nextLabel = lastSetOfEx ? (lastEx ? '' : activeVariant(_g.list[_g.i + 1])) : 'Set ' + (_g.n + 1) + ' of ' + shownSets(ex.id);
     if (lastSetOfEx) { _g.i++; _g.n = 1; } else { _g.n++; }
     if (lastSetOfEx && lastEx) { renderGuided(); return; }
     guidedRest(parseRestToSeconds(ex.rest) || 90, nextLabel);
@@ -5575,6 +6001,11 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     var bg = document.getElementById('sessionBudgetGroup');
     if (bg) bg.innerHTML = '<button class="liftdays-btn' + (sessionBudget == null ? ' on' : '') + '" onclick="setSessionBudget(null)">Off</button>'
       + SESSION_BUDGETS.map(function(n) { return '<button class="liftdays-btn' + (sessionBudget === n ? ' on' : '') + '" onclick="setSessionBudget(' + n + ')">' + n + '</button>'; }).join('');
+    var ul = document.getElementById('usualLenGroup');
+    if (ul) ul.innerHTML = USUAL_CHOICES.map(function(m) {
+      var on = usualMinutes === m || (m === 90 && !usualMinutes);
+      return '<button class="liftdays-btn' + (on ? ' on' : '') + '" aria-pressed="' + on + '" onclick="setUsualMinutes(' + m + ')">' + m + ' min</button>';
+    }).join('');
     var eq = document.getElementById('equipOwnedList');
     if (eq) eq.innerHTML = EQUIP_ALL.map(function(q) {
       var on = equipOwned.indexOf(q) !== -1;
@@ -5587,6 +6018,12 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     if (typeof renderRing === 'function') renderRing();
     if (typeof renderWeekCalendar === 'function') renderWeekCalendar();
   }
+  function setUsualMinutes(m) {
+    usualMinutes = USUAL_CHOICES.indexOf(m) !== -1 ? m : null;
+    persistSessionShape();
+    afterSessionPrefChange();
+    if (typeof renderToday === 'function') renderToday();
+  }
   function setSessionSize(n) { sessionSize = SESSION_SIZES.indexOf(n) !== -1 ? n : null; afterSessionPrefChange(); }
   function setSessionBudget(n) { sessionBudget = SESSION_BUDGETS.indexOf(n) !== -1 ? n : null; afterSessionPrefChange(); }
   function toggleEquipOwned(q) {
@@ -5595,13 +6032,20 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     afterSessionPrefChange();
   }
   function sessionMinutesText(dayId) {
-    var m = buildSession(dayId, currentTrainWeek).minutes;
-    if (!m) return '';
-    m = Math.round(m / 5) * 5;
-    return '~' + (m >= 60 ? Math.floor(m / 60) + ':' + ('0' + (m % 60)).slice(-2) : m + ' min');
+    var t = estText(buildSession(dayId, currentTrainWeek).est);
+    return t ? '~' + t : '';
   }
+  var _rowDrops = {};
   function liftRowsForDay(dayId) {
     var b = buildSession(dayId, currentTrainWeek);
+    programmedDayExercises(dayId).concat(b.list).forEach(function(ex) { delete _setCaps[ex.id]; delete _rowDrops[ex.id]; });
+    Object.keys(b.caps || {}).forEach(function(id) {
+      //  A set already logged past the cap stays on screen.
+      var ex = EX_BY_ID[id], e = ex ? entryForWeek(getHistory(id), currentTrainWeek, ex) : null;
+      var loggedPast = !!e && ALL_SLOTS.slice(b.caps[id]).some(function(sl) { return normSet(e, e[sl]); });
+      if (!loggedPast) _setCaps[id] = b.caps[id];
+    });
+    Object.keys(b.drops || {}).forEach(function(id) { _rowDrops[id] = true; });
     return b.list.map(function(ex) { return liftRowHTML(ex, b.reasons[ex.id], b.supersets[ex.id]); }).join('');
   }
   function updateSessionEstimates() {
@@ -6068,6 +6512,20 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   function setsFor(exId) {
     var n = parseInt(setCounts[exId], 10);
     return (n >= MIN_SETS && n <= MAX_SETS) ? n : 2;
+  }
+  //  What the card shows and what completes the day: the stored count,
+  //  lowered by a short or time boxed session's cap, or set for this week by
+  //  Add set or Remove last set on a capped card. Saving always uses the
+  //  stored count (setsFor), so a cap can never drop a logged set.
+  function shownSets(exId) {
+    var n = setsFor(exId);
+    var ov = typeof sessionSets === 'object' ? sessionSets[currentTrainWeek + '|' + exId] : null;
+    if (ov != null) return Math.max(MIN_SETS, Math.min(ov, n));
+    var cap = typeof _setCaps === 'object' ? _setCaps[exId] : null;
+    return cap != null && cap < n ? cap : n;
+  }
+  function setsCapped(exId) {
+    return shownSets(exId) < setsFor(exId) || (typeof sessionSets === 'object' && sessionSets[currentTrainWeek + '|' + exId] != null);
   }
   //  Slot ids for the sets that are live right now. Everything that reads or
   //  writes set slots goes through this, so there is one definition of "how
@@ -6602,7 +7060,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   //  the pattern, and 1 set of bench doesn't do that. Accessories can drop
   //  to 1.
   function effectiveSets(exId) {
-    var n = setsFor(exId);
+    var n = shownSets(exId);
     if (!maintenanceMode) return n;
     var floor = isAnchorLift(EX_BY_ID[exId]) ? 2 : 1;
     return Math.max(floor, Math.round(n * 0.65));
@@ -6875,23 +7333,80 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   }
 
   //     RENDER LIFT ROWS FROM CONFIG
+  //  The drop set row: one extra row in the same card, tagged Drop. Its own
+  //  store, so the working sets and every count built on them are untouched.
+  function dropRowHTML(ex) {
+    var on = !!_rowDrops[ex.id], hide = on ? '' : ' style="display:none"';
+    return '<div class="log-row drop-row" data-droprow="' + ex.id + '"' + hide + '>'
+      + '<span class="set-num drop-tag">Drop</span>'
+      + '<span class="set-last" aria-hidden="true"></span>'
+      + '<input class="log-inline-input set-cell" type="number" inputmode="decimal" id="dw-' + ex.id + '" data-ex="' + ex.id + '" aria-label="Drop set weight">'
+      + '<input class="log-inline-input set-cell" type="number" inputmode="numeric" id="dr-' + ex.id + '" data-ex="' + ex.id + '" aria-label="Drop set reps">'
+      + '<button type="button" class="set-done-btn" id="done-drop-' + ex.id + '" data-ex="' + ex.id + '" onclick="markDropDone(this.dataset.ex)" aria-label="Log drop set">✓</button>'
+      + '</div>'
+      + '<div class="drop-note" data-dropnote="' + ex.id + '"' + hide + '>Drop set: when you are done, lower the weight by about a fifth and keep going.</div>';
+  }
+  function renderDropRow(ex) {
+    var row = document.querySelector('[data-droprow="' + ex.id + '"]');
+    if (!row) return;
+    var on = !!_rowDrops[ex.id];
+    row.style.display = on ? '' : 'none';
+    var note = document.querySelector('[data-dropnote="' + ex.id + '"]');
+    if (note) note.style.display = on ? '' : 'none';
+    if (!on) return;
+    var saved = dropLogs[currentTrainWeek + '|' + ex.id];
+    var n = shownSets(ex.id);
+    var lw = parseFloat((document.getElementById('s' + n + 'w-' + ex.id) || {}).value);
+    var lr = document.getElementById('s' + n + 'r-' + ex.id);
+    var inc = ex.increment || 5;
+    var wEl = document.getElementById('dw-' + ex.id), rEl = document.getElementById('dr-' + ex.id);
+    if (wEl && document.activeElement !== wEl) wEl.value = saved ? saved.w : (lw > 0 ? Math.max(inc, Math.round(lw * 0.8 / inc) * inc) : '');
+    if (rEl && document.activeElement !== rEl) {
+      rEl.value = saved ? saved.r : '';
+      rEl.placeholder = lr ? (lr.value || lr.placeholder || '') : '';
+    }
+    var b = document.getElementById('done-drop-' + ex.id);
+    if (b) { b.classList.toggle('on', !!saved); b.setAttribute('aria-pressed', saved ? 'true' : 'false'); }
+    row.classList.toggle('logged', !!saved);
+  }
+  function markDropDone(exId) {
+    var ex = EX_BY_ID[exId];
+    if (!ex) return;
+    var k = currentTrainWeek + '|' + exId;
+    var card = document.getElementById('row-' + exId);
+    var was = !!card && card.classList.contains('all-done');
+    if (dropLogs[k]) { delete dropLogs[k]; }
+    else {
+      var wEl = document.getElementById('dw-' + exId), rEl = document.getElementById('dr-' + exId);
+      var w = parseFloat(wEl && wEl.value), r = parseInt((rEl && (rEl.value || rEl.placeholder)) || '', 10);
+      if (!(w > 0) && !weightOptional(ex)) { if (wEl) wEl.focus(); return; }
+      if (!(r > 0)) { if (rEl) rEl.focus(); return; }
+      dropLogs[k] = { w: w > 0 ? w : 0, r: r };
+    }
+    persistSessionShape();
+    renderDropRow(ex);
+    refreshLiftHead(exId);
+    if (card && !was && card.classList.contains('all-done')) { _justDone[exId] = true; advanceLiftCard(exId); }
+  }
+
   function liftRowHTML(ex, reason, partnerId) {
     //  n is the REAL set count — it drives the sets-3 class, which is what
     //  makes the third log-input row exist at all. Maintenance mode must
     //  never touch that (logging is never restricted); only the displayed
     //  caption (dispN/range) reflects the maintenance-adjusted prescription.
-    var n = setsFor(ex.id);
+    var n = setsFor(ex.id), shown = shownSets(ex.id);
     var dispN = effectiveSets(ex.id);
     var range = effectiveRepRangeText(ex) + repUnitText(ex);
     var rows = '';
-    for (var si = 1; si <= MAX_SETS; si++) rows += setRowHTML(ex, si, si > n);
+    for (var si = 1; si <= MAX_SETS; si++) rows += setRowHTML(ex, si, si > shown);
     var pills = '';
     for (var pi = 1; pi <= MAX_SETS; pi++) pills += '<button class="setcount-btn' + (n === pi ? ' on' : '') + '" id="sc' + pi + '-' + ex.id + '" data-ex="' + ex.id + '" data-n="' + pi + '" onclick="setExerciseSets(this.dataset.ex, ' + pi + ')">' + pi + '</button>';
     var restSec = parseRestToSeconds(ex.rest);
     //  Collapsed, a card is one line: name, sets x reps, a check once every
-    //  set is in. Open, it is the set rows, a rest chip and More. Everything
-    //  else on the card (cue, Add set, failure, Swap, Warm-up, Notes, How to)
-    //  sits behind More. Same ids and handlers as before, only reordered.
+    //  set is in. Open, everything the lifter needs is on the card with no
+    //  second toggle: target, set rows, rest, one action row, the form cue,
+    //  and the PR or stall line when one applies. Same ids and handlers as
+    //  before, only reordered.
     return '<div class="lift-row' + (n === 3 ? ' sets-3' : '') + '" id="row-' + ex.id + '">'
       + '<button type="button" class="lift-head" aria-expanded="false" aria-controls="body-' + ex.id + '" data-ex="' + ex.id + '" onclick="toggleLiftCard(this.dataset.ex)">'
       + '<span class="lift-name" id="name-' + ex.id + '">' + activeVariant(ex) + '</span>'
@@ -6901,27 +7416,53 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
       + '<div class="lift-body" id="body-' + ex.id + '">'
       //  Caption under the rep count. Static content off EXERCISES, so it
       //  never needs restoring or persisting.
+      + '<div class="lift-sets-reps adv-card" data-setslabel="' + ex.id + '">' + dispN + ' sets × ' + range + '</div>'
       + '<div class="simple-target" data-simpletarget="' + ex.id + '"></div>'
       + '<div class="lift-log-inline">'
-      + '<div class="log-row setcount-row adv-card lift-extra">'
+      + '<div class="log-row setcount-row adv-card">'
       + '<span class="log-inline-label">Sets</span>'
       + pills
       + '</div>'
       + setTableHeadHTML(ex)
       + rows
+      + dropRowHTML(ex)
       + '</div>'
       + '<div class="lift-quick">'
       + '<button type="button" class="rest-chip" onclick="quickStartTimer(' + restSec + ', this)" aria-label="Start a ' + restLabel(restSec) + ' rest">Rest ' + restLabel(restSec) + '</button>'
-      + '<button type="button" class="lift-more-btn" aria-expanded="false" aria-controls="extra-' + ex.id + '" data-ex="' + ex.id + '" onclick="toggleLiftExtra(this.dataset.ex)">More</button>'
       + '</div>'
-      + '<div class="lift-extra" id="extra-' + ex.id + '">'
+      + '<div class="lift-actions" role="group" aria-label="' + activeVariant(ex).replace(/"/g, '&quot;') + ' options">'
+      + '<button type="button" class="lift-act span3" id="addset-' + ex.id + '" data-ex="' + ex.id + '" onclick="addSetFromAbove(this.dataset.ex)"' + (shown >= MAX_SETS ? ' disabled' : '') + '>Add set</button>'
+      + '<button type="button" class="lift-act span3" id="rmset-' + ex.id + '" data-ex="' + ex.id + '" onclick="askRemoveSet(this.dataset.ex)"' + (shown <= MIN_SETS ? ' disabled' : '') + '>Remove last set</button>'
+      + '<button type="button" class="lift-act card-foot-btn" aria-expanded="false" aria-controls="pnl-swap-' + ex.id + '" data-ex="' + ex.id + '" data-panel="show-swap" onclick="toggleCardPanel(this)">Swap</button>'
+      + '<button type="button" class="lift-act card-foot-btn" aria-expanded="false" aria-controls="pnl-wu-' + ex.id + '" data-ex="' + ex.id + '" data-panel="show-wu" onclick="toggleCardPanel(this)">Warm up</button>'
+      + '<button type="button" class="lift-act card-foot-btn" aria-expanded="false" aria-controls="pnl-more-' + ex.id + '" data-ex="' + ex.id + '" data-panel="show-more" onclick="toggleCardPanel(this)">Note</button>'
+      + '</div>'
+      + '<div class="rm-confirm" id="rmconfirm-' + ex.id + '" role="alertdialog" aria-live="polite" style="display:none"></div>'
+      //  Every panel opens directly under the row that opened it, one at a
+      //  time, so it is always clear which box you are in.
+      + '<div class="card-panel swap-panel-wrap" id="pnl-swap-' + ex.id + '">' + (variantChipsHTML(ex) || '<div class="panel-meta">No swaps for this one yet.</div>') + '</div>'
+      + '<div class="card-panel wu-panel" id="pnl-wu-' + ex.id + '">'
+      + '<div class="warmup-lines" data-warmups="' + ex.id + '"></div>'
+      + warmupLogHTML(ex)
+      + '</div>'
+      + '<div class="card-panel detail" id="pnl-more-' + ex.id + '">'
+      + '<div class="card-panel-title">Note</div>'
+      + (ex.repWhy ? '<div class="lift-rep-why">' + ex.repWhy + '</div>' : '')
+      //  Why the builder put this exercise here. Only a string is a reason:
+      //  older call sites still map liftRowHTML directly, which passes an index.
+      + (typeof reason === 'string' ? '<div class="lift-pick-why' + (typeof partnerId === 'string' ? ' superset' : '') + '">' + reason + '</div>' : '')
+      + '<div class="target-block" data-targets="' + ex.id + '"></div>'
+      + '<div class="panel-meta">Rest ' + ex.rest + '. About ' + estText(estimateMinutes([ex], {})) + '.</div>'
+      + '<div class="log-row">'
+      + '<div class="log-inline-group"><span class="log-inline-label">Target weight</span>'
+      + withSteppers('w-' + ex.id, 'weight', '<input class="log-inline-input" type="number" inputmode="decimal" id="w-' + ex.id + '" data-ex="' + ex.id + '" oninput="onAimInput(this.dataset.ex)" onchange="onAimCommit(this.dataset.ex)">') + '</div>'
+      + '<div class="log-inline-group"><span class="log-inline-label">Target reps</span>'
+      + withSteppers('r-' + ex.id, 'reps', '<input class="log-inline-input" type="number" inputmode="numeric" id="r-' + ex.id + '" data-ex="' + ex.id + '" oninput="onAimInput(this.dataset.ex)" onchange="onAimCommit(this.dataset.ex)">') + '</div>'
+      + '</div>'
+      + '</div>'
+      + '<div class="lift-cue-line"><span class="lift-cue" id="cue-' + ex.id + '">' + cueFor(ex) + '</span> ' + howToLinkHTML(ex, 'howto-link lift-cue-link') + '</div>'
       + '<div class="lift-status" data-status="' + ex.id + '" onclick="event.stopPropagation()"></div>'
-      + '<div class="lift-cue" id="cue-' + ex.id + '">' + cueFor(ex) + '</div>'
-      + '<div class="lift-sets-reps adv-card" data-setslabel="' + ex.id + '">' + dispN + ' sets × ' + range + '</div>'
-      + '<div class="set-adjust">'
-      + '<button type="button" class="set-adjust-btn" id="addset-' + ex.id + '" data-ex="' + ex.id + '" onclick="changeSets(this.dataset.ex, 1)"' + (n >= MAX_SETS ? ' disabled' : '') + '>+ Add set</button>'
-      + '<button type="button" class="set-adjust-btn" id="rmset-' + ex.id + '" data-ex="' + ex.id + '" onclick="changeSets(this.dataset.ex, -1)"' + (n <= MIN_SETS ? ' disabled' : '') + '>Remove last set</button>'
-      + '</div>'
+      //  Advanced tools, shown by the existing Advanced rules only.
       + '<button type="button" class="log-planned-btn adv-card" id="planned-' + ex.id + '" data-ex="' + ex.id + '" onclick="logAsPlanned(this.dataset.ex)">Log as planned</button>'
       + '<div class="log-row adv-card">'
       + '<button class="failure-toggle" id="f-' + ex.id + '" data-ex="' + ex.id + '" onclick="toggleFailure(this)">Went to failure: no</button>'
@@ -6930,35 +7471,6 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
       //  at all, so there is nothing to mis-click on the ones that ship.
       + (ex.custom ? '<button class="remove-ex" data-ex="' + ex.id + '" data-day="' + ex.day
           + '" onclick="removeCustomExercise(this.dataset.ex, this.dataset.day)">Remove</button>' : '')
-      + '</div>'
-      + '<div class="card-foot">'
-      + '<button type="button" class="card-foot-btn" aria-expanded="false" aria-controls="pnl-swap-' + ex.id + '" data-ex="' + ex.id + '" data-panel="show-swap" onclick="toggleCardPanel(this)">Swap</button>'
-      + '<button type="button" class="card-foot-btn" aria-expanded="false" aria-controls="pnl-wu-' + ex.id + '" data-ex="' + ex.id + '" data-panel="show-wu" onclick="toggleCardPanel(this)">Warm-up</button>'
-      + '<button type="button" class="card-foot-btn" aria-expanded="false" aria-controls="pnl-more-' + ex.id + '" data-ex="' + ex.id + '" data-panel="show-more" onclick="toggleCardPanel(this)">Notes</button>'
-      + howToLinkHTML(ex, 'card-foot-btn howto-link')
-      + '</div>'
-      //  Every panel opens directly under the button that opened it, one at a
-      //  time, so it is always clear which box you are in.
-      + '<div class="card-panel swap-panel-wrap" id="pnl-swap-' + ex.id + '">' + (variantChipsHTML(ex) || '<div class="panel-meta">No swaps for this one yet.</div>') + '</div>'
-      + '<div class="card-panel wu-panel" id="pnl-wu-' + ex.id + '">'
-      + '<div class="warmup-lines" data-warmups="' + ex.id + '"></div>'
-      + warmupLogHTML(ex)
-      + '</div>'
-      + '<div class="card-panel detail" id="pnl-more-' + ex.id + '">'
-      + '<div class="card-panel-title">Notes</div>'
-      + (ex.repWhy ? '<div class="lift-rep-why">' + ex.repWhy + '</div>' : '')
-      //  Why the builder put this exercise here. Only a string is a reason:
-      //  older call sites still map liftRowHTML directly, which passes an index.
-      + (typeof reason === 'string' ? '<div class="lift-pick-why' + (typeof partnerId === 'string' ? ' superset' : '') + '">' + reason + '</div>' : '')
-      + '<div class="target-block" data-targets="' + ex.id + '"></div>'
-      + '<div class="panel-meta">Rest ' + ex.rest + '. About ' + String(ex.time).replace('~', '') + '.</div>'
-      + '<div class="log-row">'
-      + '<div class="log-inline-group"><span class="log-inline-label">Target weight</span>'
-      + withSteppers('w-' + ex.id, 'weight', '<input class="log-inline-input" type="number" inputmode="decimal" id="w-' + ex.id + '" data-ex="' + ex.id + '" oninput="onAimInput(this.dataset.ex)" onchange="onAimCommit(this.dataset.ex)">') + '</div>'
-      + '<div class="log-inline-group"><span class="log-inline-label">Target reps</span>'
-      + withSteppers('r-' + ex.id, 'reps', '<input class="log-inline-input" type="number" inputmode="numeric" id="r-' + ex.id + '" data-ex="' + ex.id + '" oninput="onAimInput(this.dataset.ex)" onchange="onAimCommit(this.dataset.ex)">') + '</div>'
-      + '</div>'
-      + '</div>'
       + '</div>'
       + '</div>'
       + '</div>';
@@ -6977,7 +7489,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     return host.dataset.rows || (host.parentNode && host.parentNode.id) || '';
   }
   function liftRowDone(row) {
-    var sets = Array.prototype.filter.call(row.querySelectorAll('.set-row'), function(r) { return r.style.display !== 'none'; });
+    var sets = Array.prototype.filter.call(row.querySelectorAll('.set-row, .drop-row'), function(r) { return r.style.display !== 'none'; });
     return sets.length > 0 && sets.every(function(r) { return r.classList.contains('logged'); });
   }
   function refreshLiftHead(exId) {
@@ -6988,17 +7500,77 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     row.classList.toggle('open', on);
     var h = row.querySelector('.lift-head');
     if (h) h.setAttribute('aria-expanded', on ? 'true' : 'false');
-    if (!on) setLiftExtra(row, false);
+    if (!on) {
+      closeCardPanels(row);
+      var rc = row.querySelector('.rm-confirm'); if (rc) rc.style.display = 'none';
+    }
   }
-  function setLiftExtra(row, on) {
-    row.classList.toggle('show-extra', on);
-    var b = row.querySelector('.lift-more-btn');
-    if (b) { b.setAttribute('aria-expanded', on ? 'true' : 'false'); b.textContent = on ? 'Less' : 'More'; }
-    if (!on) row.querySelectorAll('.card-foot-btn[data-panel]').forEach(function(fb) {
+  function closeCardPanels(row) {
+    row.querySelectorAll('.card-foot-btn[data-panel]').forEach(function(fb) {
       row.classList.remove(fb.dataset.panel);
       fb.classList.remove('on');
       fb.setAttribute('aria-expanded', 'false');
     });
+  }
+  //  Add set: the new row starts with the weight and reps of the set above,
+  //  so one tap on its check logs it. Nothing saves until that tap.
+  function addSetFromAbove(exId) {
+    var from = shownSets(exId);
+    if (from >= MAX_SETS) return;
+    //  On a capped card (short or time boxed) the extra set is for this week
+    //  only; the stored count only ever grows, never shrinks, from here.
+    if (setsCapped(exId)) {
+      if (from + 1 > setsFor(exId)) setExerciseSets(exId, from + 1);
+      setShownSets(exId, from + 1);
+    } else {
+      setExerciseSets(exId, from + 1);
+    }
+    var to = shownSets(exId);
+    if (to <= from) return;
+    var wPrev = document.getElementById('s' + from + 'w-' + exId), rPrev = document.getElementById('s' + from + 'r-' + exId);
+    var wNew = document.getElementById('s' + to + 'w-' + exId), rNew = document.getElementById('s' + to + 'r-' + exId);
+    if (wPrev && wNew && wPrev.value && !wNew.value) wNew.value = wPrev.value;
+    if (rPrev && rNew && !rNew.value) {
+      var rv = rPrev.value || rPrev.placeholder;
+      if (rv) rNew.placeholder = rv;
+    }
+  }
+  //  Remove last set: an empty set goes straight away; one with logged data
+  //  asks once, with a plain Cancel.
+  function lastSetHasData(exId) {
+    var n = shownSets(exId);
+    var done = document.getElementById('done-s' + n + '-' + exId);
+    var rEl = document.getElementById('s' + n + 'r-' + exId);
+    return !!((done && done.classList.contains('on')) || (rEl && rEl.value));
+  }
+  function removeShownSet(exId) {
+    if (setsCapped(exId)) setShownSets(exId, shownSets(exId) - 1);
+    else changeSets(exId, -1);
+  }
+  function askRemoveSet(exId) {
+    var n = shownSets(exId);
+    if (n <= MIN_SETS) return;
+    if (!lastSetHasData(exId)) { removeShownSet(exId); return; }
+    var box = document.getElementById('rmconfirm-' + exId);
+    if (!box) { removeShownSet(exId); return; }
+    box.innerHTML = '<span class="rm-confirm-text">Remove set ' + n + '?</span>'
+      + '<button type="button" class="lift-act rm-yes" onclick="confirmRemoveSet(\'' + exId + '\')">Remove</button>'
+      + '<button type="button" class="lift-act" onclick="cancelRemoveSet(\'' + exId + '\')">Cancel</button>';
+    box.style.display = 'flex';
+    var y = box.querySelector('.rm-yes'); if (y) y.focus();
+  }
+  //  Confirmed: that set's numbers go, from the screen and from storage.
+  function confirmRemoveSet(exId) {
+    var n = shownSets(exId);
+    ['w', 'r'].forEach(function(k) { var el = document.getElementById('s' + n + k + '-' + exId); if (el) { el.value = ''; delete el.dataset.dirty; } });
+    cancelRemoveSet(exId);
+    var capped = setsCapped(exId);
+    removeShownSet(exId);
+    if (capped) { clearTimeout(_autoSaveT[exId]); autoSaveExercise(exId, false); renderRowStatus(EX_BY_ID[exId]); }
+  }
+  function cancelRemoveSet(exId) {
+    var box = document.getElementById('rmconfirm-' + exId);
+    if (box) { box.style.display = 'none'; box.innerHTML = ''; }
   }
   function openOnlyLift(row) {
     var host = row.closest('.lift-rows');
@@ -7011,10 +7583,6 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     if (!row) return;
     if (row.classList.contains('open')) { setLiftOpen(row, false); _openLift[liftDayKey(row)] = ''; }
     else openOnlyLift(row);
-  }
-  function toggleLiftExtra(exId) {
-    var row = document.getElementById('row-' + exId);
-    if (row) setLiftExtra(row, !row.classList.contains('show-extra'));
   }
   function applyOpenCards() {
     _justDone = {};
@@ -7166,7 +7734,9 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   }
   function openChangePlanModal() {
     var textEl = document.getElementById('cpCurrentPlanText');
-    if (textEl) textEl.textContent = "You're on " + activeSplit().label + ', ' + liftDaysPerWeek + ' days a week.';
+    if (textEl) textEl.textContent = 'Right now: ' + liftDaysPerWeek + ' days a week. ' + plainSplitLine(activeSplitId);
+    var cpOpts = document.getElementById('cpDaysOptions');
+    if (cpOpts) cpOpts.innerHTML = planDaysOptionsHTML(liftDaysPerWeek, 'changePlanPickDays');
     changePlanShowStep(1);
     var m = document.getElementById('changePlanModal');
     if (m) m.style.display = 'flex';
@@ -7406,6 +7976,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
       if (wuR) wuR.value = wu[i] ? wu[i].r : '';
     }
     applySetCountUI(ex);
+    renderDropRow(ex);
     renderWarmupsAndTargets(ex);
     renderRowStatus(ex);
   }
@@ -7444,7 +8015,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     var pb = document.getElementById('planned-' + ex.id);
     if (pb) {
       var all = !!wkEntry;
-      for (var k = 1; k <= setsFor(ex.id) && all; k++) all = !!normSet(wkEntry, wkEntry['s' + k]);
+      for (var k = 1; k <= shownSets(ex.id) && all; k++) all = !!normSet(wkEntry, wkEntry['s' + k]);
       pb.classList.toggle('done', all);
       pb.textContent = all ? 'All sets logged' : (wkEntry ? 'Log the rest as planned' : 'Log as planned');
     }
@@ -7469,7 +8040,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     if (pr) out += '<span class="pr-badge">PR</span><span class="pr-note">Estimated max ' + pr.now + ' lbs, up from ' + pr.before + '.</span>';
     var stall = getStallState(hist.filter(function(e) { return entryVariant(e, ex) === activeVariant(ex); }));
     if (stall) {
-      out += '<div class="stall-warning">Stalled: 3 sessions at ' + stall.weight + ' lbs with no rep gain. Check sleep and food, or drop to ' + stall.drop + ' lbs for one session.</div>';
+      out += '<div class="stall-warning">Same weight for 3 sessions. Try ' + stall.drop + ' lbs next time, then build back up.</div>';
     }
     st.innerHTML = out;
   }
@@ -7626,7 +8197,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     var aimW = parseFloat((document.getElementById('w-' + exId) || {}).value);
     var aimR = parseInt((document.getElementById('r-' + exId) || {}).value, 10);
     var lastW = null, lastR = null;
-    for (var n = 1; n <= setsFor(exId); n++) {
+    for (var n = 1; n <= shownSets(exId); n++) {
       var wEl = document.getElementById('s' + n + 'w-' + exId), rEl = document.getElementById('s' + n + 'r-' + exId);
       if (!wEl || !rEl) continue;
       var w = parseFloat(wEl.value), r = parseInt(rEl.value, 10);
@@ -7749,20 +8320,20 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     //  n (real) drives the sets-3 class and the 2/3 button state — the actual
     //  logging surface, which maintenance mode never touches. The label text
     //  is the only thing that shows the maintenance-adjusted count.
-    var n = setsFor(ex.id);
+    var n = setsFor(ex.id), shown = shownSets(ex.id);
     var row = document.getElementById('row-' + ex.id);
     if (row) row.classList.toggle('sets-3', n === 3);
     //  Rows past the count stay in the DOM, hidden, so lowering and raising the
     //  count never drops anything half typed in another row.
     for (var k = 1; k <= MAX_SETS; k++) {
       var sr = document.querySelector('[data-setrow="' + k + '-' + ex.id + '"]');
-      if (sr) sr.style.display = k <= n ? '' : 'none';
+      if (sr) sr.style.display = k <= shown ? '' : 'none';
       var pb = document.getElementById('sc' + k + '-' + ex.id);
       if (pb) pb.classList.toggle('on', n === k);
     }
     var add = document.getElementById('addset-' + ex.id), rm = document.getElementById('rmset-' + ex.id);
-    if (add) add.disabled = n >= MAX_SETS;
-    if (rm) rm.disabled = n <= MIN_SETS;
+    if (add) add.disabled = shown >= MAX_SETS;
+    if (rm) rm.disabled = shown <= MIN_SETS;
     var lbl = document.querySelector('[data-setslabel="' + ex.id + '"]');
     if (lbl) lbl.textContent = effectiveSets(ex.id) + ' sets × ' + effectiveRepRangeText(ex) + repUnitText(ex);
     var hm = document.querySelector('[data-headmeta="' + ex.id + '"]');
@@ -9007,6 +9578,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     _onbGoalId = 'stronger'; _onbSex = null;
     renderOnbFlowGoalPills();
     renderOnbFlowLiftDaysPills(4);
+    _onbExp = null; _onbLen = null; onbFlowSetExp(null); renderOnbFlowLen();
     renderOnbFlowSexPills();
     renderOnbFlowCardioToggle();
     var wEl = document.getElementById('onbFlowWeight');
@@ -9058,16 +9630,22 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   function renderOnbFlowLiftDaysPills(selected) {
     _onbFlowLiftDays = selected;
     var host = document.getElementById('onbFlowLiftDaysPills');
-    if (!host) return;
-    host.innerHTML = ONB_FLOW_LIFT_DAYS.map(function(n) {
-      return '<button type="button" class="liftdays-btn' + (n === selected ? ' on' : '')
-        + '" onclick="onbFlowSetLiftDays(' + n + ')">' + n + '</button>';
-    }).join('');
-    //  What the choice means, in one line, from the split it will pick.
-    var d = document.getElementById('onbFlowLiftDaysDesc');
-    var pre = SPLIT_PRESETS_BY_DAYS[selected];
-    if (d && pre && SPLIT_TEMPLATES[pre.onboardingDefault]) d.textContent = SPLIT_TEMPLATES[pre.onboardingDefault].note;
+    if (host) host.innerHTML = planDaysOptionsHTML(selected, 'onbFlowSetLiftDays');
   }
+  var _onbExp = null, _onbLen = null;
+  function onbFlowSetExp(v) {
+    _onbExp = v;
+    var y = document.getElementById('onbFlowExpYes'), n = document.getElementById('onbFlowExpNo');
+    if (y) y.classList.toggle('on', v === 'yes');
+    if (n) n.classList.toggle('on', v === 'no');
+  }
+  function renderOnbFlowLen() {
+    var host = document.getElementById('onbFlowLenPills');
+    if (host) host.innerHTML = USUAL_CHOICES.map(function(m) {
+      return '<button type="button" class="liftdays-btn' + (_onbLen === m ? ' on' : '') + '" aria-pressed="' + (_onbLen === m) + '" onclick="onbFlowSetLen(' + m + ')">' + m + ' min</button>';
+    }).join('');
+  }
+  function onbFlowSetLen(m) { _onbLen = _onbLen === m ? null : m; renderOnbFlowLen(); }
   //  3 to 6 only — the app has no split for a 1 or 2 day week (setLiftDays()
   //  itself clamps below 3 up to 3), so a 1-6 picker would silently relabel
   //  whatever the user picked without saying so. Not offering the impossible
@@ -9105,7 +9683,14 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     //  The cardio answer is the running switch: No hides the Run tab and
     //  every run field, Yes shows them. Unanswered leaves it as it was.
     if (_onbFlowCardio !== null && typeof setRunning === 'function') setRunning(_onbFlowCardio === true);
-    setLiftDays(_onbFlowLiftDays);        // existing function — also picks the matching split
+    //  The template each option describes is the one it sets: the
+    //  onboarding default for that day count.
+    var pre = SPLIT_PRESETS_BY_DAYS[_onbFlowLiftDays];
+    if (pre && SPLIT_TEMPLATES[pre.onboardingDefault]) setSplit(pre.onboardingDefault); else setLiftDays(_onbFlowLiftDays);
+    if (_onbExp) liftExperience = _onbExp;
+    if (_onbLen) usualMinutes = _onbLen;
+    persistSessionShape(); invalidateBuild();
+    renderDaySections(); renderAllRowStates();
     applyGoalModeRecommendation();        // exact Prompt 2 math; a safe no-op with no bodyweight
     renderOnbWeekPreview();
     onbFlowShowScreen(3);
@@ -9114,6 +9699,38 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   //  (the split's seven slots and each session's own time estimate), so it
   //  can never disagree with the Plan tab. Starts today.
   var ONB_WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  //  One plain line per template, read off its own seven slots.
+  function plainSplitLine(tplId) {
+    var t = SPLIT_TEMPLATES[tplId];
+    if (!t) return '';
+    var names = t.week.filter(function(id) { return id !== 'rest'; }).map(plainDayName);
+    var lower = function(x, i) { return i === 0 ? x : x.charAt(0).toLowerCase() + x.slice(1); };
+    if (names.every(function(n) { return n === names[0]; })) return names[0] + ' each time.';
+    var half = names.length / 2;
+    if (names.length % 2 === 0 && names.slice(0, half).join() === names.slice(half).join()) return names.slice(0, half).map(lower).join(', ') + ', then again.';
+    return names.map(lower).join(', ') + '.';
+  }
+  function weekStripHTML(tplId) {
+    var t = SPLIT_TEMPLATES[tplId];
+    if (!t) return '';
+    var L = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    return '<span class="week-strip" aria-hidden="true">' + t.week.map(function(id, i) {
+      return '<span class="ws-day' + (id === 'rest' ? '' : ' on') + '">' + L[i] + '</span>';
+    }).join('') + '</span>';
+  }
+  //  The days question, as one row per option: count, plain line, week strip.
+  function planDaysOptionsHTML(selected, fn) {
+    return [3, 4, 5, 6].map(function(n) {
+      var pre = SPLIT_PRESETS_BY_DAYS[n], id = pre && pre.onboardingDefault, on = n === selected;
+      var trainDays = (SPLIT_TEMPLATES[id] || { week: [] }).week.map(function(d, i) { return d === 'rest' ? null : ONB_WEEKDAYS[i]; }).filter(Boolean).join(', ');
+      return '<button type="button" class="plan-days-opt' + (on ? ' on' : '') + '" role="radio" aria-checked="' + on + '" onclick="' + fn + '(' + n + ')"'
+        + ' aria-label="' + n + ' days: ' + plainSplitLine(id) + ' Trains ' + trainDays + '.">'
+        + '<span class="plan-days-n">' + n + ' days</span>'
+        + '<span class="plan-days-line">' + plainSplitLine(id) + '</span>'
+        + weekStripHTML(id) + '</button>';
+    }).join('');
+  }
+
   function plainDayName(dayId) {
     var d = SPLIT_DAYS[dayId];
     if (!d || d.rest) return 'Rest or walk';
@@ -9122,12 +9739,6 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
                 'Pull': 'Back and arms', 'Chest + Back': 'Chest and back', 'Shoulders + Arms': 'Shoulders and arms',
                 'Legs + Abs': 'Legs and abs', 'Mobility + Core': 'Stretch and core' };
     return map[t] || t.replace(/ \+ /g, ' and ');
-  }
-  function plainMinutes(m) {
-    m = Math.round(m / 5) * 5;
-    if (!(m > 0)) return '';
-    if (m < 60) return 'about ' + m + ' min';
-    return 'about ' + Math.floor(m / 60) + ' hr' + (m % 60 ? ' ' + (m % 60) + ' min' : '');
   }
   function renderOnbWeekPreview() {
     var host = document.getElementById('onbWeekPreview');
@@ -9138,9 +9749,10 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     for (var i = 0; i < 7; i++) {
       var slot = (start + i) % 7, id = week[slot], d = SPLIT_DAYS[id];
       var rest = !d || d.rest;
-      var mins = rest ? '' : plainMinutes(buildSession(id, currentTrainWeek).minutes);
+      var mins = rest ? '' : estText(buildSession(id, currentTrainWeek).est);
+      var label = rest ? REST_OPTS[restPlanFor(slot, currentTrainWeek).list[0]].text : plainDayName(id) + (mins ? ', about ' + mins : '');
       html += '<li' + (rest ? ' class="rest"' : '') + '><span class="onb-week-day">' + ONB_WEEKDAYS[slot] + '</span>'
-        + '<span>' + plainDayName(id) + (mins ? ', ' + mins : '') + '</span></li>';
+        + '<span>' + label + '</span></li>';
     }
     host.innerHTML = html;
     var food = document.getElementById('onbWeekFood');
@@ -9517,7 +10129,9 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
       foodLogs: foodLogs, foodTargets: foodTargets, bodyweight: bodyweight, goalMode: goalMode,
       hiddenEx: hiddenEx,
       sessionPrefs: { size: sessionSize, budget: sessionBudget, equip: equipOwned },
-      bwBand: bwBand, weekMoves: weekMoves, shortDays: shortDays, profile: userProfile, favEx: favEx
+      bwBand: bwBand, weekMoves: weekMoves, shortDays: shortDays, profile: userProfile, favEx: favEx,
+      sessionShape: { timeBoxes: timeBoxes, usualMinutes: usualMinutes, liftExperience: liftExperience, dropLogs: dropLogs, sessionSets: sessionSets },
+      restDays: { done: restDone, goingOut: goingOutDays }
     };
     var blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
     var a = document.createElement('a');
@@ -9599,6 +10213,22 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
         if (data.weekMoves && typeof data.weekMoves === 'object') { weekMoves = data.weekMoves; }
         if (data.shortDays && typeof data.shortDays === 'object') { shortDays = data.shortDays; }
         if (data.weekMoves || data.shortDays) { persistLifeHappens(); invalidateBuild(); }
+        //  8.15 stores. Older backups have none of these and leave them as they are.
+        var sh = data.sessionShape;
+        if (sh && typeof sh === 'object') {
+          if (sh.timeBoxes && typeof sh.timeBoxes === 'object') timeBoxes = sh.timeBoxes;
+          if (sh.dropLogs && typeof sh.dropLogs === 'object') dropLogs = sh.dropLogs;
+          if (sh.sessionSets && typeof sh.sessionSets === 'object') { sessionSets = sh.sessionSets; persistSessionSets(); }
+          if (USUAL_CHOICES.indexOf(sh.usualMinutes) !== -1) usualMinutes = sh.usualMinutes;
+          if (sh.liftExperience === 'yes' || sh.liftExperience === 'no') liftExperience = sh.liftExperience;
+          persistSessionShape(); invalidateBuild();
+        }
+        var rd = data.restDays;
+        if (rd && typeof rd === 'object') {
+          if (rd.done && typeof rd.done === 'object') restDone = rd.done;
+          if (rd.goingOut && typeof rd.goingOut === 'object') goingOutDays = rd.goingOut;
+          persistRestState();
+        }
         if (data.sessionPrefs && typeof data.sessionPrefs === 'object') {
           var sp = data.sessionPrefs;
           sessionSize = SESSION_SIZES.indexOf(sp.size) !== -1 ? sp.size : null;
@@ -9910,6 +10540,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   //     day at all. Each surface now clears only its own, and the shorter
   //     splits route to switchAltDay() and persist the same way.
   function switchDay(dayId) {
+    if (typeof hidePlanRestDay === 'function') hidePlanRestDay();
     //  A genuine day change means whatever mid-workout state was in progress
     //  belongs to a day the user is now leaving — clear it rather than let it
     //  resurface (wrong exercise, wrong day) on a later reload. Compared

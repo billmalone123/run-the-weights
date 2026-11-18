@@ -397,7 +397,7 @@ ok('shorter-split row has warm-up logging', altHTML.indexOf('id="wu0w-' + altEx 
 // through liftRowHTML. Check both links of that chain.
 eq('the 6-day host is filled by the same generator',
    /host\.innerHTML[\s\S]{0,160}liftRowsForDay\(dayId\)/.test(html)
-   && /function liftRowsForDay[\s\S]{0,200}buildSession[\s\S]{0,120}liftRowHTML/.test(html), true);
+   && /function liftRowsForDay[\s\S]{0,200}buildSession[\s\S]{0,1200}liftRowHTML/.test(html), true);
 
 section('10. Backup carries the new stores, and restore tolerates their absence');
 reset();

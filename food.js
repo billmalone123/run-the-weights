@@ -519,7 +519,11 @@ var p2h = flush(8).then(function () {
   ok('goal pills default to Get stronger', /class="liftdays-btn on" onclick="onbFlowSetGoalMode\('stronger'\)">Get stronger</.test(ctx.document.getElementById('onbFlowGoalPills')._html));
   ok('no race choice until the user says they run', ctx.document.getElementById('onbFlowGoalPills')._html.indexOf('Train for a race') === -1);
   ok('no carb load in onboarding', ctx.document.getElementById('onbFlowGoalPills')._html.indexOf('Carb') === -1);
-  ok('lift day pills default to 4, as specified', /class="liftdays-btn on" onclick="onbFlowSetLiftDays\(4\)">4</.test(ctx.document.getElementById('onbFlowLiftDaysPills')._html));
+  ok('lift day options default to 4, as specified', /class="plan-days-opt on" role="radio" aria-checked="true" onclick="onbFlowSetLiftDays\(4\)"/.test(ctx.document.getElementById('onbFlowLiftDaysPills')._html));
+  ['Full body each time.', 'Upper body, lower body, then again.'].forEach(function (line) {
+    ok('days option says: ' + line, ctx.document.getElementById('onbFlowLiftDaysPills')._html.indexOf(line) > -1);
+  });
+  ok('each days option has a week strip', (ctx.document.getElementById('onbFlowLiftDaysPills')._html.match(/class="week-strip"/g) || []).length === 4);
   eq('cardio starts unanswered — Yes is not pre-selected', ctx.document.getElementById('onbFlowCardioYes').classList.contains('on'), false);
   eq('nor is No', ctx.document.getElementById('onbFlowCardioNo').classList.contains('on'), false);
   eq('so the Strava section starts hidden', ctx.document.getElementById('onbFlowStravaWrap').style.display, 'none');
