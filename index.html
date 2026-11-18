@@ -3226,6 +3226,86 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
 .swap-toast { position: fixed; left: 16px; right: 16px; bottom: calc(76px + env(safe-area-inset-bottom)); z-index: 320; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: var(--text); color: var(--bg); font-size: var(--fs-2); line-height: 1.35; }
 .swap-toast span { flex: 1; }
 .swap-undo { min-height: 44px; min-width: 64px; border: 1px solid var(--bg); border-radius: 10px; background: none; color: var(--bg); font-weight: 700; cursor: pointer; }
+
+/* Screen reader only text. */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* PROGRESS. Tiles, a three way switch, one chart, a short table. */
+.prog-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 4px 0 14px; }
+.prog-tile { padding: 10px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); min-height: 76px; }
+.prog-tile-v { font-family: var(--font-display); font-size: var(--fs-4); line-height: 1.1; }
+.prog-tile-l { font-size: var(--fs-1); color: var(--muted); line-height: 1.3; margin-top: 4px; }
+.prog-tile.empty .prog-tile-v { color: var(--muted); }
+.prog-seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; }
+.prog-seg button { min-height: 44px; border: 0; border-radius: 9px; background: none; color: var(--muted); font-weight: 600; font-size: var(--fs-2); cursor: pointer; }
+.prog-seg button.on { background: var(--accent); color: var(--on-accent); }
+.prog-pick-l { display: block; font-size: var(--fs-1); color: var(--muted); margin-bottom: 4px; }
+.prog-pick { width: 100%; min-height: 44px; padding: 0 12px; border: 1px solid var(--field); border-radius: 10px; background: var(--surface); color: var(--text); font-size: var(--fs-2); margin-bottom: 8px; }
+.mini-chart { display: block; width: 100%; height: auto; overflow: visible; }
+.ch-grid { stroke: var(--border); stroke-width: 1; }
+.ch-ax { fill: var(--muted); font-size: 12px; font-family: var(--font-body); }
+.ch-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.ch-line.avg { stroke: var(--muted); stroke-dasharray: 5 4; }
+.ch-dot { fill: var(--accent); stroke: var(--bg); stroke-width: 2; }
+.ch-hit { fill: transparent; }
+.ch-val { fill: var(--text); font-size: 12px; font-weight: 700; font-family: var(--font-body); }
+.ch-bar { fill: var(--accent); }
+.ch-legend { display: flex; gap: 16px; font-size: var(--fs-1); color: var(--muted); margin: 4px 0 8px; }
+.ch-legend i { display: inline-block; width: 18px; height: 0; border-top: 2px solid var(--accent); margin-right: 6px; vertical-align: middle; }
+.ch-legend i.lg-dash { border-top: 2px dashed var(--muted); }
+.prog-table { width: 100%; border-collapse: collapse; font-size: var(--fs-2); margin-top: 8px; }
+.prog-table th { text-align: left; font-size: var(--fs-1); color: var(--muted); font-weight: 600; padding: 4px 4px 6px; border-bottom: 1px solid var(--border); }
+.prog-table td { padding: 7px 4px; border-bottom: 1px solid var(--border); }
+.prog-more { display: block; width: 100%; min-height: 44px; border: 0; background: none; color: var(--text); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.prog-empty { padding: 16px; border: 1px dashed var(--field); border-radius: 12px; font-size: var(--fs-2); color: var(--muted); }
+.prog-empty .today-secondary { margin-top: 10px; }
+.prog-add { margin-top: 10px; }
+.prog-all-btn { display: block; margin: 14px 0 8px; text-decoration: underline; text-underline-offset: 3px; }
+.pw-strip { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.pw-day { display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 56px; padding: 6px 2px; border: 1px solid var(--border); border-radius: 10px; font-size: var(--fs-1); }
+.pw-dow { font-weight: 700; }
+.pw-st { color: var(--muted); text-align: center; }
+.pw-day.done, .pw-day.short { background: var(--surface-2); border-color: var(--field); }
+.pw-day.done .pw-st, .pw-day.short .pw-st { color: var(--text); }
+.pw-day.rest { opacity: 0.7; }
+.pw-day.today { box-shadow: 0 0 0 1px var(--accent) inset; border-color: var(--accent); }
+.pw-line { font-size: var(--fs-2); margin-top: 10px; }
+
+/* ABOUT. One screen, Billy's words. */
+.about-short { max-width: 560px; padding-top: 72px !important; padding-bottom: 24px !important; }
+#tab-info.on-about footer { display: none; }
+.plan-nav-btn, .maintenance-quick { min-height: 44px; }
+.about-title { font-family: var(--font-display); font-size: var(--fs-5); text-transform: uppercase; line-height: 1.1; margin: 4px 0 14px; }
+.about-short p { font-size: var(--fs-3); line-height: 1.55; margin: 0 0 12px; color: var(--text); }
+.about-short .about-note { font-size: var(--fs-2); color: var(--muted); }
+
+/* RUN TAB. Only on screen when running is on. */
+body:not(.running) .tabbar-btn[data-tab="running"] { display: none; }
+body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
+.run-home-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.run-units { display: flex; gap: 4px; }
+.run-log-big { margin-top: 0; }
+.run-saved { font-size: var(--fs-2); color: var(--text); min-height: 0; margin: 6px 0; }
+.run-saved:empty { display: none; }
+.pw-day.run { background: var(--surface-2); border-color: var(--field); }
+.pw-day.run .pw-st { color: var(--text); font-weight: 600; }
+.run-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-right: 3px; vertical-align: middle; }
+.run-table td, .run-table th { padding-left: 2px; padding-right: 2px; }
+.rl-field { margin-bottom: 12px; }
+.rl-field label { display: block; font-size: var(--fs-2); font-weight: 600; margin-bottom: 6px; }
+.rl-row { display: flex; align-items: center; gap: 8px; }
+.rl-row .run-input { flex: 1; min-width: 0; min-height: 48px; font-size: var(--fs-3); }
+.rl-colon { font-size: var(--fs-4); font-weight: 700; }
+.rl-pace { font-size: var(--fs-3); font-weight: 700; min-height: 1.4em; margin-bottom: 10px; }
+.rl-types { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.rl-type { min-height: 52px; border: 1px solid var(--field); border-radius: 12px; background: var(--surface); color: var(--text); font-weight: 700; font-size: var(--fs-3); cursor: pointer; }
+.rl-type.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.rl-feel summary { min-height: 44px; display: flex; align-items: center; font-size: var(--fs-2); cursor: pointer; }
+.rl-feel-btns { display: flex; gap: 6px; margin: 4px 0 8px; }
+.rl-msg { font-size: var(--fs-2); color: var(--text); font-weight: 600; min-height: 0; margin: 4px 0 8px; }
+.rl-msg:empty { display: none; }
+.rest-run-btn { min-height: 44px; padding: 0; border: 0; background: none; color: var(--text); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.run-today { margin-bottom: 12px; }
 </style>
 </head>
 <body style="background:var(--bg)">
@@ -3234,6 +3314,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
 <div class="tabbar" id="tabbar" role="navigation" aria-label="Main">
   <button class="tabbar-btn" data-tab="today" onclick="goTab('today')"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg><span>Today</span></button>
   <button class="tabbar-btn" data-tab="training" onclick="goTab('training')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4M6 7v10M18 7v10M21 10v4M6 12h12"/></svg><span>Plan</span></button>
+  <button class="tabbar-btn" data-tab="running" onclick="goTab('running')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="14" cy="4.5" r="1.8"/><path d="M8 21l3-6 3 2v5M6 12l3-4 4 1 3 3 3 1M11 15l-2-4"/></svg><span>Run</span></button>
   <button class="tabbar-btn" data-tab="food" onclick="goTab('food')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M16 21V3c-2.5 1.5-3 4.5-3 8h3"/></svg><span>Food</span></button>
   <button class="tabbar-btn" data-tab="more" onclick="goTab('more')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.8" style="fill:currentColor"/><circle cx="12" cy="12" r="1.8" style="fill:currentColor"/><circle cx="19" cy="12" r="1.8" style="fill:currentColor"/></svg><span>More</span></button>
 </div>
@@ -3246,6 +3327,29 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     <button type="button" class="today-secondary" onclick="goingOutShort()">Make it a short session</button>
     <div class="run-hint" id="goingOutMsg" role="status"></div>
     <button type="button" class="settings-cancel-btn" onclick="closeGoingOut()">Cancel</button>
+  </div>
+</div>
+<!-- QUICK RUN LOG. Distance, time, type. Pace is worked out, never typed. -->
+<div class="settings-modal-overlay" id="runLogSheet" style="display:none" onclick="if (event.target === this) closeRunLog()">
+  <div class="settings-modal-card run-log-sheet" role="dialog" aria-modal="true" aria-labelledby="runLogTitle">
+    <div class="settings-modal-title" id="runLogTitle">Log a run</div>
+    <div class="rl-field">
+      <label for="rlDist">Distance</label>
+      <div class="rl-row"><input class="run-input" id="rlDist" type="text" inputmode="decimal" autocomplete="off" oninput="updateRunLogPace()" placeholder="3.1">
+        <div class="run-units" role="group" aria-label="Distance unit" id="rlUnits"></div></div>
+    </div>
+    <div class="rl-field">
+      <label for="rlMin">Time</label>
+      <div class="rl-row"><input class="run-input" id="rlMin" type="text" inputmode="numeric" autocomplete="off" oninput="updateRunLogPace()" placeholder="min, or 27:30" aria-label="Minutes, or the whole time like 27:30">
+        <span class="rl-colon" aria-hidden="true">:</span>
+        <input class="run-input" id="rlSec" type="text" inputmode="numeric" autocomplete="off" oninput="updateRunLogPace()" placeholder="sec" aria-label="Seconds"></div>
+    </div>
+    <div class="rl-pace" id="rlPace" aria-live="polite"></div>
+    <div class="rl-types" role="radiogroup" aria-label="Type of run" id="rlTypes"></div>
+    <details class="rl-feel"><summary>How did it feel?</summary><div class="rl-feel-btns" role="radiogroup" aria-label="How it felt" id="rlFeel"></div></details>
+    <div class="rl-msg" id="rlMsg" role="alert"></div>
+    <button type="button" class="today-start" onclick="saveQuickRun()">Save</button>
+    <button type="button" class="settings-cancel-btn" onclick="closeRunLog()">Cancel</button>
   </div>
 </div>
 <!-- SWAP SHEET. Three like for like options first, everything else one tap away. -->
@@ -3436,39 +3540,12 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     </a>
   </div>
 </section></div>
-  <div id="sec-about" class="sub-sec"><section id="about">
-  <div class="section-label">What This Is</div>
-  <h2 class="section-title">BUILT FOR<br>BOTH</h2>
-  <div class="about-grid">
-    <div class="about-text">
-      <p>Most people think they have to choose. Get stronger or keep running, and let the other side slide. <strong>Run the Weights does not make you choose.</strong> This is a hybrid athlete program built around your race date, your training days, and where you’re actually starting from, not a fixed calendar you have to fit yourself into. You add weight to the bar every week. You also show up to your 5k, your half marathon, or your century ride actually ready, not just surviving it.</p>
-      <p>The strength side is the <strong>Arnold Split</strong> underneath everything here: three days on, one off, bench and squat adding load every single week for three weeks before a deload resets you for Wave 2. Underneath that runs a second engine, a running plan built off your actual race date, current mileage, and experience, that layers onto the same week without wrecking your legs before leg day or your legs before your long run. Hit chest and back in the morning, your easy run or tempo work the same day if the calendar calls for it. <strong>Nothing here is guesswork stitched together from two separate apps.</strong></p>
-      <p>This was built by a <strong>former Division 1 cross country captain</strong> who also spent years in the weight room, not a lifter guessing at running volume, and not a runner guessing at what a real hypertrophy block looks like. Both sides of this program come from <strong>actually having done both</strong>, including the mistakes that come from doing them wrong first.</p>
-      <p>By the time you hit your race, you squat heavier, press heavier, and you can still run the distance you signed up for. Most people never build both at once because they assume they have to choose. <strong>You do not.</strong></p>
-    </div>
-    <div class="pillars">
-      <div class="pillar fade-up">
-        <div class="pillar-title">Strength First</div>
-        <div class="pillar-desc">Bench press, barbell squat, back squat, and OHP add a little load each week of a wave. Small, steady steps on the main lifts are how your body changes.</div>
-      </div>
-      <div class="pillar fade-up">
-        <div class="pillar-title">Twice a Week</div>
-        <div class="pillar-desc">Every split option in this program, 3 through 6 days, hits each muscle group at least twice a week. Fewer days means fewer body regions per session, not less frequency. The second session of the week always attacks the same muscles from different angles than the first, so you never adapt and stagnate. Frequency is what separates serious programs from gym noise.</div>
-      </div>
-      <div class="pillar fade-up">
-        <div class="pillar-title">Move Like an Athlete</div>
-        <div class="pillar-desc">Hip 90/90 switches, couch stretch, and goblet squat holds are programmed before every leg day, not as an afterthought, but as direct prep for squat depth and posterior chain loading. Tight hips don't just limit your squat. They shift load to your lower back. Fix the hips; fix the lift.</div>
-      </div>
-      <div class="pillar fade-up">
-        <div class="pillar-title">Built to Last</div>
-        <div class="pillar-desc">Face pulls, band pull-aparts, and shoulder CARs appear on every push and pull day. External rotator health is the reason heavy bench pressers blow out their shoulders, and the reason this program's pressing volume is sustainable no matter how long your plan runs.</div>
-      </div>
-      <div class="pillar fade-up">
-        <div class="pillar-title">Two Engines, One Plan</div>
-        <div class="pillar-desc">Built by a former Division 1 cross country captain who also lifts seriously, not a runner's guess at a hypertrophy block or a lifter's guess at a training run. The running side scales to your actual race, your actual mileage, your actual timeline, then sits on the same calendar as your lifting so the two never collide.</div>
-      </div>
-    </div>
-  </div>
+  <div id="sec-about" class="sub-sec"><section id="about" class="about-short">
+  <h2 class="about-title">About Run the Weights</h2>
+  <p>I'm Billy. I built this plan myself.</p>
+  <p>I've lifted and run for years, and I captained Division 1 cross country in college. I put this plan together from what I learned doing that, plus research with online tools.</p>
+  <p>I tested it on myself first. It's built for real schedules. Short on time? Going out tonight? The plan bends. You don't fall behind.</p>
+  <p class="about-note">This is not medical advice. If something hurts, stop and check with a doctor.</p>
 </section></div>
   <div id="sec-edge" class="sub-sec"><section id="edge" class="edge-section" style="background:var(--dark);border-top:1px solid var(--border);">
   <div class="section-label">Why it matters</div>
@@ -3591,6 +3668,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
 <section id="todaySection">
   <div class="today-date" id="todayDate"></div>
   <div class="today-card rest-card" id="todayRest" style="display:none"></div>
+  <div class="today-card run-today" id="todayRun" style="display:none"></div>
   <div class="today-card" id="todayWorkout"></div>
   <div class="today-label">This week</div>
   <div class="week-glance" data-glance aria-label="This week at a glance"></div>
@@ -3889,6 +3967,24 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
 
 <div id="tab-running" class="tab-main" style="background:var(--bg)">
 
+<!-- RUN HOME. Today's run or a big Log a run, the week, weekly distance and
+     the last five runs. The race plan and full schedule sit one tap down. -->
+<section id="runHome">
+  <div class="run-home-top">
+    <div class="today-date">Run</div>
+    <div class="run-units" role="group" aria-label="Units" id="runUnits"></div>
+  </div>
+  <div class="today-card" id="runTodayCard"></div>
+  <div class="run-saved" id="runSaved" role="status" aria-live="polite"></div>
+  <div class="today-label">This week</div>
+  <div class="pw-strip run-week-strip" id="runWeek" role="list" aria-label="Runs this week"></div>
+  <div class="today-label">Weekly distance</div>
+  <div id="runDistChart"></div>
+  <div class="today-label">Recent runs</div>
+  <div id="runTable"></div>
+  <button type="button" class="quicklog-back prog-all-btn" id="runPlanBtn" aria-expanded="false" aria-controls="runPlanWrap" onclick="toggleRunPlanWrap()">Race plan and full schedule</button>
+</section>
+<div id="runPlanWrap" style="display:none">
 <section id="runplan">
   <div class="section-label">Run the Weights — Running Plan</div>
   <h2 class="section-title train-title">RACE DAY IS<br>A <span class="accent-word">DEADLINE</span></h2>
@@ -4004,11 +4100,27 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     </div>
   </div>
 </section>
+</div>
 
 </div>
 
 <div id="tab-calendar" class="tab-main" style="background:var(--bg)">
 
+<!-- PROGRESS. One screen: three tiles, a Lifts / Body / Week switch, one
+     chart and a short table. The full calendar and every lift card are one
+     tap away under "See full calendar and every lift". -->
+<section id="progressHome">
+  <div class="today-date">Progress</div>
+  <div class="prog-tiles" id="progTiles"></div>
+  <div class="prog-seg" role="tablist" aria-label="Progress view">
+    <button type="button" role="tab" id="progTabLifts" aria-selected="true" onclick="setProgView('lifts')">Lifts</button>
+    <button type="button" role="tab" id="progTabBody" aria-selected="false" onclick="setProgView('body')">Body</button>
+    <button type="button" role="tab" id="progTabWeek" aria-selected="false" onclick="setProgView('week')">Week</button>
+  </div>
+  <div class="prog-view" id="progView" role="tabpanel"></div>
+  <button type="button" class="quicklog-back prog-all-btn" id="progAllBtn" aria-expanded="false" aria-controls="progAll" onclick="toggleProgAll()">See full calendar and every lift</button>
+</section>
+<div id="progAll" style="display:none">
 <section id="calendarfull">
   <div class="section-label adv">Full Calendar</div>
   <h2 class="section-title train-title adv">EVERY WEEK.<br>BOTH <span class="accent-word">PLANS</span>.</h2>
@@ -4027,6 +4139,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   <div class="cal-grid" id="calfullGrid"></div>
   <div class="cal-note" id="calfullNote"></div>
 </section>
+</div>
 
 </div>
 
@@ -4168,8 +4281,6 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     <button class="more-list-item" onclick="goTab('info'); goSec('about');"><span class="more-row-title">About</span><span class="more-row-sub">What this is and how it works.</span></button>
   </div>
   <div class="more-list more-list-minor">
-    <button class="more-list-item" id="moreRunRow" style="display:none" onclick="goTab('running');"><span class="more-row-title">Run</span></button>
-    <button class="more-list-item" onclick="goTab('quicklog');"><span class="more-row-title">Quick Log</span></button>
     <button class="more-list-item" onclick="goTab('info'); goSec('overview');"><span class="more-row-title">Week Overview</span></button>
     <button class="more-list-item" onclick="goTab('info'); goSec('edge');"><span class="more-row-title">The Edge</span></button>
     <button class="more-list-item" onclick="goTab('info'); goSec('home');"><span class="more-row-title">Home</span></button>
@@ -6052,9 +6163,10 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   }
   function restCardHTML(slot) {
     var rp = restPlanFor(slot, currentTrainWeek), key = slotDateKey(slot), done = !!restDone[key];
-    var main = REST_OPTS[rp.list[0]], alts = rp.list.slice(1).map(function(id) { return REST_OPTS[id].text; });
+    var runBtn = function(t) { return '<button type="button" class="rest-run-btn" onclick="openRunLog(\'easy\')">' + t + '</button>'; };
+    var main = REST_OPTS[rp.list[0]], alts = rp.list.slice(1).map(function(id) { return id === 'run' ? runBtn(REST_OPTS[id].text) : REST_OPTS[id].text; });
     return '<div class="today-card-kicker">' + (rp.recovery ? 'Recovery' : 'Rest day') + ' · ' + TODAY_DOWS[slot] + '</div>'
-      + '<div class="rest-main">' + main.text + '</div>'
+      + '<div class="rest-main">' + (rp.list[0] === 'run' ? runBtn(main.text) : main.text) + '</div>'
       + '<div class="rest-alts">Or: ' + alts.join(' · ') + '</div>'
       + '<button type="button" class="today-secondary rest-done-btn' + (done ? ' on' : '') + '" aria-pressed="' + done + '" onclick="toggleRestDone(' + slot + ')">' + (done ? 'Done ✓' : 'Mark done') + '</button>';
   }
@@ -6124,6 +6236,14 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     if (dEl) dEl.textContent = TODAY_DOWS[mondayIndex(startOfToday())];
     //  A rest day today gets its own card first. The next workout stays
     //  underneath for anyone who wants it.
+    //  One small card for a planned run, only when one is planned and not yet logged.
+    var trEl = document.getElementById('todayRun');
+    if (trEl) {
+      var pr = runningEnabled && !(runLogs[todayKey()] && runLogs[todayKey()].miles > 0) ? plannedRunToday() : null;
+      trEl.style.display = pr ? '' : 'none';
+      trEl.innerHTML = pr ? '<div class="today-card-kicker">Today</div><div class="today-card-title">Run: ' + runTypeLabel(pr.type) + ' ' + fmtDist(pr.miles) + '</div>'
+        + '<button type="button" class="today-secondary" onclick="openRunLog(\'' + pr.type + '\')">Log it</button>' : '';
+    }
     var rEl = document.getElementById('todayRest'), todaySlot = mondayIndex(startOfToday());
     if (rEl) {
       var isRest = activeSplit().week[todaySlot] === 'rest';
@@ -6417,6 +6537,10 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     if (document.body) document.body.classList.toggle('running', runningEnabled);
     if (typeof _navMenu !== 'undefined' && _navMenu) { _navMenu.remove(); _navMenu = null; }
     document.querySelectorAll('[data-run-btn]').forEach(function(b) { b.classList.toggle('on', (b.dataset.runBtn === 'on') === runningEnabled); });
+    //  The Run tab comes and goes with the switch, no reload.
+    var onRun = document.getElementById('tab-running');
+    if (!runningEnabled && onRun && onRun.style.display === 'block' && typeof goTab === 'function') goTab('today');
+    if (typeof renderToday === 'function' && document.getElementById('todayWorkout')) { try { renderToday(); } catch(e) {} }
   }
   function renderSessionPrefs() {
     var g = document.getElementById('sessionSizeGroup');
@@ -10698,7 +10822,8 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
       sessionShape: { timeBoxes: timeBoxes, usualMinutes: usualMinutes, liftExperience: liftExperience, dropLogs: dropLogs, sessionSets: sessionSets },
       restDays: { done: restDone, goingOut: goingOutDays },
       quick: { sessions: quickSessions, minutes: quickMinutes },
-      rest: restPrefs, swapsToday: swapsToday
+      rest: restPrefs, swapsToday: swapsToday,
+      runPrefs: { units: runUnits, lastType: runLastType }
     };
     var blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
     var a = document.createElement('a');
@@ -10803,6 +10928,11 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
         //  Rest times outside 15 seconds to 10 minutes are dropped, not used.
         if (data.rest && typeof data.rest === 'object') { restPrefs = cleanRestPrefs(data.rest); persistRestPrefs(); invalidateBuild(); }
         if (data.swapsToday && typeof data.swapsToday === 'object') { swapsToday = cleanSwapsToday(data.swapsToday); persistSwapsToday(); }
+        var rp2 = data.runPrefs;
+        if (rp2 && typeof rp2 === 'object') {
+          if (rp2.units === 'mi' || rp2.units === 'km') { runUnits = rp2.units; try { localStorage.setItem(RUN_UNITS_KEY, runUnits); } catch(e) {} }
+          if (RUN_TYPES.some(function(t) { return t[0] === rp2.lastType; })) { runLastType = rp2.lastType; try { localStorage.setItem(RUN_LAST_TYPE_KEY, runLastType); } catch(e) {} }
+        }
         var rd = data.restDays;
         if (rd && typeof rd === 'object') {
           if (rd.done && typeof rd.done === 'object') restDone = rd.done;
@@ -13488,6 +13618,190 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   }
 
   //     RENDER — inputs persist, the schedule is rebuilt from them every time
+  //     RUN TAB. Reads the existing run logs ({ miles, secs, hr, feel }, keyed
+  //  by date) and the existing plan. Distances are stored in miles; km is only
+  //  how they are shown and typed. A run's type is one new optional field.
+  const RUN_UNITS_KEY = 'monk_run_units_v1';      // 'mi' | 'km'
+  const RUN_LAST_TYPE_KEY = 'monk_run_last_type_v1';
+  var KM_PER_MI = 1.609344;
+  var RUN_TYPES = [['easy', 'Easy'], ['long', 'Long'], ['fast', 'Fast'], ['intervals', 'Intervals']];
+  var RUN_FEELS = [['easy', 'Easy', 3], ['okay', 'Okay', 6], ['hard', 'Hard', 9]];
+  var runUnits = 'mi', runLastType = 'easy';
+  try { var _ru = localStorage.getItem(RUN_UNITS_KEY); if (_ru === 'km' || _ru === 'mi') runUnits = _ru; } catch(e) {}
+  try { var _rt = localStorage.getItem(RUN_LAST_TYPE_KEY); if (RUN_TYPES.some(function(t) { return t[0] === _rt; })) runLastType = _rt; } catch(e) {}
+  function runTypeLabel(t) { var x = RUN_TYPES.filter(function(r) { return r[0] === t; })[0]; return x ? x[1] : 'Run'; }
+  function unitDist(miles) { return runUnits === 'km' ? miles * KM_PER_MI : miles; }
+  function fmtDist(miles) { var v = unitDist(miles); return (Math.round(v * 10) / 10) + ' ' + runUnits; }
+  function fmtDur(secs) {
+    secs = Math.round(secs);
+    var h = Math.floor(secs / 3600), m = Math.floor((secs % 3600) / 60), sec = secs % 60;
+    return (h ? h + ':' + ('0' + m).slice(-2) : m) + ':' + ('0' + sec).slice(-2);
+  }
+  function fmtPace(secs, miles) {
+    var per = secs / unitDist(miles);
+    if (!isFinite(per) || per <= 0) return '';
+    per = Math.round(per);
+    return Math.floor(per / 60) + ':' + ('0' + (per % 60)).slice(-2) + ' per ' + runUnits;
+  }
+  function setRunUnits(u) {
+    runUnits = u === 'km' ? 'km' : 'mi';
+    try { localStorage.setItem(RUN_UNITS_KEY, runUnits); } catch(e) {}
+    renderRunHome(); renderRunLogUnits(); updateRunLogPace();
+  }
+  function unitToggleHTML() {
+    return ['mi', 'km'].map(function(u) { return '<button type="button" class="liftdays-btn' + (runUnits === u ? ' on' : '') + '" aria-pressed="' + (runUnits === u) + '" onclick="setRunUnits(\'' + u + '\')">' + u + '</button>'; }).join('');
+  }
+  //  Today's run from the plan the app already builds. No plan, no card.
+  function plannedRunToday() {
+    if (!runningEnabled || !runPlan || !runPlan.raceDate || typeof generateRunPlan !== 'function') return null;
+    try {
+      var plan = generateRunPlan(readRunInputs(), startOfToday());
+      if (!plan || plan.error || !plan.weeks) return null;
+      var t = startOfToday().getTime(), hit = null;
+      plan.weeks.forEach(function(w) { w.cells.forEach(function(c) {
+        if (c.before || c.after || !c.date || c.date.getTime() !== t || !(c.miles > 0)) return;
+        c.week = w.num;
+        hit = { miles: c.miles, type: c.type === 'long' ? 'long' : c.type === 'tempo' ? 'fast' : 'easy', detail: runCellBody(c, plan) };
+      }); });
+      return hit;
+    } catch(e) { return null; }
+  }
+  function runRows() {
+    return Object.keys(runLogs || {}).filter(function(k) { var e = runLogs[k]; return parseDateKey(k) && e && e.miles > 0; }).sort().reverse();
+  }
+  var _runMore = false;
+  function toggleRunMore() { _runMore = !_runMore; renderRunHome(); }
+  function toggleRunPlanWrap() {
+    var el = document.getElementById('runPlanWrap'), b = document.getElementById('runPlanBtn');
+    if (!el) return;
+    var open = el.style.display === 'none';
+    el.style.display = open ? '' : 'none';
+    if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open && typeof renderRunPlan === 'function') renderRunPlan();
+  }
+  function renderRunHome() {
+    var u = document.getElementById('runUnits');
+    if (!u) return;
+    u.innerHTML = unitToggleHTML();
+    var card = document.getElementById('runTodayCard'), todayLog = runLogs[todayKey()], plan = plannedRunToday();
+    if (card) {
+      if (todayLog && todayLog.miles > 0) {
+        card.innerHTML = '<div class="today-card-kicker">Today</div><div class="today-card-title">' + runTypeLabel(todayLog.type) + ' ' + fmtDist(todayLog.miles) + '</div>'
+          + '<div class="today-card-meta">' + (todayLog.secs ? fmtDur(todayLog.secs) + ', ' + fmtPace(todayLog.secs, todayLog.miles) : 'Logged') + '</div>'
+          + '<button type="button" class="today-secondary" onclick="openRunLog()">Edit today\'s run</button>';
+      } else if (plan) {
+        card.innerHTML = '<div class="today-card-kicker">Today</div><div class="today-card-title">Run: ' + runTypeLabel(plan.type) + ' ' + fmtDist(plan.miles) + '</div>'
+          + '<div class="today-card-meta">' + plan.detail + '</div>'
+          + '<button type="button" class="today-start" onclick="openRunLog(\'' + plan.type + '\')">Log it</button>';
+      } else {
+        card.innerHTML = '<button type="button" class="today-start run-log-big" onclick="openRunLog()">Log a run</button>';
+      }
+    }
+    var wk = document.getElementById('runWeek');
+    if (wk) {
+      var mon = addDays(startOfToday(), -mondayIndex(startOfToday())), tIdx = mondayIndex(startOfToday());
+      wk.innerHTML = WG_DOWS.map(function(dow, i) {
+        var e = runLogs[dateKeyOfRun(addDays(mon, i))], ran = e && e.miles > 0;
+        return '<div class="pw-day' + (ran ? ' run' : '') + (i === tIdx ? ' today' : '') + '" role="listitem"><span class="pw-dow">' + dow + '</span>'
+          + '<span class="pw-st">' + (ran ? '<span class="run-dot" aria-hidden="true"></span>' + (Math.round(unitDist(e.miles) * 10) / 10) : '<span class="sr-only">No run</span>') + '</span></div>';
+      }).join('');
+    }
+    var ch = document.getElementById('runDistChart');
+    if (ch) {
+      var rows = runRows(), mon0 = addDays(startOfToday(), -mondayIndex(startOfToday())), bars = [];
+      for (var i = 7; i >= 0; i--) {
+        var m = addDays(mon0, -7 * i), tot = 0;
+        for (var d = 0; d < 7; d++) { var e2 = runLogs[dateKeyOfRun(addDays(m, d))]; if (e2 && e2.miles > 0) tot += e2.miles; }
+        bars.push({ label: MON3[m.getMonth()] + ' ' + m.getDate(), y: Math.round(unitDist(tot) * 10) / 10 });
+      }
+      var anyRun = bars.some(function(b) { return b.y > 0; });
+      var last = bars[bars.length - 1], peak = bars.reduce(function(a, b) { return b.y > a.y ? b : a; }, bars[0]);
+      ch.innerHTML = anyRun ? barChartSVG(bars, runUnits, 'runDist', 'Weekly distance for the last 8 weeks. This week ' + last.y + ' ' + runUnits + '. Most was ' + peak.y + ' ' + runUnits + ' in the week of ' + peak.label + '.')
+        : '<div class="prog-empty"><div>No runs yet. Your weekly distance shows up here.</div></div>';
+    }
+    var tb = document.getElementById('runTable');
+    if (tb) {
+      var rr = runRows();
+      if (!rr.length) tb.innerHTML = '';
+      else {
+        var shown = _runMore ? rr : rr.slice(0, 5);
+        tb.innerHTML = '<table class="prog-table run-table"><thead><tr><th scope="col">Date</th><th scope="col">Distance</th><th scope="col">Time</th><th scope="col">Pace</th><th scope="col">Type</th></tr></thead><tbody>'
+          + shown.map(function(k) { var e = runLogs[k];
+              return '<tr><td>' + shortDate(k) + '</td><td>' + fmtDist(e.miles) + '</td><td>' + (e.secs ? fmtDur(e.secs) : '—') + '</td><td>' + (e.secs ? fmtPace(e.secs, e.miles).replace(' per ', '/') : '—') + '</td><td>' + runTypeLabel(e.type) + '</td></tr>'; }).join('')
+          + '</tbody></table>'
+          + (rr.length > 5 ? '<button type="button" class="prog-more" aria-expanded="' + _runMore + '" onclick="toggleRunMore()">' + (_runMore ? 'Show less' : 'See all (' + rr.length + ')') + '</button>' : '');
+      }
+    }
+  }
+  //  Quick run log.
+  var _rlType = 'easy', _rlFeel = null;
+  function renderRunLogUnits() { var u = document.getElementById('rlUnits'); if (u) u.innerHTML = unitToggleHTML(); }
+  function renderRunLogChoices() {
+    var t = document.getElementById('rlTypes');
+    if (t) t.innerHTML = RUN_TYPES.map(function(x) { var on = _rlType === x[0]; return '<button type="button" class="rl-type' + (on ? ' on' : '') + '" role="radio" aria-checked="' + on + '" onclick="_rlType=\'' + x[0] + '\';renderRunLogChoices()">' + x[1] + '</button>'; }).join('');
+    var f = document.getElementById('rlFeel');
+    if (f) f.innerHTML = RUN_FEELS.map(function(x) { var on = _rlFeel === x[2]; return '<button type="button" class="liftdays-btn' + (on ? ' on' : '') + '" role="radio" aria-checked="' + on + '" onclick="_rlFeel=' + x[2] + ';renderRunLogChoices()">' + x[1] + '</button>'; }).join('');
+  }
+  function openRunLog(type) {
+    if (!runningEnabled) return;
+    var today = runLogs[todayKey()], plan = plannedRunToday();
+    _rlType = type || (today && today.type) || (plan && plan.type) || runLastType || 'easy';
+    _rlFeel = today && today.feel ? (today.feel <= 4 ? 3 : today.feel <= 7 ? 6 : 9) : null;
+    var d = document.getElementById('rlDist'), mi = document.getElementById('rlMin'), se = document.getElementById('rlSec');
+    if (d) d.value = today && today.miles ? String(Math.round(unitDist(today.miles) * 100) / 100) : '';
+    if (mi) mi.value = today && today.secs ? String(Math.floor(today.secs / 60)) : '';
+    if (se) se.value = today && today.secs ? String(today.secs % 60) : '';
+    var msg = document.getElementById('rlMsg'); if (msg) msg.textContent = '';
+    renderRunLogUnits(); renderRunLogChoices(); updateRunLogPace();
+    var m = document.getElementById('runLogSheet'); if (m) m.style.display = 'flex';
+    if (d) d.focus();
+  }
+  function closeRunLog() { var m = document.getElementById('runLogSheet'); if (m) m.style.display = 'none'; }
+  //  "27:30" or "1:05:30" in the minutes box, or minutes and seconds apart.
+  function readRunLogInputs() {
+    var dRaw = String((document.getElementById('rlDist') || {}).value || '').trim().replace(',', '.');
+    var mRaw = String((document.getElementById('rlMin') || {}).value || '').trim();
+    var sRaw = String((document.getElementById('rlSec') || {}).value || '').trim();
+    var dist = dRaw === '' ? NaN : Number(dRaw), secs = NaN, secErr = false;
+    if (/^\d{1,2}:\d{1,2}(:\d{1,2})?$/.test(mRaw)) {
+      var p = mRaw.split(':').map(Number);
+      secs = p.length === 3 ? p[0] * 3600 + p[1] * 60 + p[2] : p[0] * 60 + p[1];
+      if (p[p.length - 1] > 59 || (p.length === 3 && p[1] > 59)) secErr = true;
+    } else if (/^\d+$/.test(mRaw) || (mRaw === '' && /^\d+$/.test(sRaw))) {
+      var s2 = sRaw === '' ? 0 : Number(sRaw);
+      if (!/^\d*$/.test(sRaw) || s2 > 59) secErr = true;
+      secs = (mRaw === '' ? 0 : Number(mRaw)) * 60 + s2;
+    } else if (mRaw !== '') secs = NaN;
+    var miles = isFinite(dist) ? (runUnits === 'km' ? dist / KM_PER_MI : dist) : NaN;
+    return { miles: miles, secs: secs, secErr: secErr, distRaw: dRaw, timeRaw: mRaw + sRaw };
+  }
+  function updateRunLogPace() {
+    var el = document.getElementById('rlPace');
+    if (!el) return;
+    var r = readRunLogInputs();
+    el.textContent = r.miles > 0 && r.secs > 0 && !r.secErr && r.miles <= 100 && r.secs < 86400 ? 'Pace: ' + fmtPace(r.secs, r.miles) : '';
+  }
+  function saveQuickRun() {
+    var r = readRunLogInputs(), msg = document.getElementById('rlMsg');
+    var say = function(t) { if (msg) msg.textContent = t; };
+    if (!(r.miles > 0)) return say(r.distRaw === '' ? 'Add how far you ran.' : 'Distance needs to be a number above zero.');
+    if (r.miles > 100) return say('That is over 100 miles. Check the distance.');
+    if (r.secErr) return say('Seconds go up to 59.');
+    if (!(r.secs > 0)) return say(r.timeRaw === '' ? 'Add how long it took.' : 'Time needs to be above zero, like 27:30.');
+    if (r.secs >= 86400) return say('That is over 24 hours. Check the time.');
+    var k = todayKey(), prev = runLogs[k] || {};
+    runLogs[k] = { miles: Math.round(r.miles * 100) / 100, secs: Math.round(r.secs), hr: prev.hr || null, feel: _rlFeel || prev.feel || null, type: _rlType };
+    persistRunLogs();
+    runLastType = _rlType;
+    try { localStorage.setItem(RUN_LAST_TYPE_KEY, runLastType); } catch(e) {}
+    closeRunLog();
+    goTab('running');
+    var sv = document.getElementById('runSaved');
+    if (sv) sv.textContent = 'Saved. ' + fmtDist(runLogs[k].miles) + ' in ' + fmtDur(runLogs[k].secs) + ', ' + fmtPace(runLogs[k].secs, runLogs[k].miles) + '.';
+    if (typeof rerenderRunSurfaces === 'function') { try { rerenderRunSurfaces(); } catch(e) {} }
+    if (typeof renderToday === 'function') renderToday();
+  }
+
   function renderRunPlan() {
     var host = document.getElementById('runSchedule');
     var flagHost = document.getElementById('runFlags');
@@ -13799,7 +14113,8 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
   function calWeekGrid(monday, opts) {
     var o = opts || {};
     var today = startOfToday();
-    var runs = calRunCells(monday);
+    //  Progress is lifting only: runs have their own tab.
+    var runs = o.noRuns ? null : calRunCells(monday);
     //  Seven weekday slots from whichever split is active, not a fixed array
     var html = calWeekSlots().map(function(slot, i) {
       var date = addDays(monday, i);
@@ -13819,7 +14134,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
       //  Unconditional, exactly as on the Run tab: same block, every date.
       //  Only where a run is planned or already logged. Rest days with no run
       //  never show run fields.
-      if (o.logs && (run || runLogs[dateKeyOfRun(date)])) parts.push(runLogInputsHTML({ date: date }, o.scope || 'cal'));
+      if (o.logs && !o.noRuns && (run || runLogs[dateKeyOfRun(date)])) parts.push(runLogInputsHTML({ date: date }, o.scope || 'cal'));
       return '<div class="cal-day' + (!slot.rest || run ? ' has-work' : '') + (isToday ? ' is-today' : '') + '">'
         + '<div class="cal-dow"><span>' + RUN_DOWS[i] + ' ' + RUN_MONTHS[date.getMonth()] + ' ' + date.getDate() + '</span>'
         + (isToday ? '<span class="cal-today-chip">Today</span>' : '') + '</div>'
@@ -13841,6 +14156,205 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
     setTrainWeek(Math.max(0, Math.min(totalTrainWeeks() - 1, currentTrainWeek + delta)));
   }
 
+  //     SMALL CHARTS. Inline SVG, the app's own tokens and fonts, no library.
+  //  At most four labels per axis. Every chart carries a plain text summary
+  //  for screen readers, and the table under it is the data view.
+  var MON3 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function shortDate(k) { var d = parseDateKey(k); return d ? MON3[d.getMonth()] + ' ' + d.getDate() : ''; }
+  function niceTicks(lo, hi, maxN) {
+    if (!(hi > lo)) { var pad = Math.max(1, Math.abs(lo) * 0.05); lo -= pad; hi += pad; }
+    var raw = (hi - lo) / Math.max(1, maxN - 1), mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    var step = [1, 2, 2.5, 5, 10].map(function(m) { return m * mag; }).filter(function(st) { return st >= raw; })[0] || raw;
+    //  The ticks always reach past both ends of the data.
+    var start = Math.floor(lo / step) * step, end = Math.ceil(hi / step) * step;
+    while ((end - start) / step + 1 > maxN) { step *= 2; start = Math.floor(lo / step) * step; end = Math.ceil(hi / step) * step; }
+    var out = [];
+    for (var v = start; v <= end + step * 0.001; v += step) out.push(Math.round(v * 100) / 100);
+    return out;
+  }
+  function fmtNum(v) { return Math.abs(v - Math.round(v)) < 0.05 ? String(Math.round(v)) : v.toFixed(1); }
+  //  series: [{ pts: [{ k: 'YYYY-MM-DD', y }], cls, label }]. The first series
+  //  sets the dots and hover titles; the second (if any) is a quiet line.
+  function lineChartSVG(series, unit, id, summary) {
+    var all = [];
+    series.forEach(function(sr) { sr.pts.forEach(function(p) { if (isFinite(p.y)) all.push(p); }); });
+    if (!all.length) return '';
+    var W = 340, H = 168, L = 40, R = 14, T = 14, B = 26;
+    var ts = all.map(function(p) { return parseDateKey(p.k).getTime(); });
+    var t0 = Math.min.apply(null, ts), t1 = Math.max.apply(null, ts);
+    var ys = all.map(function(p) { return p.y; });
+    var ticks = niceTicks(Math.min.apply(null, ys), Math.max.apply(null, ys), 4);
+    var y0 = ticks[0], y1 = ticks[ticks.length - 1];
+    var X = function(k) { var t = parseDateKey(k).getTime(); return t1 > t0 ? L + (t - t0) / (t1 - t0) * (W - L - R) : (L + W - R) / 2; };
+    var Y = function(v) { return y1 > y0 ? T + (1 - (v - y0) / (y1 - y0)) * (H - T - B) : (T + H - B) / 2; };
+    var g = ticks.map(function(v) {
+      return '<line class="ch-grid" x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(v).toFixed(1) + '" y2="' + Y(v).toFixed(1) + '"/>'
+        + '<text class="ch-ax" x="' + (L - 6) + '" y="' + (Y(v) + 4).toFixed(1) + '" text-anchor="end">' + fmtNum(v) + '</text>';
+    }).join('');
+    var keys = series[0].pts.map(function(p) { return p.k; });
+    var xi = keys.length <= 4 ? keys.map(function(_, i) { return i; }) : [0, Math.round((keys.length - 1) / 3), Math.round((keys.length - 1) * 2 / 3), keys.length - 1];
+    var xl = xi.filter(function(v, i, a) { return a.indexOf(v) === i; }).map(function(i) {
+      var x = X(keys[i]), anchor = i === 0 && keys.length > 1 ? 'start' : (i === keys.length - 1 && keys.length > 1 ? 'end' : 'middle');
+      return '<text class="ch-ax" x="' + x.toFixed(1) + '" y="' + (H - 6) + '" text-anchor="' + anchor + '">' + shortDate(keys[i]) + '</text>';
+    }).join('');
+    var lines = series.map(function(sr, si) {
+      var pts = sr.pts.filter(function(p) { return isFinite(p.y); });
+      var path = pts.length > 1 ? '<polyline class="ch-line ' + (sr.cls || '') + '" points="' + pts.map(function(p) { return X(p.k).toFixed(1) + ',' + Y(p.y).toFixed(1); }).join(' ') + '"/>' : '';
+      //  Dots on every point only while they stay readable; past 12 the line
+      //  carries it and only the latest point gets a dot. Every point keeps
+      //  an invisible hover target with its value.
+      var many = pts.length > 12;
+      var dots = si > 0 ? '' : pts.map(function(p, pi) {
+        var cx = X(p.k).toFixed(1), cy = Y(p.y).toFixed(1), tip = '<title>' + shortDate(p.k) + ': ' + fmtNum(p.y) + ' ' + unit + '</title>';
+        return (!many || pi === pts.length - 1 ? '<circle class="ch-dot" cx="' + cx + '" cy="' + cy + '" r="4.5"/>' : '')
+          + '<circle class="ch-hit" cx="' + cx + '" cy="' + cy + '" r="9">' + tip + '</circle>';
+      }).join('');
+      return path + dots;
+    }).join('');
+    var one = series[0].pts.length === 1 ? '<text class="ch-val" x="' + X(keys[0]).toFixed(1) + '" y="' + (Y(series[0].pts[0].y) - 10).toFixed(1) + '" text-anchor="middle">' + fmtNum(series[0].pts[0].y) + ' ' + unit + '</text>' : '';
+    return '<p class="sr-only" id="' + id + '-sum">' + summary + '</p>'
+      + '<svg class="mini-chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-labelledby="' + id + '-sum">' + g + xl + lines + one + '</svg>';
+  }
+  function barChartSVG(bars, unit, id, summary) {
+    if (!bars.length) return '';
+    var W = 340, H = 150, L = 34, R = 8, T = 12, B = 26;
+    var max = Math.max.apply(null, bars.map(function(b) { return b.y; }).concat([1]));
+    var ticks = niceTicks(0, max, 4), top = ticks[ticks.length - 1];
+    var Y = function(v) { return T + (1 - v / top) * (H - T - B); };
+    var bw = (W - L - R) / bars.length;
+    var g = ticks.map(function(v) {
+      return '<line class="ch-grid" x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(v).toFixed(1) + '" y2="' + Y(v).toFixed(1) + '"/>'
+        + '<text class="ch-ax" x="' + (L - 6) + '" y="' + (Y(v) + 4).toFixed(1) + '" text-anchor="end">' + fmtNum(v) + '</text>';
+    }).join('');
+    var rects = bars.map(function(b, i) {
+      var x = L + i * bw + 3, h = Math.max(0, H - B - Y(b.y));
+      return '<rect class="ch-bar" x="' + x.toFixed(1) + '" y="' + Y(b.y).toFixed(1) + '" width="' + Math.max(2, bw - 6).toFixed(1) + '" height="' + h.toFixed(1) + '" rx="3"><title>' + b.label + ': ' + fmtNum(b.y) + ' ' + unit + '</title></rect>';
+    }).join('');
+    var xi = bars.length <= 4 ? bars.map(function(_, i) { return i; }) : [0, Math.round((bars.length - 1) / 3), Math.round((bars.length - 1) * 2 / 3), bars.length - 1];
+    var xl = xi.filter(function(v, i, a) { return a.indexOf(v) === i; }).map(function(i) {
+      return '<text class="ch-ax" x="' + (L + i * bw + bw / 2).toFixed(1) + '" y="' + (H - 6) + '" text-anchor="middle">' + bars[i].label + '</text>';
+    }).join('');
+    return '<p class="sr-only" id="' + id + '-sum">' + summary + '</p>'
+      + '<svg class="mini-chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-labelledby="' + id + '-sum">' + g + rects + xl + '</svg>';
+  }
+
+  //     PROGRESS. Only data the app already stores.
+  var _progView = 'lifts', _progEx = null, _progMore = false;
+  function liftEntries(exId) {
+    return (sessions[exId] || []).filter(function(e) { return e && e.d && e.weight > 0; })
+      .slice().sort(function(a, b) { return a.d < b.d ? -1 : a.d > b.d ? 1 : 0; });
+  }
+  function loggedLiftIds() {
+    return Object.keys(sessions || {}).filter(function(id) { return EX_BY_ID[id] && liftEntries(id).length; })
+      .sort(function(a, b) { var la = liftEntries(a), lb = liftEntries(b); return la[la.length - 1].d < lb[lb.length - 1].d ? 1 : -1; });
+  }
+  function entrySetCount(e) { return e.quickLog ? 1 : (ALL_SLOTS.filter(function(sl) { return normSet(e, e[sl]); }).length || 1); }
+  function bwSeries() {
+    return Object.keys(bodyweight || {}).filter(function(k) { return parseDateKey(k) && bodyweight[k] > 0; }).sort()
+      .map(function(k) { return { k: k, y: +bodyweight[k] }; });
+  }
+  function bwAvg7(list) {
+    return list.map(function(p) {
+      var t = parseDateKey(p.k).getTime(), win = list.filter(function(q) { var u = parseDateKey(q.k).getTime(); return u <= t && t - u < 7 * 864e5; });
+      return { k: p.k, y: win.reduce(function(s2, q) { return s2 + q.y; }, 0) / win.length };
+    });
+  }
+  function progTilesHTML() {
+    var month = todayKey().slice(0, 7), days = {};
+    Object.keys(sessions || {}).forEach(function(id) { (sessions[id] || []).forEach(function(e) { if (e && e.d && e.d.slice(0, 7) === month) days[e.d] = 1; }); });
+    var nWork = Object.keys(days).length;
+    var best = null;
+    loggedLiftIds().forEach(function(id) {
+      var l = liftEntries(id);
+      if (l.length < 2) return;
+      var gain = l[l.length - 1].weight - l[0].weight;
+      if (gain > 0 && (!best || gain > best.gain)) best = { gain: gain, name: activeVariant(EX_BY_ID[id]) };
+    });
+    var bw = bwSeries(), bwTxt = null;
+    if (bw.length >= 2) { var dlt = bw[bw.length - 1].y - bw[0].y; bwTxt = { v: (dlt > 0 ? '+' : dlt < 0 ? '−' : '') + Math.abs(dlt).toFixed(1) + ' lbs', l: 'since ' + shortDate(bw[0].k) }; }
+    var tile = function(v, l, empty) { return '<div class="prog-tile' + (empty ? ' empty' : '') + '"><div class="prog-tile-v">' + v + '</div><div class="prog-tile-l">' + l + '</div></div>'; };
+    return tile(nWork, nWork === 1 ? 'workout this month' : 'workouts this month')
+      + (best ? tile('+' + fmtNum(best.gain) + ' lbs', best.name) : tile('—', 'Log a lift to see this', true))
+      + (bwTxt ? tile(bwTxt.v, 'Bodyweight ' + bwTxt.l) : tile('—', 'Add your weight to see this', true));
+  }
+  function setProgView(v) { _progView = v; _progMore = false; renderProgressHome(); }
+  function setProgEx(id) { _progEx = id; _progMore = false; renderProgressHome(); }
+  function toggleProgMore() { _progMore = !_progMore; renderProgressHome(); }
+  function toggleProgAll() {
+    var el = document.getElementById('progAll'), b = document.getElementById('progAllBtn');
+    if (!el) return;
+    var open = el.style.display === 'none';
+    el.style.display = open ? '' : 'none';
+    if (b) { b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.textContent = open ? 'Hide full calendar' : 'See full calendar and every lift'; }
+  }
+  function progTable(head, rows, total) {
+    var more = total > 5;
+    return '<table class="prog-table"><thead><tr>' + head.map(function(h) { return '<th scope="col">' + h + '</th>'; }).join('') + '</tr></thead><tbody>'
+      + rows.map(function(r) { return '<tr>' + r.map(function(c) { return '<td>' + c + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table>'
+      + (more ? '<button type="button" class="prog-more" aria-expanded="' + _progMore + '" onclick="toggleProgMore()">' + (_progMore ? 'Show less' : 'See all (' + total + ')') + '</button>' : '');
+  }
+  function progEmpty(msg, btn, action) {
+    return '<div class="prog-empty"><div>' + msg + '</div><button type="button" class="today-secondary" onclick="' + action + '">' + btn + '</button></div>';
+  }
+  function renderProgressHome() {
+    var tiles = document.getElementById('progTiles'), view = document.getElementById('progView');
+    if (!tiles || !view) return;
+    tiles.innerHTML = progTilesHTML();
+    ['lifts', 'body', 'week'].forEach(function(v) {
+      var b = document.getElementById('progTab' + v.charAt(0).toUpperCase() + v.slice(1));
+      if (b) { b.setAttribute('aria-selected', v === _progView ? 'true' : 'false'); b.classList.toggle('on', v === _progView); }
+    });
+    var html = '';
+    if (_progView === 'lifts') {
+      var ids = loggedLiftIds();
+      if (!ids.length) html = progEmpty('No lifts logged yet. Your first set shows up here.', 'Go to Plan', "goTab('training')");
+      else {
+        if (ids.indexOf(_progEx) === -1) _progEx = ids[0];
+        var ex = EX_BY_ID[_progEx], l = liftEntries(_progEx), name = activeVariant(ex);
+        var first = l[0], last = l[l.length - 1];
+        var weeks = Math.max(1, Math.round((parseDateKey(last.d) - parseDateKey(first.d)) / (7 * 864e5)));
+        var sum = l.length === 1 ? name + ': one session so far, top set ' + last.weight + ' lbs.'
+          : name + ' top set ' + (last.weight > first.weight ? 'rose' : last.weight < first.weight ? 'fell' : 'held') + ' from ' + first.weight + ' to ' + last.weight + ' lbs over ' + weeks + ' week' + (weeks === 1 ? '' : 's') + '.';
+        html = '<label class="prog-pick-l" for="progExPick">Exercise</label><select class="prog-pick" id="progExPick" onchange="setProgEx(this.value)">'
+          + ids.map(function(id) { return '<option value="' + id + '"' + (id === _progEx ? ' selected' : '') + '>' + activeVariant(EX_BY_ID[id]) + '</option>'; }).join('') + '</select>'
+          + lineChartSVG([{ pts: l.map(function(e) { return { k: e.d, y: e.weight }; }) }], 'lbs', 'progLiftChart', sum);
+        var rows = l.slice().reverse();
+        html += progTable(['Date', 'Top set', 'Sets'], (_progMore ? rows : rows.slice(0, 5)).map(function(e) { return [shortDate(e.d), e.weight + ' × ' + e.reps, entrySetCount(e)]; }), rows.length);
+      }
+    } else if (_progView === 'body') {
+      var bw = bwSeries();
+      if (!bw.length) html = progEmpty('No weight logged yet.', 'Add weight', 'progAddWeight()');
+      else {
+        var avg = bwAvg7(bw), f = bw[0], z = bw[bw.length - 1];
+        var sumB = bw.length === 1 ? 'One weigh in so far: ' + fmtNum(z.y) + ' lbs.' : 'Bodyweight went from ' + fmtNum(f.y) + ' to ' + fmtNum(z.y) + ' lbs between ' + shortDate(f.k) + ' and ' + shortDate(z.k) + '. The 7 day average is ' + fmtNum(avg[avg.length - 1].y) + ' lbs.';
+        html = lineChartSVG([{ pts: bw }, { pts: avg, cls: 'avg' }], 'lbs', 'progBodyChart', sumB)
+          + (bw.length > 1 ? '<div class="ch-legend"><span><i class="lg-solid"></i>Weight</span><span><i class="lg-dash"></i>7 day average</span></div>' : '');
+        var rb = bw.map(function(p, i) { return [shortDate(p.k), fmtNum(p.y) + ' lbs', fmtNum(avg[i].y) + ' lbs']; }).reverse();
+        html += progTable(['Date', 'Weight', '7 day avg'], _progMore ? rb : rb.slice(0, 5), rb.length)
+          + '<button type="button" class="today-secondary prog-add" onclick="progAddWeight()">Add weight</button>';
+      }
+    } else {
+      var wk = activeSplit().week, today = mondayIndex(startOfToday()), done = 0;
+      var cells = wk.map(function(id, i) {
+        var st, lab;
+        if (id === 'rest') { st = 'rest'; lab = 'Rest'; }
+        else if (hasLogsForDay(id, currentTrainWeek)) {
+          var shortened = !!quickFor(id, currentTrainWeek) || TIME_BOX_CHOICES.indexOf(timeBoxes[boxKey(id)]) !== -1 || isShortDay(id, currentTrainWeek);
+          st = shortened ? 'short' : 'done'; lab = shortened ? 'Shortened' : 'Done'; done++;
+        } else { st = 'up'; lab = 'Upcoming'; }
+        return '<div class="pw-day ' + st + (i === today ? ' today' : '') + '"><span class="pw-dow">' + WG_DOWS[i] + '</span><span class="pw-st">' + lab + '</span></div>';
+      }).join('');
+      html = '<div class="pw-strip" role="list" aria-label="This week">' + cells + '</div>'
+        + '<div class="pw-line">' + done + ' workout' + (done === 1 ? '' : 's') + ' this week.</div>';
+    }
+    view.innerHTML = html;
+  }
+  function progAddWeight() {
+    goTab('today');
+    var w = document.getElementById('todayWeight');
+    if (w) { w.scrollIntoView({ block: 'center' }); w.focus(); }
+  }
+
   function renderCalendarTab() {
     var host = document.getElementById('calfullGrid');
     if (!host) return;
@@ -13848,7 +14362,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
       var n = currentTrainWeek;
       var monday = trainWeekMonday(n);
       //  The Calendar tab logs; the Overview widget below stays a summary.
-      var g = calWeekGrid(monday, { logs: true, scope: 'cal' });
+      var g = calWeekGrid(monday, { logs: true, scope: 'cal', noRuns: true });
       host.innerHTML = g.html;
       var wk = document.getElementById('calfullWeek');
       if (wk) wk.textContent = 'Training Week ' + (n + 1) + ' of 10'
@@ -13856,7 +14370,7 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
       var dt = document.getElementById('calfullDates');
       if (dt) dt.textContent = fmtRunDate(monday) + ' to ' + fmtRunDate(addDays(monday, 6));
       var note = document.getElementById('calfullNote');
-      if (note) note.innerHTML = calNoteText(g.runs);
+      if (note) note.innerHTML = runningEnabled ? 'Lifting only here. Runs are in the Run tab.' : '';
       var btns = document.getElementById('calfullWeekBtns');
       if (btns && !btns.childNodes.length) {
         var out = '';
@@ -14812,10 +15326,10 @@ window.addEventListener('resize', function() { if (navMenuOpen()) positionNavMen
 //  with it.
 
 //  Names the bar has used, and plain names, mapped onto the real tab ids.
-var TAB_ALIASES = { workout: 'training', plan: 'training', progress: 'calendar', settings: 'more', about: 'info' };
+var TAB_ALIASES = { workout: 'training', plan: 'training', progress: 'calendar', settings: 'more', about: 'info', run: 'running' };
 //  The bar has four buttons. Every other tab lights the one it lives under.
 function tabBarOwner(t) {
-  return (t === 'today' || t === 'training' || t === 'food') ? t : 'more';
+  return (t === 'today' || t === 'training' || t === 'food' || t === 'running') ? t : 'more';
 }
 function goTab(t) {
   var alias = TAB_ALIASES[t];
@@ -14867,6 +15381,7 @@ function goTab(t) {
     else if (t === 'calendar') {
       // Opens on whatever week is selected app-wide, never resets to week 1
       if (typeof renderCalendarTab === 'function') renderCalendarTab();
+      if (typeof renderProgressHome === 'function') renderProgressHome();
     }
     else if (t === 'food') {
       if (typeof renderFoodTab === 'function') renderFoodTab();
@@ -14882,7 +15397,10 @@ function goTab(t) {
       // fell through to the final else below, which is really "assume this
       // is the running tab" and would have called renderRunPlan() on entry.
     }
-    else if (typeof renderRunPlan === 'function') renderRunPlan();
+    else {
+      if (typeof renderRunHome === 'function') renderRunHome();
+      if (typeof renderRunPlan === 'function') renderRunPlan();
+    }
   }
   // Renders above may have rebuilt inputs and indicators
   if (typeof enhanceAllInputs === 'function') enhanceAllInputs();
@@ -14891,6 +15409,9 @@ function goTab(t) {
 }
 
 function goSec(id) {
+  //  About is one screen: the long footer stays off it.
+  var info = document.getElementById('tab-info');
+  if (info) info.classList.toggle('on-about', id === 'about');
   INFO_SECS.forEach(function(s) {
     var sec = document.getElementById('sec-' + s);
     var btn = document.getElementById('sb-' + s);
@@ -14927,7 +15448,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initEdgeCarousel();
   //  Progress is one place: the lift progress cards move under the calendar.
   var _prog = document.getElementById('progression'), _cal = document.getElementById('calendarfull');
-  if (_prog && _cal) _cal.parentNode.insertBefore(_prog, _cal.nextSibling);
+  if (_prog && _cal) _cal.parentNode.insertBefore(_prog, _cal.nextSibling);   // inside #progAll
   goTab(lastTab);
   // Inputs are rebuilt by several renders; the per-element guard makes
   // re-running this cheap, so it is called again whenever a tab opens.

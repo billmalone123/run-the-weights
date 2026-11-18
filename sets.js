@@ -862,9 +862,11 @@ ok('and the fields were still rendered for it',
 
 // The Calendar tab keys its inputs off the cell's own date, not the regenerated plan.
 eq('calWeekGrid takes an opts argument', /function calWeekGrid\(monday, opts\)/.test(html), true);
-eq('the Calendar tab asks for logs', /calWeekGrid\(monday, \{ logs: true, scope: 'cal' \}\)/.test(html), true);
-eq('and the log block is keyed off the cell date',
-   /if \(o\.logs && \(run \|\| runLogs\[dateKeyOfRun\(date\)\]\)\) parts\.push\(runLogInputsHTML\(\{ date: date \}, o\.scope \|\| 'cal'\)\)/.test(html), true);
+// 8.17: Progress is lifting only. The calendar there passes noRuns, and the
+// run log block (still keyed off the cell date) is skipped when it does.
+eq('the Calendar tab asks for logs, without runs', /calWeekGrid\(monday, \{ logs: true, scope: 'cal', noRuns: true \}\)/.test(html), true);
+eq('and the log block is keyed off the cell date, skipped with noRuns',
+   /if \(o\.logs && !o\.noRuns && \(run \|\| runLogs\[dateKeyOfRun\(date\)\]\)\) parts\.push\(runLogInputsHTML\(\{ date: date \}, o\.scope \|\| 'cal'\)\)/.test(html), true);
 
 // Scoped ids: the same date on two surfaces must not collide.
 var dk = ctx.dateKeyOfRun(cElapsed.date);

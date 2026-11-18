@@ -717,13 +717,15 @@ eq('Run stays out of the menu while running is off', menuHtml.indexOf('>Run<') >
 ['today', 'training', 'food', 'more'].forEach(function (t) {
   ok('bottom bar has ' + t, html.indexOf('class="tabbar-btn" data-tab="' + t + '"') > -1);
 });
-eq('bottom bar has exactly four buttons', (html.match(/class="tabbar-btn"/g) || []).length, 4);
+eq('bottom bar markup has four tabs plus Run', (html.match(/class="tabbar-btn"/g) || []).length, 5);
+ok('Run sits between Plan and Food', /data-tab="training"[\s\S]*?data-tab="running"[\s\S]*?data-tab="food"/.test(html));
+ok('Run is hidden unless running is on', html.indexOf('body:not(.running) .tabbar-btn[data-tab="running"] { display: none; }') > -1);
 ok('the Workout tab is labelled Plan', /data-tab="training"[^\n]*<span>Plan<\/span>/.test(html));
 ok('More opens Settings', html.indexOf('onclick="openSettingsModal();"><span class="more-row-title">Settings<') > -1);
 // The More tab still reaches every older destination.
 [['Home', "goTab('info'); goSec('home');"], ['About', "goTab('info'); goSec('about');"],
  ['The Edge', "goTab('info'); goSec('edge');"], ['Week Overview', "goTab('info'); goSec('overview');"],
- ['Progress', "goTab('calendar');"], ['Quick Log', "goTab('quicklog');"]
+ ['Progress', "goTab('calendar');"]
 ].forEach(function (p) {
   ok('More has a working link to ' + p[0], html.indexOf('onclick="' + p[1] + '"><span class="more-row-title">' + p[0] + '<') > -1);
 });
