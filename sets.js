@@ -274,8 +274,12 @@ eq('no warm-up store invented for old data', storage.getItem('monk_warmup_logs_v
 
 section('3. setsFor validates rather than trusts');
 reset(); boot(); EX = anExercise();
-ctx.setCounts[EX] = 4;   // stale / hand-edited
-eq('a 4 coerces down to 2', ctx.setsFor(EX), 2);
+ctx.setCounts[EX] = 4;   // 1 to 6 sets are allowed now
+eq('a 4 is a real count', ctx.setsFor(EX), 4);
+ctx.setCounts[EX] = 9;   // stale / hand-edited, past the 6 set limit
+eq('a 9 falls back to 2', ctx.setsFor(EX), 2);
+ctx.setCounts[EX] = 0;
+eq('a 0 falls back to 2', ctx.setsFor(EX), 2);
 ctx.setCounts[EX] = '3'; // string from JSON
 eq('a string "3" reads as 3', ctx.setsFor(EX), 3);
 ctx.setCounts[EX] = null;
