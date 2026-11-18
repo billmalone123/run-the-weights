@@ -4536,7 +4536,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.15</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.16</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -6163,7 +6163,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
   }
   function restCardHTML(slot) {
     var rp = restPlanFor(slot, currentTrainWeek), key = slotDateKey(slot), done = !!restDone[key];
-    var runBtn = function(t) { return '<button type="button" class="rest-run-btn" onclick="openRunLog(\'easy\')">' + t + '</button>'; };
+    var runBtn = function(t) { return '<button type="button" class="rest-run-btn" onclick="openRunLog(\'easy\', \'' + key + '\')">' + t + '</button>'; };
     var main = REST_OPTS[rp.list[0]], alts = rp.list.slice(1).map(function(id) { return id === 'run' ? runBtn(REST_OPTS[id].text) : REST_OPTS[id].text; });
     return '<div class="today-card-kicker">' + (rp.recovery ? 'Recovery' : 'Rest day') + ' · ' + TODAY_DOWS[slot] + '</div>'
       + '<div class="rest-main">' + (rp.list[0] === 'run' ? runBtn(main.text) : main.text) + '</div>'
@@ -6241,7 +6241,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     if (trEl) {
       var pr = runningEnabled && !(runLogs[todayKey()] && runLogs[todayKey()].miles > 0) ? plannedRunToday() : null;
       trEl.style.display = pr ? '' : 'none';
-      trEl.innerHTML = pr ? '<div class="today-card-kicker">Today</div><div class="today-card-title">Run: ' + runTypeLabel(pr.type) + ' ' + fmtDist(pr.miles) + '</div>'
+      trEl.innerHTML = pr ? '<div class="today-card-kicker">Today</div><div class="today-card-title">' + (pr.race ? pr.detail : 'Run: ' + runTypeLabel(pr.type) + ' ' + fmtDist(pr.miles)) + '</div>'
         + '<button type="button" class="today-secondary" onclick="openRunLog(\'' + pr.type + '\')">Log it</button>' : '';
     }
     var rEl = document.getElementById('todayRest'), todaySlot = mondayIndex(startOfToday());
@@ -13401,6 +13401,9 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
       entry = { miles: miles, secs: secs, hr: hr, feel: feel };
     }
     var prev = runLogs[k] ? JSON.stringify(runLogs[k]) : null;
+    //  Fields these cells do not edit (a quick log's type, a Strava source)
+    //  stay on the entry.
+    if (entry && runLogs[k]) ['type', 'source'].forEach(function(f) { if (runLogs[k][f] != null) entry[f] = runLogs[k][f]; });
     if (entry) runLogs[k] = entry; else delete runLogs[k];
     if ((entry ? JSON.stringify(entry) : null) === prev) return;
     persistRunLogs();
@@ -13413,6 +13416,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
   //  Set when a save had to skip its re-render because a field still had focus.
   var _runLogDirty = false;
   function rerenderRunSurfaces() {
+    if (typeof renderRunHome === 'function') { try { renderRunHome(); } catch(e) {} }
     _runLogDirty = false;
     renderRunPlan();
     if (typeof renderWeekCalendar === 'function') renderWeekCalendar();
@@ -13656,7 +13660,11 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     if (!runningEnabled || !runPlan || !runPlan.raceDate || typeof generateRunPlan !== 'function') return null;
     try {
       var plan = generateRunPlan(readRunInputs(), startOfToday());
-      if (!plan || plan.error || !plan.weeks) return null;
+      if (!plan || plan.error || !plan.weeks) {
+        //  Inside the last week the generator stops; race day itself still shows.
+        var rd = parseDateKey(runPlan.raceDate), dist = RACE_DISTANCES[runPlan.distance || 'half'];
+        return rd && dist && rd.getTime() === startOfToday().getTime() ? { miles: dist.miles || 0, type: 'fast', detail: 'Race day: ' + dist.label, race: true } : null;
+      }
       var t = startOfToday().getTime(), hit = null;
       plan.weeks.forEach(function(w) { w.cells.forEach(function(c) {
         if (c.before || c.after || !c.date || c.date.getTime() !== t || !(c.miles > 0)) return;
@@ -13669,7 +13677,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
   function runRows() {
     return Object.keys(runLogs || {}).filter(function(k) { var e = runLogs[k]; return parseDateKey(k) && e && e.miles > 0; }).sort().reverse();
   }
-  var _runMore = false;
+  var _runMore = false, _runSavedT = null;
   function toggleRunMore() { _runMore = !_runMore; renderRunHome(); }
   function toggleRunPlanWrap() {
     var el = document.getElementById('runPlanWrap'), b = document.getElementById('runPlanBtn');
@@ -13690,7 +13698,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
           + '<div class="today-card-meta">' + (todayLog.secs ? fmtDur(todayLog.secs) + ', ' + fmtPace(todayLog.secs, todayLog.miles) : 'Logged') + '</div>'
           + '<button type="button" class="today-secondary" onclick="openRunLog()">Edit today\'s run</button>';
       } else if (plan) {
-        card.innerHTML = '<div class="today-card-kicker">Today</div><div class="today-card-title">Run: ' + runTypeLabel(plan.type) + ' ' + fmtDist(plan.miles) + '</div>'
+        card.innerHTML = '<div class="today-card-kicker">Today</div><div class="today-card-title">' + (plan.race ? plan.detail : 'Run: ' + runTypeLabel(plan.type) + ' ' + fmtDist(plan.miles)) + '</div>'
           + '<div class="today-card-meta">' + plan.detail + '</div>'
           + '<button type="button" class="today-start" onclick="openRunLog(\'' + plan.type + '\')">Log it</button>';
       } else {
@@ -13734,7 +13742,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     }
   }
   //  Quick run log.
-  var _rlType = 'easy', _rlFeel = null;
+  var _rlType = 'easy', _rlFeel = null, _rlDate = null;
   function renderRunLogUnits() { var u = document.getElementById('rlUnits'); if (u) u.innerHTML = unitToggleHTML(); }
   function renderRunLogChoices() {
     var t = document.getElementById('rlTypes');
@@ -13742,9 +13750,12 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     var f = document.getElementById('rlFeel');
     if (f) f.innerHTML = RUN_FEELS.map(function(x) { var on = _rlFeel === x[2]; return '<button type="button" class="liftdays-btn' + (on ? ' on' : '') + '" role="radio" aria-checked="' + on + '" onclick="_rlFeel=' + x[2] + ';renderRunLogChoices()">' + x[1] + '</button>'; }).join('');
   }
-  function openRunLog(type) {
+  function openRunLog(type, dateKey) {
     if (!runningEnabled) return;
-    var today = runLogs[todayKey()], plan = plannedRunToday();
+    _rlDate = dateKey && parseDateKey(dateKey) ? dateKey : todayKey();
+    var title = document.getElementById('runLogTitle');
+    if (title) title.textContent = _rlDate === todayKey() ? 'Log a run' : 'Log a run, ' + fmtRunDate(parseDateKey(_rlDate));
+    var today = runLogs[_rlDate], plan = _rlDate === todayKey() ? plannedRunToday() : null;
     _rlType = type || (today && today.type) || (plan && plan.type) || runLastType || 'easy';
     _rlFeel = today && today.feel ? (today.feel <= 4 ? 3 : today.feel <= 7 ? 6 : 9) : null;
     var d = document.getElementById('rlDist'), mi = document.getElementById('rlMin'), se = document.getElementById('rlSec');
@@ -13789,15 +13800,20 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
     if (r.secErr) return say('Seconds go up to 59.');
     if (!(r.secs > 0)) return say(r.timeRaw === '' ? 'Add how long it took.' : 'Time needs to be above zero, like 27:30.');
     if (r.secs >= 86400) return say('That is over 24 hours. Check the time.');
-    var k = todayKey(), prev = runLogs[k] || {};
+    var k = _rlDate || todayKey(), prev = runLogs[k] || {};
+    if (runDateIsFuture(k)) return say('That day has not happened yet. Log it on the day.');
     runLogs[k] = { miles: Math.round(r.miles * 100) / 100, secs: Math.round(r.secs), hr: prev.hr || null, feel: _rlFeel || prev.feel || null, type: _rlType };
+    if (prev.source) runLogs[k].source = prev.source;
     persistRunLogs();
     runLastType = _rlType;
     try { localStorage.setItem(RUN_LAST_TYPE_KEY, runLastType); } catch(e) {}
     closeRunLog();
     goTab('running');
     var sv = document.getElementById('runSaved');
-    if (sv) sv.textContent = 'Saved. ' + fmtDist(runLogs[k].miles) + ' in ' + fmtDur(runLogs[k].secs) + ', ' + fmtPace(runLogs[k].secs, runLogs[k].miles) + '.';
+    if (sv) {
+      sv.textContent = 'Saved. ' + fmtDist(runLogs[k].miles) + ' in ' + fmtDur(runLogs[k].secs) + ', ' + fmtPace(runLogs[k].secs, runLogs[k].miles) + '.';
+      clearTimeout(_runSavedT); _runSavedT = setTimeout(function() { sv.textContent = ''; }, 6000);
+    }
     if (typeof rerenderRunSurfaces === 'function') { try { rerenderRunSurfaces(); } catch(e) {} }
     if (typeof renderToday === 'function') renderToday();
   }
@@ -14345,7 +14361,7 @@ body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
         return '<div class="pw-day ' + st + (i === today ? ' today' : '') + '"><span class="pw-dow">' + WG_DOWS[i] + '</span><span class="pw-st">' + lab + '</span></div>';
       }).join('');
       html = '<div class="pw-strip" role="list" aria-label="This week">' + cells + '</div>'
-        + '<div class="pw-line">' + done + ' workout' + (done === 1 ? '' : 's') + ' this week.</div>';
+        + '<div class="pw-line">Week ' + (currentTrainWeek + 1) + ': ' + done + ' workout' + (done === 1 ? '' : 's') + ' done.</div>';
     }
     view.innerHTML = html;
   }
