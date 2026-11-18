@@ -424,7 +424,7 @@ eq('older backup leaves everything at the 2-set default', ctx.setsFor(anExercise
 
 section('11. Rep-range explanations — one per exercise, rendered on both paths');
 var allEx = ev('EXERCISES.map(function(e){return {id:e.id,tag:e.tag,range:e.repRange.join("-"),why:e.repWhy};})');
-eq('library holds 110 exercises (43 programmed plus 67 library)', allEx.length, 110);
+eq('library holds 128 exercises (43 programmed, 67 library, 18 imported)', allEx.length, 128);
 eq('every exercise has a repWhy', allEx.filter(function (e) { return !e.why || !String(e.why).trim(); }).length, 0);
 var whys = allEx.map(function (e) { return e.why; });
 eq('no two exercises share the same sentence', new Set(whys).size, allEx.length);
@@ -899,6 +899,23 @@ eq('a choice from another date is not honored', ev("boxChoice('lower-a', 0)"), u
 ev("saveDayMode({date: todayKey(), week:0, day:'lower-a', mode:'time', min:30}); invalidateBuild()");
 eq('the same choice made today is honored', ev("boxChoice('lower-a', 0)"), 30);
 ev("saveDayMode(null); delete timeBoxes['0|lower-a']; invalidateBuild()");
+
+// 8.20: Free Exercise DB imports. Ids and names unique, schema valid, never in a plan, always last.
+var allEx2 = ev('EXERCISES'), fedb = allEx2.filter(function (e) { return e.src === 'fedb'; });
+ok('imported exercises are present', fedb.length > 0, fedb.length);
+eq('no duplicate ids', allEx2.length, new Set(allEx2.map(function (e) { return e.id; })).size);
+eq('no duplicate names', allEx2.length, new Set(allEx2.map(function (e) { return ev('normName')(e.name); })).size);
+ok('every import has the full schema', fedb.every(function (e) {
+  return e.day === 'fedb' && /^fedb-/.test(e.id) && ev('MUSCLE_LABEL')[e.muscle] && ['push', 'pull', 'squat', 'hinge', 'core'].indexOf(e.pattern) > -1
+    && ['compound', 'isolation'].indexOf(e.kind) > -1 && Array.isArray(e.equip) && ev('EQUIP_ALL').indexOf(e.equip[0]) > -1
+    && Array.isArray(e.repRange) && e.rest && e.time && e.note && e.cue && !/—|–| - /.test(e.note + e.cue);
+}));
+ok('every import has a cue', fedb.every(function (e) { return ev('EX_CUES')[e.id] === e.cue; }));
+ok('no plan day uses an import', Object.keys(ev('SPLIT_DAYS')).every(function (d) {
+  return ev('programmedDayExercises')(d).every(function (e) { return e.src !== 'fedb'; });
+}));
+ok('imports only come back when asked for', ev("quickCandidates(function(){return true})").every(function (e) { return e.src !== 'fedb'; })
+   && ev("quickCandidates(function(){return true}, 1)").every(function (e) { return e.src === 'fedb'; }));
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);
