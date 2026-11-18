@@ -473,7 +473,8 @@ ok('screen 1 CTA', /onclick="onbFlowGoto\(2\)">Get started</.test(html));
 ok('screen 2 heading', />A few quick questions</.test(html));
 ok('Strava button reuses the existing connect flow', /onclick="onStravaButtonClick\(\)">Connect Strava to sync your runs automatically\./.test(html));
 ok('screen 3 heading', />YOU'RE READY</.test(html));
-ok('screen 3 body copy', /Your targets are set\. Log your first meal or your first lift to get started\./.test(html));
+ok('screen 3 lead', />Here is your first week\.</.test(html));
+ok('screen 3 shift line', />Miss a day\? No problem\. We shift it\.</.test(html));
 ok('Log a meal goes to Food', /onclick="onbFlowFinish\('food'\)">Log a meal</.test(html));
 ok('Start lifting goes to Training', /onclick="onbFlowFinish\('training'\)">Start lifting</.test(html));
 eq('every screen has a Skip setup link', (html.match(/onclick="onbFlowSkip\(\)">Skip setup</g) || []).length, 3);
@@ -705,20 +706,22 @@ ctx.closeNavMenu();
 section('2m. Navigation: bottom bar is primary, the logo menu indexes everything, nothing lost');
 eq('MAIN_TABS adds today and keeps every older tab', ev('MAIN_TABS').join(','), 'today,info,training,running,calendar,food,quicklog,more');
 var menuHtml = ctx.buildNavMenu().innerHTML;
-['Today', 'Workout', 'Food', 'Progress', 'Quick Log', 'About and more'].forEach(function (label) {
+['Today', 'Plan', 'Food', 'Progress', 'Quick Log', 'About and more'].forEach(function (label) {
   ok(label + ' is in the logo menu', menuHtml.indexOf('>' + label + '<') > -1);
 });
 eq('Run stays out of the menu while running is off', menuHtml.indexOf('>Run<') > -1, false);
-['today', 'training', 'food', 'calendar'].forEach(function (t) {
+['today', 'training', 'food', 'more'].forEach(function (t) {
   ok('bottom bar has ' + t, html.indexOf('class="tabbar-btn" data-tab="' + t + '"') > -1);
 });
-ok('bottom bar opens Settings', /class="tabbar-btn" data-action="settings" onclick="openSettingsModal\(\)"/.test(html));
+eq('bottom bar has exactly four buttons', (html.match(/class="tabbar-btn"/g) || []).length, 4);
+ok('the Workout tab is labelled Plan', /data-tab="training"[^\n]*<span>Plan<\/span>/.test(html));
+ok('More opens Settings', html.indexOf('onclick="openSettingsModal();"><span class="more-row-title">Settings<') > -1);
 // The More tab still reaches every older destination.
 [['Home', "goTab('info'); goSec('home');"], ['About', "goTab('info'); goSec('about');"],
  ['The Edge', "goTab('info'); goSec('edge');"], ['Week Overview', "goTab('info'); goSec('overview');"],
- ['Progression', "goTab('calendar');"], ['Quick Log', "goTab('quicklog');"]
+ ['Progress', "goTab('calendar');"], ['Quick Log', "goTab('quicklog');"]
 ].forEach(function (p) {
-  ok('More has a working link to ' + p[0], html.indexOf('onclick="' + p[1] + '">' + p[0] + '<') > -1);
+  ok('More has a working link to ' + p[0], html.indexOf('onclick="' + p[1] + '"><span class="more-row-title">' + p[0] + '<') > -1);
 });
 // goTab('more') itself: must not fall through to the run-plan renderer,
 // which the final catch-all in goTab is really "assume this is Run".
@@ -738,6 +741,12 @@ eq('lands on tab-info', ctx.document.getElementById('tab-info').style.display, '
 eq('with Home active', ctx.document.getElementById('sec-home').style.display, 'block');
 noThrow('More -> Quick Log still resets and renders the Quick Log tab', function () { ctx.goTab('quicklog'); });
 eq('lands on tab-quicklog', ctx.document.getElementById('tab-quicklog').style.display, 'block');
+// Old and plain tab names still land in the right place.
+[['progress', 'calendar'], ['workout', 'training'], ['plan', 'training']].forEach(function (p) {
+  noThrow('goTab(\'' + p[0] + '\') runs', function () { ctx.goTab(p[0]); });
+  eq('goTab(\'' + p[0] + '\') shows tab-' + p[1], ctx.document.getElementById('tab-' + p[1]).style.display, 'block');
+});
+eq('Progress, info and Quick Log light More', ['calendar', 'info', 'quicklog', 'more'].map(function (t) { return ctx.tabBarOwner(t); }).join(), 'more,more,more,more');
 // The dropdown's "current tab" tick now maps info/quicklog onto More —
 // verified as source logic above (dynamically-created menu nodes aren't
 // discoverable via this stub's getElementById, so this can't be driven

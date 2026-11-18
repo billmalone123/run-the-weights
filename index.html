@@ -2058,7 +2058,7 @@ body.advanced .simple-only { display: none !important; }
 /* ── BOTTOM TAB BAR + TODAY ─────────────────────────────────────────────── */
 .tabbar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 240;
-  display: grid; grid-template-columns: repeat(5, 1fr);
+  display: grid; grid-template-columns: repeat(4, 1fr);
   background: var(--bg); border-top: 1px solid var(--border);
   padding: 4px 4px calc(4px + env(safe-area-inset-bottom));
 }
@@ -2431,6 +2431,15 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
   font-weight: 700; font-size: var(--fs-3); letter-spacing: 0.02em; padding: 16px 4px; cursor: pointer;
 }
 .more-list-item:last-child { border-bottom: 1px solid var(--border); }
+.more-list-item { display: flex; flex-direction: column; justify-content: center; gap: 2px; min-height: 64px; padding: 12px 4px; letter-spacing: 0; }
+.more-list-item::after { content: '\203A'; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: var(--fs-4); font-weight: 400; }
+.more-list-item { position: relative; padding-right: 32px; }
+.more-row-title { font-weight: 700; font-size: var(--fs-3); }
+.more-row-sub { font-weight: 400; font-size: var(--fs-2); color: var(--muted); }
+.more-list-minor { margin-top: 28px; }
+.more-list-minor .more-list-item { min-height: 52px; }
+.more-list-minor .more-row-title { font-weight: 600; }
+#moreSection .more-title { text-align: left; font-size: var(--fs-5); margin: 8px 0 16px; }
 .more-list-item:active { background: var(--surface-2); }
 /* Apply is a primary action (it commits the recommended targets) that used
    to be styled like the plain Cancel/Discard links next to it, with no fill
@@ -2454,6 +2463,15 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
   overflow-y: auto; padding: 48px 20px;
 }
 .onb-flow-inner { width: 100%; max-width: 440px; }
+/* 8.14 First week preview on You're ready. Fits 390 by 844 with no scroll. */
+.onb-week-lead { margin-bottom: 8px; }
+.onb-week { list-style: none; margin: 0 0 10px; padding: 0; }
+.onb-week li { display: flex; gap: 12px; padding: 7px 0; border-top: 1px solid var(--border); font-size: var(--fs-2); line-height: 1.35; color: var(--text); }
+.onb-week li:first-child { border-top: none; }
+.onb-week-day { flex: 0 0 40px; font-weight: 700; }
+.onb-week li.rest { color: var(--muted); }
+.onb-week-note { font-size: var(--fs-2); color: var(--muted); line-height: 1.45; margin-bottom: 6px; }
+#onbFlowScreen3 .quicklog-save-btn { margin-top: 0; }
 .onb-flow-bullets { list-style: none; margin: 0 0 28px; padding: 0; }
 .onb-flow-bullets li {
   font-family: var(--font-body); font-size: var(--fs-2); color: var(--text);
@@ -3048,16 +3066,57 @@ body.training-mode select.run-input { color: var(--accent); }
 @media (max-width: 768px) {
   .run-week { grid-template-columns: 100px repeat(7, minmax(164px, 1fr)) 66px; min-width: 1314px; }
 }
+
+/* 8.14 ONE FONT. Form controls do not inherit the page font by default, which
+   is what put Arial on the arrows and checks. Class rules still win. */
+button, input, select, textarea { font-family: inherit; }
+
+/* 8.14 PLAN CARDS. One open at a time. Closed: one line. Open: set rows, a
+   rest chip and More. Everything else on the card lives behind More. */
+#tab-training .lift-row[id^="row-"] { display: block; padding: 0; cursor: default; }
+.lift-head { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 52px; padding: 8px 12px; background: none; border: 0; color: var(--text); text-align: left; cursor: pointer; border-radius: 14px; }
+.lift-head .lift-name { flex: 1; min-width: 0; margin: 0; font-size: var(--fs-3); font-weight: 700; line-height: 1.3; }
+.lift-head-meta { flex: 0 0 auto; font-size: var(--fs-2); color: var(--muted); white-space: nowrap; }
+.lift-head-check { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--field); color: transparent; font-size: var(--fs-1); }
+.lift-row.all-done .lift-head-check { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.lift-row.all-done:not(.open) .lift-head .lift-name { color: var(--muted); }
+.lift-head:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.lift-row:not(.open) > .lift-body { display: none; }
+.lift-row.open { box-shadow: inset 0 0 0 1.5px var(--field); }
+.lift-body { padding: 0 12px 12px; }
+#tab-training .lift-body .simple-target { margin: 0 0 4px; font-size: var(--fs-2); }
+#tab-training .lift-body .lift-log-inline { margin-top: 0; }
+.lift-row:not(.show-extra) .lift-extra { display: none !important; }
+.lift-extra { margin-top: 8px; }
+.lift-extra .lift-cue { margin: 0 0 8px; }
+.lift-quick { display: flex; gap: 8px; margin-top: 8px; }
+.rest-chip, .lift-more-btn { min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--field); background: none; color: var(--text); font-size: var(--fs-2); font-weight: 600; cursor: pointer; }
+.rest-chip:active, .lift-more-btn:active { background: var(--surface-2); }
+.lift-more-btn { margin-left: auto; min-width: 88px; }
+.lift-more-btn[aria-expanded="true"] { background: var(--surface-2); }
+/* The tag badge repeats the day title. Advanced keeps it. */
+/* The tag badge repeats the day title and the time is already in the week
+   strip above. Advanced keeps both. */
+body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
+#tab-training .plan-badges .day-actions { margin-left: 0; flex-wrap: wrap; }
+#tab-training .warmup-toggle-btn.day-action { padding: 0 14px; margin: 0; border: 1px solid var(--field); border-radius: 999px; background: none; color: var(--text); font-size: var(--fs-2); font-weight: 400; letter-spacing: 0; text-transform: none; }
+
+/* 8.14 TAP TARGETS. 44 px minimum on everything a thumb has to hit. */
+.day-action, .today-link, .liftdays-btn, .cal-week-btn, .food-apply-btn, .settings-open-btn, .run-toggle-btn { min-height: 44px; }
+.calfull-arrow { min-width: 44px; min-height: 44px; }
+.liftdays-btn { min-width: 44px; }
+.nav-logo { min-height: 44px; }
+.quicklog-back { min-height: 44px; }
 </style>
 </head>
 <body style="background:var(--bg)">
-<!-- BOTTOM TAB BAR. The five places a lifter goes, always on screen. -->
+<!-- BOTTOM TAB BAR. Four places, always on screen. Progress, Settings and
+     About live in More; goTab() lights More for each of them. -->
 <div class="tabbar" id="tabbar" role="navigation" aria-label="Main">
   <button class="tabbar-btn" data-tab="today" onclick="goTab('today')"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg><span>Today</span></button>
-  <button class="tabbar-btn" data-tab="training" onclick="goTab('training')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4M6 7v10M18 7v10M21 10v4M6 12h12"/></svg><span>Workout</span></button>
+  <button class="tabbar-btn" data-tab="training" onclick="goTab('training')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4M6 7v10M18 7v10M21 10v4M6 12h12"/></svg><span>Plan</span></button>
   <button class="tabbar-btn" data-tab="food" onclick="goTab('food')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M16 21V3c-2.5 1.5-3 4.5-3 8h3"/></svg><span>Food</span></button>
-  <button class="tabbar-btn" data-tab="calendar" onclick="goTab('calendar')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V4M4 20h16M8 16l4-5 3 3 5-6"/></svg><span>Progress</span></button>
-  <button class="tabbar-btn" data-action="settings" onclick="openSettingsModal()"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg><span>Settings</span></button>
+  <button class="tabbar-btn" data-tab="more" onclick="goTab('more')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.8" style="fill:currentColor"/><circle cx="12" cy="12" r="1.8" style="fill:currentColor"/><circle cx="19" cy="12" r="1.8" style="fill:currentColor"/></svg><span>More</span></button>
 </div>
 
 <!-- GOING OUT. Two choices, no lecture. -->
@@ -3172,8 +3231,11 @@ body.training-mode select.run-input { color: var(--accent); }
 
     <div class="onb-flow-screen" id="onbFlowScreen3" style="display:none">
       <div class="settings-modal-title">YOU'RE READY</div>
-      <div class="settings-modal-sub">Your targets are set. Log your first meal or your first lift to get started.</div>
-      <button class="quicklog-back" style="margin-bottom:14px;" onclick="onbFlowExploreAbout()">Explore what's possible &rarr; About Run the Weights</button>
+      <div class="settings-modal-sub onb-week-lead">Here is your first week.</div>
+      <ul class="onb-week" id="onbWeekPreview" aria-label="Your first week"></ul>
+      <div class="onb-week-note">Miss a day? No problem. We shift it.</div>
+      <div class="onb-week-note" id="onbWeekFood" style="display:none"></div>
+      <button class="quicklog-back" style="margin-bottom:8px;" onclick="onbFlowExploreAbout()">Explore what's possible &rarr; About Run the Weights</button>
       <div style="display:flex;gap:12px;">
         <button class="quicklog-save-btn" style="margin-top:0;" onclick="onbFlowFinish('food')">Log a meal</button>
         <button class="quicklog-save-btn" style="margin-top:0;" onclick="onbFlowFinish('training')">Start lifting</button>
@@ -3497,7 +3559,7 @@ body.training-mode select.run-input { color: var(--accent); }
       </div>
       <button class="clear-day-btn adv" onclick="clearDayLogs('chest'); return false;">Clear Logs</button>
     </div>
-    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-chest', this)" aria-expanded="false">Show warm-up</button>
+    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-chest', this)" aria-expanded="false">Warm-up</button>
     <div class="warmup-panel" id="wu-chest">
       <div class="warmup-panel-title">Warm-Up. Complete Before First Work Set</div>
       <div class="warmup-steps">
@@ -3524,7 +3586,7 @@ body.training-mode select.run-input { color: var(--accent); }
       </div>
       <button class="clear-day-btn adv" onclick="clearDayLogs('arms'); return false;">Clear Logs</button>
     </div>
-    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-arms', this)" aria-expanded="false">Show warm-up</button>
+    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-arms', this)" aria-expanded="false">Warm-up</button>
     <div class="warmup-panel" id="wu-arms">
       <div class="warmup-panel-title">Warm-Up. Complete Before First Work Set</div>
       <div class="warmup-steps">
@@ -3551,7 +3613,7 @@ body.training-mode select.run-input { color: var(--accent); }
       </div>
       <button class="clear-day-btn adv" onclick="clearDayLogs('legs'); return false;">Clear Logs</button>
     </div>
-    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-legs', this)" aria-expanded="false">Show warm-up</button>
+    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-legs', this)" aria-expanded="false">Warm-up</button>
     <div class="warmup-panel" id="wu-legs">
       <div class="warmup-panel-title">Warm-Up. Complete Before First Work Set</div>
       <div class="warmup-steps">
@@ -3578,7 +3640,7 @@ body.training-mode select.run-input { color: var(--accent); }
       </div>
       <button class="clear-day-btn adv" onclick="clearDayLogs('chest-b'); return false;">Clear Logs</button>
     </div>
-    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-chest-b', this)" aria-expanded="false">Show warm-up</button>
+    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-chest-b', this)" aria-expanded="false">Warm-up</button>
     <div class="warmup-panel" id="wu-chest-b">
       <div class="warmup-panel-title">Warm-Up. Complete Before First Work Set</div>
       <div class="warmup-steps">
@@ -3605,7 +3667,7 @@ body.training-mode select.run-input { color: var(--accent); }
       </div>
       <button class="clear-day-btn adv" onclick="clearDayLogs('arms-b'); return false;">Clear Logs</button>
     </div>
-    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-arms-b', this)" aria-expanded="false">Show warm-up</button>
+    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-arms-b', this)" aria-expanded="false">Warm-up</button>
     <div class="warmup-panel" id="wu-arms-b">
       <div class="warmup-panel-title">Warm-Up. Complete Before First Work Set</div>
       <div class="warmup-steps">
@@ -3632,7 +3694,7 @@ body.training-mode select.run-input { color: var(--accent); }
       </div>
       <button class="clear-day-btn adv" onclick="clearDayLogs('legs-b'); return false;">Clear Logs</button>
     </div>
-    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-legs-b', this)" aria-expanded="false">Show warm-up</button>
+    <button class="warmup-toggle-btn" onclick="toggleWarmup('wu-legs-b', this)" aria-expanded="false">Warm-up</button>
     <div class="warmup-panel" id="wu-legs-b">
       <div class="warmup-panel-title">Warm-Up. Complete Before First Work Set</div>
       <div class="warmup-steps">
@@ -3953,15 +4015,18 @@ body.training-mode select.run-input { color: var(--accent); }
      they render changed, only how you get to them. -->
 <div id="tab-more" class="tab-main" style="display:none">
 <section id="moreSection">
-  <div class="section-label">Run the Weights — More</div>
-  <h2 class="section-title train-title">EVERYTHING<br>ELSE.</h2>
+  <h2 class="section-title train-title more-title">MORE</h2>
   <div class="more-list">
-    <button class="more-list-item" onclick="goTab('info'); goSec('home');">Home</button>
-    <button class="more-list-item" onclick="goTab('info'); goSec('about');">About</button>
-    <button class="more-list-item" onclick="goTab('info'); goSec('edge');">The Edge</button>
-    <button class="more-list-item" onclick="goTab('info'); goSec('overview');">Week Overview</button>
-    <button class="more-list-item" onclick="goTab('calendar');">Progression</button>
-    <button class="more-list-item" onclick="goTab('quicklog');">Quick Log</button>
+    <button class="more-list-item" onclick="goTab('calendar');"><span class="more-row-title">Progress</span><span class="more-row-sub">Your weeks, lifts and weight.</span></button>
+    <button class="more-list-item" onclick="openSettingsModal();"><span class="more-row-title">Settings</span><span class="more-row-sub">Plan, food targets, theme and backup.</span></button>
+    <button class="more-list-item" onclick="goTab('info'); goSec('about');"><span class="more-row-title">About</span><span class="more-row-sub">What this is and how it works.</span></button>
+  </div>
+  <div class="more-list more-list-minor">
+    <button class="more-list-item" id="moreRunRow" style="display:none" onclick="goTab('running');"><span class="more-row-title">Run</span></button>
+    <button class="more-list-item" onclick="goTab('quicklog');"><span class="more-row-title">Quick Log</span></button>
+    <button class="more-list-item" onclick="goTab('info'); goSec('overview');"><span class="more-row-title">Week Overview</span></button>
+    <button class="more-list-item" onclick="goTab('info'); goSec('edge');"><span class="more-row-title">The Edge</span></button>
+    <button class="more-list-item" onclick="goTab('info'); goSec('home');"><span class="more-row-title">Home</span></button>
   </div>
 </section>
 </div>
@@ -4209,7 +4274,7 @@ body.training-mode select.run-input { color: var(--accent); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.13</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.14</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -5154,6 +5219,9 @@ body.training-mode select.run-input { color: var(--accent); }
     document.querySelectorAll('#plan > .plan-content[id^="day-"], #altPlan .plan-content[id^="altday-"]').forEach(function(el) {
       var dayId = el.id.replace(/^alt/, '').replace(/^day-/, '');
       if (dayId === 'rest' || !SPLIT_DAYS[dayId] || SPLIT_DAYS[dayId].rest) return;
+      //  The day's own warm-up button (six day plan) rides in the same pill
+      //  row, so it costs no height above the first card.
+      var wu = el.querySelector('.warmup-toggle-btn');
       var old = el.querySelector('.day-actions'); if (old) old.remove();
       var head = el.querySelector('.plan-day-header'); if (!head) return;
       var short = isShortDay(dayId, currentTrainWeek);
@@ -5164,6 +5232,7 @@ body.training-mode select.run-input { color: var(--accent); }
       //  Into the badge row when there is one, so it costs no extra height.
       var badges = head.querySelector('.plan-badges');
       if (badges) badges.appendChild(div); else head.parentNode.insertBefore(div, head.nextSibling);
+      if (wu) { wu.classList.add('day-action'); div.appendChild(wu); }
     });
   }
   function stepTrainWeek(d) {
@@ -6818,22 +6887,37 @@ body.training-mode select.run-input { color: var(--accent); }
     for (var si = 1; si <= MAX_SETS; si++) rows += setRowHTML(ex, si, si > n);
     var pills = '';
     for (var pi = 1; pi <= MAX_SETS; pi++) pills += '<button class="setcount-btn' + (n === pi ? ' on' : '') + '" id="sc' + pi + '-' + ex.id + '" data-ex="' + ex.id + '" data-n="' + pi + '" onclick="setExerciseSets(this.dataset.ex, ' + pi + ')">' + pi + '</button>';
+    var restSec = parseRestToSeconds(ex.rest);
+    //  Collapsed, a card is one line: name, sets x reps, a check once every
+    //  set is in. Open, it is the set rows, a rest chip and More. Everything
+    //  else on the card (cue, Add set, failure, Swap, Warm-up, Notes, How to)
+    //  sits behind More. Same ids and handlers as before, only reordered.
     return '<div class="lift-row' + (n === 3 ? ' sets-3' : '') + '" id="row-' + ex.id + '">'
-      + '<div>'
-      + '<div class="lift-name-row"><div class="lift-name" id="name-' + ex.id + '">' + activeVariant(ex) + '</div></div>'
-      + '<div class="lift-cue" id="cue-' + ex.id + '">' + cueFor(ex) + '</div>'
-      + '<div class="lift-sets-reps adv-card" data-setslabel="' + ex.id + '">' + dispN + ' sets × ' + range + '</div>'
+      + '<button type="button" class="lift-head" aria-expanded="false" aria-controls="body-' + ex.id + '" data-ex="' + ex.id + '" onclick="toggleLiftCard(this.dataset.ex)">'
+      + '<span class="lift-name" id="name-' + ex.id + '">' + activeVariant(ex) + '</span>'
+      + '<span class="lift-head-meta" data-headmeta="' + ex.id + '">' + dispN + ' × ' + effectiveRepRangeText(ex) + '</span>'
+      + '<span class="lift-head-check" aria-hidden="true">✓</span>'
+      + '</button>'
+      + '<div class="lift-body" id="body-' + ex.id + '">'
       //  Caption under the rep count. Static content off EXERCISES, so it
       //  never needs restoring or persisting.
       + '<div class="simple-target" data-simpletarget="' + ex.id + '"></div>'
-      + '</div>'
       + '<div class="lift-log-inline">'
-      + '<div class="log-row setcount-row adv-card">'
+      + '<div class="log-row setcount-row adv-card lift-extra">'
       + '<span class="log-inline-label">Sets</span>'
       + pills
       + '</div>'
       + setTableHeadHTML(ex)
       + rows
+      + '</div>'
+      + '<div class="lift-quick">'
+      + '<button type="button" class="rest-chip" onclick="quickStartTimer(' + restSec + ', this)" aria-label="Start a ' + restLabel(restSec) + ' rest">Rest ' + restLabel(restSec) + '</button>'
+      + '<button type="button" class="lift-more-btn" aria-expanded="false" aria-controls="extra-' + ex.id + '" data-ex="' + ex.id + '" onclick="toggleLiftExtra(this.dataset.ex)">More</button>'
+      + '</div>'
+      + '<div class="lift-extra" id="extra-' + ex.id + '">'
+      + '<div class="lift-status" data-status="' + ex.id + '" onclick="event.stopPropagation()"></div>'
+      + '<div class="lift-cue" id="cue-' + ex.id + '">' + cueFor(ex) + '</div>'
+      + '<div class="lift-sets-reps adv-card" data-setslabel="' + ex.id + '">' + dispN + ' sets × ' + range + '</div>'
       + '<div class="set-adjust">'
       + '<button type="button" class="set-adjust-btn" id="addset-' + ex.id + '" data-ex="' + ex.id + '" onclick="changeSets(this.dataset.ex, 1)"' + (n >= MAX_SETS ? ' disabled' : '') + '>+ Add set</button>'
       + '<button type="button" class="set-adjust-btn" id="rmset-' + ex.id + '" data-ex="' + ex.id + '" onclick="changeSets(this.dataset.ex, -1)"' + (n <= MIN_SETS ? ' disabled' : '') + '>Remove last set</button>'
@@ -6847,8 +6931,6 @@ body.training-mode select.run-input { color: var(--accent); }
       + (ex.custom ? '<button class="remove-ex" data-ex="' + ex.id + '" data-day="' + ex.day
           + '" onclick="removeCustomExercise(this.dataset.ex, this.dataset.day)">Remove</button>' : '')
       + '</div>'
-      + '</div>'
-      + '<div class="lift-status" data-status="' + ex.id + '" onclick="event.stopPropagation()"></div>'
       + '<div class="card-foot">'
       + '<button type="button" class="card-foot-btn" aria-expanded="false" aria-controls="pnl-swap-' + ex.id + '" data-ex="' + ex.id + '" data-panel="show-swap" onclick="toggleCardPanel(this)">Swap</button>'
       + '<button type="button" class="card-foot-btn" aria-expanded="false" aria-controls="pnl-wu-' + ex.id + '" data-ex="' + ex.id + '" data-panel="show-wu" onclick="toggleCardPanel(this)">Warm-up</button>'
@@ -6877,7 +6959,91 @@ body.training-mode select.run-input { color: var(--accent); }
       + withSteppers('r-' + ex.id, 'reps', '<input class="log-inline-input" type="number" inputmode="numeric" id="r-' + ex.id + '" data-ex="' + ex.id + '" oninput="onAimInput(this.dataset.ex)" onchange="onAimCommit(this.dataset.ex)">') + '</div>'
       + '</div>'
       + '</div>'
+      + '</div>'
+      + '</div>'
       + '</div>';
+  }
+
+  function restLabel(sec) {
+    return Math.floor(sec / 60) + ':' + ('0' + (sec % 60)).slice(-2);
+  }
+  //     ONE CARD OPEN AT A TIME. Which card is open is remembered per day for
+  //     this visit only, so a re-render keeps it. With nothing remembered, the
+  //     first card with a set still to log opens on its own.
+  var _openLift = {};
+  function liftDayKey(row) {
+    var host = row && row.closest ? row.closest('.lift-rows') : null;
+    if (!host) return '';
+    return host.dataset.rows || (host.parentNode && host.parentNode.id) || '';
+  }
+  function liftRowDone(row) {
+    var sets = Array.prototype.filter.call(row.querySelectorAll('.set-row'), function(r) { return r.style.display !== 'none'; });
+    return sets.length > 0 && sets.every(function(r) { return r.classList.contains('logged'); });
+  }
+  function refreshLiftHead(exId) {
+    var row = document.getElementById('row-' + exId);
+    if (row) row.classList.toggle('all-done', liftRowDone(row));
+  }
+  function setLiftOpen(row, on) {
+    row.classList.toggle('open', on);
+    var h = row.querySelector('.lift-head');
+    if (h) h.setAttribute('aria-expanded', on ? 'true' : 'false');
+    if (!on) setLiftExtra(row, false);
+  }
+  function setLiftExtra(row, on) {
+    row.classList.toggle('show-extra', on);
+    var b = row.querySelector('.lift-more-btn');
+    if (b) { b.setAttribute('aria-expanded', on ? 'true' : 'false'); b.textContent = on ? 'Less' : 'More'; }
+    if (!on) row.querySelectorAll('.card-foot-btn[data-panel]').forEach(function(fb) {
+      row.classList.remove(fb.dataset.panel);
+      fb.classList.remove('on');
+      fb.setAttribute('aria-expanded', 'false');
+    });
+  }
+  function openOnlyLift(row) {
+    var host = row.closest('.lift-rows');
+    if (host) host.querySelectorAll('.lift-row.open').forEach(function(r) { if (r !== row) setLiftOpen(r, false); });
+    setLiftOpen(row, true);
+    _openLift[liftDayKey(row)] = row.id;
+  }
+  function toggleLiftCard(exId) {
+    var row = document.getElementById('row-' + exId);
+    if (!row) return;
+    if (row.classList.contains('open')) { setLiftOpen(row, false); _openLift[liftDayKey(row)] = ''; }
+    else openOnlyLift(row);
+  }
+  function toggleLiftExtra(exId) {
+    var row = document.getElementById('row-' + exId);
+    if (row) setLiftExtra(row, !row.classList.contains('show-extra'));
+  }
+  function applyOpenCards() {
+    _justDone = {};
+    document.querySelectorAll('#tab-training .lift-rows').forEach(function(host) {
+      var rows = Array.prototype.slice.call(host.querySelectorAll('.lift-row[id^="row-"]'));
+      if (!rows.length) return;
+      rows.forEach(function(r) { r.classList.toggle('all-done', liftRowDone(r)); });
+      var key = host.dataset.rows || (host.parentNode && host.parentNode.id) || '';
+      var want = _openLift[key];
+      var pick = want === '' ? null : (want && document.getElementById(want) && host.contains(document.getElementById(want)) ? document.getElementById(want)
+        : rows.filter(function(r) { return !r.classList.contains('all-done'); })[0] || null);
+      rows.forEach(function(r) { if (r !== pick) setLiftOpen(r, false); });
+      if (pick) setLiftOpen(pick, true);
+    });
+  }
+  //  After a set logs: when that was the card's last set, open the next card
+  //  with work left, so the next move is always the open card.
+  //  markDoneBtn() records the moment a card goes from sets left to all
+  //  done; renders clear it, so only a set the user just logged advances.
+  var _justDone = {};
+  function advanceLiftCard(exId) {
+    var row = document.getElementById('row-' + exId);
+    var fresh = _justDone[exId];
+    delete _justDone[exId];
+    if (!row || !fresh || !row.classList.contains('open')) return;
+    var host = row.closest('.lift-rows');
+    var rows = host ? Array.prototype.slice.call(host.querySelectorAll('.lift-row[id^="row-"]')) : [];
+    var next = rows.slice(rows.indexOf(row) + 1).concat(rows.slice(0, rows.indexOf(row))).filter(function(r) { return !r.classList.contains('all-done'); })[0];
+    if (next) openOnlyLift(next);
   }
 
   //  Two render paths on purpose. At 6 days the original hand-written markup is
@@ -6909,7 +7075,7 @@ body.training-mode select.run-input { color: var(--accent); }
         : '';
     });
     if (!alt) return;
-    if (sixDay) { alt.innerHTML = ''; addDayActions(); updateSessionEstimates(); renderWeekGlance(); return; }
+    if (sixDay) { alt.innerHTML = ''; addDayActions(); updateSessionEstimates(); renderWeekGlance(); applyOpenCards(); return; }
     var ids = splitDayIds();
     var nav = '<div class="plan-nav adv" id="altPlanNav">' + ids.map(function(id, i) {
       var d = SPLIT_DAYS[id];
@@ -6936,6 +7102,7 @@ body.training-mode select.run-input { color: var(--accent); }
     if (lastDay && ids.indexOf(lastDay) !== -1) switchAltDay(lastDay);
     updateSessionEstimates();
     renderWeekGlance();
+    applyOpenCards();
   }
 
   function switchAltDay(dayId) {
@@ -7307,7 +7474,7 @@ body.training-mode select.run-input { color: var(--accent); }
     st.innerHTML = out;
   }
 
-  function renderAllRowStates() { EXERCISES.forEach(renderLiftRowState); }
+  function renderAllRowStates() { EXERCISES.forEach(renderLiftRowState); applyOpenCards(); }
 
   //  Debounced to match set logging, with a blur commit below so leaving the
   //  field never waits out the timer.
@@ -7489,6 +7656,10 @@ body.training-mode select.run-input { color: var(--accent); }
     b.setAttribute('aria-pressed', done ? 'true' : 'false');
     var row = b.closest ? b.closest('.set-row') : null;
     if (row) row.classList.toggle('logged', done);
+    var card = document.getElementById('row-' + exId);
+    var was = !!card && card.classList.contains('all-done');
+    refreshLiftHead(exId);
+    if (card && !was && card.classList.contains('all-done')) _justDone[exId] = true;
   }
   //  Tap Previous: last session's numbers for this set go into the boxes.
   //  The check still logs it, so a copy is never a silent save.
@@ -7531,11 +7702,13 @@ body.training-mode select.run-input { color: var(--accent); }
     var saved = !!(e && normSet(e, e[slot]));
     markDoneBtn(exId, slot, saved);
     if (!saved) wEl.focus();
+    else advanceLiftCard(exId);
   }
   function onSetInput(inp) { snapshotExerciseDraft(inp.dataset.ex); scheduleAutoSave(inp.dataset.ex, true); }
   function onSetCommit(inp) {
     clearTimeout(_autoSaveT[inp.dataset.ex]);
     autoSaveExercise(inp.dataset.ex, true);
+    advanceLiftCard(inp.dataset.ex);
   }
   function onLogEdit(exId) { snapshotExerciseDraft(exId); scheduleAutoSave(exId, false); }
   //  Blur commit for the set-weight boxes. They had the 1200ms debounce but no
@@ -7592,6 +7765,9 @@ body.training-mode select.run-input { color: var(--accent); }
     if (rm) rm.disabled = n <= MIN_SETS;
     var lbl = document.querySelector('[data-setslabel="' + ex.id + '"]');
     if (lbl) lbl.textContent = effectiveSets(ex.id) + ' sets × ' + effectiveRepRangeText(ex) + repUnitText(ex);
+    var hm = document.querySelector('[data-headmeta="' + ex.id + '"]');
+    if (hm) hm.textContent = effectiveSets(ex.id) + ' \u00d7 ' + effectiveRepRangeText(ex);
+    refreshLiftHead(ex.id);
   }
 
   //     WARM-UP SET LOGGING — same debounce-plus-blur-commit as everything else.
@@ -8931,7 +9107,48 @@ body.training-mode select.run-input { color: var(--accent); }
     if (_onbFlowCardio !== null && typeof setRunning === 'function') setRunning(_onbFlowCardio === true);
     setLiftDays(_onbFlowLiftDays);        // existing function — also picks the matching split
     applyGoalModeRecommendation();        // exact Prompt 2 math; a safe no-op with no bodyweight
+    renderOnbWeekPreview();
     onbFlowShowScreen(3);
+  }
+  //  First week preview. Read straight off the plan the answers just set up
+  //  (the split's seven slots and each session's own time estimate), so it
+  //  can never disagree with the Plan tab. Starts today.
+  var ONB_WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  function plainDayName(dayId) {
+    var d = SPLIT_DAYS[dayId];
+    if (!d || d.rest) return 'Rest or walk';
+    var t = String(d.title || '').replace(/\s+[ABC]$/, '');
+    var map = { 'Full Body': 'Full body', 'Upper': 'Upper body', 'Lower': 'Lower body', 'Push': 'Chest and shoulders',
+                'Pull': 'Back and arms', 'Chest + Back': 'Chest and back', 'Shoulders + Arms': 'Shoulders and arms',
+                'Legs + Abs': 'Legs and abs', 'Mobility + Core': 'Stretch and core' };
+    return map[t] || t.replace(/ \+ /g, ' and ');
+  }
+  function plainMinutes(m) {
+    m = Math.round(m / 5) * 5;
+    if (!(m > 0)) return '';
+    if (m < 60) return 'about ' + m + ' min';
+    return 'about ' + Math.floor(m / 60) + ' hr' + (m % 60 ? ' ' + (m % 60) + ' min' : '');
+  }
+  function renderOnbWeekPreview() {
+    var host = document.getElementById('onbWeekPreview');
+    if (!host) return;
+    var week = activeSplit().week;
+    var start = (new Date().getDay() + 6) % 7;
+    var html = '';
+    for (var i = 0; i < 7; i++) {
+      var slot = (start + i) % 7, id = week[slot], d = SPLIT_DAYS[id];
+      var rest = !d || d.rest;
+      var mins = rest ? '' : plainMinutes(buildSession(id, currentTrainWeek).minutes);
+      html += '<li' + (rest ? ' class="rest"' : '') + '><span class="onb-week-day">' + ONB_WEEKDAYS[slot] + '</span>'
+        + '<span>' + plainDayName(id) + (mins ? ', ' + mins : '') + '</span></li>';
+    }
+    host.innerHTML = html;
+    var food = document.getElementById('onbWeekFood');
+    if (food) {
+      var cal = foodTargets && foodTargets.cal > 0 ? Math.round(foodTargets.cal / 10) * 10 : 0;
+      food.textContent = cal ? 'Daily food target: about ' + cal.toLocaleString('en-US') + ' calories. You can change it any time.' : '';
+      food.style.display = cal ? '' : 'none';
+    }
   }
   function onbFlowFinish(tab) {
     markOnboardedFlowDone();
@@ -9728,7 +9945,7 @@ body.training-mode select.run-input { color: var(--accent); }
     var isOpen = panel.classList.contains('open');
     panel.classList.toggle('open');
     btn.classList.toggle('open');
-    btn.textContent = isOpen ? 'Show warm-up' : 'Hide warm-up';
+    btn.textContent = isOpen ? 'Warm-up' : 'Hide warm-up';
     btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
   }
 
@@ -12024,14 +12241,14 @@ body.training-mode select.run-input { color: var(--accent); }
       var bothShown = r.actual > 0;
       var plannedLabelY = py - 7 - (bothShown && Math.abs(py - ay) < 13 ? 10 : 0);
       svg += '<text x="' + (px + bw / 2).toFixed(1) + '" y="' + plannedLabelY.toFixed(1) + '" text-anchor="middle" '
-        + 'font-size="9" style="fill:var(--muted)" font-family="DM Sans, sans-serif">' + chartNum(r.planned) + '</text>';
+        + 'font-size="9" style="fill:var(--muted);font-family:var(--font-body)">' + chartNum(r.planned) + '</text>';
       if (bothShown) {
         svg += '<text x="' + (ax + bw / 2).toFixed(1) + '" y="' + (ay - 7).toFixed(1)
-          + '" text-anchor="middle" font-size="9" style="fill:var(--accent)" font-family="DM Sans, sans-serif" '
+          + '" text-anchor="middle" font-size="9" style="fill:var(--accent);font-family:var(--font-body)" '
           + 'font-weight="700">' + chartNum(r.actual) + '</text>';
       }
       svg += '<text x="' + cx.toFixed(1) + '" y="' + (H - 8)
-        + '" text-anchor="middle" font-size="9" style="fill:var(--muted)" font-family="DM Sans, sans-serif">'
+        + '" text-anchor="middle" font-size="9" style="fill:var(--muted);font-family:var(--font-body)">'
         + r.label + '</text>';
     });
     svg += '</svg>';
@@ -12634,6 +12851,7 @@ function restoreActiveSessionIfPresent() {
   switchDay(stored.dayId);
   var row = document.getElementById('row-' + stored.exId);
   if (row) {
+    openOnlyLift(row);
     setTimeout(function() { row.scrollIntoView({ block: 'center' }); }, 50);
   }
   var draft = stored.draft || {};
@@ -13224,7 +13442,7 @@ function buildNavMenu() {
   //  directly, reached instead through More (see #tab-more).
   var items = [
     { id: 'today', label: 'Today' },
-    { id: 'training', label: 'Workout' },
+    { id: 'training', label: 'Plan' },
     { id: 'food', label: 'Food' },
     { id: 'calendar', label: 'Progress' }
   ].concat(runningEnabled ? [{ id: 'running', label: 'Run' }] : [])
@@ -13381,12 +13599,26 @@ window.addEventListener('resize', function() { if (navMenuOpen()) positionNavMen
 //  current destination with a tick instead. Its debounced resize listener went
 //  with it.
 
+//  Names the bar has used, and plain names, mapped onto the real tab ids.
+var TAB_ALIASES = { workout: 'training', plan: 'training', progress: 'calendar', settings: 'more', about: 'info' };
+//  The bar has four buttons. Every other tab lights the one it lives under.
+function tabBarOwner(t) {
+  return (t === 'today' || t === 'training' || t === 'food') ? t : 'more';
+}
 function goTab(t) {
+  var alias = TAB_ALIASES[t];
+  if (alias) {
+    goTab(alias);
+    if (t === 'settings') openSettingsModal();
+    if (t === 'about') goSec('about');
+    return;
+  }
   if (MAIN_TABS.indexOf(t) === -1) t = 'today';
   //  Run is hidden unless switched on in Settings.
   if (t === 'running' && !runningEnabled) t = 'today';
+  var owner = tabBarOwner(t);
   document.querySelectorAll('.tabbar-btn[data-tab]').forEach(function(b) {
-    var on = b.dataset.tab === t;
+    var on = b.dataset.tab === owner;
     b.classList.toggle('current', on);
     if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
   });
@@ -13431,6 +13663,8 @@ function goTab(t) {
       if (typeof resetQuickLog === 'function') resetQuickLog();
     }
     else if (t === 'more') {
+      var runRow = document.getElementById('moreRunRow');
+      if (runRow) runRow.style.display = runningEnabled ? '' : 'none';
       // Static list of links — nothing to render. Without this branch 'more'
       // fell through to the final else below, which is really "assume this
       // is the running tab" and would have called renderRunPlan() on entry.
