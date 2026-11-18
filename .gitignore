@@ -5,3 +5,6 @@ screens/
 # Build progress notes for the master prompt, local only
 build_state.md
 exercise_import_proposal.md
+
+# Master build prompt, local only
+PROMPT_MASTER_all_updates.md
