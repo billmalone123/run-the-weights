@@ -424,7 +424,7 @@ eq('older backup leaves everything at the 2-set default', ctx.setsFor(anExercise
 
 section('11. Rep-range explanations — one per exercise, rendered on both paths');
 var allEx = ev('EXERCISES.map(function(e){return {id:e.id,tag:e.tag,range:e.repRange.join("-"),why:e.repWhy};})');
-eq('library holds 128 exercises (43 programmed, 67 library, 18 imported)', allEx.length, 128);
+eq('library holds 143 exercises (43 programmed, 67 library, 18 imported, 15 ours)', allEx.length, 143);
 eq('every exercise has a repWhy', allEx.filter(function (e) { return !e.why || !String(e.why).trim(); }).length, 0);
 var whys = allEx.map(function (e) { return e.why; });
 eq('no two exercises share the same sentence', new Set(whys).size, allEx.length);
@@ -915,7 +915,24 @@ ok('no plan day uses an import', Object.keys(ev('SPLIT_DAYS')).every(function (d
   return ev('programmedDayExercises')(d).every(function (e) { return e.src !== 'fedb'; });
 }));
 ok('imports only come back when asked for', ev("quickCandidates(function(){return true})").every(function (e) { return e.src !== 'fedb'; })
-   && ev("quickCandidates(function(){return true}, 1)").every(function (e) { return e.src === 'fedb'; }));
+   && ev("quickCandidates(function(){return true}, 1)").every(function (e) { return e.src === 'fedb' || e.src === 'rtw'; }));
+
+// 8.21: our own picks (day "rtw"). Same tier rules as the imports.
+var rtw = allEx2.filter(function (e) { return e.src === 'rtw'; });
+eq('15 of our own picks', rtw.length, 15);
+ok('every pick has the full schema', rtw.every(function (e) {
+  return e.day === 'rtw' && /^rtw-/.test(e.id) && ev('MUSCLE_LABEL')[e.muscle] && ['push', 'pull', 'squat', 'hinge', 'core'].indexOf(e.pattern) > -1
+    && ['compound', 'isolation'].indexOf(e.kind) > -1 && Array.isArray(e.equip) && ev('EQUIP_ALL').indexOf(e.equip[0]) > -1
+    && Array.isArray(e.repRange) && e.repWhy && e.rest && e.time && e.note && e.cue && !/—|–| - /.test(e.note + e.cue + e.repWhy + e.name);
+}));
+ok('every pick cue is 14 words or fewer and wired', rtw.every(function (e) { return e.cue.split(/\s+/).length <= 14 && ev('EX_CUES')[e.id] === e.cue; }));
+ok('no plan day uses a pick', Object.keys(ev('SPLIT_DAYS')).every(function (d) {
+  return ev('programmedDayExercises')(d).every(function (e) { return e.src !== 'rtw'; });
+}));
+ok('picks never come back unless asked for', ev("quickCandidates(function(){return true})").every(function (e) { return e.src !== 'rtw'; }));
+ok('glutes have at least 12 exercises', allEx2.filter(function (e) { return e.muscle === 'glutes' && !e.custom && e.day !== 'anchor'; }).length >= 12);
+ok('a pick reaches Swap for a matching slot', ev("swapOptions(EX_BY_ID['band-pull-apart']).more.concat(swapOptions(EX_BY_ID['band-pull-apart']).curated)").indexOf('Prone Y Raise') > -1);
+ok('Curtsy Lunge counts as single leg work', ev("SINGLE_LEG_RE.test('Curtsy Lunge')"));
 
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);
