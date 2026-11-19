@@ -31,6 +31,10 @@
      div below paints, the mark is very likely already in memory instead of
      popping in a beat after the dark background does. -->
 <link rel="preload" as="image" href="assets/brand/rtw-wordmark-on-cream.svg">
+<!-- 8.29: the hero word's font is bundled (Antonio 700, latin, from
+     @fontsource/antonio 5.3.0, SIL OFL), so it needs no third party request
+     and works offline once cached. -->
+<link rel="preload" href="assets/fonts/antonio-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;500;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -3635,6 +3639,19 @@ img[src$=".svg"][src*="assets/brand/"] { mix-blend-mode: normal; }
 .workout-note-count:empty { display: none; }
 .cal-workout-note { font-size: var(--fs-1); color: var(--muted); line-height: 1.45; margin-top: 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .cal-workout-note-label { font-weight: 700; color: var(--text); margin-bottom: 2px; }
+/* 8.29: hero top section. The bundled face is named apart from the Google
+   Antonio so nothing else on the page changes font. */
+@font-face { font-family: 'RTW Hero'; font-style: normal; font-weight: 700; font-display: swap;
+  src: url('assets/fonts/antonio-latin-700-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+.rtwh { display: block; padding: 16px 20px 0; text-align: left; }
+.rtwh[hidden], .rtwh-line[hidden] { display: none; }
+.rtwh-word { margin: 0; font-family: 'RTW Hero', sans-serif; font-weight: 700; font-size: 96px; line-height: 0.92; letter-spacing: 0;
+  color: var(--text); text-transform: uppercase; white-space: nowrap; overflow: visible; }
+.rtwh-fit { display: inline-block; }
+.rtwh-last { white-space: nowrap; }
+.rtwh-dot { display: inline-block; width: 0.18em; height: 0.18em; margin-left: 0.05em; background: #F2552C; vertical-align: baseline; }
+.rtwh-line { margin: 8px 0 0; font-family: var(--font-body); font-size: var(--fs-3); line-height: 1.4; color: var(--text); }
 /* 8.28: one time tips. In the page flow, flat, a quick fade only. */
 .tip { position: relative; display: flex; align-items: center; gap: 12px; margin: 10px 0; padding: 10px 10px 10px 14px;
   background: var(--surface); color: var(--text); border: 1px solid var(--text); border-radius: var(--r-c); animation: tipIn 160ms ease-out; }
@@ -4096,6 +4113,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 </div>
 
 <div id="tab-today" class="tab-main" style="background:var(--bg);display:none">
+<div class="rtwh" id="hero-today" data-max="168" data-min="56" hidden><p class="rtwh-word"></p><p class="rtwh-line"></p></div>
 <section id="todaySection">
   <div class="today-date" id="todayDate"></div>
   <div class="today-card rest-card" id="todayRest" style="display:none"></div>
@@ -4124,6 +4142,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 </div>
 
 <div id="tab-training" class="tab-main" style="background:var(--bg)">
+<div class="rtwh" id="hero-training" data-max="96" data-min="40" hidden><p class="rtwh-word"></p><p class="rtwh-line"></p></div>
 
 <section id="plan">
   <div class="section-label adv">Plan</div>
@@ -4411,6 +4430,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 </div>
 
 <div id="tab-running" class="tab-main" style="background:var(--bg)">
+<div class="rtwh" id="hero-running" data-max="168" data-min="56" hidden><p class="rtwh-word"></p><p class="rtwh-line"></p></div>
 
 <!-- RUN HOME. Today's run or a big Log a run, the week, weekly distance and
      the last five runs. The race plan and full schedule sit one tap down. -->
@@ -4550,6 +4570,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 </div>
 
 <div id="tab-calendar" class="tab-main" style="background:var(--bg)">
+<div class="rtwh" id="hero-calendar" data-max="96" data-min="40" hidden><p class="rtwh-word"></p><p class="rtwh-line"></p></div>
 
 <!-- PROGRESS. One screen: three tiles, a Lifts / Body / Week switch, one
      chart and a short table. The full calendar and every lift card are one
@@ -4589,6 +4610,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 </div>
 
 <div id="tab-food" class="tab-main" style="background:var(--bg)">
+<div class="rtwh" id="hero-food" data-max="168" data-min="56" hidden><p class="rtwh-word"></p><p class="rtwh-line"></p></div>
 
 <section id="foodSection">
   <div class="section-label">Food</div>
@@ -4663,6 +4685,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 </div>
 
 <div id="tab-quicklog" class="tab-main" style="background:var(--bg)">
+<div class="rtwh" id="hero-quicklog" data-max="168" data-min="56" data-nowrap="1" hidden><p class="rtwh-word"></p><p class="rtwh-line"></p></div>
 
 <section id="quicklogSection">
   <!-- FREESTYLE HOME. Shown only when training style is "Log as I go". -->
@@ -5036,7 +5059,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.28</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.29</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -13241,6 +13264,113 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       _tipScrollT = setTimeout(function() { _tipScrollT = 0; try { tipScan(); } catch(e) {} }, 250);
     }, { passive: true });
   }
+
+  //     HERO (8.29). One huge word and one plain line at the top of each main
+  //  screen. Words and lines come from real data; anything not known is left
+  //  out. The word is fitted to one line after its font loads, between a max
+  //  and a min; below the min it wraps instead of clipping. Quick Log never
+  //  wraps. On Plan it also shrinks so the first exercise card stays on screen.
+  function heroPlanWeek() { return 'Week ' + (currentTrainWeek + 1) + ' of ' + totalTrainWeeks() + '.'; }
+  function heroMinutes(est) { var t = estText(est); return t ? 'About ' + t.replace(/ min$/, ' minutes') + '.' : ''; }
+  function heroRunWeek() {
+    try {
+      if (!runPlan || !runPlan.raceDate) return 0;
+      var plan = generateRunPlan(readRunInputs(), startOfToday()), t = startOfToday().getTime(), wk = 0;
+      if (plan && plan.weeks) plan.weeks.forEach(function(w) { w.cells.forEach(function(c) { if (c.date && c.date.getTime() === t) wk = w.num; }); });
+      return wk;
+    } catch(e) { return 0; }
+  }
+  function heroRunLine() {
+    if (!runningEnabled) return '';
+    var pr = plannedRunToday(), wk = heroRunWeek();
+    if (pr && pr.race) return pr.detail + '.';
+    if (pr) return (wk ? 'Week ' + wk + '. ' : '') + runTypeLabel(pr.type) + ' ' + fmtDist(pr.miles) + ' today.';
+    return wk ? 'Week ' + wk + '. No run planned today.' : '';
+  }
+  function heroData(t) {
+    var style = trainStyle && trainStyle.style;
+    if (t === 'today') {
+      if (style === 'free') return { w: 'Today', l: '' };
+      if (activeSplit().week[mondayIndex(startOfToday())] === 'rest') return null;
+      var next = partialDayThisWeek() || findNextUnloggedDay();
+      if (!next || !SPLIT_DAYS[next]) return null;
+      var b = buildSession(next, currentTrainWeek), n = b.list.length, parts = [];
+      if (style === 'plan') parts.push(heroPlanWeek());
+      if (n) parts.push(n + (n === 1 ? ' lift.' : ' lifts.'));
+      var mins = heroMinutes(b.est); if (mins) parts.push(mins);
+      return { w: SPLIT_DAYS[next].title, l: parts.join(' ') };
+    }
+    if (t === 'training') {
+      var days = activeSplit().week.filter(function(d) { return d !== 'rest'; }), nx = findNextUnloggedDay(), p2 = [];
+      if (style === 'plan') p2.push(heroPlanWeek());
+      if (days.length) p2.push(nx && days.indexOf(nx) !== -1 ? 'Session ' + (days.indexOf(nx) + 1) + ' of ' + days.length + '.' : !nx ? 'All ' + days.length + ' sessions done.' : '');
+      return { w: 'Plan', l: p2.filter(Boolean).join(' ') };
+    }
+    if (t === 'quicklog') return { w: 'Quick Log', l: 'Log anything. Last numbers fill in.' };
+    if (t === 'calendar') return { w: 'Progress', l: 'Your lifts by date.' };
+    if (t === 'running') return { w: 'Run', l: heroRunLine() };
+    if (t === 'food') return { w: 'Food', l: 'Today.' };
+    return null;
+  }
+  function renderHero(t) {
+    var h = document.getElementById('hero-' + t);
+    if (!h) return;
+    var d = null;
+    try { d = heroData(t); } catch(e) { d = null; }
+    if (!d) { h.hidden = true; return; }
+    var words = String(d.w).toUpperCase().split(/\s+/), last = words.pop();
+    h.querySelector('.rtwh-word').innerHTML = '<span class="rtwh-fit">' + (words.length ? styleEsc(words.join(' ')) + ' ' : '')
+      + '<span class="rtwh-last">' + styleEsc(last) + '<span class="rtwh-dot" aria-hidden="true"></span></span></span>';
+    var ln = h.querySelector('.rtwh-line');
+    ln.textContent = d.l || ''; ln.hidden = !d.l;
+    h.hidden = false;
+    fitHero(h);
+  }
+  function fitHero(h) {
+    if (!h || h.hidden || !h.offsetParent) return;
+    var w = h.querySelector('.rtwh-word'), fit = h.querySelector('.rtwh-fit');
+    var mx = +h.dataset.max || 96, mn = +h.dataset.min || 40, nowrap = h.dataset.nowrap === '1';
+    //  Fit width: the screen minus 48 px of gutters (the square is inside the
+    //  measured box). The block itself lines up with the 20 px page edge.
+    w.style.maxWidth = '';
+    var avail = Math.min(w.clientWidth, window.innerWidth - 48);
+    if (!fit || !(avail > 0)) return;
+    w.style.maxWidth = avail + 'px';
+    w.style.whiteSpace = 'nowrap'; w.style.fontSize = mx + 'px';
+    var nat = fit.getBoundingClientRect().width;
+    var size = nat > 0 ? Math.min(mx, Math.floor(mx * avail / nat)) : mx;
+    if (size < mn && !nowrap) { size = mn; w.style.whiteSpace = 'normal'; }
+    w.style.fontSize = size + 'px';
+    while (size > 12 && (w.scrollWidth > w.clientWidth + 0.5 || fit.getBoundingClientRect().width > avail + 0.5)) { size--; w.style.fontSize = size + 'px'; }
+    if (h.id === 'hero-training') {
+      var row = Array.prototype.filter.call(document.querySelectorAll('#tab-training .lift-row'), function(r) { return r.offsetParent; })[0];
+      if (row) {
+        var top = function() { return row.getBoundingClientRect().top + window.scrollY; };
+        //  The fold is the top of the fixed tab bar. At least 44 px of the
+        //  first card shows above it; below the min the word keeps shrinking
+        //  rather than hide the card.
+        var tb = document.getElementById('tabbar');
+        var fold = tb && getComputedStyle(tb).display !== 'none' ? tb.getBoundingClientRect().top : window.innerHeight;
+        while (size > 24 && top() + 44 > fold) { size -= 2; w.style.fontSize = size + 'px'; }
+      }
+    }
+  }
+  function visibleTab() {
+    for (var i = 0; i < MAIN_TABS.length; i++) {
+      var el = document.getElementById('tab-' + MAIN_TABS[i]);
+      if (el && el.style.display !== 'none' && el.offsetParent !== null) return MAIN_TABS[i];
+    }
+    return null;
+  }
+  function heroOnNav() { var t = visibleTab(); if (t) renderHero(t); }
+  function heroRefit() { var t = visibleTab(), h = t && document.getElementById('hero-' + t); if (h) fitHero(h); }
+  if (typeof document !== 'undefined' && document.fonts && document.fonts.load) {
+    document.fonts.load('700 100px "RTW Hero"').then(function() { try { heroRefit(); } catch(e) {} }, function() {});
+  }
+  if (typeof window !== 'undefined' && window.addEventListener) {
+    var _heroRz = 0;
+    window.addEventListener('resize', function() { clearTimeout(_heroRz); _heroRz = setTimeout(function() { try { heroRefit(); } catch(e) {} }, 120); });
+  }
   function persistBodyweight() {
     try { localStorage.setItem(BODYWEIGHT_KEY, JSON.stringify(bodyweight)); } catch(e) {}
     idbSet('bodyweight', bodyweight);
@@ -17198,6 +17328,7 @@ function tabBarOwner(t) {
   return (t === 'today' || t === 'training' || t === 'food' || t === 'running' || t === 'calendar') ? t : null;
 }
 function goTab(t) {
+  if (typeof heroOnNav === 'function') { setTimeout(function() { try { heroOnNav(); } catch(e) {} }, 0); setTimeout(function() { try { heroOnNav(); } catch(e) {} }, 150); }
   if (typeof tipOnNav === 'function') try { tipOnNav(t === 'training' && typeof trainStyle === 'object' && trainStyle.style === 'free' ? 'quicklog' : (TAB_ALIASES[t] || t)); } catch(e) {}
   if (typeof saveWorkoutNote === 'function') try { saveWorkoutNote(); } catch(e) {}
   if (typeof flushLiftNotes === 'function') try { flushLiftNotes(); } catch(e) {}
