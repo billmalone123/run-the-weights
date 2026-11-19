@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RUN THE WEIGHTS</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#F5F1E8">
+<meta name="theme-color" content="#F2EEE4">
 <meta name="color-scheme" content="light">
 <script>
   // PRE-PAINT THEME. Applied here, before first paint, so Black never flashes Dark.
@@ -78,7 +78,7 @@
     /* Three radii: small (controls), card, pill. */
     --r-s: 4px; --r-c: 10px; --r-p: 999px;
     --fill: var(--accent); --primary: var(--accent); --on-primary: var(--on-accent);
-    --orange: #FF6A1A; --hi: var(--accent); --on-hi: var(--on-accent);
+    --hi: var(--accent); --on-hi: var(--on-accent);
     /* One elevation, only for things that float over the page. */
     --lift: 0 12px 32px rgba(20,20,20,0.16);
     /* Type scale: seven sizes, used everywhere. */
@@ -106,7 +106,7 @@
     --accent-dim:  rgba(20,20,20,0.22);
     --accent-glow: rgba(20,20,20,0.18);
     /* Cream page, one raised neutral, one hairline. */
-    --bg:          #F5F1E8;
+    --bg:          #F2EEE4;
     --surface:     #FBF8F1;
     --surface-2:   #FBF8F1;
     --border:      #D9D3C5;
@@ -118,29 +118,39 @@
     --field:       #857F73;
     --input-border-idle: #857F73;
     --gray:        #616161;
-    --black:       #F5F1E8;
+    --black:       #F2EEE4;
     --dark:        #FBF8F1;
     --card:        #FBF8F1;
     --ink-rgb:     20,20,20;
-    --on-ink-rgb:  245,241,232;
+    --on-ink-rgb:  242,238,228;
     --hi-rgb:      0,0,0;
-    --on-accent:   #F5F1E8;
+    --on-accent:   #F2EEE4;
     --accent-2:    #141414;
     --accent-hi:   #141414;
     --text-soft:   #141414;
     --warn:        #84500F;
-    --calm:        #0038BD;
+    --calm:        #1C2FB5;
     --calm-2:      #616161;
-    /* Blue is the main color: buttons, selected, active tab, links, lifting,
-       chart lines, done checks, focus. Cream text on it. */
-    --primary:     #0038BD;
-    --on-primary:  #F5F1E8;
-    --fill:        #0038BD;
-    /* Orange is the highlight, fill only, ink text on it: today, progress,
-       running, one stat tile. Never a button, never text. */
-    --orange:      #FF6A1A;
-    --hi:          var(--orange);
-    --on-hi:       #141414;
+    /* Named palette. Cream, ultramarine, persimmon, with ink and one deep
+       shade of each. */
+    --cream:            #F2EEE4;
+    --ultramarine:      #1C2FB5;
+    --ultramarine-deep: #121E7E;
+    --persimmon:        #F2552C;
+    --persimmon-burnt:  #B8340F;
+    --ink:              #141414;
+    /* Ultramarine is the main color: buttons, selected, active tab, lifting,
+       chart lines, done checks, focus. Cream text on it. Blue text on cream
+       (links, labels, hero numbers) uses the deep shade. */
+    --primary:      var(--ultramarine);
+    --on-primary:   var(--cream);
+    --fill:         var(--ultramarine);
+    --primary-text: var(--ultramarine-deep);
+    /* Persimmon is the highlight, fill only, ink text on it: today, progress,
+       running, one stat tile. Burnt persimmon edges a persimmon fill on cream. */
+    --hi:           var(--persimmon);
+    --on-hi:        var(--ink);
+    --hi-edge:      var(--persimmon-burnt);
   }
   html[data-theme="light"] body { background-image: none; }
   /* Glows are light on dark. On white they read as smudges, so Light drops
@@ -3427,7 +3437,7 @@ body.training-mode .lift-row, body.training-mode .lift-row.has-logs, body.traini
 .time-box-group .liftdays-btn.active { background: var(--fill); color: var(--on-primary); border-color: var(--fill); }
 .today-start { background: var(--primary); color: var(--on-primary); border-color: var(--primary); border-radius: var(--r-s); box-shadow: none; }
 .today-secondary { border-radius: var(--r-s); }
-.today-link { color: var(--primary); }
+.today-link { color: var(--primary-text); }
 .today-label { font-size: var(--fs-1); border-top: 1px solid var(--border); padding-top: 12px; margin-top: 20px; }
 .today-progress .more-list-item, .fresh-card, .today-mini { background: transparent; border: 0; border-radius: 0; box-shadow: none; padding-left: 0; padding-right: 0; }
 .fresh-sets { font-family: var(--font-mono); }
@@ -3441,7 +3451,7 @@ body.training-mode .lift-row, body.training-mode .lift-row.has-logs, body.traini
 .pw-day.today * { color: var(--on-hi) !important; }
 .plan-nav-btn.active, body.training-mode .plan-nav-btn.active { box-shadow: none; }
 .setcount-btn.on { background: var(--fill); border-color: var(--fill); color: var(--on-primary); }
-.rest-run-btn { color: var(--primary); }
+.rest-run-btn { color: var(--primary-text); }
 /* Brand PNGs carry a white box; multiply lets the cream show through. */
 img[src*="assets/brand/"] { mix-blend-mode: multiply; }
 /* Progress: blue line, latest point orange, one orange tile. */
@@ -3482,8 +3492,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--fill) !important
 #info-subnav button { color: var(--on-primary); opacity: 1; }
 #info-subnav button.on { color: var(--on-primary); box-shadow: inset 0 -3px 0 var(--on-primary); border-bottom-color: transparent; }
 /* Section labels and hero numbers in blue. */
-.today-label, .section-label, body.training-mode .section-label { color: var(--primary); }
-.prog-tile-v, .ring-week-num, .simple-target strong { color: var(--primary); }
+.today-label, .section-label, body.training-mode .section-label { color: var(--primary-text); }
+.prog-tile-v, .ring-week-num, .simple-target strong { color: var(--primary-text); }
 .prog-tile:first-child .prog-tile-v { color: var(--on-hi); }
 /* You're ready: today's row is the orange mark. */
 #onbFlowScreen3 .onb-week li:first-child .onb-week-day { background: var(--hi); color: var(--on-hi); border-radius: var(--r-s); text-align: center; }
@@ -3501,10 +3511,36 @@ input:focus, select:focus, textarea:focus { border-color: var(--fill) !important
 /* Onboarding: wordmark on a blue band with one orange rule. */
 .onb-wordmark-band { background: var(--primary); color: var(--on-primary); border-radius: var(--r-c); padding: 22px 16px 16px; line-height: 1; border-top: 8px solid var(--hi); }
 #onbFlowScreen3 .quicklog-back { display: block; width: 100%; text-align: left; }
+/* Header bands by tab (palette 3). Ultramarine: Today, Plan, Progress.
+   Persimmon with ink: Run. Ink with cream: Food, More, About, Settings, Quick Log. */
+.today-date, .plan-day-title, #tab-calendar .today-date {
+  background: var(--ultramarine); color: var(--cream); border: 0; border-radius: var(--r-c); padding: 16px; line-height: 1; }
+.today-date { padding-top: 24px; }
+.today-date::before { background: var(--persimmon); height: 8px; }
+#tab-calendar .today-date::before { display: none; }
+.plan-day-title { margin-bottom: 12px; }
+#tab-running .today-date { background: var(--persimmon); color: var(--ink); }
+#tab-food .section-title, #moreSection .more-title, .ql-heading, .settings-modal-brand .settings-modal-title {
+  background: var(--ink); color: var(--cream); }
+#tab-food .section-title .accent-word { color: var(--cream); }
+#info-subnav { background: var(--ink); }
+#info-subnav button, #info-subnav button.on { color: var(--cream); }
+#info-subnav button.on { box-shadow: inset 0 -3px 0 var(--cream); }
+/* Persimmon fills on cream get a burnt edge so the shape holds at 3:1. */
+.wg-day.today:not(.picked), .pw-day.today { border-color: var(--hi-edge); }
+.ch-dot:nth-last-of-type(2) { stroke: var(--hi-edge); }
+/* Color with a job on the ink band screens. Lifting is ultramarine: each
+   quick workout card carries an ultramarine edge. Rows that open a page read
+   as links. The main action on Home is a filled button. */
+.ql-card { border-left: 6px solid var(--ultramarine); }
+.ql-card-name { color: var(--primary-text); }
+.more-list-item .more-row-title { color: var(--primary-text); }
+.more-list-item::after { color: var(--ultramarine); }
+.hero-cta { background: var(--ultramarine); color: var(--cream); border-color: var(--ultramarine); }
+.hero-cta:hover { background: var(--ultramarine-deep); color: var(--cream); }
+#tab-food .calfull-dates .quicklog-back { color: var(--primary-text); }
 /* Links in blue. */
-a:not([class]), .howto-link { color: var(--primary); }
-.hero-cta { color: var(--primary); }
-.hero-cta:hover { color: var(--on-primary); }
+a:not([class]), .howto-link { color: var(--primary-text); }
 </style>
 </head>
 <body style="background:var(--bg)">

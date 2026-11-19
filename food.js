@@ -620,9 +620,10 @@ ok('a literal 20% opacity white border was NOT used (it would regress contrast)'
 // 2. Primary action buttons — more padding, a subtle inner glow, no color change.
 ok('.quicklog-save-btn got +4px top/bottom padding (14px -> 18px 14px)', /\.quicklog-save-btn \{[^}]*padding: 18px 14px;/.test(html));
 // 8.22 look: flat buttons on cream. No inner glow, no drop shadow, solid blue.
-var LIGHT_FILL_BLUE = /html\[data-theme="light"\] \{[^}]*--fill:\s*#0038BD;/.test(html);
+// Palette 3: --fill is ultramarine, and ultramarine is #1C2FB5, both inside the Light block.
+var LIGHT_FILL_BLUE = /html\[data-theme="light"\] \{[^}]*--ultramarine:\s*#1C2FB5;[^}]*--fill:\s*var\(--ultramarine\);/.test(html);
 ok('.quicklog-save-btn has no glow or drop shadow (box-shadow: none, no inset, no blur)', /\.quicklog-save-btn \{[^}]*box-shadow: none;/.test(html) && !/\.quicklog-save-btn \{[^}]*(inset|0 4px 16px)/.test(html));
-ok('.quicklog-save-btn is filled with the blue token (--fill, #0038BD in Light)', /\.quicklog-save-btn \{[^}]*background: var\(--fill\);/.test(html) && LIGHT_FILL_BLUE);
+ok('.quicklog-save-btn is filled with the blue token (--fill, ultramarine #1C2FB5 in Light)', /\.quicklog-save-btn \{[^}]*background: var\(--fill\);/.test(html) && LIGHT_FILL_BLUE);
 ok('.settings-save-btn got +4px padding too (16px -> 20px 16px)', /\.settings-save-btn \{[^}]*padding: 20px 16px;/.test(html));
 ok('.settings-save-btn has no glow or drop shadow, and a solid blue fill', /\.settings-save-btn \{[^}]*box-shadow: none;/.test(html) && !/\.settings-save-btn \{[^}]*(inset|0 4px 16px)/.test(html) && /\.settings-save-btn \{[^}]*background: var\(--fill\);/.test(html) && !/\.settings-save-btn:hover \{[^}]*gradient/.test(html));
 // Apply was the one primary action with NO fill at all before this — a
