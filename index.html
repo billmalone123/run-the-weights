@@ -3635,6 +3635,19 @@ img[src$=".svg"][src*="assets/brand/"] { mix-blend-mode: normal; }
 .workout-note-count:empty { display: none; }
 .cal-workout-note { font-size: var(--fs-1); color: var(--muted); line-height: 1.45; margin-top: 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .cal-workout-note-label { font-weight: 700; color: var(--text); margin-bottom: 2px; }
+/* 8.26: per lift notes, same look as the workout note. */
+.lift-note-wrap { margin: 4px 0 14px; }
+.lift-note-label { display: block; font-size: var(--fs-1); font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.lift-note-input { display: block; width: 100%; box-sizing: border-box; min-height: 72px; resize: vertical; background: var(--bg); border: 1px solid var(--input-border-idle);
+  color: var(--text); font-family: var(--font-body); font-size: var(--fs-3); line-height: 1.45; padding: 12px 14px; border-radius: var(--r-s); outline: none; }
+.lift-note-input:focus { border-color: var(--fill); box-shadow: 0 0 0 1px var(--fill); }
+.lift-note-last { font-size: var(--fs-1); color: var(--muted); margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lift-note-mark { flex: 0 0 auto; font-size: var(--fs-1); color: var(--text); border-top: 1px solid var(--text); border-bottom: 1px solid var(--text); padding: 0 3px; margin-left: 6px; line-height: 1.3; }
+.lift-note-mark[hidden], .lift-row.open .lift-note-mark { display: none; }
+#qlLiftNoteHost .lift-note-wrap { margin-top: 12px; }
+.prog-notes { margin-top: 14px; }
+.prog-note { font-size: var(--fs-2); color: var(--text); line-height: 1.45; padding: 6px 0; border-bottom: 1px solid var(--border); white-space: pre-wrap; overflow-wrap: anywhere; }
+.prog-note-d { color: var(--muted); font-weight: 600; }
 /* 8.25: own plan, freestyle, weekly goal, Progress detail. */
 .week-goal { font-size: var(--fs-2); color: var(--text); margin: 0 0 10px; }
 .week-goal-n { font-weight: 600; }
@@ -4662,6 +4675,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       <label for="qlNotes">Notes <span style="opacity:0.6;font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
       <input type="text" id="qlNotes" placeholder="e.g. felt heavy, post-run, cold" maxlength="140">
     </div>
+    <div id="qlLiftNoteHost"></div>
     <button class="quicklog-save-btn" onclick="saveQuickLog()">Save Set</button>
     <div class="quicklog-confirm" id="quicklogConfirm"></div>
   </div>
@@ -4966,7 +4980,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.25</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.26</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -5417,7 +5431,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     [['foodLogs', function() { return foodLogs; }, function(v) { foodLogs = v; persistFoodLogs(); }],
      ['foodTargets', function() { return foodTargets; }, function(v) { foodTargets = v; persistFoodTargets(); }],
      ['bodyweight', function() { return bodyweight; }, function(v) { bodyweight = v; persistBodyweight(); }],
-     ['workoutNotes', function() { return workoutNotes; }, function(v) { workoutNotes = cleanWorkoutNotes(v); persistWorkoutNotes(); renderWorkoutNote(); }]
+     ['workoutNotes', function() { return workoutNotes; }, function(v) { workoutNotes = cleanWorkoutNotes(v); persistWorkoutNotes(); renderWorkoutNote(); }],
+     ['liftNotes', function() { return liftNotes; }, function(v) { liftNotes = cleanLiftNotes(v); persistLiftNotes(); }]
     ].forEach(function(f) {
       idbGet(f[0]).then(function(v) {
         if (v && typeof v === 'object' && Object.keys(v).length > Object.keys(f[1]() || {}).length) {
@@ -8861,6 +8876,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       + '<button type="button" class="lift-head" aria-expanded="false" aria-controls="body-' + ex.id + '" data-ex="' + ex.id + '" onclick="toggleLiftCard(this.dataset.ex)">'
       + '<span class="lift-name" id="name-' + ex.id + '">' + activeVariant(ex) + '</span>'
       + '<span class="lift-head-meta" data-headmeta="' + ex.id + '">' + dispN + ' × ' + effectiveRepRangeText(ex) + '</span>'
+      + '<span class="lift-note-mark" data-notemark="' + ex.id + '"' + (liftNoteFor(ex.id, todayKey()) ? '' : ' hidden') + '>Note</span>'
       + '<span class="lift-head-check" aria-hidden="true">✓</span>'
       + '</button>'
       + '<button type="button" class="lift-head-swap" data-ex="' + ex.id + '" onclick="openSwapSheet(this.dataset.ex)" aria-label="Swap ' + activeVariant(ex).replace(/"/g, '&quot;') + '">' + swapIcon + '</button>'
@@ -8902,6 +8918,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       + '</div>'
       + '<div class="card-panel detail" id="pnl-more-' + ex.id + '">'
       + '<div class="card-panel-title">Note</div>'
+      + liftNoteFieldHTML(ex.id, 'ln-')
       + (ex.repWhy ? '<div class="lift-rep-why">' + ex.repWhy + '</div>' : '')
       //  Why the builder put this exercise here. Only a string is a reason:
       //  older call sites still map liftRowHTML directly, which passes an index.
@@ -8952,6 +8969,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     if (row) row.classList.toggle('all-done', liftRowDone(row));
   }
   function setLiftOpen(row, on) {
+    if (!on && typeof flushLiftNotes === 'function') flushLiftNotes();
     row.classList.toggle('open', on);
     var h = row.querySelector('.lift-head');
     if (h) h.setAttribute('aria-expanded', on ? 'true' : 'false');
@@ -9645,6 +9663,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   function toggleCardPanel(btn) {
     var row = document.getElementById('row-' + btn.dataset.ex);
     if (!row) return;
+    flushLiftNotes();
     var open = !row.classList.contains(btn.dataset.panel);
     row.querySelectorAll('.card-foot-btn[data-panel]').forEach(function(b) {
       row.classList.remove(b.dataset.panel);
@@ -10055,6 +10074,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     });
     var confirmEl = document.getElementById('quicklogConfirm');
     if (confirmEl) confirmEl.textContent = '';
+    var lnh = document.getElementById('qlLiftNoteHost');
+    if (lnh) { flushLiftNotes(); lnh.innerHTML = liftNoteFieldHTML(exId, 'qln-'); }
     //  Last session's numbers, ready to change or keep.
     var lastE = latestEntry(exId);
     if (lastE) {
@@ -10105,6 +10126,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       if (confirmEl) confirmEl.textContent = 'RPE must be between 1 and 10.';
       return;
     }
+    flushLiftNotes();
     quickLogSet(exId, w, r, rpe, notes);
     var label = QUICK_LOG_LIFTS[exId] || ex.name;
     var msg = 'Logged: ' + label + ' ' + w + 'x' + r + (rpe != null ? ' @ RPE ' + rpe : '');
@@ -11736,7 +11758,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       //  MEAL_PASS_KEY is left out on purpose: a backup file is not a place
       //  for a credential.
       foodLogs: foodLogs, foodTargets: foodTargets, bodyweight: bodyweight, goalMode: goalMode, workoutNotes: workoutNotes,
-      trainStyle: trainStyle, ownPlan: ownPlan,
+      trainStyle: trainStyle, ownPlan: ownPlan, liftNotes: liftNotes,
       hiddenEx: hiddenEx,
       sessionPrefs: { size: sessionSize, budget: sessionBudget, equip: equipOwned },
       bwBand: bwBand, weekMoves: weekMoves, shortDays: shortDays, profile: userProfile, favEx: favEx,
@@ -11889,6 +11911,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         if (data.foodTargets && typeof data.foodTargets === 'object') { foodTargets = data.foodTargets; persistFoodTargets(); }
         if (data.bodyweight && typeof data.bodyweight === 'object') { bodyweight = data.bodyweight; persistBodyweight(); }
         if (data.workoutNotes && typeof data.workoutNotes === 'object') { workoutNotes = cleanWorkoutNotes(data.workoutNotes); persistWorkoutNotes(); renderWorkoutNote(); }
+        if (data.liftNotes && typeof data.liftNotes === 'object') { liftNotes = cleanLiftNotes(data.liftNotes); persistLiftNotes(); }
         //  Own plan, then style. An older backup has neither and leaves both alone.
         if (data.ownPlan && typeof data.ownPlan === 'object') { ownPlan = cleanOwnPlan(data.ownPlan); persistOwnPlan(); registerOwnPlan(); }
         if (data.trainStyle && typeof data.trainStyle === 'object') {
@@ -12808,6 +12831,80 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     if (typeof renderRing === 'function') try { renderRing(); } catch(err) {}
     if (typeof updateWeekCompleteBanner === 'function') try { updateWeekCompleteBanner(); } catch(err) {}
   }
+
+  //     LIFT NOTES (8.26). One optional note per exercise per date, in its own
+  //  store: { exId: { 'YYYY-MM-DD': text } }. Keyed by the exercise id, so a
+  //  note follows the lift across weeks, variants and swaps, and deleting a
+  //  set, swapping or finishing the workout never touches it.
+  const LIFT_NOTES_KEY = 'monk_lift_notes_v1';
+  var LIFT_NOTE_MAX = 500;
+  var liftNotes = {};
+  function cleanLiftNotes(v) {
+    var out = {};
+    if (!v || typeof v !== 'object') return out;
+    Object.keys(v).forEach(function(id) {
+      var m = v[id];
+      if (!/^[a-z0-9-]{1,60}$/.test(id) || !m || typeof m !== 'object') return;
+      Object.keys(m).forEach(function(d) {
+        var t = m[d];
+        if (/^\d{4}-\d{2}-\d{2}$/.test(d) && typeof t === 'string' && t.trim()) (out[id] = out[id] || {})[d] = t.slice(0, LIFT_NOTE_MAX);
+      });
+    });
+    return out;
+  }
+  function loadLiftNotes() { try { liftNotes = cleanLiftNotes(JSON.parse(localStorage.getItem(LIFT_NOTES_KEY))); } catch(e) { liftNotes = {}; } }
+  function persistLiftNotes() {
+    try { if (Object.keys(liftNotes).length) localStorage.setItem(LIFT_NOTES_KEY, JSON.stringify(liftNotes)); else localStorage.removeItem(LIFT_NOTES_KEY); } catch(e) {}
+    if (typeof idbSet === 'function') idbSet('liftNotes', liftNotes);
+  }
+  function liftNoteFor(exId, d) { return (liftNotes[exId] && liftNotes[exId][d]) || ''; }
+  function prevLiftNote(exId, d) {
+    var m = liftNotes[exId] || {}, best = null;
+    Object.keys(m).forEach(function(k) { if (k < d && (!best || k > best)) best = k; });
+    return best ? { d: best, t: m[best] } : null;
+  }
+  function liftNoteFieldHTML(exId, pre) {
+    var d = todayKey(), prev = prevLiftNote(exId, d);
+    return '<div class="lift-note-wrap"><label class="lift-note-label" for="' + pre + exId + '">Your note</label>'
+      + '<textarea class="lift-note-input" id="' + pre + exId + '" data-ex="' + exId + '" data-date="' + d + '" rows="2" maxlength="' + LIFT_NOTE_MAX + '"'
+      + ' placeholder="Anything about this lift today." oninput="liftNoteInput(this)" onblur="saveLiftNote(this)">' + workoutNoteEscape(liftNoteFor(exId, d)) + '</textarea>'
+      + '<div class="workout-note-count" aria-live="polite"></div>'
+      + (prev ? '<div class="lift-note-last">Last time, ' + shortDate(prev.d) + ': ' + workoutNoteEscape(prev.t.replace(/\s+/g, ' ')) + '</div>' : '')
+      + '</div>';
+  }
+  function liftNoteInput(el) {
+    el.dataset.dirty = '1';
+    var c = el.parentNode && el.parentNode.querySelector('.workout-note-count'), n = el.value.length;
+    if (c) c.textContent = n >= LIFT_NOTE_MAX - 50 ? fmtInt(n) + ' of ' + LIFT_NOTE_MAX : '';
+  }
+  function saveLiftNote(el) {
+    if (!el || !el.dataset) return;
+    var id = el.dataset.ex, d = el.dataset.date, t = String(el.value || '').slice(0, LIFT_NOTE_MAX);
+    el.dataset.dirty = '';
+    if (!id || !d) return;
+    var before = liftNoteFor(id, d);
+    if (t.trim()) (liftNotes[id] = liftNotes[id] || {})[d] = t;
+    else if (liftNotes[id]) { delete liftNotes[id][d]; if (!Object.keys(liftNotes[id]).length) delete liftNotes[id]; }
+    if (before === liftNoteFor(id, d)) return;
+    persistLiftNotes();
+    refreshLiftNoteMarks(id, el);
+  }
+  //  Markers on closed cards, and any other open field for the same lift.
+  function refreshLiftNoteMarks(id, src) {
+    var has = !!liftNoteFor(id, todayKey());
+    document.querySelectorAll('[data-notemark="' + id + '"]').forEach(function(m) { if (has) m.removeAttribute('hidden'); else m.setAttribute('hidden', ''); });
+    document.querySelectorAll('.lift-note-input[data-ex="' + id + '"]').forEach(function(o) {
+      if (o !== src && document.activeElement !== o && o.dataset.date === todayKey()) o.value = liftNoteFor(id, o.dataset.date);
+    });
+  }
+  function flushLiftNotes() {
+    document.querySelectorAll('.lift-note-input').forEach(function(el) { if (el.dataset.dirty) saveLiftNote(el); });
+  }
+  loadLiftNotes();
+  try {
+    if (document.addEventListener) document.addEventListener('visibilitychange', function() { if (document.hidden) flushLiftNotes(); });
+    if (window.addEventListener) window.addEventListener('pagehide', flushLiftNotes);
+  } catch(e) {}
   function persistBodyweight() {
     try { localStorage.setItem(BODYWEIGHT_KEY, JSON.stringify(bodyweight)); } catch(e) {}
     idbSet('bodyweight', bodyweight);
@@ -15734,6 +15831,9 @@ a:not([class]), .howto-link { color: var(--primary-text); }
           return [shortDate(e.d), e.weight + ' × ' + e.reps, entrySetCount(e),
             '<button type="button" class="prog-del" aria-label="Delete ' + shortDate(e.d) + ' entry" onclick="deleteLiftEntry(\'' + _progEx + '\',' + hAll.indexOf(e) + ',\'' + e.d + '\')">Delete</button>'];
         }), rows.length);
+        var nmap = liftNotes[_progEx] || {}, nks = Object.keys(nmap).sort().reverse();
+        if (nks.length) html += '<div class="prog-notes"><div class="today-label">Notes</div>'
+          + (_progMore ? nks : nks.slice(0, 5)).map(function(k) { return '<div class="prog-note"><span class="prog-note-d">' + shortDate(k) + '</span> ' + workoutNoteEscape(nmap[k]) + '</div>'; }).join('') + '</div>';
       }
     } else if (_progView === 'body') {
       var bw = bwSeries();
@@ -16761,6 +16861,7 @@ function tabBarOwner(t) {
 }
 function goTab(t) {
   if (typeof saveWorkoutNote === 'function') try { saveWorkoutNote(); } catch(e) {}
+  if (typeof flushLiftNotes === 'function') try { flushLiftNotes(); } catch(e) {}
   if (t === 'training' && typeof renderWorkoutNote === 'function') setTimeout(function() { try { renderWorkoutNote(); } catch(e) {} }, 0);
   //  Log as I go: Quick Log is home, so Plan opens it.
   if (t === 'training' && typeof trainStyle === 'object' && trainStyle.style === 'free') t = 'quicklog';
