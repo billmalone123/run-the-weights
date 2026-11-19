@@ -619,15 +619,17 @@ ok('a literal 20% opacity white border was NOT used (it would regress contrast)'
 
 // 2. Primary action buttons — more padding, a subtle inner glow, no color change.
 ok('.quicklog-save-btn got +4px top/bottom padding (14px -> 18px 14px)', /\.quicklog-save-btn \{[^}]*padding: 18px 14px;/.test(html));
-ok('.quicklog-save-btn got the inner glow', /\.quicklog-save-btn \{[^}]*box-shadow: inset 0 1px 0 rgba\((?:255,255,255|var\(--hi-rgb\)),0\.1\);/.test(html));
-ok('.quicklog-save-btn is still accent-colored — untouched', /\.quicklog-save-btn \{[^}]*background: var\(--accent\);/.test(html));
+// 8.22 look: flat buttons on cream. No inner glow, no drop shadow, solid blue.
+var LIGHT_FILL_BLUE = /html\[data-theme="light"\] \{[^}]*--fill:\s*#0038BD;/.test(html);
+ok('.quicklog-save-btn has no glow or drop shadow (box-shadow: none, no inset, no blur)', /\.quicklog-save-btn \{[^}]*box-shadow: none;/.test(html) && !/\.quicklog-save-btn \{[^}]*(inset|0 4px 16px)/.test(html));
+ok('.quicklog-save-btn is filled with the blue token (--fill, #0038BD in Light)', /\.quicklog-save-btn \{[^}]*background: var\(--fill\);/.test(html) && LIGHT_FILL_BLUE);
 ok('.settings-save-btn got +4px padding too (16px -> 20px 16px)', /\.settings-save-btn \{[^}]*padding: 20px 16px;/.test(html));
-ok('.settings-save-btn got the inner glow, alongside its existing drop shadow', /\.settings-save-btn \{[^}]*box-shadow: 0 4px 16px rgba\((?:241,239,225|var\(--ink-rgb\)),0\.25\), inset 0 1px 0 rgba\((?:255,255,255|var\(--hi-rgb\)),0\.1\);/.test(html));
+ok('.settings-save-btn has no glow or drop shadow, and a solid blue fill', /\.settings-save-btn \{[^}]*box-shadow: none;/.test(html) && !/\.settings-save-btn \{[^}]*(inset|0 4px 16px)/.test(html) && /\.settings-save-btn \{[^}]*background: var\(--fill\);/.test(html) && !/\.settings-save-btn:hover \{[^}]*gradient/.test(html));
 // Apply was the one primary action with NO fill at all before this — a
 // bigger gap than "needs more weight" describes for the others.
 eq('the Apply button no longer uses the plain, unfilled link style', /class="quicklog-back"[^>]*onclick="applyGoalModeRecommendation\(\)"/.test(html), false);
 ok('Apply is now a compact, accent-filled button with the same inner glow', /class="food-apply-btn" onclick="applyGoalModeRecommendation\(\)">Apply</.test(html));
-ok('.food-apply-btn uses --accent, not a new color', /\.food-apply-btn \{[^}]*background: var\(--accent\);/.test(html));
+ok('.food-apply-btn uses the blue token --fill, not a new color, and no shadow', /\.food-apply-btn \{[^}]*background: var\(--fill\);/.test(html) && /\.food-apply-btn \{[^}]*box-shadow: none;/.test(html) && LIGHT_FILL_BLUE);
 ok('and stays inline, not full width (no layout change to the recommendation line)', /\.food-apply-btn \{[^}]*display: inline-block;/.test(html));
 
 // 3. Nav dropdown: clearer icon, first-open pulse.
@@ -699,7 +701,7 @@ ok('enhanceAllInputs also drives color state now (same call sites, no new ones n
 section('2l. Nav pill: accent background/border, centered content, tap flash');
 ok('background is --accent at 15% opacity, not a new color', /\.nav-logo \{[\s\S]{0,220}background: rgba\((?:241,239,225|var\(--ink-rgb\)),0\.15\);/.test(html));
 ok('border is --accent at 40% opacity', /border: 1px solid rgba\((?:241,239,225|var\(--ink-rgb\)),0\.4\);/.test(html));
-ok('content is centered both ways', /background: rgba\((?:241,239,225|var\(--ink-rgb\)),0\.15\);[\s\S]{0,150}justify-content: center;/.test(html));
+ok('no grey logo pill: transparent, no border, no shadow (open or closed), content still centered', /\.nav-logo, \.nav-logo\[aria-expanded="true"\] \{ background: transparent !important; border: 0 !important; box-shadow: none !important;/.test(html) && /\.nav-logo \{[^}]*align-items: center; justify-content: center;/.test(html));
 ok('a tap-flash class and its 100ms timeout both exist', /nav-tap-flash/.test(html) && /setTimeout\(function\(\) \{ trigger\.classList\.remove\('nav-tap-flash'\); \}, 100\)/.test(html));
 reset(); boot();
 var navBtn = ctx.document.getElementById('navLogo');
