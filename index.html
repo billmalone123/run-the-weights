@@ -3467,7 +3467,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--fill) !important
 /* Run log: one field style. Hairline border, 2px blue ring on focus. The
    valid and invalid colors set by script are overridden here; an error
    border shows only while the error message has text. */
-#runLogSheet .run-input { border: 1px solid var(--border) !important; background: var(--bg); box-shadow: none; outline: none; }
+#runLogSheet .run-input { border: 1px solid var(--field) !important; background: var(--bg); box-shadow: none; outline: none; }
 #runLogSheet .run-input:focus { border-color: var(--fill) !important; box-shadow: 0 0 0 2px var(--fill); outline: none; }
 #runLogSheet:has(#rlMsg:not(:empty)) .run-input:placeholder-shown:not(:focus) { border-color: var(--warn) !important; }
 .rl-feel summary { list-style: none; cursor: default; pointer-events: none; }
@@ -3561,6 +3561,12 @@ input[style*="224, 82, 82"], input[style*="E05252" i] { border-color: var(--warn
 .ring-fill { stroke: var(--persimmon-burnt); }
 #ring-ticks line { stroke: var(--field); }
 .hero-cta, .hero-cta:hover { opacity: 1; }
+/* Food and Quick Log: ultramarine header band with cream text, like Today,
+   Plan and Progress. */
+#tab-food .section-title, #tab-food .section-title.train-title, .ql-heading {
+  background: var(--ultramarine) !important; color: var(--cream) !important; border-radius: var(--r-c); padding: 16px; }
+#tab-food .section-title::before, .ql-heading::before { display: none; }
+#tab-food .section-title .accent-word { color: var(--cream); }
 /* Links in blue. */
 a:not([class]), .howto-link { color: var(--primary-text); }
 </style>
