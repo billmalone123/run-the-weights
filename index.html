@@ -3611,6 +3611,16 @@ input::placeholder, textarea::placeholder { color: var(--muted) !important; opac
 @keyframes tdigitSlide { from { transform: translateY(-30%); } to { transform: none; } }
 .tdigit.roll { animation-name: tdigitSlide; opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .tdigit.roll { animation: none; } }
+/* Entry questions: persimmon marks where you are; selections stay ultramarine. */
+.onb-progress { height: 4px; background: var(--border); border-radius: var(--r-p); overflow: hidden; margin: 0 0 20px; }
+.onb-progress-fill { height: 100%; width: 33%; background: var(--persimmon); transition: width 0.3s ease; }
+@media (prefers-reduced-motion: reduce) { .onb-progress-fill { transition: none; } }
+#onbFlowScreen2 > .settings-modal-title::before { content: ''; display: block; width: 40px; height: 6px; background: var(--persimmon); margin-bottom: 12px; }
+#onbFlowScreen2 .q-now, #onbFlowScreen2 .q-now span { color: var(--persimmon-burnt) !important; font-weight: 700; }
+.ws-day.today { background: var(--persimmon); border-color: var(--persimmon-burnt); color: var(--ink); font-weight: 700; }
+/* Step 1: the persimmon rule sits above the ultramarine wordmark band, not on it. */
+.onb-wordmark-band { border-top: 0 !important; position: relative; margin-top: 22px; }
+.onb-wordmark-band::before { content: ''; position: absolute; top: -18px; left: 0; width: 40px; height: 6px; background: var(--persimmon); }
 /* Links in blue. */
 a:not([class]), .howto-link { color: var(--primary-text); }
 </style>
@@ -3730,6 +3740,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
      by JS once the rest of the app has finished initializing. -->
 <div class="onb-flow" id="onbFlow" style="display:none;">
   <div class="onb-flow-inner">
+    <div class="onb-progress" id="onbProgress" role="progressbar" aria-label="Setup progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="33"><div class="onb-progress-fill" id="onbProgressFill"></div></div>
 
     <div class="onb-flow-screen" id="onbFlowScreen1">
       <div class="settings-modal-title onb-wordmark-band" style="font-size:var(--fs-5);">RUN THE WEIGHTS</div>
@@ -10868,7 +10879,33 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       var s = document.getElementById('onbFlowScreen' + i);
       if (s) s.style.display = i === n ? 'block' : 'none';
     });
+    _onbStep = n; onbMarkProgress();
   }
+  //  Entry questions: the progress bar fills a third per screen, and on the
+  //  questions screen a share of that third per answer. The first question
+  //  still unanswered gets the "now" label color. Reads the page only.
+  var _onbStep = 1;
+  function onbMarkProgress() { try { onbMarkProgressNow(); } catch (e) {} }
+  function onbMarkProgressNow() {
+    var groups = [['onbFlowWeight', null], ['onbFlowCardioYes', null], ['onbFlowGoalPills', 'grp'], ['onbFlowLiftDaysPills', 'grp'], ['onbFlowExpYes', null], ['onbFlowLenPills', 'grp']];
+    var done = 0, current = null;
+    groups.forEach(function(g) {
+      var el = document.getElementById(g[0]); if (!el) return;
+      var box = g[0] === 'onbFlowWeight' ? el : (g[1] ? el : el.parentElement);
+      var answered = g[0] === 'onbFlowWeight' ? !!String(el.value).trim() : !!box.querySelector('.on');
+      var label = g[0] === 'onbFlowWeight' ? box.parentElement.querySelector('label') : box.previousElementSibling;
+      while (label && !/run-field-label/.test(label.className) && label.tagName !== 'LABEL') label = label.previousElementSibling;
+      if (label) label.classList.remove('q-now');
+      if (answered) done++; else if (!current) current = label;
+    });
+    if (current && _onbStep === 2) current.classList.add('q-now');
+    var pct = _onbStep >= 3 ? 100 : _onbStep === 2 ? Math.round(100 / 3 + done / groups.length * 100 / 3) : Math.round(100 / 3);
+    var f = document.getElementById('onbProgressFill'), bar = document.getElementById('onbProgress');
+    if (f) f.style.width = pct + '%';
+    if (bar) bar.setAttribute('aria-valuenow', pct);
+  }
+  if (document.addEventListener) document.addEventListener('click', function(e) { if (e.target && e.target.closest && e.target.closest('#onbFlowScreen2')) setTimeout(onbMarkProgress, 0); });
+  if (document.addEventListener) document.addEventListener('input', function(e) { if (e.target && e.target.closest && e.target.closest('#onbFlowScreen2')) onbMarkProgress(); });
   function onbFlowGoto(n) { onbFlowShowScreen(n); }
   //  Plain choices, mapped onto the existing goal values so the food math
   //  is untouched. Race only when the user runs; Carb load never here.
@@ -10992,7 +11029,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     if (!t) return '';
     var L = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
     return '<span class="week-strip" aria-hidden="true">' + t.week.map(function(id, i) {
-      return '<span class="ws-day' + (id === 'rest' ? '' : ' on') + '">' + L[i] + '</span>';
+      return '<span class="ws-day' + (id === 'rest' ? '' : ' on') + (i === (new Date().getDay() + 6) % 7 ? ' today' : '') + '">' + L[i] + '</span>';
     }).join('') + '</span>';
   }
   //  The days question, as one row per option: count, plain line, week strip.
