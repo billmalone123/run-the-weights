@@ -3668,6 +3668,10 @@ img[src$=".svg"][src*="assets/brand/"] { mix-blend-mode: normal; }
    button inside them stays tappable. The timer keeps running under them. */
 .settings-modal-overlay, .rest-modal-overlay { z-index: 340 !important; }
 .ql-session { margin: 16px 0 8px; }
+/* 8.30: Food weigh in at the top. */
+.food-weighin .food-weighin-field { max-width: 220px; margin-bottom: 4px; }
+.food-weighin-last { font-size: var(--fs-1); color: var(--muted); line-height: 1.4; min-height: 1em; }
+.food-weighin-last:empty { display: none; }
 /* 8.30: recent workouts, ruled rows. */
 .ql-rw-wrap { margin: 0 0 20px; }
 .ql-rw-list { border-top: 1px solid var(--border); }
@@ -4635,6 +4639,9 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 <section id="foodSection">
   <div class="section-label">Food</div>
   <h2 class="section-title train-title">LOG WHAT<br><span class="accent-word">YOU EAT</span></h2>
+  <!-- WEIGH IN (8.30). First on Food: today's weight, saved to the same
+       bodyweight data as everywhere else. -->
+  <div class="food-block food-weighin" id="foodWeighTop"></div>
 
   <div class="calfull-nav">
     <button class="calfull-arrow" onclick="stepFoodDay(-1)" aria-label="Previous day">&#8249;</button>
@@ -4644,9 +4651,6 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     </div>
     <button class="calfull-arrow" onclick="stepFoodDay(1)" aria-label="Next day">&#8250;</button>
   </div>
-
-  <div id="foodTotals" class="food-block"></div>
-  <div id="foodGoalMode" class="food-block"></div>
 
   <div class="food-block">
     <div class="run-setup-bar" style="margin-bottom:8px;">
@@ -4669,6 +4673,9 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   </div>
 
   <div id="foodDraft" class="food-block food-draft" style="display:none"></div>
+
+  <div id="foodTotals" class="food-block"></div>
+  <div id="foodGoalMode" class="food-block"></div>
 
   <div class="food-block">
     <div class="quicklog-recent-title">Drinks</div>
@@ -13290,7 +13297,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     { id: 'quicklog', scr: 'quicklog', isNew: 1, t: 'Pick any lift or type your own. Log as you go.', a: function() { return document.getElementById('qlAddExBtn'); }, at: 'before' },
     { id: 'progress', scr: 'calendar', isNew: 1, t: 'Your lifts by date. Pick an exercise to see its history.', a: function() { return document.querySelector('#progressHome .prog-seg'); }, at: 'after' },
     { id: 'run', scr: 'running', t: 'Your running plan lives here. Log each run when you finish it.', a: function() { var h = document.getElementById('runHome'); return h && h.firstElementChild; }, at: 'before' },
-    { id: 'food', scr: 'food', t: 'Log meals here. Your totals for the day show at the top.', a: function() { return document.getElementById('foodTotals'); }, at: 'before' },
+    { id: 'food', scr: 'food', t: 'Weigh in here. Add meals below and your totals show under them.', a: function() { return document.getElementById('foodWeighTop'); }, at: 'after' },
     { id: 'style', scr: 'settings', isNew: 1, t: 'Follow a plan or train your own way. Switch under Set your maxes.', a: function() { return document.getElementById('settingsOpenBtn'); }, at: 'after' },
     { id: 'menu', scr: '*', isNew: 1, t: 'Tap the logo for every screen, plus Week review and The Edge.', a: function() { return tipTabTop(); }, at: 'before' }
   ];
@@ -13789,6 +13796,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     renderFoodMeals();
     renderFoodRepeat();
     renderFoodWeight();
+    renderFoodWeighTop();
     foodSetMsg('foodPostMsg', '');
   }
   //  Red under a third of the way there, yellow approaching, green close,
@@ -14463,12 +14471,34 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     lines.push('<div class="run-field-label"><span>Weekly average</span><span class="run-field-val">' + (avg != null ? avg.toFixed(1) + ' lb' : 'No weigh ins yet') + '</span></div>');
     if (trend != null) lines.push('<div class="run-hint">vs last week: ' + (trend > 0 ? '+' : '') + trend.toFixed(1) + ' lb</div>');
     if (avg != null && goal) lines.push('<div class="run-hint">' + (Math.abs(goal - avg) < 0.5 ? 'At your goal of ' + goal : Math.abs(goal - avg).toFixed(1) + ' lb to ' + goal) + '</div>');
-    host.innerHTML = '<div class="quicklog-field" style="max-width:220px;"><label for="foodWeighIn">Weigh in (lbs)</label>'
-      + '<input type="number" inputmode="decimal" id="foodWeighIn" value="' + (today != null ? today : '') + '" placeholder="e.g. 186.4" onchange="saveWeighIn(this.value)"></div>'
-      + lines.join('')
+    //  8.30: the weigh in field moved to the top of Food (renderFoodWeighTop).
+    host.innerHTML = lines.join('')
       + bwChartSVG(dk)
       + (bwBandPrompt(trend, bwBand) ? '<div class="bw-band-note">' + bwBandPrompt(trend, bwBand) + '</div>' : '')
       + '<div class="run-hint">The weekly average matters more than any single weigh in. Your band is ' + bwBand.lo + ' to ' + bwBand.hi + ' lb a week; change it in Settings.</div>';
+  }
+  //     WEIGH IN, top of Food. Always today's weight. The last earlier weigh
+  //  in shows small under it.
+  function renderFoodWeighTop() {
+    var host = document.getElementById('foodWeighTop');
+    if (!host) return;
+    var tk = todayKey(), v = bodyweight[tk], prev = null;
+    Object.keys(bodyweight || {}).forEach(function(k) { if (k < tk && parseDateKey(k) && bodyweight[k] > 0 && (!prev || k > prev)) prev = k; });
+    var hadFocus = document.activeElement && document.activeElement.id === 'foodWeighToday';
+    host.innerHTML = '<div class="quicklog-field food-weighin-field"><label for="foodWeighToday">Today\'s weight (lbs)</label>'
+      + '<input type="number" inputmode="decimal" id="foodWeighToday" value="' + (v != null && v > 0 ? styleEsc(v) : '') + '" placeholder="e.g. 186.4" aria-describedby="foodWeighLast" onchange="saveFoodWeighToday(this.value)"></div>'
+      + '<div class="food-weighin-last" id="foodWeighLast">' + (prev ? 'Last weigh in: ' + fmtNum(+bodyweight[prev]) + ' lb, ' + shortDate(prev) + '.' : (v > 0 ? '' : 'No weigh ins yet.')) + '</div>';
+    if (hadFocus) { var el = document.getElementById('foodWeighToday'); if (el) el.focus(); }
+  }
+  function saveFoodWeighToday(value) {
+    var n = parseFloat(value), k = todayKey();
+    if (isFinite(n) && n > 50 && n < 1000) bodyweight[k] = Math.round(n * 10) / 10;
+    else delete bodyweight[k];
+    persistBodyweight();
+    renderFoodWeighTop();
+    renderFoodWeight();
+    renderGoalMode();
+    if (typeof renderToday === 'function') renderToday();
   }
   function saveWeighIn(value) {
     var v = parseFloat(value), dk = foodDate();
