@@ -23,14 +23,14 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Run the Weights">
 <meta name="mobile-web-app-capable" content="yes">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" href="assets/brand/rtw-apple-touch-180.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/brand/rtw-apple-touch-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/brand/rtw-icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/brand/rtw-icon-512.png">
 <!-- Fetched as early as the parser can start it, so by the time the splash
      div below paints, the mark is very likely already in memory instead of
      popping in a beat after the dark background does. -->
-<link rel="preload" as="image" href="assets/brand/rtw-square-a.png">
+<link rel="preload" as="image" href="assets/brand/rtw-wordmark-on-cream.svg">
 <link href="https://fonts.googleapis.com/css2?family=Antonio:wght@400;500;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -159,12 +159,6 @@
   html[data-theme="light"] .ring-fill { filter: none; }
   html[data-theme="light"] ellipse[filter="url(#spotBlur)"] { display: none; }
   html[data-theme="light"] .timer-bar { box-shadow: 0 -1px 0 var(--border), 0 -6px 20px rgba(0,0,0,0.06); }
-  html[data-theme="light"] img[src$="rtw-square-a.png"] { content: url("assets/brand/rtw-square-a-light.png"); }
-  html[data-theme="light"] img[src$="rtw-wordmark.png"] { content: url("assets/brand/rtw-wordmark-light.png"); }
-  /* The brand PNGs carry the Dark background baked in. On true black that
-     reads as a gray box, so swap in the remapped black versions. */
-  html[data-theme="black"] img[src$="rtw-square-a.png"] { content: url("assets/brand/rtw-square-a-black.png"); }
-  html[data-theme="black"] img[src$="rtw-wordmark.png"] { content: url("assets/brand/rtw-wordmark-black.png"); }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; background: var(--bg); }
   body {
@@ -3612,15 +3606,22 @@ input::placeholder, textarea::placeholder { color: var(--muted) !important; opac
 .tdigit.roll { animation-name: tdigitSlide; opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .tdigit.roll { animation: none; } }
 /* Entry questions: persimmon marks where you are; selections stay ultramarine. */
-.onb-progress { height: 4px; background: var(--border); border-radius: var(--r-p); overflow: hidden; margin: 0 0 20px; }
-.onb-progress-fill { height: 100%; width: 33%; background: var(--persimmon); transition: width 0.3s ease; }
-@media (prefers-reduced-motion: reduce) { .onb-progress-fill { transition: none; } }
+.onb-flow-progress { height: 4px; background: var(--border); border-radius: var(--r-p); overflow: hidden; margin: 0 0 20px; }
+.onb-flow-progress-fill { height: 100%; width: 33%; background: var(--persimmon); transition: width 0.3s ease; }
+@media (prefers-reduced-motion: reduce) { .onb-flow-progress-fill { transition: none; } }
 #onbFlowScreen2 > .settings-modal-title::before { content: ''; display: block; width: 40px; height: 6px; background: var(--persimmon); margin-bottom: 12px; }
 #onbFlowScreen2 .q-now, #onbFlowScreen2 .q-now span { color: var(--persimmon-burnt) !important; font-weight: 700; }
 .ws-day.today { background: var(--persimmon); border-color: var(--persimmon-burnt); color: var(--ink); font-weight: 700; }
 /* Step 1: the persimmon rule sits above the ultramarine wordmark band, not on it. */
 .onb-wordmark-band { border-top: 0 !important; position: relative; margin-top: 22px; }
 .onb-wordmark-band::before { content: ''; position: absolute; top: -18px; left: 0; width: 40px; height: 6px; background: var(--persimmon); }
+/* LOGO SET. Vector marks, drawn in the locked palette, never blended. */
+img[src$=".svg"][src*="assets/brand/"] { mix-blend-mode: normal; }
+.nav-logo img.nav-logo-word { display: block !important; height: 20px; width: auto; max-width: none; flex: 0 0 auto; }
+.nav-logo .nav-logo-text { display: none; }
+.footer-logo img { height: 112px; width: auto; }
+.settings-modal-brand img { object-fit: contain; border-radius: 0; }
+.splash-logo { height: auto; }
 /* Links in blue. */
 a:not([class]), .howto-link { color: var(--primary-text); }
 </style>
@@ -3700,7 +3701,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
      entire "show" step; nothing below decides whether it appears, only how
      it disappears. -->
 <div class="splash-screen" id="splashScreen" aria-hidden="true">
-  <img class="splash-logo" src="assets/brand/rtw-square-a.png" alt="RTW">
+  <img class="splash-logo" src="assets/brand/rtw-wordmark-on-cream.svg" alt="Run the Weights">
 </div>
 <script>
 (function() {
@@ -3740,7 +3741,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
      by JS once the rest of the app has finished initializing. -->
 <div class="onb-flow" id="onbFlow" style="display:none;">
   <div class="onb-flow-inner">
-    <div class="onb-progress" id="onbProgress" role="progressbar" aria-label="Setup progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="33"><div class="onb-progress-fill" id="onbProgressFill"></div></div>
+    <div class="onb-flow-progress" id="onbFlowProgress" role="progressbar" aria-label="Setup progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="33"><div class="onb-flow-progress-fill" id="onbFlowProgressFill"></div></div>
 
     <div class="onb-flow-screen" id="onbFlowScreen1">
       <div class="settings-modal-title onb-wordmark-band" style="font-size:var(--fs-5);">RUN THE WEIGHTS</div>
@@ -3810,8 +3811,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 
 <nav>
   <button class="nav-logo" id="navLogo" aria-haspopup="menu" aria-expanded="false" aria-label="Run the Weights, open menu">
-    <img class="nav-logo-word" src="assets/brand/rtw-wordmark.png" alt="Run the Weights">
-    <img class="nav-logo-mark" src="assets/brand/rtw-square-a.png" alt="" aria-hidden="true">
+    <img class="nav-logo-word" src="assets/brand/rtw-header-solid-horizontal.svg" alt="Run the Weights" width="137" height="20">
+    <img class="nav-logo-mark" src="assets/brand/rtw-wordmark-solid-stack.svg" alt="" aria-hidden="true">
     <span class="nav-logo-text" aria-hidden="true">Run the Weights</span>
     <span class="nav-logo-chevron" aria-hidden="true">≡</span>
   </button>
@@ -3972,7 +3973,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   </div>
 </section><footer>
   <div>
-    <div class="footer-logo"><img src="assets/brand/rtw-wordmark.png" alt="Run the Weights"></div>
+    <div class="footer-logo"><img src="assets/brand/rtw-wordmark-on-cream.svg" alt="Run the Weights"></div>
     <div class="footer-sub">Show up when you can. Pick up where you left off.</div>
   </div>
   <div class="footer-rules">
@@ -4021,7 +4022,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 
 <section id="plan">
   <div class="section-label adv">Plan</div>
-  <h2 class="lift-hero adv">Log every set.</h2>
+  <h2 class="lift-hero adv">This is where you win.</h2>
 
   <!-- COMPACT WEEK + REST ROW. One week shown; arrows change it. -->
   <div class="lift-toolbar">
@@ -4628,7 +4629,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   <div class="settings-modal-card" id="maxesModalCard">
     <div class="onb-step" id="maxesStepLabel" style="display:none;">Step 1 of 2</div>
     <div class="settings-modal-brand">
-      <img src="assets/brand/rtw-square-a.png" alt="" aria-hidden="true">
+      <img src="assets/brand/rtw-wordmark-solid-stack.svg" alt="" aria-hidden="true">
       <div class="settings-modal-title">Enter Run the Weights</div>
     </div>
     <div class="settings-modal-sub">Your max is the most you can lift once with good form. It sets your starting weights. Not sure? Use Estimate it with a recent set, or skip this. Your first logged sets do the same job.</div>
@@ -4723,7 +4724,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 <div class="settings-modal-overlay" id="changePlanModal" style="display:none;">
   <div class="settings-modal-card" id="changePlanModalCard">
     <div class="settings-modal-brand">
-      <img src="assets/brand/rtw-square-a.png" alt="" aria-hidden="true">
+      <img src="assets/brand/rtw-wordmark-solid-stack.svg" alt="" aria-hidden="true">
       <div class="settings-modal-title">Change Training Plan</div>
     </div>
 
@@ -4871,7 +4872,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.22</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.23</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -4881,7 +4882,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   <div class="settings-modal-card" id="runSetupModalCard">
     <div class="onb-step">Step 2 of 2</div>
     <div class="settings-modal-brand">
-      <img src="assets/brand/rtw-square-a.png" alt="" aria-hidden="true">
+      <img src="assets/brand/rtw-wordmark-solid-stack.svg" alt="" aria-hidden="true">
       <div class="settings-modal-title">Your Race</div>
     </div>
     <div class="settings-modal-sub">Running is the other half. Give it a race and a starting point and the plan builds itself around your lifting week. Weekly mileage starts at the suggested numbers for your level — adjust them anytime on the Run tab.</div>
@@ -4935,7 +4936,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     <div class="onb-step" id="onbStepLabel"></div>
     <div class="onb-progress"><div class="onb-progress-fill" id="onbProgressFill"></div></div>
     <div class="settings-modal-brand">
-      <img src="assets/brand/rtw-square-a.png" alt="" aria-hidden="true">
+      <img src="assets/brand/rtw-wordmark-solid-stack.svg" alt="" aria-hidden="true">
       <div class="settings-modal-title" id="onbTitle"></div>
     </div>
     <div class="settings-modal-sub" id="onbSub"></div>
@@ -10900,7 +10901,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     });
     if (current && _onbStep === 2) current.classList.add('q-now');
     var pct = _onbStep >= 3 ? 100 : _onbStep === 2 ? Math.round(100 / 3 + done / groups.length * 100 / 3) : Math.round(100 / 3);
-    var f = document.getElementById('onbProgressFill'), bar = document.getElementById('onbProgress');
+    var f = document.getElementById('onbFlowProgressFill'), bar = document.getElementById('onbFlowProgress');
     if (f) f.style.width = pct + '%';
     if (bar) bar.setAttribute('aria-valuenow', pct);
   }
