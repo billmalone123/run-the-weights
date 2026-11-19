@@ -3670,6 +3670,20 @@ img[src$=".svg"][src*="assets/brand/"] { mix-blend-mode: normal; }
    button inside them stays tappable. The timer keeps running under them. */
 .settings-modal-overlay, .rest-modal-overlay { z-index: 340 !important; }
 .ql-session { margin: 16px 0 8px; }
+/* 8.31: weight history on Progress, Body. */
+.prog-tile-btn { display: block; width: 100%; text-align: left; font: inherit; color: inherit; cursor: pointer; }
+.prog-tile-btn .prog-tile-v, .prog-tile-btn .prog-tile-l { display: block; }
+.bw-form { margin: 4px 0 14px; }
+.bw-form .bw-h { margin-top: 0; }
+.bw-fields { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 10px; }
+.bw-fields input { width: 100%; min-height: 44px; box-sizing: border-box; }
+.bw-save { width: 100%; margin-top: 10px; min-height: 44px; }
+.bw-msg { font-size: var(--fs-2); color: var(--text); min-height: 1.4em; margin-top: 6px; }
+.bw-week { font-size: var(--fs-2); color: var(--text); margin: 4px 0 8px; }
+.bw-list { list-style: none; margin: 10px 0 0; padding: 0; border-top: 1px solid var(--border); }
+.bw-row { display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); font-size: var(--fs-2); }
+.bw-d { flex: 1; } .bw-v { flex: 1; font-weight: 600; }
+.bw-act { min-height: 44px; min-width: 56px; padding: 0 8px; border: 0; background: none; color: var(--text); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 /* 8.30: run note, a small ruled line that opens to a text field. */
 .rl-note { margin: 0 0 8px; }
 .rl-note-toggle { display: block; width: 100%; min-height: 44px; padding: 0; margin: 0; border: 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
@@ -13321,6 +13335,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     { id: 'wnote', scr: 'training', isNew: 1, t: 'Write how it felt. It saves by date in the full calendar.', a: function() { return document.getElementById('workoutNotesWrap'); }, at: 'before' },
     { id: 'quicklog', scr: 'quicklog', isNew: 1, t: 'Pick any lift or type your own. Log as you go.', a: function() { return document.getElementById('qlAddExBtn'); }, at: 'before' },
     { id: 'progress', scr: 'calendar', isNew: 1, t: 'Your lifts by date. Pick an exercise to see its history.', a: function() { return document.querySelector('#progressHome .prog-seg'); }, at: 'after' },
+    { id: 'body', scr: 'calendar', isNew: 1, t: 'Log your weight here any day. Past days work too.', a: function() { return _progView === 'body' ? document.getElementById('bwForm') : null; }, at: 'before' },
     { id: 'run', scr: 'running', t: 'Your running plan lives here. Log each run when you finish it.', a: function() { var h = document.getElementById('runHome'); return h && h.firstElementChild; }, at: 'before' },
     { id: 'food', scr: 'food', t: 'Weigh in here. Add meals below and your totals show under them.', a: function() { return document.getElementById('foodWeighTop'); }, at: 'after' },
     { id: 'style', scr: 'settings', isNew: 1, t: 'Follow a plan or train your own way. Switch under Set your maxes.', a: function() { return document.getElementById('settingsOpenBtn'); }, at: 'after' },
@@ -16564,10 +16579,12 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     });
     var bw = bwSeries(), bwTxt = null;
     if (bw.length >= 2) { var dlt = bw[bw.length - 1].y - bw[0].y; bwTxt = { v: (dlt > 0 ? '+' : dlt < 0 ? '−' : '') + Math.abs(dlt).toFixed(1) + ' lbs', l: 'since ' + shortDate(bw[0].k) }; }
-    var tile = function(v, l, empty) { return '<div class="prog-tile' + (empty ? ' empty' : '') + '"><div class="prog-tile-v">' + v + '</div><div class="prog-tile-l">' + l + '</div></div>'; };
+    var tile = function(v, l, empty, act) {
+      if (act) return '<button type="button" class="prog-tile prog-tile-btn' + (empty ? ' empty' : '') + '" onclick="' + act + '"><span class="prog-tile-v">' + v + '</span><span class="prog-tile-l">' + l + '</span></button>';
+      return '<div class="prog-tile' + (empty ? ' empty' : '') + '"><div class="prog-tile-v">' + v + '</div><div class="prog-tile-l">' + l + '</div></div>'; };
     return tile(nWork, nWork === 1 ? 'workout this month' : 'workouts this month')
       + (best ? tile('+' + fmtNum(best.gain) + ' lbs', best.name) : tile('None yet', 'Log a lift to see this', true))
-      + (bwTxt ? tile(bwTxt.v, 'Bodyweight ' + bwTxt.l) : tile('None yet', 'Add your weight to see this', true));
+      + (bwTxt ? tile(bwTxt.v, 'Bodyweight ' + bwTxt.l) : tile('None yet', 'Add your weight to see this', true, 'progAddWeight()'));
   }
   function setProgView(v) { _progView = v; _progMore = false; renderProgressHome(); }
   function setProgEx(id) { _progEx = id; _progMore = false; renderProgressHome(); }
@@ -16622,16 +16639,25 @@ a:not([class]), .howto-link { color: var(--primary-text); }
           + (_progMore ? nks : nks.slice(0, 5)).map(function(k) { return '<div class="prog-note"><span class="prog-note-d">' + shortDate(k) + '</span> ' + workoutNoteEscape(nmap[k]) + '</div>'; }).join('') + '</div>';
       }
     } else if (_progView === 'body') {
-      var bw = bwSeries();
-      if (!bw.length) html = progEmpty('No weight logged yet.', 'Add weight', 'progAddWeight()');
+      //  8.31: weight history. Add or fix any past day; one weight per date.
+      var bw = bwSeries(), U = bwUnit();
+      var conv = bw.map(function(p) { return { k: p.k, y: bwShow(p.y) }; });
+      html = bwFormHTML();
+      if (!bw.length) html += '<div class="prog-empty bw-none">No weight logged yet. Add one above.</div>';
       else {
-        var avg = bwAvg7(bw), f = bw[0], z = bw[bw.length - 1];
-        var sumB = bw.length === 1 ? 'One weigh in so far: ' + fmtNum(z.y) + ' lbs.' : 'Bodyweight went from ' + fmtNum(f.y) + ' to ' + fmtNum(z.y) + ' lbs between ' + shortDate(f.k) + ' and ' + shortDate(z.k) + '. The 7 day average is ' + fmtNum(avg[avg.length - 1].y) + ' lbs.';
-        html = lineChartSVG([{ pts: bw }, { pts: avg, cls: 'avg' }], 'lbs', 'progBodyChart', sumB)
-          + (bw.length > 1 ? '<div class="ch-legend"><span><i class="lg-solid"></i>Weight</span><span><i class="lg-dash"></i>7 day average</span></div>' : '');
-        var rb = bw.map(function(p, i) { return [shortDate(p.k), fmtNum(p.y) + ' lbs', fmtNum(avg[i].y) + ' lbs']; }).reverse();
-        html += progTable(['Date', 'Weight', '7 day avg'], _progMore ? rb : rb.slice(0, 5), rb.length)
-          + '<button type="button" class="today-secondary prog-add" onclick="progAddWeight()">Add weight</button>';
+        var avg = bwAvg7(conv), f = conv[0], z = conv[conv.length - 1];
+        var sumB = conv.length === 1 ? 'One weigh in so far: ' + fmtNum(z.y) + ' ' + U + '.' : 'Bodyweight went from ' + fmtNum(f.y) + ' to ' + fmtNum(z.y) + ' ' + U + ' between ' + shortDate(f.k) + ' and ' + shortDate(z.k) + '. The 7 day average is ' + fmtNum(avg[avg.length - 1].y) + ' ' + U + '.';
+        html += bwWeekLineHTML()
+          + lineChartSVG([{ pts: conv }, { pts: avg, cls: 'avg' }], U, 'progBodyChart', sumB)
+          + (conv.length > 1 ? '<div class="ch-legend"><span><i class="lg-solid"></i>Weight</span><span><i class="lg-dash"></i>7 day average</span></div>' : '');
+        var rows = conv.slice().reverse(), shown = _progMore ? rows : rows.slice(0, 5);
+        html += '<ul class="bw-list" aria-label="Weigh ins, newest first">' + shown.map(function(p) {
+          var d = shortDate(p.k) + (p.k.slice(0, 4) !== todayKey().slice(0, 4) ? ' ' + p.k.slice(0, 4) : '');
+          return '<li class="bw-row"><span class="bw-d">' + d + '</span><span class="bw-v">' + fmtNum(p.y) + ' ' + U + '</span>'
+            + '<button type="button" class="bw-act" aria-label="Edit ' + d + '" onclick="bwEdit(\'' + p.k + '\')">Edit</button>'
+            + '<button type="button" class="bw-act" aria-label="Delete ' + d + '" onclick="bwDelete(\'' + p.k + '\')">Delete</button></li>';
+        }).join('') + '</ul>'
+          + (rows.length > 5 ? '<button type="button" class="prog-more" aria-expanded="' + _progMore + '" onclick="toggleProgMore()">' + (_progMore ? 'Show less' : 'See all (' + rows.length + ')') + '</button>' : '');
       }
     } else {
       var wk = activeSplit().week, today = mondayIndex(startOfToday()), done = 0;
@@ -16649,10 +16675,100 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     }
     view.innerHTML = html;
   }
+  //  8.31: Add weight opens the form on Progress, Body.
   function progAddWeight() {
-    goTab('today');
-    var w = document.getElementById('todayWeight');
-    if (w) { w.scrollIntoView({ block: 'center' }); w.focus(); }
+    if (visibleTab && visibleTab() !== 'calendar') goTab('calendar');
+    if (_progView !== 'body') { _progView = 'body'; _progMore = false; renderProgressHome(); }
+    var w = document.getElementById('bwVal');
+    if (w) { w.scrollIntoView({ block: 'center' }); try { w.focus({ preventScroll: true }); } catch(e) { w.focus(); } }
+  }
+  //     WEIGHT HISTORY (8.31). Same store as Food and Today: bodyweight in
+  //  monk_bodyweight_v1, { 'YYYY-MM-DD': lbs }. Shown in kg when the unit
+  //  setting is km. Accepts 50 to 700 lb or the kg equivalent.
+  var LB_PER_KG = 2.20462262, BW_MIN_LB = 50, BW_MAX_LB = 700;
+  var _bwForm = null, _bwUndo = null, _bwUndoT = 0;
+  function bwUnit() { return runUnits === 'km' ? 'kg' : 'lb'; }
+  function bwShow(lb) { return bwUnit() === 'kg' ? Math.round(lb / LB_PER_KG * 10) / 10 : Math.round(lb * 10) / 10; }
+  function bwRangeText() { return bwUnit() === 'kg' ? Math.ceil(BW_MIN_LB / LB_PER_KG) + ' and ' + Math.floor(BW_MAX_LB / LB_PER_KG) + ' kg' : BW_MIN_LB + ' and ' + BW_MAX_LB + ' lb'; }
+  function bwFormHTML() {
+    var f = _bwForm || { d: todayKey(), v: '' };
+    if (f.v === '' && bodyweight[f.d] > 0) f.v = String(bwShow(+bodyweight[f.d]));
+    _bwForm = f;
+    var has = bodyweight[f.d] > 0;
+    return '<form class="bw-form" id="bwForm" onsubmit="event.preventDefault();bwSave()" novalidate>'
+      + '<div class="today-label bw-h">Add weight</div>'
+      + '<div class="bw-fields"><div class="quicklog-field"><label for="bwDate">Date</label><input type="date" id="bwDate" max="' + todayKey() + '" value="' + f.d + '" onchange="bwPickDate(this.value)"></div>'
+      + '<div class="quicklog-field"><label for="bwVal">Weight (' + bwUnit() + ')</label><input type="number" inputmode="decimal" step="0.1" id="bwVal" value="' + styleEsc(f.v) + '" oninput="_bwForm.v=this.value" aria-describedby="bwMsg"></div></div>'
+      + '<button type="submit" class="today-start bw-save">Save</button>'
+      + '<div class="bw-msg" id="bwMsg" role="status" aria-live="polite">' + (has ? 'This date has ' + fmtNum(bwShow(+bodyweight[f.d])) + ' ' + bwUnit() + '. Save replaces it.' : '') + '</div>'
+      + '</form>';
+  }
+  function bwRerender(focusId) {
+    renderProgressHome();
+    if (focusId) { var el = document.getElementById(focusId); if (el) try { el.focus({ preventScroll: true }); } catch(e) {} }
+  }
+  function bwPickDate(v) {
+    var d = parseDateKey(v) ? v : todayKey();
+    _bwForm = { d: d, v: bodyweight[d] > 0 ? String(bwShow(+bodyweight[d])) : '' };
+    bwRerender('bwDate');
+    if (d > todayKey()) bwSay('That day has not happened yet. Pick today or an earlier day.');
+  }
+  function bwSay(t) { var m = document.getElementById('bwMsg'); if (m) m.textContent = t; }
+  function bwSave() {
+    var dEl = document.getElementById('bwDate'), vEl = document.getElementById('bwVal');
+    var d = dEl ? dEl.value : '', raw = String(vEl ? vEl.value : '').trim().replace(',', '.');
+    var dd = /^\d{4}-\d{2}-\d{2}$/.test(d) ? parseDateKey(d) : null;
+    if (!dd || dd.getMonth() + 1 !== +d.slice(5, 7) || dd.getDate() !== +d.slice(8, 10)) return bwSay('Pick a date.');
+    if (d > todayKey()) return bwSay('That day has not happened yet. Pick today or an earlier day.');
+    var n = raw === '' ? NaN : Number(raw);
+    if (!isFinite(n)) return bwSay(raw === '' ? 'Add your weight.' : 'Weight needs to be a number.');
+    var lb = bwUnit() === 'kg' ? n * LB_PER_KG : n;
+    if (lb < BW_MIN_LB - 0.05 || lb > BW_MAX_LB + 0.05) return bwSay('Enter a weight between ' + bwRangeText() + '.');
+    bodyweight[d] = Math.round(Math.min(BW_MAX_LB, Math.max(BW_MIN_LB, lb)) * 10) / 10;
+    persistBodyweight();
+    _bwForm = { d: todayKey(), v: '' };
+    bwAfterChange();
+    bwSay('Saved ' + fmtNum(bwShow(bodyweight[d])) + ' ' + bwUnit() + ' for ' + shortDate(d) + '.');
+  }
+  function bwEdit(k) {
+    if (!(bodyweight[k] > 0)) return;
+    _bwForm = { d: k, v: String(bwShow(+bodyweight[k])) };
+    bwRerender('bwVal');
+    var f = document.getElementById('bwForm'); if (f && f.scrollIntoView) f.scrollIntoView({ block: 'start' });
+  }
+  function bwDelete(k) {
+    if (!(bodyweight[k] > 0)) return;
+    _bwUndo = { k: k, v: bodyweight[k] };
+    delete bodyweight[k];
+    persistBodyweight();
+    if (_bwForm && _bwForm.d === k) _bwForm.v = '';
+    bwAfterChange();
+    var t = document.getElementById('swapToast');
+    if (!t) return;
+    t.innerHTML = '<span>Deleted ' + shortDate(k) + '.</span><button type="button" class="swap-undo" onclick="bwUndoDelete()">Undo</button>';
+    t.style.display = 'flex';
+    clearTimeout(_bwUndoT); clearTimeout(_swapToastT);
+    _bwUndoT = setTimeout(function() { t.style.display = 'none'; _bwUndo = null; }, 5000);
+  }
+  function bwUndoDelete() {
+    var u = _bwUndo; _bwUndo = null; clearTimeout(_bwUndoT);
+    var t = document.getElementById('swapToast'); if (t) t.style.display = 'none';
+    if (!u || bodyweight[u.k] > 0) return;
+    bodyweight[u.k] = u.v; persistBodyweight();
+    bwAfterChange();
+  }
+  function bwAfterChange() {
+    renderProgressHome();
+    try { renderFoodWeighTop(); renderFoodWeight(); renderGoalMode(); } catch(e) {}
+    if (typeof renderToday === 'function') { try { renderToday(); } catch(e) {} }
+  }
+  //  Week to week: this 7 day average against the 7 days before it.
+  function bwWeekLineHTML() {
+    var a = weekAvgWeight(todayKey()), tr = weightTrend(todayKey()), U = bwUnit();
+    if (a == null) return '<div class="bw-week">No weigh ins in the last 7 days.</div>';
+    if (tr == null) return '<div class="bw-week">This week averages ' + fmtNum(bwShow(a)) + ' ' + U + '. No weigh ins the week before.</div>';
+    var c = bwShow(Math.abs(tr));
+    return '<div class="bw-week">This week averages ' + fmtNum(bwShow(a)) + ' ' + U + ', ' + (tr > 0 ? 'up ' + fmtNum(c) + ' ' + U : tr < 0 ? 'down ' + fmtNum(c) + ' ' + U : 'the same as') + (tr === 0 ? ' last week.' : ' from last week.') + '</div>';
   }
 
   function renderCalendarTab() {
