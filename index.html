@@ -3742,6 +3742,18 @@ img[src$=".svg"][src*="assets/brand/"] { mix-blend-mode: normal; }
 .prog-del { min-height: 44px; background: none; border: 0; padding: 0 4px; color: var(--text); text-decoration: underline; text-underline-offset: 3px; font: inherit; font-size: var(--fs-1); cursor: pointer; }
 /* Links in blue. */
 a:not([class]), .howto-link { color: var(--primary-text); }
+/* 8.30: no repeated title under a hero, and about 24 px from the hero to
+   the first thing below it. Every rule waits for the hero to show, so a
+   screen whose hero is hidden (a rest day on Today) keeps its old heading. */
+.rtwh:not([hidden]) + section { padding-top: 24px !important; }
+.rtwh:not([hidden]) + #todaySection .today-date { background: none; color: var(--text); font-family: var(--font-body); font-weight: 600;
+  font-size: var(--fs-2); line-height: 1.4; text-transform: none; letter-spacing: 0; padding: 0; margin: 0 0 12px; border-radius: 0; }
+.rtwh:not([hidden]) + #todaySection .today-date::before { display: none; }
+.rtwh:not([hidden]) + #plan > .section-label,
+.rtwh:not([hidden]) + #foodSection > .section-label, .rtwh:not([hidden]) + #foodSection > .section-title,
+.rtwh:not([hidden]) + #progressHome > .today-date,
+.rtwh:not([hidden]) + #runHome .run-home-top > .today-date { display: none; }
+.rtwh:not([hidden]) + #runHome .run-home-top { justify-content: flex-end; margin-bottom: 8px; }
 </style>
 </head>
 <body style="background:var(--bg)">
@@ -5059,7 +5071,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.29</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.30</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
