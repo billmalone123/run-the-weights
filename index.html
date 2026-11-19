@@ -4000,7 +4000,6 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     <button id="sb-home" class="on" onclick="goSec('home')">Home</button>
     <button id="sb-edge" onclick="goSec('edge')">The Edge</button>
     <button id="sb-overview" onclick="goSec('overview')">Week review</button>
-    <button id="sb-progression" onclick="goSec('progression')">Progression</button>
   </div>
   <div id="sec-home" class="sub-sec on"><section class="hero" id="home">
   <svg class="hero-spotlight" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
@@ -5117,7 +5116,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.30</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.31</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -16811,7 +16810,9 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 </script>
 
 <script>
-var INFO_SECS = ['home','about','edge','overview','progression'];
+//  8.31: Progression left the strip. Its cards already live on the Progress
+//  tab (moved into #progAll at load), so the old route lands there.
+var INFO_SECS = ['home','about','edge','overview'];
 
 //     The valid days are the ACTIVE split's own, not the six this list was
 //     hardcoded to before the split templates existed. A user on a 4-day split
@@ -17752,6 +17753,7 @@ function goTab(t) {
 function goSec(id) {
   //  8.27: About lives at the top of The Edge. Old routes land there.
   if (id === 'about') id = 'edge';
+  if (id === 'progression') { goTab('calendar'); return; }
   //  About is one screen: the long footer stays off it.
   var info = document.getElementById('tab-info');
   if (info) info.classList.toggle('on-about', id === 'about');
