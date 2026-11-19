@@ -48,6 +48,7 @@ Each check pins the clock to a fixed day in November 2026 and loads the same see
 | `t831_2_run_note_with_run.py` | 8.31 item 2: a run note saves only with its run; old notes with no run stay stored and hidden |
 | `t831_3_weight_history.py` | 8.31 item 3: weight history on Body, units, the Food link, chart labels, backup and restore, the Body tip |
 | `t832_food_locked.py` | 8.32: Food locked. Only the hero and the coming soon message, Open Body, no food input reachable, data kept through reload, backup and restore, no Food tip, flag on brings Food back |
+| `t834_0_units.py` | 8.34 Part 0: Settings Food targets and the setup calorie line hidden while Food is locked; the weight unit setting (lb or kg) apart from mi and km, the migration that changes no stored number, kg entry stored in lb, kg steppers, no lb text left in kg, backup and restore of the unit |
 
 `common.py` holds the shared helpers: the page setup, `check()` and `baseline()`. `gapfn.js` measures the gap under a hero.
 

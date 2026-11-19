@@ -69,7 +69,7 @@ with sync_playwright() as p:
         check('lb %s %s'%(v,'accepted' if ok else 'rejected'), (got==float(v)) if ok else (got in (None,50.0,700.0) and ('between 50 and 700 lb' in msg or 'Add your weight' in msg)), [got,msg])
     pg.evaluate("delete bodyweight['2026-11-05'];persistBodyweight();renderProgressHome()")
     # kg
-    pg.evaluate("setRunUnits('km');renderProgressHome()"); pg.wait_for_timeout(200)
+    pg.evaluate("weightUnit='kg';renderProgressHome()"); pg.wait_for_timeout(200)
     k=pg.evaluate("[document.querySelector('label[for=bwVal]').innerText, %s]"%ROWS)
     check('kg setting: form and list in kg', k[0]=='Weight (kg)' and ['Nov 19','82.7 kg'] in k[1], k)
     save(pg,'2026-11-10',80)
@@ -79,7 +79,7 @@ with sync_playwright() as p:
     save(pg,'2026-11-09',318)
     check('kg 318 rejected', '2026-11-09' not in pg.evaluate(BW))
     check('kg chart summary in kg', ' kg' in pg.evaluate("document.getElementById('progBodyChart-sum').innerText"))
-    pg.evaluate("setRunUnits('mi');renderProgressHome()")
+    pg.evaluate("weightUnit='lb';renderProgressHome()")
     # Food <-> Body
     pg.evaluate(FOOD_ON); go(pg,'food'); pg.fill('#foodWeighToday','181'); pg.evaluate("document.getElementById('foodWeighToday').dispatchEvent(new Event('change'))"); pg.wait_for_timeout(200)
     body(pg)

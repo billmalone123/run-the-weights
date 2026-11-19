@@ -3675,7 +3675,7 @@ img[src$=".svg"][src*="assets/brand/"] { mix-blend-mode: normal; }
 .food-soon { display: none; }
 html.food-off .food-soon { display: block; }
 html.food-off #hero-food:not([hidden]) ~ .food-soon { padding-top: 24px !important; }
-html.food-off #foodSection, html.food-off .today-food-card, html.food-off .onb-finish-food { display: none !important; }
+html.food-off #foodSection, html.food-off .today-food-card, html.food-off .onb-finish-food, html.food-off .settings-food, html.food-off #onbWeekFood { display: none !important; }
 html.food-off .today-grid { grid-template-columns: 1fr; }
 .food-soon-msg { font-size: var(--fs-4); line-height: 1.3; color: var(--text); margin: 0 0 6px; }
 .food-soon-line { font-size: var(--fs-2); line-height: 1.45; color: var(--text); margin: 0 0 16px; }
@@ -3902,6 +3902,83 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   // on this flag.
   var FOOD_ENABLED = false;
   try { if (!FOOD_ENABLED) document.documentElement.classList.add('food-off'); } catch(e) {}
+  //  8.34: weight unit, lb or kg, apart from the mi/km toggle on Run.
+  //  Every weight is still stored in lb, exactly as logged; only what is
+  //  shown and typed changes. monk_weight_unit_v1 = 'lb' | 'kg', default lb.
+  //  Migration: a device with no setting gets 'lb', which is what every
+  //  stored number already is, so no logged number changes.
+  var WU_KEY = 'monk_weight_unit_v1', WU_LB_PER_KG = 2.20462262, weightUnit = 'lb';
+  try {
+    var _wu = localStorage.getItem(WU_KEY);
+    if (_wu === 'kg' || _wu === 'lb') weightUnit = _wu; else localStorage.setItem(WU_KEY, 'lb');
+  } catch(e) {}
+  function wUnit() { return weightUnit; }
+  //  A stored lb value in the chosen unit: kg to one decimal, whole when close.
+  function wNum(lb) {
+    var n = +lb;
+    if (lb === '' || lb == null || !isFinite(n)) return lb;
+    var v = weightUnit === 'kg' ? Math.round(n / WU_LB_PER_KG * 10) / 10 : n;
+    return Math.abs(v - Math.round(v)) < 0.05 ? Math.round(v) : Math.round(v * 10) / 10;
+  }
+  function wLbs() { return weightUnit === 'kg' ? 'kg' : 'lbs'; }
+  function wLb() { return weightUnit === 'kg' ? 'kg' : 'lb'; }
+  function wTxt(lb) { return wNum(lb) + ' ' + wLbs(); }
+  function wTxt1(lb) { return wNum(lb) + ' ' + wLb(); }
+  //  A typed number in the chosen unit, back to lb for storage.
+  function wToLb(v) { var n = parseFloat(v); return isFinite(n) ? (weightUnit === 'kg' ? Math.round(n * WU_LB_PER_KG * 100) / 100 : n) : NaN; }
+  //  value="..." for a weight field rendered as markup.
+  function wValAttr(lb) {
+    var s = lb == null ? '' : String(lb);
+    if (weightUnit !== 'kg' || s === '' || !isFinite(+s)) return 'value="' + styleEscWU(s) + '"';
+    var shown = String(wNum(+s));
+    return 'value="' + shown + '" data-wu-lb="' + (+s) + '" data-wu-shown="' + shown + '"';
+  }
+  function styleEscWU(t) { return String(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+  //  Static labels and the Settings toggle. Rendered text reads wUnit() as it draws.
+  function applyWeightUnitUI() {
+    try {
+      document.querySelectorAll('.wu-lbl').forEach(function(e) { e.textContent = wLbs(); });
+      document.querySelectorAll('.wu-val').forEach(function(e) { e.textContent = wTxt(+e.dataset.lb); });
+      document.querySelectorAll('[data-wu-btn]').forEach(function(b) { var on = b.dataset.wuBtn === weightUnit; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+      var tw = document.getElementById('todayWeight'); if (tw) tw.placeholder = wLbs();
+    } catch(e) {}
+  }
+  try { document.addEventListener('DOMContentLoaded', applyWeightUnitUI); } catch(e) {}
+  function setWeightUnit(u) {
+    u = u === 'kg' ? 'kg' : 'lb';
+    if (u === weightUnit) return;
+    weightUnit = u;
+    try { localStorage.setItem(WU_KEY, u); } catch(e) {}
+    try { location.reload(); } catch(e) {}
+  }
+  //  Weight fields carry the class wu-in. In kg mode their value reads back
+  //  in lb and takes lb when set, so every save path keeps working in lb.
+  //  A value the app put there and the user did not touch reads back as the
+  //  exact lb it came from, so nothing drifts by rounding.
+  (function() {
+    if (typeof HTMLInputElement === 'undefined') return;
+    var d = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+    if (!d || !d.get || !d.set) return;
+    function on(el) { return weightUnit === 'kg' && el.classList && el.classList.contains('wu-in'); }
+    Object.defineProperty(HTMLInputElement.prototype, 'value', {
+      configurable: true, enumerable: d.enumerable,
+      get: function() {
+        var v = d.get.call(this);
+        if (!on(this) || v === '') return v;
+        if (this.dataset.wuShown === v && this.dataset.wuLb !== undefined) return this.dataset.wuLb;
+        var n = parseFloat(v);
+        return isFinite(n) ? String(Math.round(n * WU_LB_PER_KG * 100) / 100) : v;
+      },
+      set: function(x) {
+        if (!on(this)) return d.set.call(this, x);
+        var s = x == null ? '' : String(x), n = parseFloat(s);
+        if (s === '' || !isFinite(n)) { delete this.dataset.wuLb; delete this.dataset.wuShown; return d.set.call(this, s); }
+        var shown = String(wNum(n));
+        this.dataset.wuLb = String(n); this.dataset.wuShown = shown;
+        d.set.call(this, shown);
+      }
+    });
+  })();
 (function() {
   var el = document.getElementById('splashScreen');
   if (!el) return;
@@ -3951,8 +4028,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     <div class="onb-flow-screen" id="onbFlowScreen2" style="display:none">
       <div class="settings-modal-title">A few quick questions</div>
       <div class="quicklog-field">
-        <label for="onbFlowWeight">Your weight (lbs)</label>
-        <input class="run-input" type="number" inputmode="decimal" id="onbFlowWeight" placeholder="Your weight">
+        <label for="onbFlowWeight">Your weight (<span class="wu-lbl">lbs</span>)</label>
+        <input class="run-input wu-in" type="number" inputmode="decimal" id="onbFlowWeight" placeholder="Your weight">
       </div>
       <div class="run-field-label" style="margin-top:18px;"><span>Do you run or do cardio?</span></div>
       <div class="run-toggle">
@@ -4169,7 +4246,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   <h2 class="section-title">BEAT<br>LAST WEEK</h2>
 
   <div id="prog-intro" style="margin-bottom:28px;font-size:var(--fs-3);color:var(--muted);max-width:560px;line-height:1.7">
-    Every lift runs on <strong style="color:var(--text)">double progression</strong>: two sets, the last one taken close to your limit. When your best set reaches the top of the rep range, the app suggests the next weight: 5 lbs for upper body, 10 lbs for lower body. Until then, aim for one more rep than last time. Reps dipping after a weight increase is normal. That is a step up, not a setback. The cards below show every lift you log: this week against last, the trend over four sessions, your total gain, and how often your heaviest set reached failure.
+    Every lift runs on <strong style="color:var(--text)">double progression</strong>: two sets, the last one taken close to your limit. When your best set reaches the top of the rep range, the app suggests the next weight: <span class="wu-val" data-lb="5">5 lbs</span> for upper body, <span class="wu-val" data-lb="10">10 lbs</span> for lower body. Until then, aim for one more rep than last time. Reps dipping after a weight increase is normal. That is a step up, not a setback. The cards below show every lift you log: this week against last, the trend over four sessions, your total gain, and how often your heaviest set reached failure.
   </div>
 
   <div class="prog-grid" id="progressCards"></div>
@@ -4207,7 +4284,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     <div class="today-mini">
       <div class="today-label">Bodyweight</div>
       <div class="today-mini-row">
-        <input class="run-input today-weight" type="number" inputmode="decimal" id="todayWeight" placeholder="lbs" aria-label="Today's weight in pounds" onchange="saveTodayWeight(this.value)">
+        <input class="run-input today-weight wu-in" type="number" inputmode="decimal" id="todayWeight" placeholder="lbs" aria-label="Today's weight" onchange="saveTodayWeight(this.value)">
         <span class="today-mini-note" id="todayWeightNote"></span>
       </div>
     </div>
@@ -4819,8 +4896,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     <button class="quicklog-back" onclick="openExSheet('form')">&#8249; Choose a different lift</button>
     <div class="quicklog-form-title" id="quicklogFormTitle"></div>
     <div class="quicklog-field">
-      <label for="qlWeight">Weight (lbs)</label>
-      <input type="number" inputmode="decimal" id="qlWeight" placeholder="e.g. 225">
+      <label for="qlWeight">Weight (<span class="wu-lbl">lbs</span>)</label>
+      <input class="wu-in" type="number" inputmode="decimal" id="qlWeight" placeholder="e.g. 225">
     </div>
     <div class="quicklog-field">
       <label for="qlReps">Reps</label>
@@ -4890,16 +4967,16 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     </div>
 
     <div class="settings-input-group">
-      <div class="settings-input-label">Back Squat <span>lbs</span></div>
-      <input class="settings-input-field maxes-1rm-input" id="max-squat" type="number" oninput="onMaxInput()" onchange="onMaxCommit()" onblur="onMaxCommit()" placeholder="315" inputmode="decimal">
+      <div class="settings-input-label">Back Squat <span class="wu-lbl">lbs</span></div>
+      <input class="settings-input-field maxes-1rm-input wu-in" id="max-squat" type="number" oninput="onMaxInput()" onchange="onMaxCommit()" onblur="onMaxCommit()" placeholder="315" inputmode="decimal">
       <div class="maxes-reps-row">
         <div class="maxes-reps-input-wrap maxes-set-wrap">
           <div class="maxes-reps-label">Recent set</div>
           <input class="settings-input-field" id="reps-set-squat" type="text" placeholder="275x5" autocomplete="off" autocapitalize="off" oninput="onSetTextInput('squat')" onchange="onRepsCommit()">
         </div>
         <div class="maxes-reps-input-wrap">
-          <div class="maxes-reps-label">Weight (lbs)</div>
-          <input class="settings-input-field" id="reps-weight-squat" type="number" placeholder="275" inputmode="decimal" oninput="onRepsInput()" onchange="onRepsCommit()" onblur="onRepsCommit()">
+          <div class="maxes-reps-label">Weight (<span class="wu-lbl">lbs</span>)</div>
+          <input class="settings-input-field wu-in" id="reps-weight-squat" type="number" placeholder="275" inputmode="decimal" oninput="onRepsInput()" onchange="onRepsCommit()" onblur="onRepsCommit()">
         </div>
         <div class="maxes-reps-input-wrap">
           <div class="maxes-reps-label">Reps</div>
@@ -4909,16 +4986,16 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       <div class="maxes-est-1rm" id="est-1rm-squat"></div>
     </div>
     <div class="settings-input-group">
-      <div class="settings-input-label">Bench Press <span>lbs</span></div>
-      <input class="settings-input-field maxes-1rm-input" id="max-bench" type="number" oninput="onMaxInput()" onchange="onMaxCommit()" onblur="onMaxCommit()" placeholder="225" inputmode="decimal">
+      <div class="settings-input-label">Bench Press <span class="wu-lbl">lbs</span></div>
+      <input class="settings-input-field maxes-1rm-input wu-in" id="max-bench" type="number" oninput="onMaxInput()" onchange="onMaxCommit()" onblur="onMaxCommit()" placeholder="225" inputmode="decimal">
       <div class="maxes-reps-row">
         <div class="maxes-reps-input-wrap maxes-set-wrap">
           <div class="maxes-reps-label">Recent set</div>
           <input class="settings-input-field" id="reps-set-bench" type="text" placeholder="235x4" autocomplete="off" autocapitalize="off" oninput="onSetTextInput('bench')" onchange="onRepsCommit()">
         </div>
         <div class="maxes-reps-input-wrap">
-          <div class="maxes-reps-label">Weight (lbs)</div>
-          <input class="settings-input-field" id="reps-weight-bench" type="number" placeholder="185" inputmode="decimal" oninput="onRepsInput()" onchange="onRepsCommit()" onblur="onRepsCommit()">
+          <div class="maxes-reps-label">Weight (<span class="wu-lbl">lbs</span>)</div>
+          <input class="settings-input-field wu-in" id="reps-weight-bench" type="number" placeholder="185" inputmode="decimal" oninput="onRepsInput()" onchange="onRepsCommit()" onblur="onRepsCommit()">
         </div>
         <div class="maxes-reps-input-wrap">
           <div class="maxes-reps-label">Reps</div>
@@ -4929,16 +5006,16 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       <div class="settings-input-hint">Alt: Incline Barbell Bench or Smith Machine Bench — enter the max for whichever you press</div>
     </div>
     <div class="settings-input-group">
-      <div class="settings-input-label">Dumbbell Shoulder Press <span>lbs</span></div>
-      <input class="settings-input-field maxes-1rm-input" id="max-ohp" type="number" oninput="onMaxInput()" onchange="onMaxCommit()" onblur="onMaxCommit()" placeholder="70" inputmode="decimal">
+      <div class="settings-input-label">Dumbbell Shoulder Press <span class="wu-lbl">lbs</span></div>
+      <input class="settings-input-field maxes-1rm-input wu-in" id="max-ohp" type="number" oninput="onMaxInput()" onchange="onMaxCommit()" onblur="onMaxCommit()" placeholder="70" inputmode="decimal">
       <div class="maxes-reps-row">
         <div class="maxes-reps-input-wrap maxes-set-wrap">
           <div class="maxes-reps-label">Recent set</div>
           <input class="settings-input-field" id="reps-set-ohp" type="text" placeholder="55x8" autocomplete="off" autocapitalize="off" oninput="onSetTextInput('ohp')" onchange="onRepsCommit()">
         </div>
         <div class="maxes-reps-input-wrap">
-          <div class="maxes-reps-label">Weight (lbs)</div>
-          <input class="settings-input-field" id="reps-weight-ohp" type="number" placeholder="55" inputmode="decimal" oninput="onRepsInput()" onchange="onRepsCommit()" onblur="onRepsCommit()">
+          <div class="maxes-reps-label">Weight (<span class="wu-lbl">lbs</span>)</div>
+          <input class="settings-input-field wu-in" id="reps-weight-ohp" type="number" placeholder="55" inputmode="decimal" oninput="onRepsInput()" onchange="onRepsCommit()" onblur="onRepsCommit()">
         </div>
         <div class="maxes-reps-input-wrap">
           <div class="maxes-reps-label">Reps</div>
@@ -5072,6 +5149,14 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       <span class="liftdays-desc">On shows exercise swaps, warm up logging, set counts, the session builder and the reason for each pick.</span>
     </div>
     <div class="liftdays-wrap" style="margin-bottom:16px;">
+      <span class="liftdays-label" id="wuLabel">Weight unit</span>
+      <div class="liftdays-group" role="group" aria-labelledby="wuLabel">
+        <button type="button" class="liftdays-btn" data-wu-btn="lb" aria-pressed="false" onclick="setWeightUnit('lb')">lb</button>
+        <button type="button" class="liftdays-btn" data-wu-btn="kg" aria-pressed="false" onclick="setWeightUnit('kg')">kg</button>
+      </div>
+      <span class="liftdays-desc">For body weight and every lift. Distance has its own setting on Run.</span>
+    </div>
+    <div class="liftdays-wrap" style="margin-bottom:16px;">
       <span class="liftdays-label">Running</span>
       <div class="liftdays-group">
         <button class="liftdays-btn" data-run-btn="off" onclick="setRunning(false)">Off</button>
@@ -5127,7 +5212,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       <span class="liftdays-desc" id="tipsResetMsg" aria-live="polite"></span>
     </div>
 
-    <div class="liftdays-wrap" style="margin:8px 0 24px;">
+    <div class="liftdays-wrap settings-food" style="margin:8px 0 24px;">
       <span class="liftdays-label">Food</span>
       <div class="food-settings-grid">
         <div><div class="run-field-label">Calories</div><input class="run-input" type="number" inputmode="numeric" id="set-food-cal" placeholder="e.g. 2200" onchange="saveFoodTargetsFrom('set-food-cal', 'set-food-protein', 'set-food-goal', 'set-food-carb', 'set-food-fat')"></div>
@@ -5152,7 +5237,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.32</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.34</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -7324,7 +7409,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       + (note ? '<details class="guided-how"><summary>Form notes</summary><p>' + note + '</p></details>' : '') + '</div>'
       + '<div class="guided-msg" role="status">' + (msg || '') + '</div>'
       + '<div class="guided-fields">'
-      + (noLoad ? '' : '<div><div class="guided-field-label">Weight, lbs</div>' + withSteppers('gw', 'weight', '<input class="guided-input" id="gw" type="number" inputmode="decimal" value="' + w0 + '" aria-label="Weight in pounds">') + '</div>')
+      + (noLoad ? '' : '<div><div class="guided-field-label">Weight, ' + wLbs() + '</div>' + withSteppers('gw', 'weight', '<input class="guided-input wu-in" id="gw" type="number" inputmode="decimal" ' + wValAttr(w0) + ' aria-label="Weight in ' + (wUnit() === 'kg' ? 'kilograms' : 'pounds') + '">') + '</div>')
       + '<div><div class="guided-field-label">' + unit.charAt(0).toUpperCase() + unit.slice(1) + ' done</div>' + withSteppers('gr', 'reps', '<input class="guided-input" id="gr" type="number" inputmode="numeric" value="' + r0 + '" aria-label="' + unit + ' done">') + '</div>'
       + '</div>'
       + '<button class="guided-done" id="guidedDoneBtn" onclick="guidedDone()">Done</button>'
@@ -8591,8 +8676,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   //  Machines and cables vary too much to guess.
   function starterWeight(ex) {
     var eq = nameEquip(activeVariant(ex));
-    if (eq === 'barbell') return { w: 45, text: 'Start with the empty bar, 45 lbs.' };
-    if (eq === 'dumbbell') return { w: 10, text: 'Start light, 10 lbs each hand.' };
+    if (eq === 'barbell') return { w: 45, text: 'Start with the empty bar, ' + wTxt(45) + '.' };
+    if (eq === 'dumbbell') return { w: 10, text: 'Start light, ' + wTxt(10) + ' each hand.' };
     return null;
   }
   function variantSeed(ex) {
@@ -8617,17 +8702,17 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       if (isDeloadWeek(wk)) {
         var dw = roundToNearestFive(prev.weight * DELOAD_MULT);
         return { mode: 'plan', weight: dw, reps: ex.repRange[0],
-          msg: 'Deload week — back off to ' + dw + ' lbs (~15% under ' + prev.weight + '). Move perfectly and recover; you climb again next week.' };
+          msg: 'Deload week — back off to ' + wTxt(dw) + ' (~15% under ' + wNum(prev.weight) + '). Move perfectly and recover; you climb again next week.' };
       }
       var w = roundToNearestFive(prev.weight * (1 + WEEKLY_PCT));
       if (w < prev.weight) w = prev.weight;  // never drop below last working week
       return { mode: 'plan', weight: w, reps: ex.repRange[0],
-        msg: 'Week ' + (wk + 1) + ' target: ' + w + ' lbs · +' + Math.round(WEEKLY_PCT * 100) + '% over last week (' + prev.weight + ' lbs).' };
+        msg: 'Week ' + (wk + 1) + ' target: ' + wTxt(w) + ' · +' + Math.round(WEEKLY_PCT * 100) + '% over last week (' + wTxt(prev.weight) + ').' };
     }
     // 2) Already logged THIS week — keep that as the working weight
     for (var j = hist.length - 1; j >= 0; j--) {
       if (hist[j].week === wk && hist[j].weight && !hist[j].quickLog && entryVariant(hist[j], ex) === activeVariant(ex))
-        return { mode: 'baseline', weight: hist[j].weight, reps: ex.repRange[0], msg: 'Logged this week at ' + hist[j].weight + ' lbs.' };
+        return { mode: 'baseline', weight: hist[j].weight, reps: ex.repRange[0], msg: 'Logged this week at ' + wTxt(hist[j].weight) + '.' };
     }
     // 3) No prior weeks logged — seed the starting weight from your max.
     //    Per-exercise weight memory: an anchor lift STILL on its own default
@@ -8645,7 +8730,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     if (activeVariant(ex) !== ex.name) {
       var vs = variantSeed(ex);
       if (vs) return { mode: 'baseline', weight: vs.weight, reps: ex.repRange[0],
-        msg: 'Suggested start: ' + vs.weight + ' lbs from your ' + vs.from + '. Log it to start the progression.',
+        msg: 'Suggested start: ' + wTxt(vs.weight) + ' from your ' + vs.from + '. Log it to start the progression.',
         indicator: SEED_WEIGHT_INDICATOR };
       var vst = starterWeight(ex);
       if (vst) return { mode: 'baseline', weight: vst.w, reps: ex.repRange[0], starter: vst.text, msg: vst.text, indicator: SEED_WEIGHT_INDICATOR };
@@ -8656,14 +8741,14 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     if (ex.maxKey && ex.maxPct && userMaxes[ex.maxKey] > 0) {
       var mW = roundToNearestFive(userMaxes[ex.maxKey] * ex.maxPct);
       if (mW > 0) return { mode: 'baseline', weight: mW, reps: ex.repRange[0],
-        msg: 'Suggested start: ' + mW + ' lbs from your ' + MAX_LABELS[ex.maxKey] + ' max. Log it to start the progression.',
+        msg: 'Suggested start: ' + wTxt(mW) + ' from your ' + MAX_LABELS[ex.maxKey] + ' max. Log it to start the progression.',
         indicator: seedIsRough ? SEED_WEIGHT_INDICATOR : null };
     }
     // 4) Or from a sibling lift
     if (ex.seedFrom && EX_BY_ID[ex.seedFrom]) {
       var sh = getHistory(ex.seedFrom);
       if (sh.length) { var sw = sh[sh.length - 1].weight;
-        return { mode: 'baseline', weight: sw, reps: ex.repRange[0], msg: 'Suggested start: ' + sw + ' lbs from your ' + EX_BY_ID[ex.seedFrom].name + '.',
+        return { mode: 'baseline', weight: sw, reps: ex.repRange[0], msg: 'Suggested start: ' + wTxt(sw) + ' from your ' + EX_BY_ID[ex.seedFrom].name + '.',
           indicator: seedIsRough ? SEED_WEIGHT_INDICATOR : null }; }
     }
     var st = starterWeight(ex);
@@ -8727,7 +8812,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         msg: 'Easy week mode. Set your ' + MAX_LABELS[ex.maxKey] + ' max for an accurate target. ' + target.msg };
     }
     return { mode: 'maintenance', weight: mw, reps: reps,
-      msg: 'Easy week mode: ' + mw + ' lbs (~' + Math.round(MAINTENANCE_MAIN_LIFT_PCT * 100) + '% of your ' + MAX_LABELS[ex.maxKey] + ' max), ' + range[0] + '–' + range[1] + ' reps.' };
+      msg: 'Easy week mode: ' + wTxt(mw) + ' (~' + Math.round(MAINTENANCE_MAIN_LIFT_PCT * 100) + '% of your ' + MAX_LABELS[ex.maxKey] + ' max), ' + range[0] + '–' + range[1] + ' reps.' };
   }
 
   //     Stall = 3 straight failure-marked sessions, same weight, no rep gain
@@ -8763,11 +8848,14 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   function applyStep(targetId, delta) {
     var inp = document.getElementById(targetId);
     if (!inp) return;
+    //  8.34: a kg field steps in kg; the field hook stores the result in lb.
+    var kgField = wUnit() === 'kg' && inp.classList.contains('wu-in');
     var cur = parseFloat(inp.value);
     if (isNaN(cur)) cur = 0;
+    if (kgField) cur = wNum(cur);
     var next = cur + delta;
     if (next < 0) next = 0;
-    inp.value = next;
+    inp.value = kgField ? wToLb(next) : next;
     inp.dispatchEvent(new Event('input', { bubbles: true }));
     inp.dispatchEvent(new Event('change', { bubbles: true }));
   }
@@ -8805,8 +8893,9 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   //  kind: 'weight' (±5, long-press ±25) or 'reps' (±1, no long-press).
   //  inputHTML is the field's own <input> markup, untouched.
   function withSteppers(targetId, kind, inputHTML) {
-    var step = kind === 'weight' ? 5 : 1;
-    var longStep = kind === 'weight' ? 25 : 0;
+    var kg = kind === 'weight' && wUnit() === 'kg';
+    var step = kind === 'weight' ? (kg ? 2.5 : 5) : 1;
+    var longStep = kind === 'weight' ? (kg ? 10 : 25) : 0;
     var label = kind === 'weight' ? 'weight' : 'reps';
     return '<div class="stepper-row">'
       + stepperBtnHTML(targetId, -step, -longStep, 'Decrease ' + label)
@@ -8824,7 +8913,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   function setRowHTML(ex, n, hidden) {
     var slot = 's' + n;
     var wId = slot + 'w-' + ex.id, rId = slot + 'r-' + ex.id;
-    var wInput = '<input class="log-inline-input" type="number" inputmode="decimal" id="' + wId + '" data-ex="' + ex.id + '" oninput="this.dataset.dirty=1;onLogEdit(this.dataset.ex)" onchange="onLogCommit(this)">';
+    var wInput = '<input class="log-inline-input wu-in" type="number" inputmode="decimal" id="' + wId + '" data-ex="' + ex.id + '" oninput="this.dataset.dirty=1;onLogEdit(this.dataset.ex)" onchange="onLogCommit(this)">';
     var rInput = '<input class="log-inline-input" type="number" inputmode="numeric" id="' + rId + '" data-ex="' + ex.id + '" oninput="onSetInput(this)" onchange="onSetCommit(this)">';
     //  One compact row per set, the layout Strong and Hevy settled on:
     //  set number, last session's numbers (tap to copy them in), weight,
@@ -8834,7 +8923,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     return '<div class="log-row set-row" data-setrow="' + n + '-' + ex.id + '"' + (hidden ? ' style="display:none"' : '') + '>'
       + '<span class="set-num">' + n + '</span>'
       + '<button type="button" class="set-last" id="last-' + slot + '-' + ex.id + '" data-ex="' + ex.id + '" data-slot="' + slot + '" onclick="copyPrevSet(this)" aria-label="Copy last session into set ' + n + '"></button>'
-      + wInput.replace('class="log-inline-input"', 'class="log-inline-input set-cell"' + (noLoad ? ' placeholder="BW"' : '') + ' aria-label="Set ' + n + ' weight"')
+      + wInput.replace('class="log-inline-input wu-in"', 'class="log-inline-input wu-in set-cell"' + (noLoad ? ' placeholder="BW"' : '') + ' aria-label="Set ' + n + ' weight"')
       + rInput.replace('class="log-inline-input"', 'class="log-inline-input set-cell" aria-label="Set ' + n + ' ' + (ex.unit || 'reps') + '"')
       + '<button type="button" class="set-done-btn" id="done-' + slot + '-' + ex.id + '" data-ex="' + ex.id + '" data-slot="' + slot + '" onclick="markSetDone(this)" aria-label="Log set ' + n + '">\u2713</button>'
       + '</div>';
@@ -8851,7 +8940,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   }
   function setTableHeadHTML(ex) {
     var unit = ex.unit ? ex.unit.charAt(0).toUpperCase() + ex.unit.slice(1) : 'Reps';
-    return '<div class="set-table-head" aria-hidden="true"><span>Set</span><span>Previous</span><span>lbs</span><span>' + unit + ' ' + effectiveRepRangeText(ex) + '</span><span></span></div>';
+    return '<div class="set-table-head" aria-hidden="true"><span>Set</span><span>Previous</span><span>' + wLbs() + '</span><span>' + unit + ' ' + effectiveRepRangeText(ex) + '</span><span></span></div>';
   }
 
   //  Warm-up logging lives in its own block rather than inside .warmup-lines,
@@ -8862,7 +8951,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     var rows = '';
     for (var i = 0; i < WARMUP_SLOTS; i++) {
       var wuwId = 'wu' + i + 'w-' + ex.id, wurId = 'wu' + i + 'r-' + ex.id;
-      var wuwInput = '<input class="log-inline-input warmup-input" type="number" inputmode="decimal" id="' + wuwId + '" data-ex="' + ex.id + '" data-wu="' + i + '" oninput="onWarmupInput(this)" onchange="onWarmupCommit(this)">';
+      var wuwInput = '<input class="log-inline-input warmup-input wu-in" type="number" inputmode="decimal" id="' + wuwId + '" data-ex="' + ex.id + '" data-wu="' + i + '" oninput="onWarmupInput(this)" onchange="onWarmupCommit(this)">';
       var wurInput = '<input class="log-inline-input warmup-input" type="number" inputmode="numeric" id="' + wurId + '" data-ex="' + ex.id + '" data-wu="' + i + '" oninput="onWarmupInput(this)" onchange="onWarmupCommit(this)">';
       rows += '<div class="log-row warmup-log-row">'
         + '<div class="log-inline-group"><span class="log-inline-label">Warm-up ' + (i + 1) + ' · Weight</span>'
@@ -9577,19 +9666,19 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       var parts = (lines && lines[wi]) ? lines[wi].split('×') : null;
       var pw = document.getElementById('wu' + wi + 'w-' + ex.id);
       var pr = document.getElementById('wu' + wi + 'r-' + ex.id);
-      if (pw) pw.placeholder = parts ? parts[0].trim() : 'lbs';
+      if (pw) pw.placeholder = parts ? String(wNum(parseFloat(parts[0]))) : wLbs();
       if (pr) pr.placeholder = parts ? parts[1].trim() : 'reps';
     }
     var tEl = document.querySelector('[data-targets="' + ex.id + '"]');
     if (tEl) {
-      var wTxt = w ? w + ' lbs' : '—';
+      var wTxtT = w ? wTxt(w) : '—';
       var repsTxt;
       if (!isNaN(rv) && rv > 0) repsTxt = rv + ' goal';
       else if (target.mode === 'baseline') repsTxt = effectiveRepRangeText(ex);
       else repsTxt = target.reps + ' goal';
       var lines = '';
       for (var i = 1; i <= effectiveSets(ex.id); i++) {
-        lines += '<div class="target-line">Set ' + i + ' · ' + wTxt + ' × ' + repsTxt + '</div>';
+        lines += '<div class="target-line">Set ' + i + ' · ' + wTxtT + ' × ' + repsTxt + '</div>';
       }
       tEl.innerHTML = '<div class="target-msg">' + target.msg + '</div>' + lines
         + (target.indicator ? '<div class="seed-weight-note">' + target.indicator + '</div>' : '');
@@ -9650,7 +9739,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       }
       var lastEl = document.getElementById('last-' + slot + '-' + ex.id);
       if (lastEl) {
-        lastEl.textContent = refSet ? (refSet.w ? refSet.w + ' \u00d7 ' : '') + refSet.r : '';
+        lastEl.textContent = refSet ? (refSet.w ? wNum(refSet.w) + ' \u00d7 ' : '') + refSet.r : '';
         lastEl.disabled = !refSet;
       }
       markDoneBtn(ex.id, slot, !!loggedSet);
@@ -9721,21 +9810,21 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       //  entry renders exactly the two sets it has.
       var loggedSets = ALL_SLOTS.map(function(sl) { return normSet(shown, shown[sl]); }).filter(Boolean);
       var setsTxt = loggedSets.length
-        ? loggedSets.map(function(s) { return s.w + ' × ' + s.r; }).join(' · ')
-        : shown.weight + ' × ' + shown.reps;
+        ? loggedSets.map(function(s) { return wNum(s.w) + ' × ' + s.r; }).join(' · ')
+        : wNum(shown.weight) + ' × ' + shown.reps;
       out += '<span class="last-session-chip has-data">' + label + ': ' + setsTxt + fTxt + '</span>';
     }
     if (!wkEntry && ref && ref.weight > 0 && backFromBreak()) {
-      out += '<div class="soft-set-note">Back after a break: about ' + roundToNearestFive(ref.weight * 0.9) + ' lbs is a good start. Your call.</div>';
+      out += '<div class="soft-set-note">Back after a break: about ' + wTxt(roundToNearestFive(ref.weight * 0.9)) + ' is a good start. Your call.</div>';
     }
     if (wkEntry && wkEntry.failure === false) {
       out += '<div class="soft-set-note">No set went to failure this week. For growth, take the last set close to your limit.</div>';
     }
     var pr = prState(hist, ex);
-    if (pr) out += '<span class="pr-badge">PR</span><span class="pr-note">Estimated max ' + pr.now + ' lbs, up from ' + pr.before + '.</span>';
+    if (pr) out += '<span class="pr-badge">PR</span><span class="pr-note">Estimated max ' + wTxt(pr.now) + ', up from ' + wNum(pr.before) + '.</span>';
     var stall = getStallState(hist.filter(function(e) { return entryVariant(e, ex) === activeVariant(ex); }));
     if (stall) {
-      out += '<div class="stall-warning">Same weight for 3 sessions. Try ' + stall.drop + ' lbs next time, then build back up.</div>';
+      out += '<div class="stall-warning">Same weight for 3 sessions. Try ' + wTxt(stall.drop) + ' next time, then build back up.</div>';
     }
     st.innerHTML = out;
   }
@@ -9852,10 +9941,10 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   function simpleTargetText(ex, target, prevRef) {
     var unit = ex.unit || 'reps';
     if (weightOptional(ex) && !(target.weight > 0)) return 'No weight needed. Aim for ' + effectiveRepRangeText(ex) + ' ' + unit + '.';
-    if (target.starter) return target.starter.replace(/(\d+) lbs/, '<strong>$1 lbs</strong>');
+    if (target.starter) return target.starter.replace(/(\d+(?:\.\d+)?) (lbs|kg)/, '<strong>$1 $2</strong>');
     if (target.weight > 0) {
-      return 'Use <strong>' + target.weight + ' lbs</strong>.'
-        + (prevRef && prevRef.weight ? ' Last time ' + prevRef.weight + '.' : '')
+      return 'Use <strong>' + wTxt(target.weight) + '</strong>.'
+        + (prevRef && prevRef.weight ? ' Last time ' + wNum(prevRef.weight) + '.' : '')
         + (isDeloadWeek(currentTrainWeek) ? ' Easy week, so lighter on purpose.' : '');
     }
     return 'Pick a weight you can lift ' + ex.repRange[1] + ' times with good form. Next time the app suggests the weight.';
@@ -10880,7 +10969,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     var p = parseSetText((document.getElementById('reps-set-' + k) || {}).value);
     if (!p) return;
     var we = document.getElementById('reps-weight-' + k), re = document.getElementById('reps-count-' + k);
-    if (we) we.value = p.w;
+    if (we) we.value = wUnit() === 'kg' ? wToLb(p.w) : p.w;
     if (re) re.value = p.r;
     onRepsInput();
   }
@@ -10905,7 +10994,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       var out = document.getElementById('est-1rm-' + k);
       var warn = est == null ? '' : epleyWarning((document.getElementById('reps-count-' + k) || {}).value);
       if (out) {
-        out.textContent = est == null ? '' : 'About ' + est + ' lbs estimated max' + (warn ? '. ' + warn : '');
+        out.textContent = est == null ? '' : 'About ' + wTxt(est) + ' estimated max' + (warn ? '. ' + warn : '');
         out.classList.toggle('warn', !!warn);
       }
       if (est == null) return;
@@ -11119,7 +11208,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     Object.keys(chips).forEach(function(k) {
       var el = document.getElementById(chips[k]);
       if (!el) return;
-      if (userMaxes[k]) { el.textContent = userMaxes[k] + ' lbs'; el.classList.remove('unset'); hasAny = true; }
+      if (userMaxes[k]) { el.textContent = wTxt(userMaxes[k]); el.classList.remove('unset'); hasAny = true; }
       else { el.textContent = 'Not set'; el.classList.add('unset'); }
     });
     var btn = document.getElementById('settingsOpenBtn');
@@ -11704,7 +11793,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     var t = SPLIT_TEMPLATES[onb.split];
     var items = [];
     if (t) items.push('<strong>' + t.label + '</strong> · ' + t.days + ' days a week');
-    items.push('Squat ' + onbNum(onb.squat) + ' · Bench ' + onbNum(onb.bench) + ' · Shoulder Press ' + onbNum(onb.ohp) + ' lbs');
+    items.push('Squat ' + wNum(onbNum(onb.squat)) + ' · Bench ' + wNum(onbNum(onb.bench)) + ' · Shoulder Press ' + wNum(onbNum(onb.ohp)) + ' ' + wLbs());
     if (onb.runs !== true) {
       items.push('No running plan. Add one on the Run tab anytime.');
     } else if (onb.race === true && onbDateOK(onb.raceDate)) {
@@ -11743,12 +11832,12 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         break;
       case 'maxes':
         title = 'Your 1RMs';
-        sub = 'The most you can lift once with good form, in pounds. These set your starting weights.';
+        sub = 'The most you can lift once with good form, in ' + (wUnit() === 'kg' ? 'kilograms' : 'pounds') + '. These set your starting weights.';
         body = MAX_KEYS.map(function(k) {
           var v = onbNum(onb[k]);
-          return '<div class="settings-input-group"><div class="settings-input-label">' + ONB_MAX_LABELS[k] + ' <span>lbs</span></div>'
-            + '<input class="settings-input-field" type="number" inputmode="decimal" min="1" max="2000" id="onb-max-' + k + '"'
-            + ' value="' + (v || '') + '" oninput="onbSetMax(\'' + k + '\', this.value)"></div>';
+          return '<div class="settings-input-group"><div class="settings-input-label">' + ONB_MAX_LABELS[k] + ' <span>' + wLbs() + '</span></div>'
+            + '<input class="settings-input-field wu-in" type="number" inputmode="decimal" min="1" max="2000" id="onb-max-' + k + '"'
+            + ' ' + wValAttr(v || '') + ' oninput="onbSetMax(\'' + k + '\', this.value)"></div>';
         }).join('');
         break;
       case 'runs':
@@ -11942,6 +12031,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       quick: { sessions: quickSessions, minutes: quickMinutes },
       rest: restPrefs, swapsToday: swapsToday,
       runPrefs: { units: runUnits, lastType: runLastType },
+      weightUnit: wUnit(),
       aboutSeen: aboutSeen(), dayMode: currentDayMode()
     };
     var blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
@@ -12052,6 +12142,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         //  Rest times outside 15 seconds to 10 minutes are dropped, not used.
         if (data.rest && typeof data.rest === 'object') { restPrefs = cleanRestPrefs(data.rest); persistRestPrefs(); invalidateBuild(); }
         if (data.swapsToday && typeof data.swapsToday === 'object') { swapsToday = cleanSwapsToday(data.swapsToday); persistSwapsToday(); }
+        //  8.34: only 'lb' or 'kg' comes back; anything else keeps the current unit.
+        if (data.weightUnit === 'lb' || data.weightUnit === 'kg') { weightUnit = data.weightUnit; try { localStorage.setItem(WU_KEY, weightUnit); } catch(e) {} applyWeightUnitUI(); }
         var rp2 = data.runPrefs;
         if (rp2 && typeof rp2 === 'object') {
           if (rp2.units === 'mi' || rp2.units === 'km') { runUnits = rp2.units; try { localStorage.setItem(RUN_UNITS_KEY, runUnits); } catch(e) {} }
@@ -12146,19 +12238,19 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       var delta = latest.weight - prev.weight;
       var pct = prev.weight ? (delta / prev.weight * 100) : 0;
       var sign = delta > 0 ? '+' : '';
-      var deltaTxt = delta === 0 ? '±0 lbs' : sign + delta + ' lbs';
-      var note = prev.weight + ' → ' + latest.weight + ' lbs '
+      var deltaTxt = delta === 0 ? '±0 ' + wLbs() : sign + wTxt(delta);
+      var note = wNum(prev.weight) + ' → ' + wTxt(latest.weight) + ' '
         + '<span style="font-size:var(--fs-1);color:var(--muted)">(' + sign + pct.toFixed(1) + '%)</span>';
       if (delta > 0 && latest.reps < prev.reps) note += ' — reps reset after the jump. Step up, not a dip.';
       rows += progRow('This Week', deltaTxt, note, true);
       if (latest.weight === prev.weight && latest.reps > prev.reps) {
-        rows += progRow('Rep PR', latest.reps + ' @ ' + latest.weight, 'Was ' + prev.reps + ' — more reps at the same weight is progress.', true);
+        rows += progRow('Rep PR', latest.reps + ' @ ' + wNum(latest.weight), 'Was ' + prev.reps + ' — more reps at the same weight is progress.', true);
       }
     } else {
-      rows += progRow('This Week', latest.weight + ' × ' + latest.reps, 'First session logged — baseline set.', true);
+      rows += progRow('This Week', wNum(latest.weight) + ' × ' + latest.reps, 'First session logged — baseline set.', true);
     }
-    var trend = hist.slice(-4).map(function(e) { return e.weight; }).join(' → ');
-    rows += progRow('Trend', latest.weight + ' lbs',
+    var trend = hist.slice(-4).map(function(e) { return wNum(e.weight); }).join(' → ');
+    rows += progRow('Trend', wTxt(latest.weight),
       '<span style="font-family:var(--font-body);font-size:var(--fs-1)">' + trend + '</span> — working weight, last ' + Math.min(hist.length, 4) + ' sessions', false);
     var start = hist[0].weight;
     var total = latest.weight - start;
@@ -12168,11 +12260,11 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     //  user on their first cycle: same single row as before this feature.
     var allTimeStart = (earliestByExId && earliestByExId[ex.id] !== undefined) ? earliestByExId[ex.id] : start;
     if (allTimeStart === start) {
-      rows += progRow('All-Time', (total > 0 ? '+' : '') + total + ' lbs', 'Started at ' + start + ' · now ' + latest.weight, false);
+      rows += progRow('All-Time', (total > 0 ? '+' : '') + wTxt(total), 'Started at ' + wNum(start) + ' · now ' + wNum(latest.weight), false);
     } else {
       var allTimeTotal = latest.weight - allTimeStart;
-      rows += progRow('This Cycle', (total > 0 ? '+' : '') + total + ' lbs', 'Started at ' + start + ' · now ' + latest.weight, false);
-      rows += progRow('All-Time', (allTimeTotal > 0 ? '+' : '') + allTimeTotal + ' lbs', 'Started at ' + allTimeStart + ' · now ' + latest.weight, false);
+      rows += progRow('This Cycle', (total > 0 ? '+' : '') + wTxt(total), 'Started at ' + wNum(start) + ' · now ' + wNum(latest.weight), false);
+      rows += progRow('All-Time', (allTimeTotal > 0 ? '+' : '') + wTxt(allTimeTotal), 'Started at ' + wNum(allTimeStart) + ' · now ' + wNum(latest.weight), false);
     }
     var fs = getFailureStats(hist);
     if (fs) {
@@ -12182,7 +12274,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     }
     var stall = getStallState(hist);
     if (stall) {
-      rows += progRow('Holding steady', stall.weight + ' lbs', 'Same weight for 3 sessions. Rest well, or try ' + stall.drop + ' lbs for one session and build back up.', false);
+      rows += progRow('Holding steady', wTxt(stall.weight), 'Same weight for 3 sessions. Rest well, or try ' + wTxt(stall.drop) + ' for one session and build back up.', false);
     }
     return '<div class="prog-card">'
       + '<div class="prog-card-header"><div class="prog-card-lift" style="font-size:var(--fs-4)">' + ex.name + '</div>'
@@ -12932,7 +13024,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     var r = document.getElementById('freeRecent');
     if (r) r.innerHTML = rec.length ? rec.map(function(x) {
       return '<button type="button" class="ex-result" data-id="' + x.ex.id + '" onclick="freePick(this.dataset.id)">' + styleEsc(activeVariant(x.ex))
-        + '<span class="ex-result-m">' + (x.e.weight > 0 ? fmtNum(x.e.weight) + ' lb × ' + (x.e.reps || 0) : (x.e.reps || 0) + ' reps') + ', ' + shortDate(x.e.d) + '</span></button>';
+        + '<span class="ex-result-m">' + (x.e.weight > 0 ? fmtNum(wNum(x.e.weight)) + ' ' + wLb() + ' × ' + (x.e.reps || 0) : (x.e.reps || 0) + ' reps') + ', ' + shortDate(x.e.d) + '</span></button>';
     }).join('') : '<div class="panel-meta">Nothing logged yet. Find an exercise above.</div>';
   }
   function freeSearch(v) {
@@ -12983,8 +13075,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     else if (l.length > 1) top = Math.max.apply(null, entrySets(l[l.length - 2]).map(function(x) { return x.r || 0; }));
     var w = last.weight, inc = ex && LOWER_BODY[ex.muscle] ? 10 : 5;
     if (top && entrySets(last).every(function(x) { return (x.r || 0) >= top; }))
-      return 'Next time: ' + fmtNum(w + inc) + ' lb. Every set reached ' + top + ' reps last time.';
-    return 'Next time: ' + fmtNum(w) + ' lb again and aim for more reps' + (top ? ', up to ' + top : '') + '.';
+      return 'Next time: ' + fmtNum(wNum(w + inc)) + ' ' + wLb() + '. Every set reached ' + top + ' reps last time.';
+    return 'Next time: ' + fmtNum(wNum(w)) + ' ' + wLb() + ' again and aim for more reps' + (top ? ', up to ' + top : '') + '.';
   }
   function progDetailHTML(id, ex, l) {
     var last = l[l.length - 1], prev = l.length > 1 ? l[l.length - 2] : null, best = l[0];
@@ -12992,9 +13084,9 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     var chg = prev ? last.weight - prev.weight : null;
     var row = function(k, v) { return '<div class="prog-stat"><span class="prog-stat-k">' + k + '</span><span class="prog-stat-v">' + v + '</span></div>'; };
     return '<div class="prog-stats">'
-      + row('Best', fmtNum(best.weight) + ' lb × ' + (best.reps || 0) + ', ' + shortDate(best.d))
-      + row('Last time', fmtNum(last.weight) + ' lb × ' + (last.reps || 0) + ', ' + shortDate(last.d))
-      + (chg == null ? '' : row('Since last session', chg > 0 ? '+' + fmtNum(chg) + ' lb' : chg < 0 ? fmtNum(-chg) + ' lb lighter' : 'Same weight'))
+      + row('Best', fmtNum(wNum(best.weight)) + ' ' + wLb() + ' × ' + (best.reps || 0) + ', ' + shortDate(best.d))
+      + row('Last time', fmtNum(wNum(last.weight)) + ' ' + wLb() + ' × ' + (last.reps || 0) + ', ' + shortDate(last.d))
+      + (chg == null ? '' : row('Since last session', chg > 0 ? '+' + fmtNum(wNum(chg)) + ' ' + wLb() : chg < 0 ? fmtNum(wNum(-chg)) + ' ' + wLb() + ' lighter' : 'Same weight'))
       + '</div><div class="prog-suggest">' + nextSuggestion(ex, l) + '</div>';
   }
   //  The smallest delete: one past entry, a plain confirm, then every total
@@ -13005,7 +13097,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     if (!e || e.d !== d) { idx = -1; for (var i = h.length - 1; i >= 0; i--) if (h[i] && h[i].d === d) { idx = i; break; } e = h[idx]; }
     if (!e) return;
     var ex = EX_BY_ID[exId];
-    if (!confirm('Delete ' + (ex ? activeVariant(ex) : 'this lift') + ' on ' + shortDate(e.d) + ', ' + fmtNum(e.weight || 0) + ' lb × ' + (e.reps || 0) + '? This cannot be undone.')) return;
+    if (!confirm('Delete ' + (ex ? activeVariant(ex) : 'this lift') + ' on ' + shortDate(e.d) + ', ' + fmtNum(wNum(e.weight || 0)) + ' ' + wLb() + ' × ' + (e.reps || 0) + '? This cannot be undone.')) return;
     autoBackupOnce();
     h.splice(idx, 1);
     if (!h.length) delete sessions[exId];
@@ -13272,11 +13364,11 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       var ex = EX_BY_ID[it.exId], nm = ex ? activeVariant(ex) : it.exId;
       return '<div class="qs-ex" id="qs-' + i + '"><div class="qs-head"><span class="qs-name">' + styleEsc(nm) + '</span>'
         + '<button type="button" class="op-del" aria-label="Remove ' + styleEsc(nm) + ' from this session" onclick="qsRemove(' + i + ')">Remove</button></div>'
-        + '<div class="qs-cols" aria-hidden="true"><span>Set</span><span>lbs</span><span>Reps</span><span></span></div>'
+        + '<div class="qs-cols" aria-hidden="true"><span>Set</span><span>' + wLbs() + '</span><span>Reps</span><span></span></div>'
         + it.rows.map(function(r, j) {
           var dis = r.done ? ' disabled' : '';
           return '<div class="qs-set' + (r.done ? ' done' : '') + '"><span class="qs-n">' + (j + 1) + '</span>'
-            + '<input class="log-inline-input" type="number" inputmode="decimal" min="0" id="qsw-' + i + '-' + j + '" aria-label="' + styleEsc(nm) + ' set ' + (j + 1) + ' weight in pounds" value="' + styleEsc(r.w) + '"' + dis + '>'
+            + '<input class="log-inline-input wu-in" type="number" inputmode="decimal" min="0" id="qsw-' + i + '-' + j + '" aria-label="' + styleEsc(nm) + ' set ' + (j + 1) + ' weight in ' + (wUnit() === 'kg' ? 'kilograms' : 'pounds') + '" ' + wValAttr(r.w) + dis + '>'
             + '<input class="log-inline-input" type="number" inputmode="numeric" min="1" id="qsr-' + i + '-' + j + '" aria-label="' + styleEsc(nm) + ' set ' + (j + 1) + ' reps" value="' + styleEsc(r.r) + '"' + dis + '>'
             + '<button type="button" class="set-done-btn' + (r.done ? ' on' : '') + '" aria-pressed="' + !!r.done + '" aria-label="' + (r.done ? 'Set ' + (j + 1) + ' logged' : 'Log set ' + (j + 1)) + '" onclick="qsDone(' + i + ',' + j + ')">&#10003;</button></div>';
         }).join('')
@@ -13316,7 +13408,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       var rec = freeRecents(12);
       html = rec.length ? '<div class="ex-sheet-label">Recent</div>' + rec.map(function(x) {
         return '<button type="button" class="ex-row" data-id="' + x.ex.id + '" onclick="exSheetPick(this.dataset.id)"><span>' + styleEsc(activeVariant(x.ex)) + '</span>'
-          + '<span class="ex-row-m">' + (x.e.weight > 0 ? fmtNum(x.e.weight) + ' lb × ' + (x.e.reps || 0) : (x.e.reps || 0) + ' reps') + '</span></button>';
+          + '<span class="ex-row-m">' + (x.e.weight > 0 ? fmtNum(wNum(x.e.weight)) + ' ' + wLb() + ' × ' + (x.e.reps || 0) : (x.e.reps || 0) + ' reps') + '</span></button>';
       }).join('') : '<div class="panel-meta">Type to search every exercise.</div>';
     } else {
       var res = exerciseSearch(q, 40), exact = res.some(function(ex) { return normName(ex.name) === k; });
@@ -16601,12 +16693,12 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       if (gain > 0 && (!best || gain > best.gain)) best = { gain: gain, name: activeVariant(EX_BY_ID[id]) };
     });
     var bw = bwSeries(), bwTxt = null;
-    if (bw.length >= 2) { var dlt = bw[bw.length - 1].y - bw[0].y; bwTxt = { v: (dlt > 0 ? '+' : dlt < 0 ? '−' : '') + Math.abs(dlt).toFixed(1) + ' lbs', l: 'since ' + shortDate(bw[0].k) }; }
+    if (bw.length >= 2) { var dlt = bw[bw.length - 1].y - bw[0].y; bwTxt = { v: (dlt > 0 ? '+' : dlt < 0 ? '−' : '') + bwShow(Math.abs(dlt)).toFixed(1) + ' ' + wLbs(), l: 'since ' + shortDate(bw[0].k) }; }
     var tile = function(v, l, empty, act) {
       if (act) return '<button type="button" class="prog-tile prog-tile-btn' + (empty ? ' empty' : '') + '" onclick="' + act + '"><span class="prog-tile-v">' + v + '</span><span class="prog-tile-l">' + l + '</span></button>';
       return '<div class="prog-tile' + (empty ? ' empty' : '') + '"><div class="prog-tile-v">' + v + '</div><div class="prog-tile-l">' + l + '</div></div>'; };
     return tile(nWork, nWork === 1 ? 'workout this month' : 'workouts this month')
-      + (best ? tile('+' + fmtNum(best.gain) + ' lbs', best.name) : tile('None yet', 'Log a lift to see this', true))
+      + (best ? tile('+' + fmtNum(wNum(best.gain)) + ' ' + wLbs(), best.name) : tile('None yet', 'Log a lift to see this', true))
       + (bwTxt ? tile(bwTxt.v, 'Bodyweight ' + bwTxt.l) : tile('None yet', 'Add your weight to see this', true, 'progAddWeight()'));
   }
   function setProgView(v) { _progView = v; _progMore = false; renderProgressHome(); }
@@ -16645,16 +16737,16 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         var ex = EX_BY_ID[_progEx], l = liftEntries(_progEx), name = activeVariant(ex);
         var first = l[0], last = l[l.length - 1];
         var weeks = Math.max(1, Math.round((parseDateKey(last.d) - parseDateKey(first.d)) / (7 * 864e5)));
-        var sum = l.length === 1 ? name + ': one session so far, top set ' + last.weight + ' lbs.'
-          : name + ' top set ' + (last.weight > first.weight ? 'rose' : last.weight < first.weight ? 'moved' : 'held') + ' from ' + first.weight + ' to ' + last.weight + ' lbs over ' + weeks + ' week' + (weeks === 1 ? '' : 's') + '.';
+        var sum = l.length === 1 ? name + ': one session so far, top set ' + wTxt(last.weight) + '.'
+          : name + ' top set ' + (last.weight > first.weight ? 'rose' : last.weight < first.weight ? 'moved' : 'held') + ' from ' + wNum(first.weight) + ' to ' + wTxt(last.weight) + ' over ' + weeks + ' week' + (weeks === 1 ? '' : 's') + '.';
         html = '<label class="prog-pick-l" for="progExPick">Exercise</label><select class="prog-pick" id="progExPick" onchange="setProgEx(this.value)">'
           + ids.map(function(id) { return '<option value="' + id + '"' + (id === _progEx ? ' selected' : '') + '>' + styleEsc(activeVariant(EX_BY_ID[id])) + '</option>'; }).join('') + '</select>'
           + progDetailHTML(_progEx, ex, l)
-          + lineChartSVG([{ pts: l.map(function(e) { return { k: e.d, y: e.weight }; }) }], 'lbs', 'progLiftChart', sum);
+          + lineChartSVG([{ pts: l.map(function(e) { return { k: e.d, y: wNum(e.weight) }; }) }], wLbs(), 'progLiftChart', sum);
         var rows = l.slice().reverse();
         var hAll = sessions[_progEx] || [];
         html += progTable(['Date', 'Top set', 'Sets', '<span class="sr-only">Delete</span>'], (_progMore ? rows : rows.slice(0, 5)).map(function(e) {
-          return [shortDate(e.d), e.weight + ' × ' + e.reps, entrySetCount(e),
+          return [shortDate(e.d), wNum(e.weight) + ' × ' + e.reps, entrySetCount(e),
             '<button type="button" class="prog-del" aria-label="Delete ' + shortDate(e.d) + ' entry" onclick="deleteLiftEntry(\'' + _progEx + '\',' + hAll.indexOf(e) + ',\'' + e.d + '\')">Delete</button>'];
         }), rows.length);
         var nmap = liftNotes[_progEx] || {}, nks = Object.keys(nmap).sort().reverse();
@@ -16712,7 +16804,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   //  setting is km. Accepts 50 to 700 lb or the kg equivalent.
   var LB_PER_KG = 2.20462262, BW_MIN_LB = 50, BW_MAX_LB = 700;
   var _bwForm = null, _bwUndo = null, _bwUndoT = 0;
-  function bwUnit() { return runUnits === 'km' ? 'kg' : 'lb'; }
+  //  8.34: Body follows the weight unit setting, not the mi/km toggle.
+  function bwUnit() { return wUnit(); }
   function bwShow(lb) { return bwUnit() === 'kg' ? Math.round(lb / LB_PER_KG * 10) / 10 : Math.round(lb * 10) / 10; }
   function bwRangeText() { return bwUnit() === 'kg' ? Math.ceil(BW_MIN_LB / LB_PER_KG) + ' and ' + Math.floor(BW_MAX_LB / LB_PER_KG) + ' kg' : BW_MIN_LB + ' and ' + BW_MAX_LB + ' lb'; }
   function bwFormHTML() {
