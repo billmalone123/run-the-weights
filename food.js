@@ -713,15 +713,17 @@ ctx.closeNavMenu();
 section('2m. Navigation: bottom bar is primary, the logo menu indexes everything, nothing lost');
 eq('MAIN_TABS adds today and keeps every older tab', ev('MAIN_TABS').join(','), 'today,info,training,running,calendar,food,quicklog,more');
 var menuHtml = ctx.buildNavMenu().innerHTML;
-['Today', 'Plan', 'Food', 'Quick Log', 'About'].forEach(function (label) {
+//  8.25 Option A: More moved into the logo menu, so About, Week review and
+//  The Edge are listed there, and Progress too.
+['Today', 'Plan', 'Food', 'Quick Log', 'Progress', 'About', 'Week review', 'The Edge'].forEach(function (label) {
   ok(label + ' is in the logo menu', menuHtml.indexOf('>' + label + '<') > -1);
 });
-// Progress is on Today and Settings behind the gear, so neither is listed.
-['Progress', 'Settings', 'About and more'].forEach(function (label) {
+// Settings sits behind the gear, so it is not listed.
+['Settings', 'About and more'].forEach(function (label) {
   eq(label + ' is not in the logo menu', menuHtml.indexOf('>' + label + '<') > -1, false);
 });
 eq('Run stays out of the menu while running is off', menuHtml.indexOf('>Run<') > -1, false);
-['today', 'training', 'food', 'more'].forEach(function (t) {
+['today', 'training', 'food', 'calendar'].forEach(function (t) {
   ok('bottom bar has ' + t, html.indexOf('class="tabbar-btn" data-tab="' + t + '"') > -1);
 });
 eq('bottom bar markup has four tabs plus Run', (html.match(/class="tabbar-btn"/g) || []).length, 5);
@@ -739,7 +741,8 @@ eq('More has exactly four rows, in order', (moreHtml.match(/more-row-title">([^<
   ok('More has a working link to ' + p[0], moreHtml.indexOf('onclick="' + p[1] + '"><span class="more-row-title">' + p[0] + '<') > -1);
 });
 var todayHtml = html.slice(html.indexOf('id="tab-today"'), html.indexOf('id="tab-training"'));
-ok('Today has a working link to Progress', todayHtml.indexOf('onclick="goTab(\'calendar\');"><span class="more-row-title">Progress<') > -1);
+//  8.25: Progress is a bottom tab, so Today no longer carries a row for it.
+eq('Today has no Progress row now that Progress is a tab', todayHtml.indexOf('<span class="more-row-title">Progress<') > -1, false);
 // goTab('more') itself: must not fall through to the run-plan renderer,
 // which the final catch-all in goTab is really "assume this is Run".
 reset(); boot();
@@ -764,7 +767,8 @@ eq('lands on tab-quicklog', ctx.document.getElementById('tab-quicklog').style.di
   eq('goTab(\'' + p[0] + '\') shows tab-' + p[1], ctx.document.getElementById('tab-' + p[1]).style.display, 'block');
 });
 //  8.19: Progress and Quick Log are not under any bar button, so none lights.
-eq('info and More light More; Progress and Quick Log light none', ['calendar', 'info', 'quicklog', 'more'].map(function (t) { return String(ctx.tabBarOwner(t)); }).join(), 'null,more,null,more');
+//  8.25: Progress lights its own tab; info, Quick Log and More light none.
+eq('Progress lights Progress; info, Quick Log and More light none', ['calendar', 'info', 'quicklog', 'more'].map(function (t) { return String(ctx.tabBarOwner(t)); }).join(), 'calendar,null,null,null');
 // The dropdown's "current tab" tick now maps info/quicklog onto More —
 // verified as source logic above (dynamically-created menu nodes aren't
 // discoverable via this stub's getElementById, so this can't be driven

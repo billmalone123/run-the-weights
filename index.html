@@ -1271,7 +1271,7 @@
   .lift-status { grid-column: 1 / -1; margin-top: 10px; cursor: default; }
   .soft-set-note { font-size: var(--fs-1); color: var(--muted); font-style: italic; margin-top: 6px; }
   .seed-weight-note { font-size: var(--fs-1); color: var(--muted); font-style: italic; margin-top: 2px; opacity: 0.8; }
-  .stall-warning { font-size: var(--fs-1); color: var(--accent); font-weight: 700; margin-top: 6px; letter-spacing: 0.02em; }
+  .stall-warning { font-size: var(--fs-1); color: var(--text); font-weight: 600; margin-top: 6px; letter-spacing: 0.02em; }
   /* LOG MODAL */
   .log-modal-overlay {
     position: fixed; inset: 0;
@@ -3635,6 +3635,45 @@ img[src$=".svg"][src*="assets/brand/"] { mix-blend-mode: normal; }
 .workout-note-count:empty { display: none; }
 .cal-workout-note { font-size: var(--fs-1); color: var(--muted); line-height: 1.45; margin-top: 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .cal-workout-note-label { font-weight: 700; color: var(--text); margin-bottom: 2px; }
+/* 8.25: own plan, freestyle, weekly goal, Progress detail. */
+.week-goal { font-size: var(--fs-2); color: var(--text); margin: 0 0 10px; }
+.week-goal-n { font-weight: 600; }
+.week-goal-streak { color: var(--muted); }
+.fresh-sum { font-size: var(--fs-2); color: var(--text); margin-bottom: 10px; line-height: 1.5; }
+.own-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 0 0 12px; font-size: var(--fs-2); }
+.own-bar .today-link { min-height: 44px; }
+.style-group { flex-wrap: wrap; }
+.muscle-pick { margin: 10px 0; }
+.muscle-pick-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.muscle-pick-row .liftdays-btn { flex: 0 0 auto; min-height: 44px; padding: 0 12px; }
+.ex-results { display: flex; flex-direction: column; gap: 6px; margin: 6px 0 12px; }
+.ex-result { display: flex; justify-content: space-between; align-items: center; gap: 10px; min-height: 44px; padding: 8px 12px; text-align: left;
+  background: var(--surface); color: var(--text); border: 1px solid var(--border-hi); border-radius: 8px; font: inherit; font-size: var(--fs-2); cursor: pointer; }
+.ex-result:focus-visible { outline: 2px solid var(--fill); outline-offset: 2px; }
+.ex-result-m { color: var(--muted); font-size: var(--fs-1); white-space: nowrap; }
+.op-day { border-top: 1px solid var(--border); padding: 14px 0; }
+.op-day-head { display: flex; align-items: center; gap: 6px; }
+.op-name { flex: 1; min-width: 0; min-height: 44px; }
+.op-icon { min-width: 44px; min-height: 44px; background: transparent; border: 1px solid var(--border-hi); border-radius: 8px; color: var(--text); font-size: var(--fs-3); cursor: pointer; }
+.op-icon:disabled { opacity: 0.35; cursor: default; }
+.op-del { min-height: 44px; background: none; border: 0; color: var(--text); text-decoration: underline; text-underline-offset: 3px; font: inherit; font-size: var(--fs-2); cursor: pointer; padding: 0 6px; }
+.op-ex { list-style: none; margin: 10px 0; padding: 0; }
+.op-ex-row { padding: 8px 0; border-bottom: 1px solid var(--border); }
+.op-ex-top { display: flex; align-items: center; gap: 6px; }
+.op-ex-name { flex: 1; min-width: 0; font-size: var(--fs-2); }
+.op-ex-t { display: flex; gap: 10px; margin-top: 6px; font-size: var(--fs-1); color: var(--muted); }
+.op-ex-t label { display: flex; align-items: center; gap: 6px; }
+.op-num { width: 68px; min-height: 44px; padding-left: 8px !important; padding-right: 4px !important; }
+.op-ex-t { flex-wrap: wrap; }
+.op-add-btn { margin-top: 6px; }
+.op-add-panel { margin-top: 10px; }
+.op-add-panel .today-link { min-width: 44px; min-height: 44px; padding: 0 10px; }
+.prog-stats { display: grid; grid-template-columns: 1fr; gap: 4px; margin: 12px 0 6px; }
+.prog-stat { display: flex; justify-content: space-between; gap: 12px; font-size: var(--fs-2); border-bottom: 1px solid var(--border); padding: 6px 0; }
+.prog-stat-k { color: var(--muted); }
+.prog-stat-v { color: var(--text); font-weight: 600; text-align: right; }
+.prog-suggest { font-size: var(--fs-2); color: var(--text); margin: 8px 0 14px; line-height: 1.5; }
+.prog-del { min-height: 44px; background: none; border: 0; padding: 0 4px; color: var(--text); text-decoration: underline; text-underline-offset: 3px; font: inherit; font-size: var(--fs-1); cursor: pointer; }
 /* Links in blue. */
 a:not([class]), .howto-link { color: var(--primary-text); }
 </style>
@@ -3647,7 +3686,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   <button class="tabbar-btn" data-tab="training" onclick="goTab('training')"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg><span>Plan</span></button>
   <button class="tabbar-btn" data-tab="running" onclick="goTab('running')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="14" cy="4.5" r="1.8"/><path d="M8 21l3-6 3 2v5M6 12l3-4 4 1 3 3 3 1M11 15l-2-4"/></svg><span>Run</span></button>
   <button class="tabbar-btn" data-tab="food" onclick="goTab('food')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M16 21V3c-2.5 1.5-3 4.5-3 8h3"/></svg><span>Food</span></button>
-  <button class="tabbar-btn" data-tab="more" onclick="goTab('more')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.8" style="fill:currentColor"/><circle cx="12" cy="12" r="1.8" style="fill:currentColor"/><circle cx="19" cy="12" r="1.8" style="fill:currentColor"/></svg><span>More</span></button>
+  <button class="tabbar-btn" data-tab="calendar" onclick="goTab('calendar')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M7 20v-7M12 20V6M17 20v-10"/></svg><span>Progress</span></button>
 </div>
 
 <!-- GOING OUT. Two choices, no lecture. -->
@@ -3776,8 +3815,11 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       </div>
       <div class="run-field-label" style="margin-top:18px;"><span>What do you want most?</span></div>
       <div class="liftdays-group goal-mode-group" id="onbFlowGoalPills"></div>
+      <div class="run-field-label" style="margin-top:18px;"><span id="onbStyleQ">How do you want to train?</span></div>
+      <div class="liftdays-group style-group" id="onbFlowStylePills" role="radiogroup" aria-labelledby="onbStyleQ"></div>
       <div class="run-field-label" style="margin-top:18px;"><span id="onbDaysQ">How many days can you train?</span></div>
       <div class="plan-days-options" id="onbFlowLiftDaysPills" role="radiogroup" aria-labelledby="onbDaysQ"></div>
+      <div class="liftdays-group" id="onbOwnDaysPills" role="radiogroup" aria-labelledby="onbDaysQ" style="display:none"></div>
       <div class="liftdays-desc" id="onbFlowLiftDaysDesc" style="display:none"></div>
       <div class="run-field-label" style="margin-top:18px;"><span id="onbExpQ">Have you lifted weights before?</span></div>
       <div class="run-toggle" role="group" aria-labelledby="onbExpQ">
@@ -3960,6 +4002,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     <div class="cal-head-week cal-head-race" id="calHeadRace"></div>
     <div class="cal-head-dates" id="calHeadDates"></div>
   </div>
+  <div class="week-goal" id="weekReviewNums"></div>
   <div class="cal-grid" id="weekCalendar"></div>
   <div class="cal-note" id="calNote"></div>
   <button class="cal-fullview-btn" onclick="goTab('calendar')">View full calendar →</button>
@@ -4008,11 +4051,9 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   <div class="today-card run-today" id="todayRun" style="display:none"></div>
   <div class="today-card" id="todayWorkout"></div>
   <div class="today-label">This week</div>
+  <div class="week-goal" id="todayGoal"></div>
   <div class="week-glance" data-glance aria-label="This week at a glance"></div>
-  <div class="more-list today-progress">
-    <button class="more-list-item" onclick="goTab('calendar');"><span class="more-row-title">Progress</span><span class="more-row-sub">Your weeks, lifts and weight.</span></button>
-  </div>
-  <div class="today-label">Muscles, last 7 days</div>
+  <div class="today-label">Muscles this week</div>
   <div class="fresh-card" id="todayFresh"></div>
   <div class="today-grid">
     <div class="today-mini">
@@ -4036,6 +4077,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 <section id="plan">
   <div class="section-label adv">Plan</div>
   <h2 class="lift-hero adv">This is where you win.</h2>
+  <div id="trainStyleBar" style="display:none"></div>
 
   <!-- COMPACT WEEK + REST ROW. One week shown; arrows change it. -->
   <div class="lift-toolbar">
@@ -4572,10 +4614,23 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 <div id="tab-quicklog" class="tab-main" style="background:var(--bg)">
 
 <section id="quicklogSection">
+  <!-- FREESTYLE HOME. Shown only when training style is "Log as I go". -->
+  <div id="freeHome" style="display:none">
+    <div class="today-date">Log a workout</div>
+    <div class="quicklog-field"><label for="freeSearchIn">Find an exercise</label>
+      <input type="text" id="freeSearchIn" autocomplete="off" placeholder="Bench, row, squat" oninput="freeSearch(this.value)"></div>
+    <div class="ex-results" id="freeResults"></div>
+    <div class="today-label">Recent</div>
+    <div class="ex-results" id="freeRecent"></div>
+    <div class="quicklog-field"><label for="freeNewName">Add your own exercise</label><input type="text" id="freeNewName" maxlength="60" placeholder="Name"></div>
+    <div id="freeMuscleHost"></div>
+    <button type="button" class="today-secondary" onclick="freeAddTyped()">Add and log it</button>
+    <div class="add-ex-hint" id="freeNewHint"></div>
+  </div>
   <h2 class="ql-heading" id="qlHeading">How long do you have?</h2>
   <div class="liftdays-group time-box-group" id="qlTimes" role="group" aria-labelledby="qlHeading"></div>
   <div class="today-card ql-today" id="qlToday"></div>
-  <div class="today-label">Other quick workouts</div>
+  <div class="today-label" id="qlOthersLabel">Other quick workouts</div>
   <div class="ql-others" id="qlOthers"></div>
   <button type="button" class="quicklog-back ql-old-link" id="qlOldBtn" aria-expanded="false" aria-controls="qlOld" onclick="toggleOldQuickLog()">Log a workout I already did</button>
   <div id="qlOld" style="display:none">
@@ -4743,6 +4798,14 @@ a:not([class]), .howto-link { color: var(--primary-text); }
      history, or quick-log entries. setSplit() already keeps those untouched;
      this only adds resetting the week/day to Week 1 Day 1 of the new split,
      which a genuine plan change should do but the raw Settings picker doesn't. -->
+<div class="settings-modal-overlay" id="ownPlanModal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="ownPlanTitle">
+  <div class="settings-modal-card">
+    <div class="settings-modal-title" id="ownPlanTitle">Your own plan</div>
+    <div class="settings-modal-sub">Name your days, put them in any order and add exercises. Sets and reps are optional. Changes save as you go.</div>
+    <div id="ownPlanBody"></div>
+    <button class="settings-save-btn" onclick="closeOwnPlanEditor()">Done</button>
+  </div>
+</div>
 <div class="settings-modal-overlay" id="changePlanModal" style="display:none;">
   <div class="settings-modal-card" id="changePlanModalCard">
     <div class="settings-modal-brand">
@@ -4752,8 +4815,17 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 
     <div id="cpStep1">
       <div class="settings-modal-sub" id="cpCurrentPlanText"></div>
-      <div class="settings-input-label" id="cpDaysQ">How many days can you train?</div>
-      <div class="plan-days-options" id="cpDaysOptions" role="radiogroup" aria-labelledby="cpDaysQ" style="margin-bottom:24px;"></div>
+      <div class="settings-input-label" id="cpStyleQ">How do you want to train?</div>
+      <div class="liftdays-group style-group" id="cpStyleOptions" role="radiogroup" aria-labelledby="cpStyleQ" style="margin-bottom:18px;"></div>
+      <div id="cpPresetWrap">
+        <div class="settings-input-label" id="cpDaysQ">How many days can you train?</div>
+        <div class="plan-days-options" id="cpDaysOptions" role="radiogroup" aria-labelledby="cpDaysQ" style="margin-bottom:24px;"></div>
+      </div>
+      <div id="cpOwnWrap" style="display:none">
+        <div class="settings-input-label" id="cpOwnDaysQ">How many days a week?</div>
+        <div class="liftdays-group" id="cpOwnDays" role="radiogroup" aria-labelledby="cpOwnDaysQ" style="margin-bottom:18px;"></div>
+        <button class="settings-save-btn" id="cpStyleApply" onclick="cpApplyStyle()">Use this</button>
+      </div>
     </div>
 
     <div id="cpStep2" style="display:none;">
@@ -5356,6 +5428,20 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         }
       });
     });
+    //  Train style and own plan: recover only when localStorage lost the key.
+    [['trainStyle', TRAIN_STYLE_KEY, function(v) { trainStyle = cleanTrainStyle(v); persistTrainStyle(); }],
+     ['ownPlan', OWN_PLAN_KEY, function(v) { ownPlan = cleanOwnPlan(v); persistOwnPlan(); registerOwnPlan(); }]
+    ].forEach(function(f) {
+      idbGet(f[0]).then(function(v) {
+        var ls = null;
+        try { ls = localStorage.getItem(f[1]); } catch(e) {}
+        if (ls === null && v && typeof v === 'object' && (f[0] === 'trainStyle' ? v.style && v.style !== 'plan' : v.days && v.days.length)) {
+          f[2](v);
+          if (trainStyle.style === 'own' && activeSplitId !== 'own') { _styleLock = true; try { setSplit('own'); } finally { _styleLock = false; } }
+          renderTrainStyleBar();
+        } else idbSet(f[0], f[0] === 'trainStyle' ? trainStyle : ownPlan);
+      });
+    });
     //  The nine keys that were read/written straight against localStorage
     //  with no live variable, or are low-stakes navigation/session state —
     //  archive, PR history, split history, cycle-start maxes, last tab, last
@@ -5575,6 +5661,57 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       ex:['leg-press','machine-chest-press','machine-row','arnold-press','incline-db-curl','cable-face-pull'] }
   };
 
+
+  //     TRAIN STYLE AND OWN PLAN (8.25). How someone trains: follow a preset
+  //  plan, run their own plan, or log as they go. An own plan registers as
+  //  one more split template ("own") built from monk_own_plan_v1, so every
+  //  existing day, week and logging path works on it unchanged. History is
+  //  stored by exercise and date, never by plan day, so switching styles
+  //  never touches it.
+  const TRAIN_STYLE_KEY = 'monk_train_style_v1';
+  const OWN_PLAN_KEY = 'monk_own_plan_v1';
+  var trainStyle = { style: 'plan', days: null, lastPreset: null };
+  var ownPlan = { days: [] };
+  var _styleLock = false;
+  function cleanTrainStyle(v) {
+    var o = v && typeof v === 'object' ? v : {};
+    var d = parseInt(o.days, 10);
+    return { style: o.style === 'own' || o.style === 'free' ? o.style : 'plan',
+             days: d >= 1 && d <= 7 ? d : null,
+             lastPreset: typeof o.lastPreset === 'string' && o.lastPreset !== 'own' && SPLIT_TEMPLATES[o.lastPreset] ? o.lastPreset : null };
+  }
+  function cleanOwnPlan(v) {
+    var days = v && Array.isArray(v.days) ? v.days : [], seen = {}, out = [];
+    days.forEach(function(d) {
+      if (!d || typeof d.id !== 'string' || !/^[a-z0-9]{1,16}$/.test(d.id) || seen[d.id] || out.length >= 7) return;
+      seen[d.id] = 1;
+      out.push({ id: d.id, name: String(d.name || '').replace(/[<>]/g, '').trim().slice(0, 30) || 'Day ' + (out.length + 1),
+        ex: (Array.isArray(d.ex) ? d.ex : []).filter(function(x) { return x && typeof x.id === 'string' && /^[a-z0-9-]{1,60}$/.test(x.id); }).slice(0, 20).map(function(x) {
+          var o = { id: x.id }, n = parseInt(x.sets, 10), lo = parseInt(x.lo, 10), hi = parseInt(x.hi, 10);
+          if (n >= 1 && n <= 6) o.sets = n;
+          if (lo >= 1 && lo <= 100) o.lo = lo;
+          if (hi >= 1 && hi <= 100) o.hi = Math.max(hi, o.lo || 1);
+          return o;
+        }) });
+    });
+    return { days: out };
+  }
+  function registerOwnPlan() {
+    Object.keys(SPLIT_DAYS).forEach(function(k) { if (SPLIT_DAYS[k] && SPLIT_DAYS[k].own) delete SPLIT_DAYS[k]; });
+    var week = ownPlan.days.map(function(d, i) {
+      SPLIT_DAYS['own-' + d.id] = { tag: 'D' + (i + 1), title: d.name, focus: '', own: true, ex: d.ex.map(function(x) { return x.id; }) };
+      return 'own-' + d.id;
+    });
+    while (week.length < 7) week.push('rest');
+    SPLIT_TEMPLATES.own = { days: Math.max(1, ownPlan.days.length), label: 'Your own plan', note: 'Your days, in your order.', week: week, own: true };
+    if (typeof invalidateBuild === 'function') try { invalidateBuild(); } catch(e) {}
+  }
+  function loadTrainStyle() {
+    try { trainStyle = cleanTrainStyle(JSON.parse(localStorage.getItem(TRAIN_STYLE_KEY))); } catch(e) { trainStyle = cleanTrainStyle(null); }
+    try { ownPlan = cleanOwnPlan(JSON.parse(localStorage.getItem(OWN_PLAN_KEY))); } catch(e) { ownPlan = cleanOwnPlan(null); }
+    registerOwnPlan();
+  }
+  loadTrainStyle();
   function activeSplit() {
     var t = SPLIT_TEMPLATES[activeSplitId] || SPLIT_TEMPLATES.arnold;
     var mv = (typeof weekMoves === 'object' && weekMoves) ? weekMoves[currentTrainWeek] : null;
@@ -6221,6 +6358,11 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     var ck = dayId + '|' + week + '|' + (isShortDay(dayId, week) ? 'short' : '') + '|' + sessionSize + '|' + sessionBudget + '|' + equipOwned.join(',') + '|' + hiddenEx.join(',') + '|' + JSON.stringify(customEx[dayId] || []) + '|' + JSON.stringify(setCounts) + '|' + JSON.stringify(variantChoice)
       + '|' + dayBox(dayId, week) + '|' + (isShortDay(dayId, week) && dropSetsOn() ? 'drops' : '');
     if (_buildCache[ck]) return _buildCache[ck];
+    //  An own plan day is the user's list in the user's order. No builder.
+    if (SPLIT_DAYS[dayId] && SPLIT_DAYS[dayId].own) {
+      var ol = programmedDayExercises(dayId).concat(customExercisesFor(dayId)), oe = estimateMinutes(ol, {}, {});
+      return (_buildCache[ck] = { list: ol, reasons: {}, supersets: {}, minutes: oe.hi, est: oe, caps: {}, drops: {}, box: null, short: false });
+    }
     var base = programmedDayExercises(dayId);
     var reasons = {}, supersets = {}, list = [];
     var mainEx = base.filter(function(e) { return e.tag === 'primary'; })[0]
@@ -6807,7 +6949,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         //  selected and the start button names the time.
         var dm = currentDayMode();
         var pickMin = dm && dm.date === todayKey() && dm.day === next && dm.week === currentTrainWeek && dm.min ? dm.min : null;
-        host.innerHTML = (daysSinceLastLog() >= 3 ? '<div class="welcome-back">Welcome back. Pick up where you left off.</div>' : '')
+        host.innerHTML = (backFromBreak() ? '<div class="welcome-back">' + BREAK_LINE + '</div>' : daysSinceLastLog() >= 3 ? '<div class="welcome-back">Welcome back. Pick up where you left off.</div>' : '')
           + '<div class="today-card-kicker' + (!partial && (restToday || slot !== next) ? ' kicker-now' : '') + '">' + (partial ? 'In progress' : restToday ? 'Next workout' : (slot === next ? 'Today' : 'Next workout')) + '</div>'
           + '<div class="today-card-title">' + (qk ? 'Quick workout: ' + quickLabel(qk.kind) : d.title) + (partial ? '' : ' <span class="tag-next">Next</span>') + '</div>'
           + '<div class="today-card-meta">' + (prog ? prog.done + ' of ' + prog.total + ' sets done' : b.list.length + ' exercises, about ' + estText(b.est)) + '</div>'
@@ -6821,6 +6963,15 @@ a:not([class]), .howto-link { color: var(--primary-text); }
           + '<button class="today-link" onclick="openGoingOut(\'' + next + '\')">Going out?</button></div>';
       }
     }
+    if (trainStyle.style === 'free') {
+      var fh = document.getElementById('todayWorkout'), fr = document.getElementById('todayRest');
+      if (fh) fh.innerHTML = freeTodayHTML();
+      if (fr) fr.style.display = 'none';
+    }
+    //  The plan's day strip means nothing without a plan.
+    var gl = document.querySelector('#tab-today [data-glance]');
+    if (gl) gl.style.display = trainStyle.style === 'free' ? 'none' : '';
+    renderWeekGoal();
     var w = document.getElementById('todayWeight'), wn = document.getElementById('todayWeightNote');
     var tw = bodyweight[todayKey()];
     if (w && document.activeElement !== w) w.value = tw != null ? tw : '';
@@ -6850,7 +7001,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         var d = e && parseDateKey(e.d);
         if (!d) return;
         var ago = dayDiff(d, today);
-        if (ago < 0 || ago > 6) return;
+        //  This calendar week, Monday through today.
+        if (ago < 0 || ago > (today.getDay() + 6) % 7) return;
         var n = e.quickLog ? 1 : ALL_SLOTS.filter(function(k) { return normSet(e, e[k]); }).length || 1;
         var m = byMuscle[ex.muscle] = byMuscle[ex.muscle] || { sets: 0, ago: 99 };
         m.sets += n; m.ago = Math.min(m.ago, ago);
@@ -6867,8 +7019,11 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     if (!host) return;
     var rows = muscleFreshness(todayKey());
     var max = Math.max.apply(null, rows.map(function(r) { return r.sets; }).concat([10]));
-    host.innerHTML = rows.map(function(r) {
-      var when = r.ago == null ? 'Not this week' : r.ago === 0 ? 'Today' : r.ago === 1 ? 'Yesterday' : r.ago + ' days ago';
+    var hit = rows.filter(function(r) { return r.sets > 0; }).map(function(r) { return r.name; });
+    var notHit = rows.filter(function(r) { return !r.sets; }).map(function(r) { return r.name; });
+    host.innerHTML = '<div class="fresh-sum">' + (hit.length ? 'Hit: ' + hit.join(', ') + '. ' : '') + (notHit.length ? 'Not hit yet: ' + notHit.join(', ') + '.' : 'Every group hit this week.') + '</div>'
+      + rows.map(function(r) {
+      var when = r.ago == null ? 'Not yet' : r.ago === 0 ? 'Today' : r.ago === 1 ? 'Yesterday' : r.ago + ' days ago';
       return '<div class="fresh-row' + (r.recovering ? ' recovering' : '') + '">'
         + '<span class="fresh-name">' + r.name + '</span>'
         + '<span class="fresh-bar" aria-hidden="true"><span style="width:' + Math.round(r.sets / max * 100) + '%"></span></span>'
@@ -7576,6 +7731,12 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       if (seen[k] || o.id === ex.id || o.day === 'anchor' || isHiddenName(o.name) || slotKey(o) !== key) return;
       seen[k] = 1; more.push(o.name);
     });
+    //  Custom exercises for the same muscle, so your own movements swap in too.
+    allCustomRecs().forEach(function(rec) {
+      var k = normName(rec.name);
+      if (seen[k] || !rec.muscle || rec.muscle !== ex.muscle || rec.id === ex.id || isHiddenName(rec.name)) return;
+      seen[k] = 1; more.push(rec.name);
+    });
     //  Favorites first: any favorite from the More list moves up into the
     //  main list, and favorites lead it.
     var favs = more.filter(isFavName);
@@ -7719,6 +7880,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     if (isNaN(hi) || hi < lo) hi = Math.max(lo, 12);
     return {
       id: rec.id, day: dayId, name: rec.name, custom: true,
+      muscle: MUSCLE_LABEL[rec.muscle] ? rec.muscle : undefined,
+      noRange: isNaN(parseInt(rec.repRange && rec.repRange[0], 10)) && isNaN(parseInt(rec.repRange && rec.repRange[1], 10)),
       tag: 'secondary',            // never 'primary' — that drives the long warm-up ramp
       repRange: [lo, hi],
       increment: 5,
@@ -7729,7 +7892,11 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   function registerCustomExercises() {
     Object.keys(customEx).forEach(function(dayId) {
       (customEx[dayId] || []).forEach(function(rec) {
-        if (rec && rec.id && rec.name) EX_BY_ID[rec.id] = makeCustomEx(dayId, rec);
+        if (rec && rec.id && rec.name) {
+          EX_BY_ID[rec.id] = makeCustomEx(dayId, rec);
+          //  Findable by name in Swap, never shadowing a library exercise.
+          if (typeof EX_BY_NAME === 'object' && !EX_BY_NAME[normName(rec.name)]) EX_BY_NAME[normName(rec.name)] = EX_BY_ID[rec.id];
+        }
       });
     });
   }
@@ -8193,7 +8360,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       var e = hist[i];
       if (e.week == null || e.week >= wk || !e.weight || isDeloadWeek(e.week) || e.quickLog) continue;
       if (want && entryVariant(e, ex) !== want) continue;
-      if (!best || e.week > best.week) best = e;
+      if (!best || e.week > best.week || (e.week === best.week && String(e.d) >= String(best.d))) best = e;
     }
     return best;
   }
@@ -8541,9 +8708,10 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       + '<div class="log-inline-group"><span class="log-inline-label">To</span>'
       + '<input class="log-inline-input" type="number" inputmode="numeric" min="1" id="addex-hi-' + dayId + '" placeholder="12"></div>'
       + '</div>'
+      + musclePickHTML('addex-' + dayId)
       + '<div class="add-ex-row">'
       + '<button class="add-ex-go" data-day="' + dayId + '" onclick="addCustomExercise(this.dataset.day)">Add</button>'
-      + '<span class="add-ex-hint" id="addex-hint-' + dayId + '">Name is all you need. Rep range is optional.</span>'
+      + '<span class="add-ex-hint" id="addex-hint-' + dayId + '">Name and muscle are all you need. Rep range is optional.</span>'
       + '</div></div></div>';
   }
 
@@ -8569,6 +8737,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     }
     function num(id) { var el = document.getElementById(id); var v = el ? parseInt(el.value, 10) : NaN; return isNaN(v) ? null : v; }
     var rec = { id: customExId(name), name: name, repRange: [num('addex-lo-' + dayId), num('addex-hi-' + dayId)] };
+    if (_musclePick['addex-' + dayId]) rec.muscle = _musclePick['addex-' + dayId];
     customEx[dayId] = (customEx[dayId] || []).concat([rec]);
     persistCustomExercises();
     //  Register before rendering — the row's inputs are useless until EX_BY_ID
@@ -8905,6 +9074,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   //  render into a generated container instead, and whichever path is inactive
   //  is emptied so an exercise's row ids never exist twice in the document.
   function renderDaySections() {
+    if (typeof renderTrainStyleBar === 'function') try { renderTrainStyleBar(); } catch(e) {}
     var alt = document.getElementById('altPlan');
     var orig = document.getElementById('planNav');
     //  Only Arnold uses the original static markup (#planNav / #plan with its
@@ -8974,7 +9144,15 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   //  "6 days" slot the way day-count alone could.
   function setSplit(id) {
     if (!SPLIT_TEMPLATES[id]) id = 'arnold';
+    //  Picking a preset means following a plan; picking "own" means the own
+    //  plan. Freestyle switches hold _styleLock so the preset under it stays.
+    if (!_styleLock && typeof trainStyle === 'object') {
+      var want = id === 'own' ? 'own' : 'plan';
+      if (trainStyle.style !== want) { trainStyle.style = want; persistTrainStyle(); }
+    }
+    if (id !== 'own' && trainStyle.lastPreset !== id) { trainStyle.lastPreset = id; persistTrainStyle(); }
     activeSplitId = id;
+    if (typeof applyOwnTargets === 'function') applyOwnTargets();
     liftDaysPerWeek = SPLIT_TEMPLATES[id].days;
     persistSplitId();
     persistLiftDays();
@@ -9025,6 +9203,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     if (textEl) textEl.textContent = 'Right now: ' + liftDaysPerWeek + ' days a week. ' + plainSplitLine(activeSplitId);
     var cpOpts = document.getElementById('cpDaysOptions');
     if (cpOpts) cpOpts.innerHTML = planDaysOptionsHTML(liftDaysPerWeek, 'changePlanPickDays');
+    _cpStyle = trainStyle.style; _cpDays = goalDays();
+    renderCpStyle();
     changePlanShowStep(1);
     var m = document.getElementById('changePlanModal');
     if (m) m.style.display = 'flex';
@@ -9048,6 +9228,35 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   function changePlanBackToStep1() {
     changePlanShowStep(1);
   }
+  //  Style and days, ahead of the preset days question.
+  var _cpStyle = 'plan', _cpDays = 3;
+  var STYLE_OPTS = [['plan', 'Follow a plan'], ['own', 'Build my own'], ['free', 'Log as I go']];
+  function styleOptsHTML(cur, fn) {
+    return STYLE_OPTS.map(function(o) { var on = o[0] === cur;
+      return '<button type="button" class="liftdays-btn' + (on ? ' on' : '') + '" role="radio" aria-checked="' + on + '" onclick="' + fn + '(\'' + o[0] + '\')">' + o[1] + '</button>'; }).join('');
+  }
+  function dayPillsHTML(cur, fn) {
+    return [1, 2, 3, 4, 5, 6, 7].map(function(n) { var on = n === cur;
+      return '<button type="button" class="liftdays-btn' + (on ? ' on' : '') + '" role="radio" aria-checked="' + on + '" aria-label="' + n + ' days a week" onclick="' + fn + '(' + n + ')">' + n + '</button>'; }).join('');
+  }
+  function renderCpStyle() {
+    var a = document.getElementById('cpStyleOptions'), pw = document.getElementById('cpPresetWrap'), ow = document.getElementById('cpOwnWrap'), d = document.getElementById('cpOwnDays'), b = document.getElementById('cpStyleApply');
+    if (a) a.innerHTML = styleOptsHTML(_cpStyle, 'cpPickStyle');
+    if (pw) pw.style.display = _cpStyle === 'plan' ? '' : 'none';
+    if (ow) ow.style.display = _cpStyle === 'plan' ? 'none' : '';
+    if (d) d.innerHTML = dayPillsHTML(_cpDays, 'cpPickDays');
+    if (b) b.textContent = _cpStyle === 'own' ? (trainStyle.style === 'own' ? 'Save' : 'Use my own plan') : (trainStyle.style === 'free' ? 'Save' : 'Log as I go');
+  }
+  function cpPickStyle(v) { _cpStyle = v; renderCpStyle(); }
+  function cpPickDays(n) { _cpDays = n; renderCpStyle(); }
+  function cpApplyStyle() {
+    var wasOwn = trainStyle.style === 'own';
+    setTrainStyle(_cpStyle, _cpDays);
+    closeChangePlanModal();
+    if (_cpStyle === 'own') { goTab('training'); if (!wasOwn || !ownPlan.days.some(function(d) { return d.ex.length; })) openOwnPlanEditor(); }
+    else goTab('quicklog');
+  }
+
   //  Picks the right Step 2 content for the chosen day count: already-on-
   //  this-with-no-alternative (nothing to do), already-on-this-with-an-
   //  alternative (offer the switch), a single mapping different from today
@@ -9326,6 +9535,9 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         : shown.weight + ' × ' + shown.reps;
       out += '<span class="last-session-chip has-data">' + label + ': ' + setsTxt + fTxt + '</span>';
     }
+    if (!wkEntry && ref && ref.weight > 0 && backFromBreak()) {
+      out += '<div class="soft-set-note">Back after a break: about ' + roundToNearestFive(ref.weight * 0.9) + ' lbs is a good start. Your call.</div>';
+    }
     if (wkEntry && wkEntry.failure === false) {
       out += '<div class="soft-set-note">No set went to failure this week. For growth, take the last set close to your limit.</div>';
     }
@@ -9562,7 +9774,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     //  Only a set that actually landed in storage counts. With no weight
     //  anywhere (no aim, no max, no history) nothing saves, so send the
     //  thumb to the weight box instead of claiming it logged.
-    var e = (sessions[exId] || []).filter(function(x) { return x.week === currentTrainWeek && !x.quickLog; })[0];
+    var e = entryForWeek(sessions[exId] || [], currentTrainWeek, EX_BY_ID[exId]);
     var saved = !!(e && normSet(e, e[slot]));
     markDoneBtn(exId, slot, saved);
     if (!saved) wEl.focus();
@@ -9700,6 +9912,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     var set1 = got.s1, set2 = got.s2, set3 = got.s3;
     var anySet = ALL_SLOTS.some(function(sl) { return got[sl]; });
     syncFromDisk();
+    autoBackupOnce();
     var hist = sessions[exId] = sessions[exId] || [];
     var t = todayKey();
     // Key the entry by TRAINING WEEK, not by date — so logging one week never
@@ -9708,12 +9921,18 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     // one-off single sets, never the structured week slot this search is
     // replacing, so a quick log can never be silently overwritten by (or
     // silently swallow) a real logged session for the same week.
-    var idx = -1;
-    for (var i = 0; i < hist.length; i++) {
-      //  One entry per week per movement: logging a swap never overwrites the
-      //  other variant's sets for the same week. Old entries with no variant
-      //  field read as the exercise's own name, so they still match.
-      if (hist[i].week === currentTrainWeek && !hist[i].quickLog && entryVariant(hist[i], ex) === activeVariant(ex)) { idx = i; break; }
+    //  One entry per exercise per DATE, week and variant (8.25). A second
+    //  session of the same exercise in the same plan week, on another day,
+    //  is its own entry and never replaces the first. The week stays in the
+    //  match, so back filling several weeks on one day never collides. A
+    //  session still going after midnight (before 5 am) keeps writing to the
+    //  entry it started on yesterday.
+    var idx = -1, yest = (function() { var y = new Date(); y.setDate(y.getDate() - 1); return y.getFullYear() + '-' + (y.getMonth() < 9 ? '0' : '') + (y.getMonth() + 1) + '-' + (y.getDate() < 10 ? '0' : '') + y.getDate(); })();
+    var lateNight = new Date().getHours() < 5;
+    for (var i = hist.length - 1; i >= 0; i--) {
+      //  Old entries with no variant field read as the exercise's own name.
+      if (hist[i].week === currentTrainWeek && !hist[i].quickLog && entryVariant(hist[i], ex) === activeVariant(ex)
+          && (hist[i].d === t || (lateNight && hist[i].d === yest))) { idx = i; break; }
     }
     var prev = idx >= 0 ? hist[idx] : null;
     if (!anySet) {
@@ -9737,7 +9956,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       if (!best || s.w > best.w || (s.w === best.w && s.r > best.r)) best = s;
     });
     var fail = document.getElementById('f-' + exId).classList.contains('on');
-    var entry = { d: t, week: currentTrainWeek, weight: best.w, reps: best.r, s1: set1, s2: set2, failure: fail, variant: activeVariant(ex) };
+    var entry = { d: prev ? prev.d : t, week: currentTrainWeek, weight: best.w, reps: best.r, s1: set1, s2: set2, failure: fail, variant: activeVariant(ex) };
     //  s3 is added only when there is one. An entry logged with two sets keeps
     //  exactly the shape it has always had, so this never rewrites the stored
     //  shape for the people already carrying it — and switching back down to 2
@@ -9773,11 +9992,13 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   }
 
   function clearDayLogs(dayId) {
-    if (!confirm("Clear this week's logs for this day?")) return;
+    if (!confirm("Clear the logs shown for this day?")) return;
     syncFromDisk();
     splitDayExercises(dayId).forEach(function(ex) {
       if (!sessions[ex.id]) return;
-      sessions[ex.id] = sessions[ex.id].filter(function(e) { return e.week !== currentTrainWeek; });
+      var shown = entryForWeek(sessions[ex.id], currentTrainWeek, ex);
+      var day = shown ? shown.d : null;
+      sessions[ex.id] = sessions[ex.id].filter(function(e) { return !(e.week === currentTrainWeek && !e.quickLog && e.d === day); });
       if (!sessions[ex.id].length) delete sessions[ex.id];
     });
     saveSessions();
@@ -9834,6 +10055,13 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     });
     var confirmEl = document.getElementById('quicklogConfirm');
     if (confirmEl) confirmEl.textContent = '';
+    //  Last session's numbers, ready to change or keep.
+    var lastE = latestEntry(exId);
+    if (lastE) {
+      var lw = document.getElementById('qlWeight'), lr = document.getElementById('qlReps');
+      if (lw && lastE.weight > 0) lw.value = lastE.weight;
+      if (lr && lastE.reps > 0) lr.value = lastE.reps;
+    }
     var wEl = document.getElementById('qlWeight');
     if (wEl) wEl.focus();
   }
@@ -9842,6 +10070,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     var ex = EX_BY_ID[exId];
     if (!ex) return null;
     syncFromDisk();
+    autoBackupOnce();
     var hist = sessions[exId] = sessions[exId] || [];
     var entry = { d: todayKey(), ts: Date.now(), week: currentTrainWeek, weight: weight, reps: reps, quickLog: true };
     if (rpe != null) entry.rpe = rpe;
@@ -9905,9 +10134,9 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   }
   function allQuickLogEntries() {
     var out = [];
-    QUICK_LOG_LIFT_IDS.forEach(function(exId) {
+    Object.keys(sessions || {}).forEach(function(exId) {
       (sessions[exId] || []).forEach(function(e) {
-        if (e.quickLog) out.push({ exId: exId, entry: e });
+        if (e && e.quickLog) out.push({ exId: exId, entry: e });
       });
     });
     out.sort(function(a, b) { return (b.entry.ts || 0) - (a.entry.ts || 0); });
@@ -10969,7 +11198,17 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     _onbFlowLiftDays = selected;
     var host = document.getElementById('onbFlowLiftDaysPills');
     if (host) host.innerHTML = planDaysOptionsHTML(selected, 'onbFlowSetLiftDays');
+    renderOnbStyle();
   }
+  var _onbStyle = 'plan', _onbOwnDays = 3;
+  function renderOnbStyle() {
+    var st = document.getElementById('onbFlowStylePills'), pd = document.getElementById('onbFlowLiftDaysPills'), od = document.getElementById('onbOwnDaysPills');
+    if (st) st.innerHTML = styleOptsHTML(_onbStyle, 'onbPickStyle');
+    if (pd) pd.style.display = _onbStyle === 'plan' ? '' : 'none';
+    if (od) { od.style.display = _onbStyle === 'plan' ? 'none' : ''; od.innerHTML = dayPillsHTML(_onbOwnDays, 'onbPickOwnDays'); }
+  }
+  function onbPickStyle(v) { _onbStyle = v; renderOnbStyle(); }
+  function onbPickOwnDays(n) { _onbOwnDays = n; renderOnbStyle(); }
   var _onbExp = null, _onbLen = null;
   function onbFlowSetExp(v) {
     _onbExp = v;
@@ -11025,6 +11264,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     //  onboarding default for that day count.
     var pre = SPLIT_PRESETS_BY_DAYS[_onbFlowLiftDays];
     if (pre && SPLIT_TEMPLATES[pre.onboardingDefault]) setSplit(pre.onboardingDefault); else setLiftDays(_onbFlowLiftDays);
+    if (_onbStyle !== 'plan') setTrainStyle(_onbStyle, _onbOwnDays);
     if (_onbExp) liftExperience = _onbExp;
     if (_onbLen) usualMinutes = _onbLen;
     persistSessionShape(); invalidateBuild();
@@ -11496,6 +11736,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       //  MEAL_PASS_KEY is left out on purpose: a backup file is not a place
       //  for a credential.
       foodLogs: foodLogs, foodTargets: foodTargets, bodyweight: bodyweight, goalMode: goalMode, workoutNotes: workoutNotes,
+      trainStyle: trainStyle, ownPlan: ownPlan,
       hiddenEx: hiddenEx,
       sessionPrefs: { size: sessionSize, budget: sessionBudget, equip: equipOwned },
       bwBand: bwBand, weekMoves: weekMoves, shortDays: shortDays, profile: userProfile, favEx: favEx,
@@ -11648,6 +11889,14 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         if (data.foodTargets && typeof data.foodTargets === 'object') { foodTargets = data.foodTargets; persistFoodTargets(); }
         if (data.bodyweight && typeof data.bodyweight === 'object') { bodyweight = data.bodyweight; persistBodyweight(); }
         if (data.workoutNotes && typeof data.workoutNotes === 'object') { workoutNotes = cleanWorkoutNotes(data.workoutNotes); persistWorkoutNotes(); renderWorkoutNote(); }
+        //  Own plan, then style. An older backup has neither and leaves both alone.
+        if (data.ownPlan && typeof data.ownPlan === 'object') { ownPlan = cleanOwnPlan(data.ownPlan); persistOwnPlan(); registerOwnPlan(); }
+        if (data.trainStyle && typeof data.trainStyle === 'object') {
+          trainStyle = cleanTrainStyle(data.trainStyle); persistTrainStyle();
+          _styleLock = true;
+          try { if (trainStyle.style === 'own') setSplit('own'); else if (activeSplitId === 'own') setSplit(trainStyle.lastPreset || 'arnold'); } finally { _styleLock = false; }
+          applyOwnTargets(); renderTrainStyleBar(); renderFreeHome();
+        }
         //  Absent on every backup older than this feature — leaves goalMode
         //  at its already-loaded value (the 'bulk' default) rather than
         //  forcing it, same as maintenanceMode's own absent-on-old-backup rule.
@@ -11719,12 +11968,12 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     var fs = getFailureStats(hist);
     if (fs) {
       var fnote = 'top sets to failure over the last ' + fs.total + ' sessions.'
-        + (fs.low ? ' <strong style="color:var(--accent)">Below half — progression data is unreliable until effort comes back up.</strong>' : '');
+        + (fs.low ? ' Under half so far, so the next weight is a rougher guess.' : '');
       rows += progRow('Failure', fs.hard + ' of ' + fs.total, fnote, false);
     }
     var stall = getStallState(hist);
     if (stall) {
-      rows += progRow('Stall', stall.weight + ' lbs', '3 failure sessions with no rep gain. Check recovery, or drop to ' + stall.drop + ' lbs for one session.', false);
+      rows += progRow('Holding steady', stall.weight + ' lbs', 'Same weight for 3 sessions. Rest well, or try ' + stall.drop + ' lbs for one session and build back up.', false);
     }
     return '<div class="prog-card">'
       + '<div class="prog-card-header"><div class="prog-card-lift" style="font-size:var(--fs-4)">' + ex.name + '</div>'
@@ -12171,6 +12420,394 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     }
     if (window.addEventListener) window.addEventListener('pagehide', saveWorkoutNote);
   } catch(e) {}
+
+  //     TRAIN STYLE, RUNTIME (8.25). Persist, switch, own plan editor,
+  //  freestyle home, weekly goal, return after a break, Progress detail and
+  //  deleting a past entry. Everything here reads the log; nothing rewrites it
+  //  except the delete, which asks first.
+  function persistTrainStyle() {
+    try { localStorage.setItem(TRAIN_STYLE_KEY, JSON.stringify(trainStyle)); } catch(e) {}
+    if (typeof idbSet === 'function') idbSet('trainStyle', trainStyle);
+  }
+  function persistOwnPlan() {
+    try { if (ownPlan.days.length) localStorage.setItem(OWN_PLAN_KEY, JSON.stringify(ownPlan)); else localStorage.removeItem(OWN_PLAN_KEY); } catch(e) {}
+    if (typeof idbSet === 'function') idbSet('ownPlan', ownPlan);
+  }
+  //  One copy of the log, taken once, before the first save under the 8.25
+  //  record rules. Read back only by a person restoring by hand.
+  const PRE825_BACKUP_KEY = 'monk_backup_pre_825_v1';
+  function autoBackupOnce() {
+    try {
+      if (localStorage.getItem(PRE825_BACKUP_KEY)) return;
+      localStorage.setItem(PRE825_BACKUP_KEY, JSON.stringify({ at: new Date().toISOString(), app: 'monk-mode', sessions: sessions,
+        customEx: customEx, splitId: activeSplitId, week: currentTrainWeek, trainStyle: trainStyle, ownPlan: ownPlan }));
+    } catch(e) {}
+  }
+  //  Plan rep targets override the library range only while the own plan is
+  //  live. The library's own range comes back the moment it is not.
+  var _ownBaseRange = {};
+  function applyOwnTargets() {
+    Object.keys(_ownBaseRange).forEach(function(id) { if (EX_BY_ID[id]) EX_BY_ID[id].repRange = _ownBaseRange[id]; });
+    _ownBaseRange = {};
+    if (activeSplitId === 'own') ownPlan.days.forEach(function(d) { d.ex.forEach(function(x) {
+      var ex = EX_BY_ID[x.id];
+      if (!ex || !x.lo) return;
+      if (!_ownBaseRange[x.id]) _ownBaseRange[x.id] = ex.repRange;
+      ex.repRange = [x.lo, x.hi || x.lo];
+    }); });
+    if (typeof invalidateBuild === 'function') invalidateBuild();
+  }
+  function allCustomRecs() {
+    var out = [];
+    Object.keys(customEx || {}).forEach(function(k) { (customEx[k] || []).forEach(function(r) { if (r && r.id && r.name) out.push(r); }); });
+    return out;
+  }
+  function latestEntry(exId) {
+    var best = null;
+    (sessions[exId] || []).forEach(function(e) {
+      if (e && e.d && (!best || e.d > best.d || (e.d === best.d && (e.ts || 0) >= (best.ts || 0)))) best = e;
+    });
+    return best;
+  }
+  function styleEsc(t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+  //  One tap on a primary muscle. Stored on the custom exercise.
+  var MUSCLE_PICKS = [['chest','Chest'],['lats','Back'],['delts','Shoulders'],['biceps','Biceps'],['triceps','Triceps'],
+    ['quads','Quads'],['hamstrings','Hamstrings'],['glutes','Glutes'],['calves','Calves'],['core','Core']];
+  var _musclePick = {};
+  function musclePickHTML(key) {
+    return '<div class="muscle-pick" role="group" aria-label="Primary muscle" id="mp-' + key + '"><span class="log-inline-label">Primary muscle</span><div class="muscle-pick-row">'
+      + MUSCLE_PICKS.map(function(m) { var on = _musclePick[key] === m[0];
+        return '<button type="button" class="liftdays-btn' + (on ? ' on' : '') + '" aria-pressed="' + on + '" data-k="' + key + '" data-m="' + m[0] + '" onclick="pickMuscle(this.dataset.k, this.dataset.m)">' + m[1] + '</button>'; }).join('')
+      + '</div></div>';
+  }
+  function pickMuscle(key, m) {
+    _musclePick[key] = _musclePick[key] === m ? null : m;
+    var host = document.getElementById('mp-' + key);
+    if (host) host.querySelectorAll('button').forEach(function(b) { var on = b.dataset.m === _musclePick[key]; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+  }
+  //  A typed exercise that lives outside any plan day ("any" group).
+  function addAnyDayExercise(name, muscle, lo, hi) {
+    name = String(name || '').replace(/[<>]/g, '').trim().slice(0, 60);
+    if (!name) return null;
+    var rec = { id: customExId(name), name: name, repRange: [lo || null, hi || null] };
+    if (muscle) rec.muscle = muscle;
+    customEx.any = (customEx.any || []).concat([rec]);
+    persistCustomExercises(); registerCustomExercises();
+    return rec.id;
+  }
+  //  Library and custom exercises by name. Custom ones first; among
+  //  exercises sharing a name, the one with history wins.
+  function exerciseSearch(q, max) {
+    var k = normName(q), out = [], at = {};
+    if (k.length < 2) return [];
+    function consider(ex) {
+      if (!ex || !ex.name || ex.day === 'anchor' || isHiddenName(ex.name)) return;
+      var n = normName(ex.name);
+      if (n.indexOf(k) === -1) return;
+      if (at[n] == null) { at[n] = out.length; out.push(ex); }
+      else if (!(sessions[out[at[n]].id] || []).length && (sessions[ex.id] || []).length) out[at[n]] = ex;
+    }
+    allCustomRecs().forEach(function(r) { consider(EX_BY_ID[r.id]); });
+    EXERCISES.forEach(consider);
+    return out.slice(0, max || 8);
+  }
+
+  //  Weekly goal: the days they said, counted as sessions (dates with any
+  //  log) this calendar week. Streak: weeks in a row with at least one
+  //  session. This week only adds to it; it never breaks it.
+  function goalDays() {
+    if (trainStyle.style === 'own') return trainStyle.days || Math.max(1, ownPlan.days.length);
+    if (trainStyle.style === 'free') return trainStyle.days || 3;
+    return liftDaysPerWeek;
+  }
+  function weekGoalStatus() {
+    var dates = {};
+    Object.keys(sessions || {}).forEach(function(id) { (sessions[id] || []).forEach(function(e) { if (e && e.d) dates[e.d] = 1; }); });
+    var today = startOfToday(), mon = addDays(today, -((today.getDay() + 6) % 7)), n = 0;
+    for (var i = 0; i < 7; i++) if (dates[dateKeyOfRun(addDays(mon, i))]) n++;
+    var streak = 0, w = n ? mon : addDays(mon, -7);
+    while (streak < 520) {
+      var any = false;
+      for (var j = 0; j < 7 && !any; j++) any = !!dates[dateKeyOfRun(addDays(w, j))];
+      if (!any) break;
+      streak++; w = addDays(w, -7);
+    }
+    return { done: n, goal: goalDays(), streak: streak };
+  }
+  function renderWeekGoal() {
+    var host = document.getElementById('todayGoal');
+    if (!host) return;
+    var g = weekGoalStatus();
+    host.innerHTML = '<span class="week-goal-n">' + g.done + ' of ' + g.goal + '</span> session' + (g.goal === 1 ? '' : 's') + ' this week.'
+      + (g.streak >= 2 ? ' <span class="week-goal-streak">' + g.streak + ' weeks in a row.</span>' : '');
+  }
+
+  //  Days between the last log before today and today. 14 or more means the
+  //  first session back, all day long, so the line does not vanish after
+  //  the first set.
+  function breakGapDays() {
+    var t = todayKey(), last = null;
+    Object.keys(sessions || {}).forEach(function(k) { (sessions[k] || []).forEach(function(e) { if (e && e.d && e.d < t && (!last || e.d > last)) last = e.d; }); });
+    return last ? dayDiff(parseDateKey(last), startOfToday()) : 0;
+  }
+  function backFromBreak() { return breakGapDays() >= 14; }
+  var BREAK_LINE = 'Welcome back. For this first session, about 10 percent lighter than last time is a good start. Your call.';
+
+  //  Switch how someone trains. History is never touched.
+  function setTrainStyle(style, days) {
+    if (style !== 'own' && style !== 'free') style = 'plan';
+    autoBackupOnce();
+    if (activeSplitId !== 'own') trainStyle.lastPreset = activeSplitId;
+    var d = parseInt(days, 10);
+    if (d >= 1 && d <= 7) trainStyle.days = d;
+    trainStyle.style = style;
+    if (style === 'own' && !ownPlan.days.length) {
+      for (var i = 0; i < (trainStyle.days || 3); i++) ownPlan.days.push({ id: 'd' + Date.now().toString(36) + i, name: 'Day ' + (i + 1), ex: [] });
+      persistOwnPlan(); registerOwnPlan();
+    }
+    persistTrainStyle();
+    _styleLock = true;
+    try {
+      if (style === 'own') setSplit('own');
+      else setSplit(activeSplitId === 'own' ? (trainStyle.lastPreset || 'arnold') : activeSplitId);
+    } finally { _styleLock = false; }
+    trainStyle.style = style; persistTrainStyle();
+    renderTrainStyleBar();
+    if (typeof renderToday === 'function') try { renderToday(); } catch(e) {}
+    if (typeof renderFreeHome === 'function') renderFreeHome();
+  }
+
+  //  Top of Plan: own plan line with Edit, and the return after a break line.
+  function renderTrainStyleBar() {
+    var host = document.getElementById('trainStyleBar');
+    if (!host) return;
+    var out = '';
+    if (backFromBreak()) out += '<div class="welcome-back">' + BREAK_LINE + '</div>';
+    if (trainStyle.style === 'own') {
+      var n = ownPlan.days.length, nEx = ownPlan.days.reduce(function(t, d) { return t + d.ex.length; }, 0);
+      out += '<div class="own-bar"><span class="own-bar-t">Your own plan. ' + n + ' day' + (n === 1 ? '' : 's') + (nEx ? '' : ', no exercises yet') + '.</span>'
+        + '<button type="button" class="today-link" onclick="openOwnPlanEditor()">Edit my plan</button></div>';
+    }
+    host.innerHTML = out;
+    host.style.display = out ? '' : 'none';
+  }
+
+  //     OWN PLAN EDITOR. Named days in any order and any number up to seven,
+  //  exercises from the library or typed, optional sets and reps, reorder,
+  //  rename, delete. Every change saves as it happens.
+  var _opAdd = null;
+  function openOwnPlanEditor() {
+    _opAdd = null;
+    renderOwnPlanEditor();
+    var m = document.getElementById('ownPlanModal');
+    if (m) m.style.display = 'flex';
+  }
+  function closeOwnPlanEditor() {
+    var m = document.getElementById('ownPlanModal');
+    if (m) m.style.display = 'none';
+    ownPlanChanged(true);
+  }
+  function ownPlanChanged(full) {
+    autoBackupOnce();
+    persistOwnPlan(); registerOwnPlan();
+    if (activeSplitId === 'own') {
+      liftDaysPerWeek = SPLIT_TEMPLATES.own.days;
+      applyOwnTargets();
+      if (full) { _styleLock = true; try { setSplit('own'); } finally { _styleLock = false; } }
+    }
+    renderTrainStyleBar();
+  }
+  function opDayName(i, v) { var d = ownPlan.days[i]; if (!d) return; d.name = String(v || '').replace(/[<>]/g, '').trim().slice(0, 30) || 'Day ' + (i + 1); ownPlanChanged(); }
+  function opMoveDay(i, dir) { var a = ownPlan.days, j = i + dir; if (j < 0 || j >= a.length) return; var t = a[i]; a[i] = a[j]; a[j] = t; ownPlanChanged(); renderOwnPlanEditor(); }
+  function opDelDay(i) {
+    var d = ownPlan.days[i]; if (!d) return;
+    if (!confirm('Delete ' + d.name + ' from your plan? Your logged history stays.')) return;
+    ownPlan.days.splice(i, 1); _opAdd = null; ownPlanChanged(); renderOwnPlanEditor();
+  }
+  function opAddDay() {
+    if (ownPlan.days.length >= 7) return;
+    ownPlan.days.push({ id: 'd' + Date.now().toString(36), name: 'Day ' + (ownPlan.days.length + 1), ex: [] });
+    _opAdd = ownPlan.days.length - 1; ownPlanChanged(); renderOwnPlanEditor();
+  }
+  function opMoveEx(i, j, dir) { var a = ownPlan.days[i] && ownPlan.days[i].ex, k = j + dir; if (!a || k < 0 || k >= a.length) return; var t = a[j]; a[j] = a[k]; a[k] = t; ownPlanChanged(); renderOwnPlanEditor(); }
+  function opDelEx(i, j) { var a = ownPlan.days[i] && ownPlan.days[i].ex; if (!a) return; a.splice(j, 1); ownPlanChanged(); renderOwnPlanEditor(); }
+  function opTarget(i, j, field, v) {
+    var x = ownPlan.days[i] && ownPlan.days[i].ex[j]; if (!x) return;
+    var n = parseInt(v, 10);
+    if (isNaN(n) || n < 1) delete x[field]; else x[field] = Math.min(field === 'sets' ? 6 : 100, n);
+    if (x.hi && x.lo && x.hi < x.lo) x.hi = x.lo;
+    if (field === 'sets' && x.sets) { setCounts[x.id] = Math.max(MIN_SETS, Math.min(MAX_SETS, x.sets)); if (typeof persistSetCounts === 'function') persistSetCounts(); }
+    ownPlanChanged();
+  }
+  function opOpenAdd(i) { _opAdd = _opAdd === i ? null : i; renderOwnPlanEditor(); var q = document.getElementById('opSearch'); if (q) q.focus(); }
+  function opSearch(v) {
+    var host = document.getElementById('opResults');
+    if (!host) return;
+    host.innerHTML = exerciseSearch(v, 8).map(function(ex) {
+      return '<button type="button" class="ex-result" data-id="' + ex.id + '" onclick="opPick(this.dataset.id)">' + styleEsc(ex.name)
+        + (ex.muscle && MUSCLE_LABEL[ex.muscle] ? '<span class="ex-result-m">' + MUSCLE_LABEL[ex.muscle] + (ex.custom ? ', yours' : '') + '</span>' : '') + '</button>';
+    }).join('') || (String(v || '').trim().length >= 2 ? '<div class="panel-meta">No match. Add it as your own below.</div>' : '');
+  }
+  function opPick(id) {
+    var d = ownPlan.days[_opAdd]; if (!d || !EX_BY_ID[id]) return;
+    if (!d.ex.some(function(x) { return x.id === id; })) d.ex.push({ id: id });
+    ownPlanChanged(); renderOwnPlanEditor();
+    var q = document.getElementById('opSearch'); if (q) q.focus();
+  }
+  function opAddTyped() {
+    var nEl = document.getElementById('opNewName'), hint = document.getElementById('opNewHint');
+    var name = nEl ? nEl.value : '';
+    if (!String(name).trim()) { if (hint) hint.textContent = 'Give it a name first.'; if (nEl) nEl.focus(); return; }
+    if (!_musclePick.op) { if (hint) hint.textContent = 'Tap its primary muscle.'; return; }
+    var id = addAnyDayExercise(name, _musclePick.op);
+    _musclePick.op = null;
+    if (id) opPick(id);
+  }
+  function renderOwnPlanEditor() {
+    var host = document.getElementById('ownPlanBody');
+    if (!host) return;
+    var days = ownPlan.days;
+    host.innerHTML = (days.length ? '' : '<div class="settings-modal-sub">No days yet. Add your first day.</div>')
+      + days.map(function(d, i) {
+        return '<div class="op-day">'
+          + '<div class="op-day-head"><input class="run-input op-name" type="text" maxlength="30" value="' + styleEsc(d.name) + '" aria-label="Name of day ' + (i + 1) + '" onchange="opDayName(' + i + ', this.value)">'
+          + '<button type="button" class="op-icon" aria-label="Move ' + styleEsc(d.name) + ' up"' + (i ? '' : ' disabled') + ' onclick="opMoveDay(' + i + ',-1)">&#8593;</button>'
+          + '<button type="button" class="op-icon" aria-label="Move ' + styleEsc(d.name) + ' down"' + (i < days.length - 1 ? '' : ' disabled') + ' onclick="opMoveDay(' + i + ',1)">&#8595;</button>'
+          + '<button type="button" class="op-del" onclick="opDelDay(' + i + ')">Delete day</button></div>'
+          + (d.ex.length ? '<ol class="op-ex">' + d.ex.map(function(x, j) {
+              var ex = EX_BY_ID[x.id], nm = ex ? ex.name : 'Removed exercise';
+              return '<li class="op-ex-row"><div class="op-ex-top"><span class="op-ex-name">' + styleEsc(nm) + '</span>'
+                + '<button type="button" class="op-icon" aria-label="Move ' + styleEsc(nm) + ' up"' + (j ? '' : ' disabled') + ' onclick="opMoveEx(' + i + ',' + j + ',-1)">&#8593;</button>'
+                + '<button type="button" class="op-icon" aria-label="Move ' + styleEsc(nm) + ' down"' + (j < d.ex.length - 1 ? '' : ' disabled') + ' onclick="opMoveEx(' + i + ',' + j + ',1)">&#8595;</button>'
+                + '<button type="button" class="op-del" aria-label="Remove ' + styleEsc(nm) + '" onclick="opDelEx(' + i + ',' + j + ')">Remove</button></div>'
+                + '<div class="op-ex-t">'
+                + '<label>Sets <input class="run-input op-num" type="number" inputmode="numeric" min="1" max="6" value="' + (x.sets || '') + '" placeholder="' + (ex ? storedSets(ex.id) : 2) + '" onchange="opTarget(' + i + ',' + j + ',\'sets\',this.value)"></label>'
+                + '<label>Reps <input class="run-input op-num" type="number" inputmode="numeric" min="1" max="100" value="' + (x.lo || '') + '" placeholder="' + (ex && ex.repRange && !ex.noRange ? (_ownBaseRange[x.id] || ex.repRange)[0] : 'any') + '" aria-label="Reps from" onchange="opTarget(' + i + ',' + j + ',\'lo\',this.value)"></label>'
+                + '<label>to <input class="run-input op-num" type="number" inputmode="numeric" min="1" max="100" value="' + (x.hi || '') + '" placeholder="' + (ex && ex.repRange && !ex.noRange ? (_ownBaseRange[x.id] || ex.repRange)[1] : 'any') + '" aria-label="Reps to" onchange="opTarget(' + i + ',' + j + ',\'hi\',this.value)"></label>'
+                + '</div></li>';
+            }).join('') + '</ol>' : '<div class="panel-meta">No exercises yet.</div>')
+          + (_opAdd === i
+            ? '<div class="op-add-panel"><div class="quicklog-field"><label for="opSearch">Find an exercise</label>'
+              + '<input type="text" id="opSearch" autocomplete="off" placeholder="Bench, row, squat" oninput="opSearch(this.value)"></div>'
+              + '<div class="ex-results" id="opResults"></div>'
+              + '<div class="quicklog-field"><label for="opNewName">Or add your own</label><input type="text" id="opNewName" maxlength="60" placeholder="Name"></div>'
+              + musclePickHTML('op')
+              + '<button type="button" class="today-secondary" onclick="opAddTyped()">Add to ' + styleEsc(d.name) + '</button><div class="add-ex-hint" id="opNewHint"></div>'
+              + '<button type="button" class="today-link" onclick="opOpenAdd(' + i + ')">Close</button></div>'
+            : '<button type="button" class="today-secondary op-add-btn" onclick="opOpenAdd(' + i + ')">Add exercise to ' + styleEsc(d.name) + '</button>')
+          + '</div>';
+      }).join('')
+      + (days.length < 7 ? '<button type="button" class="today-secondary" onclick="opAddDay()">Add a day</button>' : '<div class="panel-meta">Seven days is the most a week holds.</div>');
+  }
+
+  //     FREESTYLE HOME. Quick Log is home: search, recents with last
+  //  numbers, or add your own. No plan needed.
+  function freeRecents(max) {
+    var out = [];
+    Object.keys(sessions || {}).forEach(function(id) { var ex = EX_BY_ID[id], e = latestEntry(id); if (ex && e) out.push({ ex: ex, e: e }); });
+    out.sort(function(a, b) { return a.e.d < b.e.d ? 1 : a.e.d > b.e.d ? -1 : (b.e.ts || 0) - (a.e.ts || 0); });
+    return out.slice(0, max || 8);
+  }
+  function renderFreeHome() {
+    var free = trainStyle.style === 'free';
+    var host = document.getElementById('freeHome');
+    ['qlHeading', 'qlTimes', 'qlToday', 'qlOthers', 'qlOthersLabel', 'qlOldBtn'].forEach(function(id) { var el = document.getElementById(id); if (el) el.style.display = free ? 'none' : ''; });
+    var old = document.getElementById('qlOld');
+    if (old && free) old.style.display = '';
+    document.querySelectorAll('#qlOld .ql-old-lead, #quicklogPicker').forEach(function(el) { el.style.display = free ? 'none' : ''; });
+    if (!host) return;
+    host.style.display = free ? '' : 'none';
+    if (!free) return;
+    var rec = freeRecents(8);
+    var r = document.getElementById('freeRecent');
+    if (r) r.innerHTML = rec.length ? rec.map(function(x) {
+      return '<button type="button" class="ex-result" data-id="' + x.ex.id + '" onclick="freePick(this.dataset.id)">' + styleEsc(activeVariant(x.ex))
+        + '<span class="ex-result-m">' + (x.e.weight > 0 ? fmtNum(x.e.weight) + ' lb × ' + (x.e.reps || 0) : (x.e.reps || 0) + ' reps') + ', ' + shortDate(x.e.d) + '</span></button>';
+    }).join('') : '<div class="panel-meta">Nothing logged yet. Find an exercise above.</div>';
+  }
+  function freeSearch(v) {
+    var host = document.getElementById('freeResults');
+    if (!host) return;
+    host.innerHTML = exerciseSearch(v, 8).map(function(ex) {
+      return '<button type="button" class="ex-result" data-id="' + ex.id + '" onclick="freePick(this.dataset.id)">' + styleEsc(ex.name)
+        + (ex.muscle && MUSCLE_LABEL[ex.muscle] ? '<span class="ex-result-m">' + MUSCLE_LABEL[ex.muscle] + (ex.custom ? ', yours' : '') + '</span>' : '') + '</button>';
+    }).join('') || (String(v || '').trim().length >= 2 ? '<div class="panel-meta">No match. Add it as your own below.</div>' : '');
+  }
+  function freePick(id) {
+    if (!EX_BY_ID[id]) return;
+    selectQuickLogLift(id);
+    var f = document.getElementById('quicklogForm'); if (f) f.scrollIntoView({ block: 'center' });
+  }
+  function freeAddTyped() {
+    var nEl = document.getElementById('freeNewName'), hint = document.getElementById('freeNewHint');
+    var name = nEl ? nEl.value : '';
+    if (!String(name).trim()) { if (hint) hint.textContent = 'Give it a name first.'; if (nEl) nEl.focus(); return; }
+    if (!_musclePick.free) { if (hint) hint.textContent = 'Tap its primary muscle.'; return; }
+    var id = addAnyDayExercise(name, _musclePick.free);
+    _musclePick.free = null;
+    if (nEl) nEl.value = '';
+    if (hint) hint.textContent = '';
+    var mp = document.getElementById('mp-free'); if (mp) mp.outerHTML = musclePickHTML('free');
+    if (id) freePick(id);
+  }
+  function freeTodayHTML() {
+    var g = weekGoalStatus();
+    return (backFromBreak() ? '<div class="welcome-back">' + BREAK_LINE + '</div>' : '')
+      + '<div class="today-card-kicker">Today</div>'
+      + '<div class="today-card-title">Train your way</div>'
+      + '<div class="today-card-meta">' + g.done + ' of ' + g.goal + ' session' + (g.goal === 1 ? '' : 's') + ' this week. Log what you do, in any order.</div>'
+      + '<button class="today-start" onclick="goTab(\'quicklog\')">Log a workout</button>';
+  }
+
+  //     PROGRESS DETAIL. Best, last time, change since last session and one
+  //  line of double progression. Suggestions never change logged data.
+  var LOWER_BODY = { quads: 1, hamstrings: 1, glutes: 1, calves: 1 };
+  function entrySets(e) {
+    var sets = ALL_SLOTS.map(function(sl) { return normSet(e, e[sl]); }).filter(Boolean);
+    return sets.length ? sets : [{ w: e.weight, r: e.reps }];
+  }
+  function nextSuggestion(ex, l) {
+    var last = l[l.length - 1];
+    if (!last || !(last.weight > 0)) return '';
+    var top = null;
+    if (ex && ex.repRange && !ex.noRange) top = ex.repRange[1];
+    else if (l.length > 1) top = Math.max.apply(null, entrySets(l[l.length - 2]).map(function(x) { return x.r || 0; }));
+    var w = last.weight, inc = ex && LOWER_BODY[ex.muscle] ? 10 : 5;
+    if (top && entrySets(last).every(function(x) { return (x.r || 0) >= top; }))
+      return 'Next time: ' + fmtNum(w + inc) + ' lb. Every set reached ' + top + ' reps last time.';
+    return 'Next time: ' + fmtNum(w) + ' lb again and aim for more reps' + (top ? ', up to ' + top : '') + '.';
+  }
+  function progDetailHTML(id, ex, l) {
+    var last = l[l.length - 1], prev = l.length > 1 ? l[l.length - 2] : null, best = l[0];
+    l.forEach(function(e) { if (e.weight > best.weight || (e.weight === best.weight && (e.reps || 0) > (best.reps || 0))) best = e; });
+    var chg = prev ? last.weight - prev.weight : null;
+    var row = function(k, v) { return '<div class="prog-stat"><span class="prog-stat-k">' + k + '</span><span class="prog-stat-v">' + v + '</span></div>'; };
+    return '<div class="prog-stats">'
+      + row('Best', fmtNum(best.weight) + ' lb × ' + (best.reps || 0) + ', ' + shortDate(best.d))
+      + row('Last time', fmtNum(last.weight) + ' lb × ' + (last.reps || 0) + ', ' + shortDate(last.d))
+      + (chg == null ? '' : row('Since last session', chg > 0 ? '+' + fmtNum(chg) + ' lb' : chg < 0 ? fmtNum(-chg) + ' lb lighter' : 'Same weight'))
+      + '</div><div class="prog-suggest">' + nextSuggestion(ex, l) + '</div>';
+  }
+  //  The smallest delete: one past entry, a plain confirm, then every total
+  //  and best is read again from what is left.
+  function deleteLiftEntry(exId, idx, d) {
+    syncFromDisk();
+    var h = sessions[exId] || [], e = h[idx];
+    if (!e || e.d !== d) { idx = -1; for (var i = h.length - 1; i >= 0; i--) if (h[i] && h[i].d === d) { idx = i; break; } e = h[idx]; }
+    if (!e) return;
+    var ex = EX_BY_ID[exId];
+    if (!confirm('Delete ' + (ex ? activeVariant(ex) : 'this lift') + ' on ' + shortDate(e.d) + ', ' + fmtNum(e.weight || 0) + ' lb × ' + (e.reps || 0) + '? This cannot be undone.')) return;
+    autoBackupOnce();
+    h.splice(idx, 1);
+    if (!h.length) delete sessions[exId];
+    saveSessions();
+    if (typeof invalidateBuild === 'function') invalidateBuild();
+    renderProgressHome();
+    try { renderAllRowStates(); renderProgressView(); } catch(err) {}
+    if (typeof renderRing === 'function') try { renderRing(); } catch(err) {}
+    if (typeof updateWeekCompleteBanner === 'function') try { updateWeekCompleteBanner(); } catch(err) {}
+  }
   function persistBodyweight() {
     try { localStorage.setItem(BODYWEIGHT_KEY, JSON.stringify(bodyweight)); } catch(e) {}
     idbSet('bodyweight', bodyweight);
@@ -14209,7 +14846,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     if (!body || !btn) return;
     var open = body.classList.toggle('open');
     btn.classList.toggle('open', open);
-    btn.textContent = open ? '− Log an earlier run' : '+ Log an earlier run';
+    btn.textContent = open ? 'Hide earlier run' : '+ Log an earlier run';
     //  Cap the picker at today. You cannot log a run you have not done, which
     //  is the same rule the in-plan inputs enforce by only rendering backward.
     var d = document.getElementById('run-missed-date');
@@ -14918,7 +15555,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   function calNoteText(runs) {
     return runs
       ? 'Lift sessions follow the split\'s 3 on, 1 off rotation across the week; runs come from your race plan on the <strong>Run</strong> tab. Days carrying both: keep the lift upper body and core.'
-      : 'Lift sessions only — no race plan yet. Set a race date on the <strong>Run</strong> tab and your runs appear here alongside them.';
+      : 'Lift sessions only. No race plan yet. Set a race date on the <strong>Run</strong> tab and your runs appear here alongside them.';
   }
 
   //     CALENDAR TAB — the same combined view as the Overview widget, but for
@@ -15046,8 +15683,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     if (bw.length >= 2) { var dlt = bw[bw.length - 1].y - bw[0].y; bwTxt = { v: (dlt > 0 ? '+' : dlt < 0 ? '−' : '') + Math.abs(dlt).toFixed(1) + ' lbs', l: 'since ' + shortDate(bw[0].k) }; }
     var tile = function(v, l, empty) { return '<div class="prog-tile' + (empty ? ' empty' : '') + '"><div class="prog-tile-v">' + v + '</div><div class="prog-tile-l">' + l + '</div></div>'; };
     return tile(nWork, nWork === 1 ? 'workout this month' : 'workouts this month')
-      + (best ? tile('+' + fmtNum(best.gain) + ' lbs', best.name) : tile('—', 'Log a lift to see this', true))
-      + (bwTxt ? tile(bwTxt.v, 'Bodyweight ' + bwTxt.l) : tile('—', 'Add your weight to see this', true));
+      + (best ? tile('+' + fmtNum(best.gain) + ' lbs', best.name) : tile('None yet', 'Log a lift to see this', true))
+      + (bwTxt ? tile(bwTxt.v, 'Bodyweight ' + bwTxt.l) : tile('None yet', 'Add your weight to see this', true));
   }
   function setProgView(v) { _progView = v; _progMore = false; renderProgressHome(); }
   function setProgEx(id) { _progEx = id; _progMore = false; renderProgressHome(); }
@@ -15086,12 +15723,17 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         var first = l[0], last = l[l.length - 1];
         var weeks = Math.max(1, Math.round((parseDateKey(last.d) - parseDateKey(first.d)) / (7 * 864e5)));
         var sum = l.length === 1 ? name + ': one session so far, top set ' + last.weight + ' lbs.'
-          : name + ' top set ' + (last.weight > first.weight ? 'rose' : last.weight < first.weight ? 'fell' : 'held') + ' from ' + first.weight + ' to ' + last.weight + ' lbs over ' + weeks + ' week' + (weeks === 1 ? '' : 's') + '.';
+          : name + ' top set ' + (last.weight > first.weight ? 'rose' : last.weight < first.weight ? 'moved' : 'held') + ' from ' + first.weight + ' to ' + last.weight + ' lbs over ' + weeks + ' week' + (weeks === 1 ? '' : 's') + '.';
         html = '<label class="prog-pick-l" for="progExPick">Exercise</label><select class="prog-pick" id="progExPick" onchange="setProgEx(this.value)">'
-          + ids.map(function(id) { return '<option value="' + id + '"' + (id === _progEx ? ' selected' : '') + '>' + activeVariant(EX_BY_ID[id]) + '</option>'; }).join('') + '</select>'
+          + ids.map(function(id) { return '<option value="' + id + '"' + (id === _progEx ? ' selected' : '') + '>' + styleEsc(activeVariant(EX_BY_ID[id])) + '</option>'; }).join('') + '</select>'
+          + progDetailHTML(_progEx, ex, l)
           + lineChartSVG([{ pts: l.map(function(e) { return { k: e.d, y: e.weight }; }) }], 'lbs', 'progLiftChart', sum);
         var rows = l.slice().reverse();
-        html += progTable(['Date', 'Top set', 'Sets'], (_progMore ? rows : rows.slice(0, 5)).map(function(e) { return [shortDate(e.d), e.weight + ' × ' + e.reps, entrySetCount(e)]; }), rows.length);
+        var hAll = sessions[_progEx] || [];
+        html += progTable(['Date', 'Top set', 'Sets', '<span class="sr-only">Delete</span>'], (_progMore ? rows : rows.slice(0, 5)).map(function(e) {
+          return [shortDate(e.d), e.weight + ' × ' + e.reps, entrySetCount(e),
+            '<button type="button" class="prog-del" aria-label="Delete ' + shortDate(e.d) + ' entry" onclick="deleteLiftEntry(\'' + _progEx + '\',' + hAll.indexOf(e) + ',\'' + e.d + '\')">Delete</button>'];
+        }), rows.length);
       }
     } else if (_progView === 'body') {
       var bw = bwSeries();
@@ -15172,6 +15814,15 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       var hw = document.getElementById('calHeadWeek');
       if (hw) hw.textContent = 'Training Week ' + (currentTrainWeek + 1) + ' of 10'
         + (isDeloadWeek(currentTrainWeek) ? ' · Deload' : '');
+      //  Neutral plain numbers: sessions, sets and the goal. Nothing else.
+      var wn = document.getElementById('weekReviewNums');
+      if (wn && typeof weekGoalStatus === 'function') {
+        var gs = weekGoalStatus(), sets = 0, endK = dateKeyOfRun(addDays(monday, 6)), monK = dateKeyOfRun(monday);
+        Object.keys(sessions || {}).forEach(function(id) { (sessions[id] || []).forEach(function(e) {
+          if (e && e.d >= monK && e.d <= endK) sets += e.quickLog ? 1 : (ALL_SLOTS.filter(function(k) { return normSet(e, e[k]); }).length || 1);
+        }); });
+        wn.textContent = 'This week: ' + gs.done + ' of ' + gs.goal + ' sessions, ' + sets + ' set' + (sets === 1 ? '' : 's') + ' logged.';
+      }
       // Two different clocks. The training week is a pointer you set and it
       // counts 1 of 10; the race side is fixed to the calendar, so it counts
       // down to race day rather than pretending to be a second week index —
@@ -15250,6 +15901,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     //  Must run before renderDaySections() — it registers stored custom
     //  exercises into EX_BY_ID, without which their rows render but cannot log.
     loadCustomExercises();
+    applyOwnTargets();
     loadSwapsToday();   // after custom exercises, so their swaps are kept
     updateMaxChips();
     updateLiftDaysUI();
@@ -15942,7 +16594,8 @@ function buildNavMenu() {
     { id: 'training', label: 'Plan' },
     { id: 'food', label: 'Food' }
   ].concat(runningEnabled ? [{ id: 'running', label: 'Run' }] : [])
-   .concat([{ id: 'quicklog', label: 'Quick Log' }, { id: 'about', label: 'About' }]);
+   .concat([{ id: 'quicklog', label: 'Quick Log' }, { id: 'calendar', label: 'Progress' }, { id: 'about', label: 'About' },
+            { id: 'review', label: 'Week review', sec: 'overview' }, { id: 'edge', label: 'The Edge', sec: 'edge' }]);
   //  No header row here — the trigger pill itself (the wordmark you just
   //  tapped) already says what this is; a repeated "Run the Weights" label
   //  inside the panel was redundant and cost every item extra scroll room.
@@ -15952,7 +16605,7 @@ function buildNavMenu() {
   //  current-section highlighting below.
   el.innerHTML = items.map(function(it) {
     return '<button class="navmenu-item' + (it.primary ? ' primary' : '') + '" role="menuitem"'
-      + ' data-tab="' + it.id + '">' + it.label + '<span class="navmenu-tick">&#9679;</span></button>';
+      + ' data-tab="' + it.id + '"' + (it.sec ? ' data-sec="' + it.sec + '"' : '') + '>' + it.label + '<span class="navmenu-tick">&#9679;</span></button>';
   }).join('');
   document.body.appendChild(el);
   el.querySelectorAll('.navmenu-item').forEach(function(b) {
@@ -15960,6 +16613,7 @@ function buildNavMenu() {
       e.stopPropagation();
       closeNavMenu();
       if (b.dataset.action === 'settings') openSettingsModal();
+      else if (b.dataset.sec) { goTab('info'); goSec(b.dataset.sec); }
       else goTab(b.dataset.tab);
     });
     //  Same letter-roll as the primary tabs, driven the same way: a .rolling
@@ -16102,12 +16756,15 @@ var TAB_ALIASES = { workout: 'training', plan: 'training', progress: 'calendar',
 //  The bar has four buttons. More lights for More and the pages listed in
 //  it. Quick Log and Progress are not under any button, so none lights.
 function tabBarOwner(t) {
-  if (t === 'quicklog' || t === 'calendar') return null;
-  return (t === 'today' || t === 'training' || t === 'food' || t === 'running') ? t : 'more';
+  if (t === 'quicklog') return (typeof trainStyle === 'object' && trainStyle.style === 'free') ? 'training' : null;
+  return (t === 'today' || t === 'training' || t === 'food' || t === 'running' || t === 'calendar') ? t : null;
 }
 function goTab(t) {
   if (typeof saveWorkoutNote === 'function') try { saveWorkoutNote(); } catch(e) {}
   if (t === 'training' && typeof renderWorkoutNote === 'function') setTimeout(function() { try { renderWorkoutNote(); } catch(e) {} }, 0);
+  //  Log as I go: Quick Log is home, so Plan opens it.
+  if (t === 'training' && typeof trainStyle === 'object' && trainStyle.style === 'free') t = 'quicklog';
+  if (t === 'quicklog' && typeof renderFreeHome === 'function') setTimeout(function() { try { renderFreeHome(); var h = document.getElementById('freeMuscleHost'); if (h && !h.firstChild) h.innerHTML = musclePickHTML('free'); } catch(e) {} }, 0);
   var alias = TAB_ALIASES[t];
   if (alias) {
     goTab(alias);
