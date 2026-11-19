@@ -3471,7 +3471,9 @@ input:focus, select:focus, textarea:focus { border-color: var(--fill) !important
 /* The day tag reads as a label, not a disabled control. */
 .badge.badge-day { background: transparent; color: var(--text); border: 1px solid var(--text); font-weight: 700; }
 /* Header: no menu glyph after the wordmark. The wordmark is still the menu button. */
-.nav-logo .nav-logo-chevron { display: none; }
+/* Header logo opens the menu: the menu icon sits beside the wordmark in ink. */
+.nav-logo .nav-logo-chevron { display: block; color: var(--ink); font-size: 22px; line-height: 20px; height: 20px; flex: 0 0 auto; margin-left: 2px; }
+.nav-logo[aria-expanded="true"] .nav-logo-chevron { transform: none; color: var(--ultramarine); }
 /* Empty states: a solid hairline box. */
 .prog-empty { border: 1px solid var(--border); background: var(--surface); }
 /* Blue header band with cream text. */
@@ -4872,7 +4874,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.23</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.24</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
