@@ -137,7 +137,7 @@
     --ultramarine:      #1C2FB5;
     --ultramarine-deep: #121E7E;
     --persimmon:        #F2552C;
-    --persimmon-burnt:  #B8340F;
+    --persimmon-burnt:  #B04A0A;
     --ink:              #141414;
     /* Ultramarine is the main color: buttons, selected, active tab, lifting,
        chart lines, done checks, focus. Cream text on it. Blue text on cream
@@ -3589,6 +3589,28 @@ input[style*="224, 82, 82"], input[style*="E05252" i] { border-color: var(--warn
 /* Persimmon never touches a big ultramarine block: Today's rule sits above the band. */
 .today-date { overflow: visible; margin-top: 22px; padding-top: 16px; }
 .today-date::before { top: -14px; left: 0; right: auto; width: 40px; height: 6px; border-radius: 0; }
+/* Plan week pill: a logged session gets a small ultramarine check, not a strike. */
+.wg-day.logged .wg-title { text-decoration: none !important; }
+.wg-day.logged .wg-title::after { content: '\2713'; margin-left: 3px; color: var(--ultramarine); font-weight: 700; }
+.wg-day.logged.picked .wg-title::after { color: var(--cream); }
+/* Set column wide enough for the current set badge. */
+.set-table-head, .set-row { grid-template-columns: 32px minmax(0, 1fr) 60px 58px 44px; }
+/* Rest timer: never wider than the screen, digits ink at full strength. */
+.timer-bar { box-sizing: border-box; max-width: 100vw; overflow: hidden; }
+.timer-inner { box-sizing: border-box; width: 100%; padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+.timer-left, .timer-right { min-width: 0; max-width: 100%; }
+.timer-display, .timer-display.warning, .timer-display.done, body.training-mode .timer-display { color: var(--ink) !important; opacity: 1 !important; transition: none; }
+/* Today: Next tag beside the workout name. */
+.tag-next { display: inline-block; vertical-align: middle; margin-left: 8px; padding: 3px 8px; border-radius: var(--r-s);
+  background: var(--persimmon); color: var(--ink); font-family: var(--font-body); font-size: var(--fs-1); font-weight: 700; line-height: 1.3; text-transform: none; letter-spacing: 0; }
+/* Accessibility: placeholders at 4.5:1 or more (muted is 5.35:1 on cream). */
+input::placeholder, textarea::placeholder { color: var(--muted) !important; opacity: 1; }
+/* Accessibility: week pills stay 44px wide at 360. */
+@media (max-width: 380px) { .week-glance { gap: 2px; } }
+/* Timer digits stay ink at full strength while counting: the roll slides, it never fades. */
+@keyframes tdigitSlide { from { transform: translateY(-30%); } to { transform: none; } }
+.tdigit.roll { animation-name: tdigitSlide; opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .tdigit.roll { animation: none; } }
 /* Links in blue. */
 a:not([class]), .howto-link { color: var(--primary-text); }
 </style>
@@ -6752,7 +6774,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         var pickMin = dm && dm.date === todayKey() && dm.day === next && dm.week === currentTrainWeek && dm.min ? dm.min : null;
         host.innerHTML = (daysSinceLastLog() >= 3 ? '<div class="welcome-back">Welcome back. Pick up where you left off.</div>' : '')
           + '<div class="today-card-kicker' + (!partial && (restToday || slot !== next) ? ' kicker-now' : '') + '">' + (partial ? 'In progress' : restToday ? 'Next workout' : (slot === next ? 'Today' : 'Next workout')) + '</div>'
-          + '<div class="today-card-title">' + (qk ? 'Quick workout: ' + quickLabel(qk.kind) : d.title) + '</div>'
+          + '<div class="today-card-title">' + (qk ? 'Quick workout: ' + quickLabel(qk.kind) : d.title) + (partial ? '' : ' <span class="tag-next">Next</span>') + '</div>'
           + '<div class="today-card-meta">' + (prog ? prog.done + ' of ' + prog.total + ' sets done' : b.list.length + ' exercises, about ' + estText(b.est)) + '</div>'
           + (partial ? '' : '<div class="today-time"><div class="today-time-q" id="todayTimeQ">How long do you have?</div>'
             + '<div class="liftdays-group time-box-group" role="group" aria-labelledby="todayTimeQ">'
