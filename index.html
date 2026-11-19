@@ -3487,6 +3487,20 @@ input:focus, select:focus, textarea:focus { border-color: var(--fill) !important
 .prog-tile:first-child .prog-tile-v { color: var(--on-hi); }
 /* You're ready: today's row is the orange mark. */
 #onbFlowScreen3 .onb-week li:first-child .onb-week-day { background: var(--hi); color: var(--on-hi); border-radius: var(--r-s); text-align: center; }
+/* Run log: How did it feel, shown as three clear options. */
+.rl-feel-btns .liftdays-btn { flex: 1; min-height: 44px; border: 1px solid var(--field); border-radius: var(--r-s); background: transparent; color: var(--text); font-weight: 600; }
+.rl-feel-btns .liftdays-btn.on { background: var(--fill); border-color: var(--fill); color: var(--on-primary); }
+/* Settings: blue band title, maxes in one equal row. */
+.settings-modal-brand { display: block; margin-bottom: 12px; }
+.settings-modal-brand .settings-modal-title { background: var(--primary); color: var(--on-primary); border-radius: var(--r-c); padding: 16px; line-height: 1; }
+#maxesDisplay { display: grid !important; grid-template-columns: 1fr; gap: 8px; }
+#maxesDisplay .settings-max-chip, body.training-mode #maxesDisplay .settings-max-chip { display: flex; width: 100%; min-width: 0; min-height: 44px; margin: 0; padding: 10px 14px; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; }
+/* Food: heading left, Carbs and Fat fill orange. */
+#tab-food .train-title, body.training-mode #tab-food .train-title { text-align: left; }
+.food-bar-carbs .food-bar-fill, .food-bar-fat .food-bar-fill { background: var(--hi) !important; box-shadow: none !important; }
+/* Onboarding: wordmark on a blue band with one orange rule. */
+.onb-wordmark-band { background: var(--primary); color: var(--on-primary); border-radius: var(--r-c); padding: 22px 16px 16px; line-height: 1; border-top: 8px solid var(--hi); }
+#onbFlowScreen3 .quicklog-back { display: block; width: 100%; text-align: left; }
 /* Links in blue. */
 a:not([class]), .howto-link { color: var(--primary); }
 .hero-cta { color: var(--primary); }
@@ -3610,7 +3624,7 @@ a:not([class]), .howto-link { color: var(--primary); }
   <div class="onb-flow-inner">
 
     <div class="onb-flow-screen" id="onbFlowScreen1">
-      <div class="settings-modal-title" style="font-size:var(--fs-5);">RUN THE WEIGHTS</div>
+      <div class="settings-modal-title onb-wordmark-band" style="font-size:var(--fs-5);">RUN THE WEIGHTS</div>
       <div class="settings-modal-sub onb-welcome-line">A simple plan to get stronger that works around your life.</div>
       <button class="quicklog-save-btn" onclick="onbFlowGoto(2)">Get started</button>
       <button class="quicklog-back" style="margin-top:14px;" onclick="onbFlowSkip()">Skip setup</button>
@@ -4624,7 +4638,6 @@ a:not([class]), .howto-link { color: var(--primary); }
 <div class="settings-modal-overlay" id="settingsModal" style="display:none;">
   <div class="settings-modal-card" id="settingsModalCard">
     <div class="settings-modal-brand">
-      <img src="assets/brand/rtw-square-a.png" alt="" aria-hidden="true">
       <div class="settings-modal-title">Settings</div>
     </div>
 
@@ -12165,7 +12178,7 @@ a:not([class]), .howto-link { color: var(--primary); }
     var dEl = document.getElementById('foodDateLabel');
     if (dEl) dEl.textContent = dk === todayKey() ? 'Today' : quickLogFriendlyDate(dk);
     var sub = document.getElementById('foodDateSub');
-    if (sub) sub.textContent = dk;
+    if (sub) { var pd = parseDateKey(dk); sub.textContent = pd ? pd.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : dk; }
     renderFoodTotals();
     renderGoalMode();
     renderFoodDraft();
@@ -12191,7 +12204,7 @@ a:not([class]), .howto-link { color: var(--primary); }
     //  sync with the JS thresholds above.
     var fillStyle = 'width:' + pct + '%;background:' + c.fill
       + (c.glow ? ';box-shadow:0 0 6px 1px ' + c.fill : '');
-    return '<div class="food-bar">'
+    return '<div class="food-bar food-bar-' + label.toLowerCase() + '">'
       + '<div class="run-field-label"><span>' + label + '</span><span class="run-field-val">'
       + fmtInt(have) + unit + ' / ' + fmtInt(target) + unit + '</span></div>'
       + '<div class="food-bar-track"><div class="food-bar-fill" style="' + fillStyle + '"></div></div></div>';
