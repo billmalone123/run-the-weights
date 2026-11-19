@@ -12,6 +12,9 @@
 // Values are per 100g (both sources' own basis), with servingG: 100 —
 // scaleItem() on the client rescales them if the user edits the grams.
 
+//  8.32: while Food is locked this endpoint answers "not available" before
+//  it reads a passcode, a key or the body, and never calls out.
+var food = require('./_food.js');
 var BARCODE_RE = /^\d{6,14}$/;
 var USDA_API_KEY = 'DEMO_KEY';
 
@@ -65,6 +68,10 @@ function parseUsdaProduct(data) {
 }
 
 module.exports = async function handler(req, res) {
+  if (!food.FOOD_ENABLED) {
+    res.status(503).json({ error: 'Not available' });
+    return;
+  }
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'POST only' });
     return;

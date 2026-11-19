@@ -1256,6 +1256,9 @@ var p9d = p9c.then(function () {
 });
 
 section('9. /api/meal.js with a fake fetch');
+//  8.32: sections 9 and 10 test the endpoints as they work with Food on.
+var foodFlag = require(require('path').resolve('api/_food.js'));
+foodFlag.FOOD_ENABLED = true;
 var mealPath = require('path').resolve('api/meal.js');
 function runMeal(opts) {
   process.env.MEAL_PASSCODE = 'pw';
@@ -1414,6 +1417,57 @@ p9d
       .then(function (o) {
         eq('both sources unreachable/empty: the friendly 404, not a 500', o.status, 404);
         eq('same message either way', o.body.error, 'Product not found. Try typing what you ate instead.');
+      });
+  })
+  .then(function () {
+    //  11. Food locked (8.32): each endpoint answers Not available with a
+    //  valid passcode and a valid body, calls fetch zero times, and never
+    //  reads a key or the passcode from the environment.
+    section('11. /api/meal.js and /api/barcode.js with Food locked');
+    foodFlag.FOOD_ENABLED = false;
+    var realEnv = process.env, envReads = [];
+    var barcodePath2 = require('path').resolve('api/barcode.js');
+    function lockedRun(path, body, pass) {
+      var calls = [];
+      global.fetch = function (url) { calls.push(url); return Promise.reject(new Error('no outside calls allowed')); };
+      envReads = [];
+      process.env = new Proxy(Object.assign({}, realEnv, { MEAL_PASSCODE: 'pw', ANTHROPIC_API_KEY: 'test-key' }), {
+        get: function (t, k) { envReads.push(String(k)); return t[k]; }
+      });
+      delete require.cache[path];
+      var handler = require(path);
+      var out = { status: 0, body: null, calls: calls };
+      var res = { status: function (s) { out.status = s; return res; }, json: function (b) { out.body = b; return res; } };
+      return Promise.resolve(handler({ method: 'POST', headers: { 'x-rtw-pass': pass || 'pw' }, body: body }, res))
+        .then(function () { out.envReads = envReads.slice(); process.env = realEnv; return out; },
+              function (e) { process.env = realEnv; throw e; });
+    }
+    return lockedRun(mealPath, { note: '250g rice', image: 'QUJD', mediaType: 'image/jpeg' })
+      .then(function (o) {
+        eq('meal: plain Not available', JSON.stringify([o.status, o.body]), JSON.stringify([503, { error: 'Not available' }]));
+        eq('meal: no outside call', o.calls.length, 0);
+        eq('meal: no key or passcode read', o.envReads.filter(function (k) { return /KEY|PASS|MODEL/.test(k); }).length, 0);
+        return lockedRun(barcodePath2, { barcode: '012345678905' });
+      })
+      .then(function (o) {
+        eq('barcode: plain Not available', JSON.stringify([o.status, o.body]), JSON.stringify([503, { error: 'Not available' }]));
+        eq('barcode: no outside call (Open Food Facts or USDA)', o.calls.length, 0);
+        eq('barcode: no key or passcode read', o.envReads.filter(function (k) { return /KEY|PASS/.test(k); }).length, 0);
+        //  The passcode check is still there for when Food comes back.
+        foodFlag.FOOD_ENABLED = true;
+        return lockedRun(mealPath, { note: 'rice' }, 'nope');
+      })
+      .then(function (o) {
+        eq('Food on again: meal still checks the passcode', o.status, 401);
+        ok('control: the env probe does see the passcode read when Food is on', o.envReads.indexOf('MEAL_PASSCODE') > -1);
+        return lockedRun(barcodePath2, { barcode: '012345678905' }, 'nope');
+      })
+      .then(function (o) {
+        eq('Food on again: barcode still checks the passcode', o.status, 401);
+        foodFlag.FOOD_ENABLED = false;
+        var fs2 = require('fs');
+        eq('the shipped server flag is off', /FOOD_ENABLED: false/.test(fs2.readFileSync('api/_food.js', 'utf8')), true);
+        eq('the shipped page flag is off', /var FOOD_ENABLED = false;/.test(fs2.readFileSync('index.html', 'utf8')), true);
       });
   })
   .then(function () {

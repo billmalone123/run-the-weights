@@ -53,7 +53,8 @@ with sync_playwright() as p:
     ev("setRunning(true)"); pg.wait_for_timeout(200); ev("document.querySelectorAll('.settings-modal-overlay').forEach(m=>m.style.display='none')")
     check('fresh install starts with no tips seen', ev("JSON.stringify(loadTipsSeen())")=='{}')
     shown, infos = cycles(pg)
-    check('fresh install shows every tip once', sorted(shown)==sorted(ALL), shown)
+    # 8.32: the Food tip does not show while Food is locked.
+    check('fresh install shows every tip once, no Food tip while Food is locked', sorted(shown)==sorted(ALL-{'food'}), shown)
     check('tips appear in place, Today first', shown and shown[0]=='today', shown[:3])
     ev("goTab('today')"); pg.wait_for_timeout(200)
     again,_=cycles(pg,2)
@@ -65,9 +66,9 @@ with sync_playwright() as p:
         check('tip %s: Got it at least 44 px, text contrast 4.5:1'%i['id'], i['okW']>=44 and i['okH']>=44 and cr(i['fg'],i['bg'])>=4.5, (i['okW'],i['okH'],round(cr(i['fg'],i['bg']),2)))
         check('tip %s: one on screen'%i['id'], i['n']==1)
     # tap elsewhere dismisses
-    ev("resetTips();closeSettingsModal();goTab('food')"); pg.wait_for_timeout(700)
-    had=ev("_tipId"); pg.locator('#foodDateSub').click(); pg.wait_for_timeout(200)
-    check('tapping anywhere else dismisses and marks seen', had=='food' and ev("!document.getElementById('tipBox')") and ev("loadTipsSeen().food===1"), had)
+    ev("resetTips();closeSettingsModal();goTab('running');scrollTo(0,0)"); pg.wait_for_timeout(700)
+    had=ev("_tipId"); pg.locator('#hero-running .rtwh-word').click(); pg.wait_for_timeout(200)
+    check('tapping anywhere else dismisses and marks seen', had=='run' and ev("!document.getElementById('tipBox')") and ev("loadTipsSeen().run===1"), had)
     # fast switching
     ev("resetTips()"); maxn=0
     for k in range(30):

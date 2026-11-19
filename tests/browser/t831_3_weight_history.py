@@ -81,7 +81,7 @@ with sync_playwright() as p:
     check('kg chart summary in kg', ' kg' in pg.evaluate("document.getElementById('progBodyChart-sum').innerText"))
     pg.evaluate("setRunUnits('mi');renderProgressHome()")
     # Food <-> Body
-    go(pg,'food'); pg.fill('#foodWeighToday','181'); pg.evaluate("document.getElementById('foodWeighToday').dispatchEvent(new Event('change'))"); pg.wait_for_timeout(200)
+    pg.evaluate(FOOD_ON); go(pg,'food'); pg.fill('#foodWeighToday','181'); pg.evaluate("document.getElementById('foodWeighToday').dispatchEvent(new Event('change'))"); pg.wait_for_timeout(200)
     body(pg)
     check('weight entered on Food shows on Body', ['Nov 19','181 lb'] in pg.evaluate(ROWS), pg.evaluate(ROWS)[:2])
     save(pg,'2026-11-19',183)

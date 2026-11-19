@@ -35,7 +35,7 @@ with sync_playwright() as p:
         pg.evaluate("document.querySelector('#runDistChart svg').scrollIntoView({block:'center'})"); pg.wait_for_timeout(100); pg.screenshot(path=shot('p5-run-%d.png')%W)
         pg.evaluate("toggleRunPlanWrap();document.getElementById('run-race-date').value='2027-06-14';onRunInput()"); pg.wait_for_timeout(400)
         charts['Run race plan']=pg.evaluate(LAB,'.run-chart-body svg')
-        go(pg,'food'); charts['Food bodyweight']=pg.evaluate(LAB,'#foodWeight svg')
+        pg.evaluate(FOOD_ON); go(pg,'food'); charts['Food bodyweight']=pg.evaluate(LAB,'#foodWeight svg')
         for name,cs in charts.items():
             if not cs: check('%d %s: chart shows'%(W,name), False); continue
             c=cs[0]

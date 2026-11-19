@@ -37,4 +37,7 @@ def page(b, w=360, h=700, seed=True, init=INIT, url=URL, clock=True):
     if seed: pg.evaluate(SEED); pg.reload(); pg.wait_for_timeout(1500)
     pg.evaluate("setRunning(true);document.querySelectorAll('.settings-modal-overlay').forEach(m=>m.style.display='none')")
     return ctx, pg, errs
+#  8.32: Food is locked by FOOD_ENABLED. Checks that cover the Food code
+#  itself turn it on inside the page, as setting the flag to true would.
+FOOD_ON = "FOOD_ENABLED=true;document.documentElement.classList.remove('food-off')"
 def go(pg, t): pg.evaluate("goTab('%s');scrollTo(0,0)" % t); pg.wait_for_timeout(550)

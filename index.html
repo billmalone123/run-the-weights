@@ -3670,6 +3670,16 @@ img[src$=".svg"][src*="assets/brand/"] { mix-blend-mode: normal; }
    button inside them stays tappable. The timer keeps running under them. */
 .settings-modal-overlay, .rest-modal-overlay { z-index: 340 !important; }
 .ql-session { margin: 16px 0 8px; }
+/* 8.32: Food locked. Everything on the Food tab below the hero, the Today
+   food card and the Log a meal finish button hide while FOOD_ENABLED is false. */
+.food-soon { display: none; }
+html.food-off .food-soon { display: block; }
+html.food-off #hero-food:not([hidden]) ~ .food-soon { padding-top: 24px !important; }
+html.food-off #foodSection, html.food-off .today-food-card, html.food-off .onb-finish-food { display: none !important; }
+html.food-off .today-grid { grid-template-columns: 1fr; }
+.food-soon-msg { font-size: var(--fs-4); line-height: 1.3; color: var(--text); margin: 0 0 6px; }
+.food-soon-line { font-size: var(--fs-2); line-height: 1.45; color: var(--text); margin: 0 0 16px; }
+.food-soon-btn { width: 100%; min-height: 44px; }
 /* 8.31: weight history on Progress, Body. */
 .prog-tile-btn { display: block; width: 100%; text-align: left; font: inherit; color: inherit; cursor: pointer; }
 .prog-tile-btn .prog-tile-v, .prog-tile-btn .prog-tile-l { display: block; }
@@ -3886,6 +3896,12 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   <img class="splash-logo" src="assets/brand/rtw-wordmark-on-cream.svg" alt="Run the Weights">
 </div>
 <script>
+  // 8.32: Food is locked behind one flag. Set FOOD_ENABLED = true to bring
+  // the Food tab, the Today food card, the Log a meal finish button and the
+  // Food tip back. Food and weight data, backups and restores never depend
+  // on this flag.
+  var FOOD_ENABLED = false;
+  try { if (!FOOD_ENABLED) document.documentElement.classList.add('food-off'); } catch(e) {}
 (function() {
   var el = document.getElementById('splashScreen');
   if (!el) return;
@@ -3985,7 +4001,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       <div class="onb-week-note" id="onbWeekFood" style="display:none"></div>
       <button class="quicklog-back" style="margin-bottom:8px;" onclick="onbFlowExploreAbout()">Explore what's possible &rarr; The Edge</button>
       <div style="display:flex;gap:12px;">
-        <button class="quicklog-save-btn" style="margin-top:0;" onclick="onbFlowFinish('food')">Log a meal</button>
+        <button class="quicklog-save-btn onb-finish-food" style="margin-top:0;" onclick="onbFlowFinish('food')">Log a meal</button>
         <button class="quicklog-save-btn" style="margin-top:0;" onclick="onbFlowFinish('training')">Start lifting</button>
       </div>
       <button class="quicklog-back" style="margin-top:14px;" onclick="onbFlowSkip()">Skip setup</button>
@@ -4195,7 +4211,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         <span class="today-mini-note" id="todayWeightNote"></span>
       </div>
     </div>
-    <div class="today-mini">
+    <div class="today-mini today-food-card">
       <div class="today-label">Food today</div>
       <div class="today-mini-big" id="todayFood"></div>
       <button class="today-link" onclick="goTab('food')">Log a meal</button>
@@ -4747,6 +4763,12 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     <div class="quicklog-confirm" id="foodPostMsg" style="white-space:pre-line;"></div>
   </div>
 </section>
+<!-- 8.32: shown while FOOD_ENABLED is false, in place of the Food section above. -->
+<section id="foodSoon" class="food-soon" aria-labelledby="foodSoonMsg">
+  <p class="food-soon-msg" id="foodSoonMsg">Food tracking is coming soon.</p>
+  <p class="food-soon-line">Log your weight on Progress, then Body.</p>
+  <button type="button" class="today-start food-soon-btn" onclick="openBodyFromFood()">Open Body</button>
+</section>
 
 </div>
 
@@ -5130,7 +5152,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.31</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.32</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -13417,6 +13439,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     for (var i = 0; i < TIP_DEFS.length; i++) {
       var d = TIP_DEFS[i];
       if (seen[d.id]) continue;
+      if (d.id === 'food' && !FOOD_ENABLED) continue;
       if (d.scr !== scr && !(d.scr === '*' && !inSettings)) continue;
       var a = d.a();
       if (!tipInView(a, d.at === 'after')) continue;
@@ -16675,6 +16698,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     }
     view.innerHTML = html;
   }
+  //  8.32: the Food coming soon button.
+  function openBodyFromFood() { goTab('calendar'); setProgView('body'); scrollTo(0, 0); }
   //  8.31: Add weight opens the form on Progress, Body.
   function progAddWeight() {
     if (visibleTab && visibleTab() !== 'calendar') goTab('calendar');

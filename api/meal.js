@@ -15,6 +15,9 @@
 // reason as api/strava.js: sw.js only intercepts GET, so nothing here ever
 // touches the service worker's cache layer.
 
+//  8.32: while Food is locked this endpoint answers "not available" before
+//  it reads a passcode, a key or the body, and never calls out.
+var food = require('./_food.js');
 var MAX_IMAGE_B64 = 1.5 * 1024 * 1024;
 
 var SYSTEM_PROMPT = [
@@ -52,6 +55,10 @@ function parseEstimate(text) {
 }
 
 module.exports = async function handler(req, res) {
+  if (!food.FOOD_ENABLED) {
+    res.status(503).json({ error: 'Not available' });
+    return;
+  }
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'POST only' });
     return;

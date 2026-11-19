@@ -47,8 +47,13 @@ Each check pins the clock to a fixed day in November 2026 and loads the same see
 | `t831_1_strip.py` | 8.31 item 1: top strip shows Home, The Edge and Week review; the old Progression route opens Progress |
 | `t831_2_run_note_with_run.py` | 8.31 item 2: a run note saves only with its run; old notes with no run stay stored and hidden |
 | `t831_3_weight_history.py` | 8.31 item 3: weight history on Body, units, the Food link, chart labels, backup and restore, the Body tip |
+| `t832_food_locked.py` | 8.32: Food locked. Only the hero and the coming soon message, Open Body, no food input reachable, data kept through reload, backup and restore, no Food tip, flag on brings Food back |
 
 `common.py` holds the shared helpers: the page setup, `check()` and `baseline()`. `gapfn.js` measures the gap under a hero.
+
+## Food lock (8.32)
+
+Food is locked by `FOOD_ENABLED = false` in index.html and in `api/_food.js`. The checks that cover the Food screen itself (8.30 items 3 and 5, and 8.31 item 3) turn Food on inside the page with `FOOD_ON` from `common.py`. That way the Food code stays tested for when it comes back. `node food.js` section 11 proves that with Food locked, `/api/meal` and `/api/barcode` answer "Not available", make no outside call and read no key.
 
 ## Baselines
 
