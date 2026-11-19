@@ -659,7 +659,8 @@ ok('Run tab\'s existing empty state already carries an actionable instruction (l
    /Enter what you actually ran on any past run day below and it appears here/.test(html));
 
 // 5. About-page teaser on Welcome Screen 3, and only there.
-ok('the teaser text and arrow are on screen 3', /Explore what's possible &rarr; About Run the Weights/.test(html));
+//  8.27: About merged into The Edge, so the teaser names The Edge.
+ok('the teaser text and arrow are on screen 3', /Explore what's possible &rarr; The Edge/.test(html));
 ok('it sits before (above) the two CTA buttons in the markup', html.indexOf('onbFlowExploreAbout') < html.indexOf(">Log a meal<"));
 eq('no other onboarding screen was touched by this', (html.match(/onbFlowExploreAbout/g) || []).length, 2);   // the button + its handler def
 reset(); boot(); ctx.loadFoodData();
@@ -667,7 +668,7 @@ ctx.onboardedFlowDone = ctx.onboardedFlowDone;   // no-op, just documents intent
 storage.removeItem('monk_onboarded_v1');
 noThrow('tapping the teaser does not throw', function () { ctx.onbFlowExploreAbout(); });
 eq('it finishes onboarding, same as the two CTA buttons', ctx.onboardedFlowDone(), true);
-eq('and lands on the About section specifically', ctx.document.getElementById('sec-about').style.display, 'block');
+eq('and lands on The Edge, which now opens with the About intro', ctx.document.getElementById('sec-edge').style.display, 'block');
 
 section('2k. Input color states: green when filled, red only after being touched empty');
 reset(); boot();
@@ -715,11 +716,12 @@ eq('MAIN_TABS adds today and keeps every older tab', ev('MAIN_TABS').join(','), 
 var menuHtml = ctx.buildNavMenu().innerHTML;
 //  8.25 Option A: More moved into the logo menu, so About, Week review and
 //  The Edge are listed there, and Progress too.
-['Today', 'Plan', 'Food', 'Quick Log', 'Progress', 'About', 'Week review', 'The Edge'].forEach(function (label) {
+//  8.27: About is part of The Edge, so it has no row of its own.
+['Today', 'Plan', 'Food', 'Quick Log', 'Progress', 'Week review', 'The Edge'].forEach(function (label) {
   ok(label + ' is in the logo menu', menuHtml.indexOf('>' + label + '<') > -1);
 });
 // Settings sits behind the gear, so it is not listed.
-['Settings', 'About and more'].forEach(function (label) {
+['Settings', 'About and more', 'About'].forEach(function (label) {
   eq(label + ' is not in the logo menu', menuHtml.indexOf('>' + label + '<') > -1, false);
 });
 eq('Run stays out of the menu while running is off', menuHtml.indexOf('>Run<') > -1, false);
@@ -734,8 +736,8 @@ ok('the Workout tab is labelled Plan', /data-tab="training"[^\n]*<span>Plan<\/sp
 ok('the header gear opens Settings', /<nav>[\s\S]*?id="navGear" aria-label="Settings" onclick="openSettingsModal\(\)"[\s\S]*?<\/nav>/.test(html));
 // More is four rows, in order. Progress moved to Today.
 var moreHtml = html.slice(html.indexOf('id="tab-more"'), html.indexOf('id="aboutIntro"'));
-eq('More has exactly four rows, in order', (moreHtml.match(/more-row-title">([^<]+)</g) || []).map(function (m) { return m.replace(/.*">|<$/g, ''); }).join(','), 'About,Week review,The Edge,Home');
-[['Home', "goTab('info'); goSec('home');"], ['About', "goTab('info'); goSec('about');"],
+eq('More has exactly three rows, in order (About merged into The Edge in 8.27)', (moreHtml.match(/more-row-title">([^<]+)</g) || []).map(function (m) { return m.replace(/.*">|<$/g, ''); }).join(','), 'Week review,The Edge,Home');
+[['Home', "goTab('info'); goSec('home');"],
  ['The Edge', "goTab('info'); goSec('edge');"], ['Week review', "goTab('info'); goSec('overview');"]
 ].forEach(function (p) {
   ok('More has a working link to ' + p[0], moreHtml.indexOf('onclick="' + p[1] + '"><span class="more-row-title">' + p[0] + '<') > -1);

@@ -3635,6 +3635,30 @@ img[src$=".svg"][src*="assets/brand/"] { mix-blend-mode: normal; }
 .workout-note-count:empty { display: none; }
 .cal-workout-note { font-size: var(--fs-1); color: var(--muted); line-height: 1.45; margin-top: 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .cal-workout-note-label { font-weight: 700; color: var(--text); margin-bottom: 2px; }
+/* 8.27: modals and sheets sit above the running rest timer, so every
+   button inside them stays tappable. The timer keeps running under them. */
+.settings-modal-overlay, .rest-modal-overlay { z-index: 340 !important; }
+.ql-session { margin: 16px 0 8px; }
+.ql-addex { margin-top: 8px; }
+.qs-ex { border-top: 1px solid var(--border); padding: 12px 0; }
+.qs-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.qs-name { font-weight: 600; font-size: var(--fs-3); color: var(--text); }
+.qs-cols, .qs-set { display: grid; grid-template-columns: 28px 1fr 1fr 44px; gap: 8px; align-items: center; }
+.qs-cols { font-size: var(--fs-1); color: var(--muted); margin: 6px 0 4px; }
+.qs-set { margin-bottom: 6px; }
+.qs-set .log-inline-input { width: 100%; min-height: 44px; box-sizing: border-box; }
+.qs-n { font-size: var(--fs-2); color: var(--muted); text-align: center; }
+.qs-addset { margin-top: 4px; }
+.ex-sheet-card { max-height: 86vh; overflow-y: auto; }
+.ex-sheet-list { margin: 4px 0 12px; }
+.ex-sheet-label { font-size: var(--fs-1); font-weight: 600; color: var(--muted); margin: 6px 0; }
+.ex-row { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 10px; min-height: 48px; padding: 8px 2px; background: none;
+  border: 0; border-bottom: 1px solid var(--border); color: var(--text); font: inherit; font-size: var(--fs-2); text-align: left; cursor: pointer; }
+.ex-row:focus-visible { outline: 2px solid var(--fill); outline-offset: -2px; }
+.ex-row-m { color: var(--muted); font-size: var(--fs-1); white-space: nowrap; }
+.ex-row-new { font-weight: 600; color: var(--fill); }
+.ex-sheet-new { font-size: var(--fs-2); margin: 6px 0 8px; }
+.edge-intro { margin-bottom: 40px; padding-bottom: 28px; border-bottom: 1px solid var(--border); }
 /* 8.26: per lift notes, same look as the workout note. */
 .lift-note-wrap { margin: 4px 0 14px; }
 .lift-note-label { display: block; font-size: var(--fs-1); font-weight: 600; color: var(--text); margin-bottom: 6px; }
@@ -3866,7 +3890,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       <ul class="onb-week" id="onbWeekPreview" aria-label="Your first week"></ul>
       <div class="onb-week-note">Miss a day? No problem. We shift it.</div>
       <div class="onb-week-note" id="onbWeekFood" style="display:none"></div>
-      <button class="quicklog-back" style="margin-bottom:8px;" onclick="onbFlowExploreAbout()">Explore what's possible &rarr; About Run the Weights</button>
+      <button class="quicklog-back" style="margin-bottom:8px;" onclick="onbFlowExploreAbout()">Explore what's possible &rarr; The Edge</button>
       <div style="display:flex;gap:12px;">
         <button class="quicklog-save-btn" style="margin-top:0;" onclick="onbFlowFinish('food')">Log a meal</button>
         <button class="quicklog-save-btn" style="margin-top:0;" onclick="onbFlowFinish('training')">Start lifting</button>
@@ -3895,7 +3919,6 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 <div id="tab-info" class="tab-main on" style="background:var(--bg)">
   <div class="nav-sub" id="info-subnav">
     <button id="sb-home" class="on" onclick="goSec('home')">Home</button>
-    <button id="sb-about" onclick="goSec('about')">About</button>
     <button id="sb-edge" onclick="goSec('edge')">The Edge</button>
     <button id="sb-overview" onclick="goSec('overview')">Week review</button>
     <button id="sb-progression" onclick="goSec('progression')">Progression</button>
@@ -3931,15 +3954,18 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     </a>
   </div>
 </section></div>
-  <div id="sec-about" class="sub-sec"><section id="about" class="about-short">
+  <!-- About is part of The Edge since 8.27. Kept empty so old links resolve. -->
+  <div id="sec-about" class="sub-sec"></div>
+  <div id="sec-edge" class="sub-sec"><section id="edge" class="edge-section" style="background:var(--dark);border-top:1px solid var(--border);">
+  <!-- Intro: every line that was on About, unchanged. -->
+  <div id="about" class="about-short edge-intro">
   <h2 class="about-title sr-only">About Run the Weights</h2>
   <p class="about-lead">I'm Billy. I captained Division 1 cross country in college, and I've lifted and run for years.</p>
   <p>I built this plan myself and tested it on myself first.</p>
   <p>It's built for real schedules. Short on time? Going out tonight? The plan bends. You don't fall behind.</p>
   <p class="about-note">This is not medical advice. If something hurts, stop and check with a doctor.</p>
   <p class="about-follow">Follow along on Instagram: <a class="about-ig" href="https://www.instagram.com/run_the_weights" target="_blank" rel="noopener noreferrer">@run_the_weights</a></p>
-</section></div>
-  <div id="sec-edge" class="sub-sec"><section id="edge" class="edge-section" style="background:var(--dark);border-top:1px solid var(--border);">
+  </div>
   <div class="section-label">Why it matters</div>
   <h2 class="section-title" style="margin-bottom:24px;">STRONG<br>FEELS GOOD</h2>
   <p style="font-size:var(--fs-3);color:var(--muted);max-width:600px;line-height:1.8;margin-bottom:72px;">
@@ -4643,21 +4669,25 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   <h2 class="ql-heading" id="qlHeading">How long do you have?</h2>
   <div class="liftdays-group time-box-group" id="qlTimes" role="group" aria-labelledby="qlHeading"></div>
   <div class="today-card ql-today" id="qlToday"></div>
+  <!-- QUICK LOG SESSION (8.27). Any exercise, any order, sets per exercise. -->
+  <div class="ql-session" id="qlSession">
+    <div class="today-label">Log any exercise</div>
+    <div id="qlSessionList"></div>
+    <button type="button" class="today-start ql-addex" id="qlAddExBtn" onclick="openExSheet('session')">Add exercise</button>
+    <button type="button" class="today-link" id="qlNewSession" style="display:none" onclick="newQuickSession()">Start a new session</button>
+  </div>
   <div class="today-label" id="qlOthersLabel">Other quick workouts</div>
   <div class="ql-others" id="qlOthers"></div>
   <button type="button" class="quicklog-back ql-old-link" id="qlOldBtn" aria-expanded="false" aria-controls="qlOld" onclick="toggleOldQuickLog()">Log a workout I already did</button>
   <div id="qlOld" style="display:none">
-  <p class="ql-old-lead">Log one set of a main lift you already did.</p>
+  <p class="ql-old-lead">Log one set of any lift you already did.</p>
 
   <div id="quicklogPicker" class="quicklog-picker">
-    <button class="quicklog-lift-btn" onclick="selectQuickLogLift('flat-bb-bench')">Bench</button>
-    <button class="quicklog-lift-btn" onclick="selectQuickLogLift('bb-squat')">Squat</button>
-    <button class="quicklog-lift-btn" onclick="selectQuickLogLift('deadlift')">Deadlift</button>
-    <button class="quicklog-lift-btn" onclick="selectQuickLogLift('seated-ohp')">OHP</button>
+    <button type="button" class="today-secondary" onclick="openExSheet('form')">Choose a lift</button>
   </div>
 
   <div id="quicklogForm" class="quicklog-form" style="display:none">
-    <button class="quicklog-back" onclick="resetQuickLog()">&#8249; Choose a different lift</button>
+    <button class="quicklog-back" onclick="openExSheet('form')">&#8249; Choose a different lift</button>
     <div class="quicklog-form-title" id="quicklogFormTitle"></div>
     <div class="quicklog-field">
       <label for="qlWeight">Weight (lbs)</label>
@@ -4698,7 +4728,6 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   <h2 class="section-title train-title more-title">MORE</h2>
   <!-- Progress now lives on Today and Settings behind the header gear. -->
   <div class="more-list">
-    <button class="more-list-item" onclick="goTab('info'); goSec('about');"><span class="more-row-title">About</span><span class="more-row-sub">Who built this plan and why.</span></button>
     <button class="more-list-item" onclick="goTab('info'); goSec('overview');"><span class="more-row-title">Week review</span><span class="more-row-sub">How a week of training fits together.</span></button>
     <button class="more-list-item" onclick="goTab('info'); goSec('edge');"><span class="more-row-title">The Edge</span><span class="more-row-sub">Why getting stronger feels good.</span></button>
     <button class="more-list-item" onclick="goTab('info'); goSec('home');"><span class="more-row-title">Home</span><span class="more-row-sub">The welcome screen.</span></button>
@@ -4708,7 +4737,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 
 <!-- ABOUT, ONCE. Shown a single time right after onboarding. Its body is
      copied from #about when it opens, so the words live in one place. -->
-<div class="settings-modal-overlay" id="aboutIntro" style="display:none;" role="dialog" aria-modal="true" aria-label="About Run the Weights">
+<div class="settings-modal-overlay" id="aboutIntro" style="display:none;" role="dialog" aria-modal="true" aria-label="The Edge">
   <div class="settings-modal-card about-intro-card">
     <div id="aboutIntroBody"></div>
     <button class="settings-save-btn" id="aboutIntroClose" onclick="closeAboutIntro()">Got it</button>
@@ -4812,6 +4841,15 @@ a:not([class]), .howto-link { color: var(--primary-text); }
      history, or quick-log entries. setSplit() already keeps those untouched;
      this only adds resetting the week/day to Week 1 Day 1 of the new split,
      which a genuine plan change should do but the raw Settings picker doesn't. -->
+<div class="settings-modal-overlay" id="exSheet" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="exSheetTitle">
+  <div class="settings-modal-card ex-sheet-card">
+    <div class="settings-modal-title" id="exSheetTitle">Add exercise</div>
+    <div class="quicklog-field"><label for="exSheetQ">Search every exercise</label>
+      <input type="text" id="exSheetQ" autocomplete="off" maxlength="60" placeholder="Bench, row, carry" oninput="_sheetNew=null;renderExSheet(this.value)"></div>
+    <div class="ex-sheet-list" id="exSheetList"></div>
+    <button class="settings-cancel-btn" onclick="closeExSheet()">Close</button>
+  </div>
+</div>
 <div class="settings-modal-overlay" id="ownPlanModal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="ownPlanTitle">
   <div class="settings-modal-card">
     <div class="settings-modal-title" id="ownPlanTitle">Your own plan</div>
@@ -4980,7 +5018,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.26</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.27</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -12759,8 +12797,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   }
   function freePick(id) {
     if (!EX_BY_ID[id]) return;
-    selectQuickLogLift(id);
-    var f = document.getElementById('quicklogForm'); if (f) f.scrollIntoView({ block: 'center' });
+    qsAdd(id);
   }
   function freeAddTyped() {
     var nEl = document.getElementById('freeNewName'), hint = document.getElementById('freeNewHint');
@@ -12905,6 +12942,142 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     if (document.addEventListener) document.addEventListener('visibilitychange', function() { if (document.hidden) flushLiftNotes(); });
     if (window.addEventListener) window.addEventListener('pagehide', flushLiftNotes);
   } catch(e) {}
+
+  //     QUICK LOG SESSION (8.27). Any exercise, in the order added, each with
+  //  sets. Every set saves through quickLogSet(), so it is a Quick Log entry
+  //  added as a new entry, exactly as before. The session list itself lives
+  //  in memory; a new session starts a fresh list and never touches entries.
+  var _qs = { start: Date.now(), items: [] };
+  var _sheetMode = 'session', _sheetNew = null;
+  function qsLast(exId) { var e = latestEntry(exId); return e ? { w: e.weight > 0 ? e.weight : '', r: e.reps > 0 ? e.reps : '' } : { w: '', r: '' }; }
+  function qsAdd(exId) {
+    if (!EX_BY_ID[exId]) return;
+    var at = -1;
+    _qs.items.forEach(function(it, i) { if (it.exId === exId) at = i; });
+    if (at === -1) { var l = qsLast(exId); _qs.items.push({ exId: exId, rows: [{ w: l.w, r: l.r, done: false }] }); at = _qs.items.length - 1; }
+    renderQuickSession();
+    var blk = document.getElementById('qs-' + at);
+    if (blk) {
+      blk.scrollIntoView({ block: 'center' });
+      var first = Array.prototype.filter.call(blk.querySelectorAll('.qs-set:not(.done) input'), function(i) { return i.value === ''; })[0]
+        || blk.querySelector('.qs-set:not(.done) .set-done-btn');
+      if (first) first.focus();
+    }
+  }
+  function qsRead(i, j) {
+    var it = _qs.items[i], row = it && it.rows[j];
+    if (!row) return null;
+    var w = document.getElementById('qsw-' + i + '-' + j), r = document.getElementById('qsr-' + i + '-' + j);
+    if (w) row.w = w.value; if (r) row.r = r.value;
+    return row;
+  }
+  function qsDone(i, j) {
+    var row = qsRead(i, j), it = _qs.items[i];
+    if (!row || row.done) return;
+    var w = parseFloat(row.w), r = parseInt(row.r, 10), msg = document.getElementById('qsmsg-' + i);
+    if (isNaN(w) || w < 0 || isNaN(r) || r <= 0) { if (msg) msg.textContent = 'Enter weight and reps to log this set. Use 0 for bodyweight.'; var f = document.getElementById((isNaN(w) || w < 0 ? 'qsw-' : 'qsr-') + i + '-' + j); if (f) f.focus(); return; }
+    flushLiftNotes();
+    var e = quickLogSet(it.exId, w, r, null, '');
+    if (!e) return;
+    row.done = true; row.w = w; row.r = r; row.ts = e.ts;
+    renderQuickSession();
+  }
+  function qsAddSet(i) {
+    var it = _qs.items[i]; if (!it) return;
+    it.rows.forEach(function(r, j) { if (!r.done) qsRead(i, j); });
+    var prev = it.rows[it.rows.length - 1] || { w: '', r: '' };
+    it.rows.push({ w: prev.w, r: prev.r, done: false });
+    renderQuickSession();
+    var w = document.getElementById('qsw-' + i + '-' + (it.rows.length - 1)); if (w) w.focus();
+  }
+  function qsRemove(i) {
+    var it = _qs.items[i]; if (!it) return;
+    var ex = EX_BY_ID[it.exId];
+    if (!confirm('Remove ' + (ex ? activeVariant(ex) : 'this exercise') + ' from this session? Sets you already logged stay in your history.')) return;
+    flushLiftNotes();
+    _qs.items.splice(i, 1);
+    renderQuickSession();
+  }
+  function newQuickSession() { flushLiftNotes(); _qs = { start: Date.now(), items: [] }; renderQuickSession(); }
+  function renderQuickSession() {
+    var host = document.getElementById('qlSessionList'), nb = document.getElementById('qlNewSession');
+    if (!host) return;
+    flushLiftNotes();
+    host.innerHTML = _qs.items.map(function(it, i) {
+      var ex = EX_BY_ID[it.exId], nm = ex ? activeVariant(ex) : it.exId;
+      return '<div class="qs-ex" id="qs-' + i + '"><div class="qs-head"><span class="qs-name">' + styleEsc(nm) + '</span>'
+        + '<button type="button" class="op-del" aria-label="Remove ' + styleEsc(nm) + ' from this session" onclick="qsRemove(' + i + ')">Remove</button></div>'
+        + '<div class="qs-cols" aria-hidden="true"><span>Set</span><span>lbs</span><span>Reps</span><span></span></div>'
+        + it.rows.map(function(r, j) {
+          var dis = r.done ? ' disabled' : '';
+          return '<div class="qs-set' + (r.done ? ' done' : '') + '"><span class="qs-n">' + (j + 1) + '</span>'
+            + '<input class="log-inline-input" type="number" inputmode="decimal" min="0" id="qsw-' + i + '-' + j + '" aria-label="' + styleEsc(nm) + ' set ' + (j + 1) + ' weight in pounds" value="' + styleEsc(r.w) + '"' + dis + '>'
+            + '<input class="log-inline-input" type="number" inputmode="numeric" min="1" id="qsr-' + i + '-' + j + '" aria-label="' + styleEsc(nm) + ' set ' + (j + 1) + ' reps" value="' + styleEsc(r.r) + '"' + dis + '>'
+            + '<button type="button" class="set-done-btn' + (r.done ? ' on' : '') + '" aria-pressed="' + !!r.done + '" aria-label="' + (r.done ? 'Set ' + (j + 1) + ' logged' : 'Log set ' + (j + 1)) + '" onclick="qsDone(' + i + ',' + j + ')">&#10003;</button></div>';
+        }).join('')
+        + '<div class="add-ex-hint" id="qsmsg-' + i + '" aria-live="polite"></div>'
+        + '<button type="button" class="today-secondary qs-addset" onclick="qsAddSet(' + i + ')">Add set</button>'
+        + (i === _qs.items.map(function(x) { return x.exId; }).indexOf(it.exId) ? liftNoteFieldHTML(it.exId, 'qsn-') : '')
+        + '</div>';
+    }).join('');
+    if (nb) nb.style.display = _qs.items.length ? '' : 'none';
+  }
+
+  //     ADD EXERCISE SHEET. Search over the whole library and your own
+  //  exercises; recents first when the box is empty; an exact miss offers to
+  //  add the typed name, which asks one tap for the primary muscle.
+  function openExSheet(mode) {
+    _sheetMode = mode === 'form' ? 'form' : 'session'; _sheetNew = null; _musclePick.sheet = null;
+    var m = document.getElementById('exSheet'), q = document.getElementById('exSheetQ');
+    if (!m) return;
+    if (q) q.value = '';
+    renderExSheet('');
+    m.style.display = 'flex';
+    if (q) q.focus();
+  }
+  function closeExSheet() { var m = document.getElementById('exSheet'); if (m) m.style.display = 'none'; _sheetNew = null; }
+  function renderExSheet(v) {
+    var host = document.getElementById('exSheetList');
+    if (!host) return;
+    var q = String(v || '').replace(/[<>]/g, '').trim(), k = normName(q), html = '';
+    if (_sheetNew) {
+      host.innerHTML = '<div class="ex-sheet-new">Primary muscle for <strong>' + styleEsc(_sheetNew) + '</strong></div>'
+        + '<div class="muscle-pick-row" role="group" aria-label="Primary muscle">' + MUSCLE_PICKS.map(function(m) {
+          return '<button type="button" class="liftdays-btn" data-m="' + m[0] + '" onclick="exSheetMuscle(this.dataset.m)">' + m[1] + '</button>'; }).join('') + '</div>'
+        + '<button type="button" class="today-link" onclick="_sheetNew=null;renderExSheet(document.getElementById(\'exSheetQ\').value)">Back to search</button>';
+      return;
+    }
+    if (!k) {
+      var rec = freeRecents(12);
+      html = rec.length ? '<div class="ex-sheet-label">Recent</div>' + rec.map(function(x) {
+        return '<button type="button" class="ex-row" data-id="' + x.ex.id + '" onclick="exSheetPick(this.dataset.id)"><span>' + styleEsc(activeVariant(x.ex)) + '</span>'
+          + '<span class="ex-row-m">' + (x.e.weight > 0 ? fmtNum(x.e.weight) + ' lb × ' + (x.e.reps || 0) : (x.e.reps || 0) + ' reps') + '</span></button>';
+      }).join('') : '<div class="panel-meta">Type to search every exercise.</div>';
+    } else {
+      var res = exerciseSearch(q, 40), exact = res.some(function(ex) { return normName(ex.name) === k; });
+      if (!exact) html += '<button type="button" class="ex-row ex-row-new" data-q="' + styleEsc(q) + '" onclick="exSheetNewStart(this.dataset.q)">Add "' + styleEsc(q) + '" as a new exercise</button>';
+      html += res.map(function(ex) {
+        return '<button type="button" class="ex-row" data-id="' + ex.id + '" onclick="exSheetPick(this.dataset.id)"><span>' + styleEsc(ex.name) + '</span>'
+          + '<span class="ex-row-m">' + (MUSCLE_LABEL[ex.muscle] || '') + (ex.custom ? (ex.muscle ? ', yours' : 'Yours') : '') + '</span></button>';
+      }).join('');
+    }
+    host.innerHTML = html;
+  }
+  function exSheetNewStart(name) { _sheetNew = String(name || '').slice(0, 60); renderExSheet(''); }
+  function exSheetMuscle(m) {
+    if (!_sheetNew || !MUSCLE_LABEL[m]) return;
+    var id = addAnyDayExercise(_sheetNew, m);
+    _sheetNew = null;
+    if (id) exSheetPick(id);
+  }
+  function exSheetPick(id) {
+    if (!EX_BY_ID[id]) return;
+    closeExSheet();
+    if (_sheetMode === 'form') {
+      var old = document.getElementById('qlOld'); if (old && old.style.display === 'none') toggleOldQuickLog();
+      selectQuickLogLift(id);
+    } else qsAdd(id);
+  }
   function persistBodyweight() {
     try { localStorage.setItem(BODYWEIGHT_KEY, JSON.stringify(bodyweight)); } catch(e) {}
     idbSet('bodyweight', bodyweight);
@@ -16689,12 +16862,14 @@ function buildNavMenu() {
   //  Today, Plan, Food, Run (when on), Quick Log and About. Progress lives
   //  on Today and Settings behind the header gear, so neither is listed.
   //  About opens the About page; the rest of Info is in the More tab.
+  //  8.27: Quick Log sits under Plan; About is part of The Edge.
   var items = [
     { id: 'today', label: 'Today' },
     { id: 'training', label: 'Plan' },
+    { id: 'quicklog', label: 'Quick Log' },
     { id: 'food', label: 'Food' }
   ].concat(runningEnabled ? [{ id: 'running', label: 'Run' }] : [])
-   .concat([{ id: 'quicklog', label: 'Quick Log' }, { id: 'calendar', label: 'Progress' }, { id: 'about', label: 'About' },
+   .concat([{ id: 'calendar', label: 'Progress' },
             { id: 'review', label: 'Week review', sec: 'overview' }, { id: 'edge', label: 'The Edge', sec: 'edge' }]);
   //  No header row here — the trigger pill itself (the wordmark you just
   //  tapped) already says what this is; a repeated "Run the Weights" label
@@ -16943,6 +17118,8 @@ function goTab(t) {
 }
 
 function goSec(id) {
+  //  8.27: About lives at the top of The Edge. Old routes land there.
+  if (id === 'about') id = 'edge';
   //  About is one screen: the long footer stays off it.
   var info = document.getElementById('tab-info');
   if (info) info.classList.toggle('on-about', id === 'about');
