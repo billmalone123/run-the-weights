@@ -3635,6 +3635,18 @@ img[src$=".svg"][src*="assets/brand/"] { mix-blend-mode: normal; }
 .workout-note-count:empty { display: none; }
 .cal-workout-note { font-size: var(--fs-1); color: var(--muted); line-height: 1.45; margin-top: 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .cal-workout-note-label { font-weight: 700; color: var(--text); margin-bottom: 2px; }
+/* 8.28: one time tips. In the page flow, flat, a quick fade only. */
+.tip { position: relative; display: flex; align-items: center; gap: 12px; margin: 10px 0; padding: 10px 10px 10px 14px;
+  background: var(--surface); color: var(--text); border: 1px solid var(--text); border-radius: var(--r-c); animation: tipIn 160ms ease-out; }
+.tip::before { content: ''; position: absolute; left: 22px; width: 10px; height: 10px; background: var(--surface); border: 1px solid var(--text); transform: rotate(45deg); }
+.tip-up::before { top: -6px; border-right: 0; border-bottom: 0; }
+.tip-down::before { bottom: -6px; border-left: 0; border-top: 0; }
+.tip-text { flex: 1; margin: 0; font-size: var(--fs-2); line-height: 1.4; }
+.tip-ok { flex: none; min-width: 72px; min-height: 44px; padding: 0 14px; border: 0; border-radius: var(--r-c); background: var(--fill); color: var(--on-accent);
+  font: inherit; font-weight: 600; font-size: var(--fs-2); cursor: pointer; }
+.tip-ok:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+@keyframes tipIn { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .tip { animation: none; } }
 /* 8.27: modals and sheets sit above the running rest timer, so every
    button inside them stays tappable. The timer keeps running under them. */
 .settings-modal-overlay, .rest-modal-overlay { z-index: 340 !important; }
@@ -4993,6 +5005,12 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     </div>
     <div class="storage-status" id="storageStatus" style="display:none;margin-bottom:16px;"></div>
 
+    <div class="liftdays-wrap" style="margin:8px 0 16px;">
+      <span class="liftdays-label">Tips</span>
+      <button type="button" class="settings-open-btn" id="tipsResetBtn" onclick="resetTips()">Show tips again</button>
+      <span class="liftdays-desc" id="tipsResetMsg" aria-live="polite"></span>
+    </div>
+
     <div class="liftdays-wrap" style="margin:8px 0 24px;">
       <span class="liftdays-label">Food</span>
       <div class="food-settings-grid">
@@ -5018,7 +5036,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.27</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.28</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -10848,10 +10866,13 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     renderSessionPrefs();
     var m = document.getElementById('settingsModal');
     if (m) m.style.display = 'flex';
+    var tm = document.getElementById('tipsResetMsg'); if (tm) tm.textContent = '';
+    if (typeof tipOnNav === 'function') tipOnNav();
   }
   function closeSettingsModal() {
     var m = document.getElementById('settingsModal');
     if (m) m.style.display = 'none';
+    if (typeof tipOnNav === 'function') tipOnNav();
   }
   //     This screen used to persist only when Save & Enter was tapped, so typing
   //     three maxes and then backgrounding the app lost all three. It now follows
@@ -11796,7 +11817,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       //  MEAL_PASS_KEY is left out on purpose: a backup file is not a place
       //  for a credential.
       foodLogs: foodLogs, foodTargets: foodTargets, bodyweight: bodyweight, goalMode: goalMode, workoutNotes: workoutNotes,
-      trainStyle: trainStyle, ownPlan: ownPlan, liftNotes: liftNotes,
+      trainStyle: trainStyle, ownPlan: ownPlan, liftNotes: liftNotes, tipsSeen: { v: 1, seen: loadTipsSeen() },
       hiddenEx: hiddenEx,
       sessionPrefs: { size: sessionSize, budget: sessionBudget, equip: equipOwned },
       bwBand: bwBand, weekMoves: weekMoves, shortDays: shortDays, profile: userProfile, favEx: favEx,
@@ -11950,6 +11971,11 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         if (data.bodyweight && typeof data.bodyweight === 'object') { bodyweight = data.bodyweight; persistBodyweight(); }
         if (data.workoutNotes && typeof data.workoutNotes === 'object') { workoutNotes = cleanWorkoutNotes(data.workoutNotes); persistWorkoutNotes(); renderWorkoutNote(); }
         if (data.liftNotes && typeof data.liftNotes === 'object') { liftNotes = cleanLiftNotes(data.liftNotes); persistLiftNotes(); }
+        //  Seen tips come back as saved. A backup from before 8.28 belongs to
+        //  someone who already used the app, so only new feature tips stay.
+        if (data.tipsSeen && typeof data.tipsSeen === 'object') tipsSeen = cleanTipsSeen(data.tipsSeen);
+        else { var _ts = loadTipsSeen(); TIP_OLD.forEach(function(id) { _ts[id] = 1; }); tipsSeen = _ts; }
+        saveTipsSeen(); hideTip();
         //  Own plan, then style. An older backup has neither and leaves both alone.
         if (data.ownPlan && typeof data.ownPlan === 'object') { ownPlan = cleanOwnPlan(data.ownPlan); persistOwnPlan(); registerOwnPlan(); }
         if (data.trainStyle && typeof data.trainStyle === 'object') {
@@ -13077,6 +13103,143 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       var old = document.getElementById('qlOld'); if (old && old.style.display === 'none') toggleOldQuickLog();
       selectQuickLogLift(id);
     } else qsAdd(id);
+  }
+
+  //     ONE TIME TIPS (8.28). One short tip the first time a screen opens.
+  //  It is placed in the page flow next to what it explains, so it pushes
+  //  content down and never sits over a button. One at a time, at most one
+  //  per screen visit. Got it, or a tap anywhere else, marks it seen.
+  //  Seen tips: monk_tips_seen_v1 = { v: 1, seen: { id: 1 } }, in backups.
+  const TIPS_KEY = 'monk_tips_seen_v1';
+  var TIP_DEFS = [
+    { id: 'today', scr: 'today', t: 'Start here. This screen shows what is next today.', a: function() { return document.getElementById('todayDate'); }, at: 'after' },
+    { id: 'plan', scr: 'training', t: 'Log each set here. Tap a lift to see Swap and Add set.', a: function() { return tipFirstLift(); }, at: 'before' },
+    { id: 'lnote', scr: 'training', isNew: 1, t: 'Tap a lift, then Note. Your last note for it shows there.', a: function() { return tipFirstLift(); }, at: 'after' },
+    { id: 'wnote', scr: 'training', isNew: 1, t: 'Write how it felt. It saves by date in the full calendar.', a: function() { return document.getElementById('workoutNotesWrap'); }, at: 'before' },
+    { id: 'quicklog', scr: 'quicklog', isNew: 1, t: 'Pick any lift or type your own. Log as you go.', a: function() { return document.getElementById('qlAddExBtn'); }, at: 'before' },
+    { id: 'progress', scr: 'calendar', isNew: 1, t: 'Your lifts by date. Pick an exercise to see its history.', a: function() { return document.querySelector('#progressHome .prog-seg'); }, at: 'after' },
+    { id: 'run', scr: 'running', t: 'Your running plan lives here. Log each run when you finish it.', a: function() { var h = document.getElementById('runHome'); return h && h.firstElementChild; }, at: 'before' },
+    { id: 'food', scr: 'food', t: 'Log meals here. Your totals for the day show at the top.', a: function() { return document.getElementById('foodTotals'); }, at: 'before' },
+    { id: 'style', scr: 'settings', isNew: 1, t: 'Follow a plan or train your own way. Switch under Set your maxes.', a: function() { return document.getElementById('settingsOpenBtn'); }, at: 'after' },
+    { id: 'menu', scr: '*', isNew: 1, t: 'Tap the logo for every screen, plus Week review and The Edge.', a: function() { return tipTabTop(); }, at: 'before' }
+  ];
+  var TIP_IDS = TIP_DEFS.map(function(d) { return d.id; });
+  var TIP_OLD = TIP_DEFS.filter(function(d) { return !d.isNew; }).map(function(d) { return d.id; });
+  var tipsSeen = null, _tipEl = null, _tipId = null, _tipShownVisit = false, _tipTimer = 0, _tipScr = 'today';
+  function cleanTipsSeen(v) {
+    var out = {}, src = v && typeof v === 'object' ? (v.seen && typeof v.seen === 'object' ? v.seen : v) : {};
+    if (Array.isArray(v)) v.forEach(function(id) { if (TIP_IDS.indexOf(id) !== -1) out[id] = 1; });
+    else Object.keys(src).forEach(function(id) { if (TIP_IDS.indexOf(id) !== -1 && src[id]) out[id] = 1; });
+    return out;
+  }
+  function saveTipsSeen() { try { localStorage.setItem(TIPS_KEY, JSON.stringify({ v: 1, seen: tipsSeen || {} })); } catch(e) {} }
+  function tipsExistingUser() {
+    try {
+      if (typeof aboutSeen === 'function' && aboutSeen()) return true;
+      if (typeof sessions === 'object' && sessions && Object.keys(sessions).some(function(k) { return Array.isArray(sessions[k]) && sessions[k].length; })) return true;
+      if (typeof foodLogs === 'object' && foodLogs && Object.keys(foodLogs).length) return true;
+    } catch(e) {}
+    return false;
+  }
+  function tipsOldOnly() { var o = {}; TIP_OLD.forEach(function(id) { o[id] = 1; }); return o; }
+  function loadTipsSeen() {
+    if (tipsSeen) return tipsSeen;
+    var raw = null;
+    try { raw = localStorage.getItem(TIPS_KEY); } catch(e) {}
+    if (raw) { try { tipsSeen = cleanTipsSeen(JSON.parse(raw)); } catch(e) { tipsSeen = {}; } }
+    else {
+      //  First run of 8.28. People who already use the app only get the tips
+      //  for features added in 8.25 to 8.27.
+      tipsSeen = tipsExistingUser() ? tipsOldOnly() : {};
+      saveTipsSeen();
+    }
+    return tipsSeen;
+  }
+  function tipFirstLift() {
+    var rows = document.querySelectorAll('#tab-training .lift-row');
+    for (var i = 0; i < rows.length; i++) if (rows[i].offsetParent) return rows[i];
+    return null;
+  }
+  function tipTabTop() {
+    var tab = document.getElementById('tab-' + _tipScr);
+    if (!tab || _tipScr === 'settings') return null;
+    var first = tab.querySelector('section') || tab.firstElementChild;
+    return first && first.offsetParent ? first.firstElementChild : null;
+  }
+  function tipBlocked() {
+    var open = Array.prototype.some.call(document.querySelectorAll('.settings-modal-overlay, .rest-modal-overlay, #onbFlow'), function(m) {
+      return m.id !== 'settingsModal' && getComputedStyle(m).display !== 'none';
+    });
+    var menu = document.getElementById('navMenu');
+    return open || !!(menu && menu.offsetParent);
+  }
+  function tipInView(el, after) {
+    if (!el || !el.offsetParent) return false;
+    var r = el.getBoundingClientRect();
+    //  The tip goes where its edge is, and that edge has to be on screen,
+    //  clear of the tab bar and the rest timer.
+    var y = after ? r.bottom : r.top;
+    return y >= 40 && y <= window.innerHeight - 200;
+  }
+  function hideTip() {
+    if (_tipEl && _tipEl.parentNode) _tipEl.parentNode.removeChild(_tipEl);
+    _tipEl = null; _tipId = null;
+  }
+  function dismissTip() {
+    if (!_tipId) { hideTip(); return; }
+    loadTipsSeen()[_tipId] = 1; saveTipsSeen();
+    hideTip();
+  }
+  function tipScan() {
+    if (_tipEl && !_tipEl.isConnected) { _tipEl = null; _tipId = null; _tipShownVisit = false; }
+    if (_tipEl || _tipShownVisit || tipBlocked()) return;
+    var seen = loadTipsSeen(), sm = document.getElementById('settingsModal');
+    var inSettings = sm && getComputedStyle(sm).display !== 'none';
+    var scr = inSettings ? 'settings' : _tipScr;
+    for (var i = 0; i < TIP_DEFS.length; i++) {
+      var d = TIP_DEFS[i];
+      if (seen[d.id]) continue;
+      if (d.scr !== scr && !(d.scr === '*' && !inSettings)) continue;
+      var a = d.a();
+      if (!tipInView(a, d.at === 'after')) continue;
+      var el = document.createElement('div');
+      el.className = 'tip tip-' + (d.at === 'after' ? 'up' : 'down');
+      el.id = 'tipBox';
+      el.setAttribute('role', 'note');
+      el.innerHTML = '<p class="tip-text">' + styleEsc(d.t) + '</p><button type="button" class="tip-ok" onclick="dismissTip()">Got it</button>';
+      if (d.at === 'after') a.parentNode.insertBefore(el, a.nextSibling); else a.parentNode.insertBefore(el, a);
+      _tipEl = el; _tipId = d.id; _tipShownVisit = true;
+      return;
+    }
+  }
+  function tipSchedule(delay) {
+    clearTimeout(_tipTimer);
+    _tipTimer = setTimeout(function() { try { tipScan(); } catch(e) {} }, delay == null ? 350 : delay);
+  }
+  function tipOnNav(t) {
+    hideTip(); _tipShownVisit = false;
+    if (t) _tipScr = t;
+    tipSchedule();
+  }
+  function resetTips() {
+    tipsSeen = {}; saveTipsSeen(); hideTip(); _tipShownVisit = false;
+    var m = document.getElementById('tipsResetMsg');
+    if (m) m.textContent = 'Tips will show again as you open each screen.';
+  }
+  if (typeof document !== 'undefined' && document.addEventListener) {
+    document.addEventListener('click', function(e) {
+      if (_tipEl && !_tipEl.contains(e.target)) dismissTip();
+    }, true);
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && _tipEl) dismissTip(); });
+  }
+  if (typeof window !== 'undefined' && window.addEventListener) {
+    var _tipScrollT = 0;
+    window.addEventListener('scroll', function() {
+      if (_tipEl || _tipShownVisit) return;
+      //  Throttled, not debounced, so a long scroll still gets checked.
+      if (_tipScrollT) return;
+      _tipScrollT = setTimeout(function() { _tipScrollT = 0; try { tipScan(); } catch(e) {} }, 250);
+    }, { passive: true });
   }
   function persistBodyweight() {
     try { localStorage.setItem(BODYWEIGHT_KEY, JSON.stringify(bodyweight)); } catch(e) {}
@@ -17035,6 +17198,7 @@ function tabBarOwner(t) {
   return (t === 'today' || t === 'training' || t === 'food' || t === 'running' || t === 'calendar') ? t : null;
 }
 function goTab(t) {
+  if (typeof tipOnNav === 'function') try { tipOnNav(t === 'training' && typeof trainStyle === 'object' && trainStyle.style === 'free' ? 'quicklog' : (TAB_ALIASES[t] || t)); } catch(e) {}
   if (typeof saveWorkoutNote === 'function') try { saveWorkoutNote(); } catch(e) {}
   if (typeof flushLiftNotes === 'function') try { flushLiftNotes(); } catch(e) {}
   if (t === 'training' && typeof renderWorkoutNote === 'function') setTimeout(function() { try { renderWorkoutNote(); } catch(e) {} }, 0);
