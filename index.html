@@ -3520,12 +3520,18 @@ input:focus, select:focus, textarea:focus { border-color: var(--fill) !important
 #tab-calendar .today-date::before { display: none; }
 .plan-day-title { margin-bottom: 12px; }
 #tab-running .today-date { background: var(--persimmon); color: var(--ink); }
-#tab-food .section-title, #moreSection .more-title, .ql-heading, .settings-modal-brand .settings-modal-title {
-  background: var(--ink); color: var(--cream); }
-#tab-food .section-title .accent-word { color: var(--cream); }
-#info-subnav { background: var(--ink); }
-#info-subnav button, #info-subnav button.on { color: var(--cream); }
-#info-subnav button.on { box-shadow: inset 0 -3px 0 var(--cream); }
+/* Food, More, Settings, Quick Log, About: no band. Cream page, a large ink
+   display heading, a short persimmon rule above it. Ink is for text only. */
+#tab-food .section-title, #tab-food .section-title.train-title, #moreSection .more-title, .ql-heading, .settings-modal-brand .settings-modal-title {
+  background: none !important; color: var(--ink) !important; border-radius: 0; padding: 0; font-family: var(--font-display);
+  font-weight: 700; font-size: var(--fs-6); line-height: 1; text-align: left; text-transform: uppercase; margin: 0 0 16px; }
+#tab-food .section-title::before, #moreSection .more-title::before, .ql-heading::before, .settings-modal-brand .settings-modal-title::before {
+  content: ''; display: block; width: 40px; height: 6px; background: var(--persimmon); margin-bottom: 12px; }
+#tab-food .section-title .accent-word { color: var(--ink); }
+#tab-food .section-label { display: none; }
+#info-subnav { background: var(--bg); border-bottom: 1px solid var(--border); }
+#info-subnav button { color: var(--muted); }
+#info-subnav button.on { color: var(--ink); box-shadow: inset 0 -3px 0 var(--persimmon); }
 /* Persimmon fills on cream get a burnt edge so the shape holds at 3:1. */
 .wg-day.today:not(.picked), .pw-day.today { border-color: var(--hi-edge); }
 .ch-dot:nth-last-of-type(2) { stroke: var(--hi-edge); }
@@ -3539,6 +3545,22 @@ input:focus, select:focus, textarea:focus { border-color: var(--fill) !important
 .hero-cta { background: var(--ultramarine); color: var(--cream); border-color: var(--ultramarine); }
 .hero-cta:hover { background: var(--ultramarine-deep); color: var(--cream); }
 #tab-food .calfull-dates .quicklog-back { color: var(--primary-text); }
+/* Logged fields: the script marks a filled field green and a touched empty
+   one red. In this palette filled is ultramarine and empty is the error color. */
+input[style*="82, 194, 122"], input[style*="52C27A" i] { border-color: var(--ultramarine) !important; }
+input[style*="224, 82, 82"], input[style*="E05252" i] { border-color: var(--warn) !important; }
+/* Progress: one raised cream tile with a persimmon bar on top, not a block. */
+.prog-tile:first-child { background: var(--surface); border-color: var(--border); border-top: 6px solid var(--persimmon); }
+.prog-tile:first-child .prog-tile-v { color: var(--primary-text); }
+.prog-tile:first-child .prog-tile-l { color: var(--muted); }
+/* About Home: the title sits assembled in the display font, and the ring
+   reads at 3:1 or more. */
+.hero-title { font-weight: 700; }
+.hero-title .asm span { transform: none !important; opacity: 1 !important; }
+.ring-track { stroke: var(--field); }
+.ring-fill { stroke: var(--persimmon-burnt); }
+#ring-ticks line { stroke: var(--field); }
+.hero-cta, .hero-cta:hover { opacity: 1; }
 /* Links in blue. */
 a:not([class]), .howto-link { color: var(--primary-text); }
 </style>
@@ -6433,6 +6455,21 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     delete shortDays[k]; delete timeBoxes[k];
     afterQuickChange(day);
   }
+  //  A time chip on Today picks a length for today's session in place, the
+  //  same way Start in Quick Log does. Tapping the picked chip again goes
+  //  back to the full session.
+  function pickTodayBox(min, day) {
+    if (!day || TIME_BOX_CHOICES.indexOf(min) === -1) return;
+    var k = boxKey(day), dm = currentDayMode();
+    var same = dm && dm.date === todayKey() && dm.day === day && dm.week === currentTrainWeek && dm.min === min;
+    claimDayChoice(day);
+    delete quickSessions[k]; delete shortDays[k];
+    if (same) { timeBoxes[k] = 'full'; stampDayChoice(day, 'full', null); }
+    else { timeBoxes[k] = min; stampDayChoice(day, 'time', min); }
+    persistQuick(); persistSessionShape(); persistLifeHappens(); invalidateBuild();
+    renderDaySections(); renderAllRowStates();
+    if (typeof renderToday === 'function') renderToday();
+  }
   function useFullPlan() {
     var day = quickTargetDay();
     if (!day) return;
@@ -6681,15 +6718,19 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         var prog = partial ? dayProgress(next) : null;
         _todayDay = next;
         var qk = quickFor(next, currentTrainWeek);
+        //  Today's saved time choice for this session, if any: the chip shows
+        //  selected and the start button names the time.
+        var dm = currentDayMode();
+        var pickMin = dm && dm.date === todayKey() && dm.day === next && dm.week === currentTrainWeek && dm.min ? dm.min : null;
         host.innerHTML = (daysSinceLastLog() >= 3 ? '<div class="welcome-back">Welcome back. Pick up where you left off.</div>' : '')
           + '<div class="today-card-kicker">' + (partial ? 'In progress' : restToday ? 'Next workout' : (slot === next ? 'Today' : 'Next workout')) + '</div>'
           + '<div class="today-card-title">' + (qk ? 'Quick workout: ' + quickLabel(qk.kind) : d.title) + '</div>'
           + '<div class="today-card-meta">' + (prog ? prog.done + ' of ' + prog.total + ' sets done' : b.list.length + ' exercises, about ' + estText(b.est)) + '</div>'
           + (partial ? '' : '<div class="today-time"><div class="today-time-q" id="todayTimeQ">How long do you have?</div>'
             + '<div class="liftdays-group time-box-group" role="group" aria-labelledby="todayTimeQ">'
-            + TIME_BOX_CHOICES.map(function(m) { return '<button type="button" class="liftdays-btn" onclick="openQuickLog(' + m + ', \'' + next + '\')">' + m + ' min</button>'; }).join('')
+            + TIME_BOX_CHOICES.map(function(m) { return '<button type="button" class="liftdays-btn' + (pickMin === m ? ' on' : '') + '" aria-pressed="' + (pickMin === m) + '" onclick="pickTodayBox(' + m + ', \'' + next + '\')">' + m + ' min</button>'; }).join('')
             + '</div></div>')
-          + '<button class="today-start" onclick="startWorkout(\'' + next + '\')">' + (partial ? 'Continue workout' : 'Start workout') + '</button>'
+          + '<button class="today-start" onclick="startWorkout(\'' + next + '\')">' + (partial ? 'Continue workout' : 'Start workout') + (pickMin ? ', ' + pickMin + ' min' : '') + '</button>'
           + '<button class="today-secondary" onclick="goTab(\'training\'); switchDay(\'' + next + '\');">See all exercises</button>'
           + '<div class="today-row2"><button class="today-link" onclick="openQuickLog(null, \'' + next + '\')">Short on time</button>'
           + '<button class="today-link" onclick="openGoingOut(\'' + next + '\')">Going out?</button></div>';
