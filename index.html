@@ -78,7 +78,7 @@
     /* Three radii: small (controls), card, pill. */
     --r-s: 4px; --r-c: 10px; --r-p: 999px;
     --fill: var(--accent); --primary: var(--accent); --on-primary: var(--on-accent);
-    --hi: var(--accent); --on-hi: var(--on-accent);
+    --orange: #FF6A1A; --hi: var(--accent); --on-hi: var(--on-accent);
     /* One elevation, only for things that float over the page. */
     --lift: 0 12px 32px rgba(20,20,20,0.16);
     /* Type scale: seven sizes, used everywhere. */
@@ -138,7 +138,8 @@
     --fill:        #0038BD;
     /* Orange is the highlight, fill only, ink text on it: today, progress,
        running, one stat tile. Never a button, never text. */
-    --hi:          #FF4B2B;
+    --orange:      #FF6A1A;
+    --hi:          var(--orange);
     --on-hi:       #141414;
   }
   html[data-theme="light"] body { background-image: none; }
@@ -3452,6 +3453,40 @@ img[src*="assets/brand/"] { mix-blend-mode: multiply; }
 .prog-tile-v { font-family: var(--font-mono); font-weight: 700; }
 /* One focus style for every field: blue border, blue ring. */
 input:focus, select:focus, textarea:focus { border-color: var(--fill) !important; }
+/* ===== 8.22 review pass ===== */
+/* Run log: one field style. Hairline border, 2px blue ring on focus. The
+   valid and invalid colors set by script are overridden here; an error
+   border shows only while the error message has text. */
+#runLogSheet .run-input { border: 1px solid var(--border) !important; background: var(--bg); box-shadow: none; outline: none; }
+#runLogSheet .run-input:focus { border-color: var(--fill) !important; box-shadow: 0 0 0 2px var(--fill); outline: none; }
+#runLogSheet:has(#rlMsg:not(:empty)) .run-input:placeholder-shown:not(:focus) { border-color: var(--warn) !important; }
+.rl-feel summary { list-style: none; cursor: default; pointer-events: none; }
+.rl-feel summary::-webkit-details-marker { display: none; }
+/* Plan: the week strip already picks the day, so the repeat chip row goes. */
+#planNav, #altPlanNav { display: none !important; }
+/* The day tag reads as a label, not a disabled control. */
+.badge.badge-day { background: transparent; color: var(--text); border: 1px solid var(--text); font-weight: 700; }
+/* Header: no menu glyph after the wordmark. The wordmark is still the menu button. */
+.nav-logo .nav-logo-chevron { display: none; }
+/* Empty states: a solid hairline box. */
+.prog-empty { border: 1px solid var(--border); background: var(--surface); }
+/* Blue header band with cream text. */
+#tab-running .today-date, #tab-calendar .today-date, #moreSection .more-title, #tab-food .section-title,
+.ql-heading, #onbFlowScreen3 .settings-modal-title {
+  background: var(--primary); color: var(--on-primary); border: 0; border-radius: var(--r-c);
+  padding: 16px; margin-bottom: 16px; text-align: left; line-height: 1; }
+#tab-running .today-date::before, #tab-calendar .today-date::before { display: none; }
+#tab-running .today-date, #tab-calendar .today-date { padding-top: 16px; }
+#tab-food .section-title .accent-word { color: var(--on-primary); }
+#info-subnav { background: var(--primary); border-bottom: 0; }
+#info-subnav button { color: var(--on-primary); opacity: 1; }
+#info-subnav button.on { color: var(--on-primary); box-shadow: inset 0 -3px 0 var(--on-primary); border-bottom-color: transparent; }
+/* Section labels and hero numbers in blue. */
+.today-label, .section-label, body.training-mode .section-label { color: var(--primary); }
+.prog-tile-v, .ring-week-num, .simple-target strong { color: var(--primary); }
+.prog-tile:first-child .prog-tile-v { color: var(--on-hi); }
+/* You're ready: today's row is the orange mark. */
+#onbFlowScreen3 .onb-week li:first-child .onb-week-day { background: var(--hi); color: var(--on-hi); border-radius: var(--r-s); text-align: center; }
 /* Links in blue. */
 a:not([class]), .howto-link { color: var(--primary); }
 .hero-cta { color: var(--primary); }
@@ -3496,7 +3531,7 @@ a:not([class]), .howto-link { color: var(--primary); }
     </div>
     <div class="rl-pace" id="rlPace" aria-live="polite"></div>
     <div class="rl-types" role="radiogroup" aria-label="Type of run" id="rlTypes"></div>
-    <details class="rl-feel"><summary>How did it feel?</summary><div class="rl-feel-btns" role="radiogroup" aria-label="How it felt" id="rlFeel"></div></details>
+    <details class="rl-feel" open><summary tabindex="-1">How did it feel?</summary><div class="rl-feel-btns" role="radiogroup" aria-label="How it felt" id="rlFeel"></div></details>
     <div class="rl-msg" id="rlMsg" role="alert"></div>
     <button type="button" class="today-start" onclick="saveQuickRun()">Save</button>
     <button type="button" class="settings-cancel-btn" onclick="closeRunLog()">Cancel</button>
@@ -14175,12 +14210,12 @@ a:not([class]), .howto-link { color: var(--primary); }
       var anyRun = bars.some(function(b) { return b.y > 0; });
       var last = bars[bars.length - 1], peak = bars.reduce(function(a, b) { return b.y > a.y ? b : a; }, bars[0]);
       ch.innerHTML = anyRun ? barChartSVG(bars, runUnits, 'runDist', 'Weekly distance for the last 8 weeks. This week ' + last.y + ' ' + runUnits + '. Most was ' + peak.y + ' ' + runUnits + ' in the week of ' + peak.label + '.')
-        : '<div class="prog-empty"><div>No runs yet. Your weekly distance shows up here.</div></div>';
+        : '<div class="prog-empty"><div>No runs yet.</div></div>';
     }
     var tb = document.getElementById('runTable');
     if (tb) {
       var rr = runRows();
-      if (!rr.length) tb.innerHTML = '';
+      if (!rr.length) tb.innerHTML = '<div class="prog-empty">No runs logged yet.</div>';
       else {
         var shown = _runMore ? rr : rr.slice(0, 5);
         tb.innerHTML = '<table class="prog-table run-table"><thead><tr><th scope="col">Date</th><th scope="col">Distance</th><th scope="col">Time</th><th scope="col">Pace</th><th scope="col">Type</th></tr></thead><tbody>'
