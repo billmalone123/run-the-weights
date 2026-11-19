@@ -717,11 +717,13 @@ var menuHtml = ctx.buildNavMenu().innerHTML;
 //  8.25 Option A: More moved into the logo menu, so About, Week review and
 //  The Edge are listed there, and Progress too.
 //  8.27: About is part of The Edge, so it has no row of its own.
-['Today', 'Plan', 'Food', 'Quick Log', 'Progress', 'Week review', 'The Edge'].forEach(function (label) {
+//  8.30: Week review and The Edge moved one tap down, behind a More row.
+['Today', 'Plan', 'Food', 'Quick Log', 'Progress', 'More'].forEach(function (label) {
   ok(label + ' is in the logo menu', menuHtml.indexOf('>' + label + '<') > -1);
 });
+eq('logo menu order (running off)', (menuHtml.match(/data-tab="([a-z]+)"/g) || []).map(function (m) { return m.slice(10, -1); }).join(','), 'today,training,quicklog,food,calendar,more');
 // Settings sits behind the gear, so it is not listed.
-['Settings', 'About and more', 'About'].forEach(function (label) {
+['Settings', 'About and more', 'About', 'Week review', 'The Edge'].forEach(function (label) {
   eq(label + ' is not in the logo menu', menuHtml.indexOf('>' + label + '<') > -1, false);
 });
 eq('Run stays out of the menu while running is off', menuHtml.indexOf('>Run<') > -1, false);
@@ -736,9 +738,8 @@ ok('the Workout tab is labelled Plan', /data-tab="training"[^\n]*<span>Plan<\/sp
 ok('the header gear opens Settings', /<nav>[\s\S]*?id="navGear" aria-label="Settings" onclick="openSettingsModal\(\)"[\s\S]*?<\/nav>/.test(html));
 // More is four rows, in order. Progress moved to Today.
 var moreHtml = html.slice(html.indexOf('id="tab-more"'), html.indexOf('id="aboutIntro"'));
-eq('More has exactly three rows, in order (About merged into The Edge in 8.27)', (moreHtml.match(/more-row-title">([^<]+)</g) || []).map(function (m) { return m.replace(/.*">|<$/g, ''); }).join(','), 'Week review,The Edge,Home');
-[['Home', "goTab('info'); goSec('home');"],
- ['The Edge', "goTab('info'); goSec('edge');"], ['Week review', "goTab('info'); goSec('overview');"]
+eq('More has exactly two rows, in order (8.30)', (moreHtml.match(/more-row-title">([^<]+)</g) || []).map(function (m) { return m.replace(/.*">|<$/g, ''); }).join(','), 'Week review,The Edge');
+[['The Edge', "goTab('info'); goSec('edge');"], ['Week review', "goTab('info'); goSec('overview');"]
 ].forEach(function (p) {
   ok('More has a working link to ' + p[0], moreHtml.indexOf('onclick="' + p[1] + '"><span class="more-row-title">' + p[0] + '<') > -1);
 });

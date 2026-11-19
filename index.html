@@ -2654,6 +2654,8 @@ label.food-photo-btn.food-photo-primary:hover, button.food-photo-btn.food-photo-
   pointer-events: none;
 }
 .navmenu.on { opacity: 1; transform: scale(1); pointer-events: auto; }
+.navmenu-scrim { display: none; position: fixed; inset: 0; z-index: 499; background: transparent; -webkit-tap-highlight-color: transparent; }
+.navmenu-scrim.on { display: block; }
 /* Phone widths only — this is the primary way users switch sections, so it
    should read as the most important control on screen, not a cramped
    utility menu. positionNavMenu() reads offsetWidth at open time, so no JS
@@ -4818,11 +4820,10 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 <div id="tab-more" class="tab-main" style="display:none">
 <section id="moreSection">
   <h2 class="section-title train-title more-title">MORE</h2>
-  <!-- Progress now lives on Today and Settings behind the header gear. -->
+  <!-- 8.30: the logo menu's More row opens this page. Two rows. -->
   <div class="more-list">
     <button class="more-list-item" onclick="goTab('info'); goSec('overview');"><span class="more-row-title">Week review</span><span class="more-row-sub">How a week of training fits together.</span></button>
     <button class="more-list-item" onclick="goTab('info'); goSec('edge');"><span class="more-row-title">The Edge</span><span class="more-row-sub">Why getting stronger feels good.</span></button>
-    <button class="more-list-item" onclick="goTab('info'); goSec('home');"><span class="more-row-title">Home</span><span class="more-row-sub">The welcome screen.</span></button>
   </div>
 </section>
 </div>
@@ -13324,7 +13325,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     { id: 'run', scr: 'running', t: 'Your running plan lives here. Log each run when you finish it.', a: function() { var h = document.getElementById('runHome'); return h && h.firstElementChild; }, at: 'before' },
     { id: 'food', scr: 'food', t: 'Weigh in here. Add meals below and your totals show under them.', a: function() { return document.getElementById('foodWeighTop'); }, at: 'after' },
     { id: 'style', scr: 'settings', isNew: 1, t: 'Follow a plan or train your own way. Switch under Set your maxes.', a: function() { return document.getElementById('settingsOpenBtn'); }, at: 'after' },
-    { id: 'menu', scr: '*', isNew: 1, t: 'Tap the logo for every screen, plus Week review and The Edge.', a: function() { return tipTabTop(); }, at: 'before' }
+    { id: 'menu', scr: '*', isNew: 1, t: 'More lives here now: Week review and The Edge.', a: function() { return tipTabTop(); }, at: 'before' }
   ];
   var TIP_IDS = TIP_DEFS.map(function(d) { return d.id; });
   var TIP_OLD = TIP_DEFS.filter(function(d) { return !d.isNew; }).map(function(d) { return d.id; });
@@ -17468,8 +17469,8 @@ function buildNavMenu() {
     { id: 'quicklog', label: 'Quick Log' },
     { id: 'food', label: 'Food' }
   ].concat(runningEnabled ? [{ id: 'running', label: 'Run' }] : [])
-   .concat([{ id: 'calendar', label: 'Progress' },
-            { id: 'review', label: 'Week review', sec: 'overview' }, { id: 'edge', label: 'The Edge', sec: 'edge' }]);
+   //  8.30: Week review and The Edge sit one tap down, on the More page.
+   .concat([{ id: 'calendar', label: 'Progress' }, { id: 'more', label: 'More' }]);
   //  No header row here — the trigger pill itself (the wordmark you just
   //  tapped) already says what this is; a repeated "Run the Weights" label
   //  inside the panel was redundant and cost every item extra scroll room.
@@ -17520,6 +17521,32 @@ function buildNavMenu() {
 
 function navMenuOpen() { return !!(_navMenu && _navMenu.classList.contains('on')); }
 
+//  8.30: a clear layer under the open menu takes every tap outside it, so
+//  that tap only closes the menu and never presses what sits underneath.
+//  After a touch it stays a moment longer to swallow the click that follows.
+var _navScrim = null, _navScrimT = 0;
+function navScrim() {
+  if (_navScrim) return _navScrim;
+  var s = document.createElement('div');
+  s.className = 'navmenu-scrim';
+  s.setAttribute('aria-hidden', 'true');
+  s.addEventListener('touchstart', function(e) {
+    e.stopPropagation();
+    closeNavMenu(false, true);
+    clearTimeout(_navScrimT);
+    _navScrimT = setTimeout(hideNavScrim, 700);
+  }, { passive: true });
+  s.addEventListener('mousedown', function(e) { e.preventDefault(); });
+  s.addEventListener('click', function(e) {
+    e.preventDefault(); e.stopPropagation();
+    if (navMenuOpen()) closeNavMenu(); else hideNavScrim();
+  });
+  document.body.appendChild(s);
+  _navScrim = s;
+  return s;
+}
+function hideNavScrim() { clearTimeout(_navScrimT); if (_navScrim) _navScrim.classList.remove('on'); }
+
 const NAV_HINT_KEY = 'monk_nav_hint_v1';
 function openNavMenu() {
   var trigger = document.getElementById('navLogo');
@@ -17535,8 +17562,8 @@ function openNavMenu() {
   try { current = localStorage.getItem(LAST_TAB_KEY); } catch (e) {}
   if (MAIN_TABS.indexOf(current) === -1) current = 'info';
   if (current === 'info') {
-    var aboutOn = document.getElementById('sec-about');
-    current = (aboutOn && aboutOn.style.display === 'block') ? 'about' : null;
+    var onSec = ['overview', 'edge'].filter(function(id) { var el = document.getElementById('sec-' + id); return el && el.style.display === 'block'; })[0];
+    current = onSec ? 'more' : null;
   }
   el.querySelectorAll('.navmenu-item').forEach(function(b) {
     b.classList.toggle('current', b.dataset.tab === current);
@@ -17547,6 +17574,8 @@ function openNavMenu() {
   });
 
   positionNavMenu();
+  clearTimeout(_navScrimT);
+  navScrim().classList.add('on');
   void el.offsetWidth;
   el.classList.add('on');
   trigger.setAttribute('aria-expanded', 'true');
@@ -17576,7 +17605,8 @@ function positionNavMenu() {
 
 //  returnFocus is for keyboard dismissal — closing with Escape has to put focus
 //  back on the trigger, or a keyboard user is dropped at the top of the document.
-function closeNavMenu(returnFocus) {
+function closeNavMenu(returnFocus, keepScrim) {
+  if (!keepScrim) hideNavScrim();
   if (!_navMenu) return;
   _navMenu.classList.remove('on');
   var t = document.getElementById('navLogo');
