@@ -15927,7 +15927,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     var m = document.getElementById('runLogSheet'); if (m) m.style.display = 'flex';
     if (d) d.focus();
   }
-  function closeRunLog() { saveRunNote(); var m = document.getElementById('runLogSheet'); if (m) m.style.display = 'none'; }
+  function closeRunLog(noteDone) { if (noteDone !== true) saveRunNote(); var m = document.getElementById('runLogSheet'); if (m) m.style.display = 'none'; }
   //     RUN NOTES (8.30). One plain text note per run date, 500 characters at
   //  most. monk_run_notes_v1 = { v: 1, notes: { 'YYYY-MM-DD': text } }. Kept
   //  apart from the run logs so nothing about a logged run changes.
@@ -15949,10 +15949,16 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   }
   function persistRunNotes() { try { localStorage.setItem(RUN_NOTES_KEY, JSON.stringify({ v: 1, notes: getRunNotes() })); } catch(e) {} }
   function runNoteFor(k) { return getRunNotes()[k] || ''; }
+  //  Notes stored on a date with no saved run (left by 8.30, which saved on
+  //  cancel). Kept, never shown. Counted for the build report.
+  function orphanRunNoteCount() { var n = getRunNotes(); return Object.keys(n).filter(function(k) { return !runLogs[k]; }).length; }
   function renderRunNote() {
     var t = document.getElementById('rlNote'), body = document.getElementById('rlNoteBody'), btn = document.getElementById('rlNoteBtn');
     if (!t || !body || !btn) return;
-    t.value = runNoteFor(_rlDate || todayKey());
+    //  8.31: a note shows here only when its date has a saved run. A note
+    //  left from a cancelled sheet in 8.30 stays stored but is not shown.
+    var k = _rlDate || todayKey();
+    t.value = runLogs[k] ? runNoteFor(k) : '';
     body.hidden = true;
     btn.setAttribute('aria-expanded', 'false');
     btn.textContent = t.value ? 'Note' : 'Add a note';
@@ -15972,11 +15978,18 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     if (t && c) c.textContent = t.value.length >= RUN_NOTE_MAX - 50 ? (RUN_NOTE_MAX - t.value.length) + ' characters left' : '';
   }
   function onRunNoteInput() { runNoteCount(); clearTimeout(_rnT); _rnT = setTimeout(saveRunNote, 400); }
-  function saveRunNote() {
+  //  8.31: the note saves only with its run. While the sheet is open for a
+  //  date with no saved run, typing, blur and close keep the note in the
+  //  field only; saveQuickRun() writes it (withRun) once the run is saved,
+  //  and closing the sheet without saving drops it. A saved run's note
+  //  still autosaves as before.
+  function saveRunNote(withRun) {
     clearTimeout(_rnT);
     var t = document.getElementById('rlNote'), k = _rlDate;
-    if (!t || !k) return;
+    if (!t || !k || !runLogs[k]) return;
     var v = String(t.value || '').replace(/\r\n?/g, '\n').slice(0, RUN_NOTE_MAX), notes = getRunNotes();
+    //  A new run with an empty field leaves any older stored note alone.
+    if (withRun === 'new' && !v.trim()) return;
     if ((notes[k] || '') === (v.trim() ? v : '')) return;
     if (v.trim()) notes[k] = v; else delete notes[k];
     persistRunNotes();
@@ -16018,13 +16031,14 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     if (r.secs >= 86400) return say('That is over 24 hours. Check the time.');
     var k = _rlDate || todayKey(), prev = runLogs[k] || {};
     if (runDateIsFuture(k)) return say('That day has not happened yet. Log it on the day.');
-    saveRunNote();
+    var wasSaved = !!runLogs[k];
     runLogs[k] = { miles: Math.round(r.miles * 100) / 100, secs: Math.round(r.secs), hr: prev.hr || null, feel: _rlFeel || prev.feel || null, type: _rlType };
     if (prev.source) runLogs[k].source = prev.source;
     persistRunLogs();
+    saveRunNote(wasSaved ? true : 'new');
     runLastType = _rlType;
     try { localStorage.setItem(RUN_LAST_TYPE_KEY, runLastType); } catch(e) {}
-    closeRunLog();
+    closeRunLog(true);
     goTab('running');
     var sv = document.getElementById('runSaved');
     if (sv) {
