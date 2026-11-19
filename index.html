@@ -3624,6 +3624,17 @@ img[src$=".svg"][src*="assets/brand/"] { mix-blend-mode: normal; }
 .footer-logo img { height: 112px; width: auto; }
 .settings-modal-brand img { object-fit: contain; border-radius: 0; }
 .splash-logo { height: auto; }
+/* Workout notes: the Quick Log field look, as a box under the session. */
+.workout-notes { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border); }
+.workout-notes .quicklog-field { margin-bottom: 0; }
+.workout-note-date { font-weight: 400; color: var(--muted); margin-left: 6px; }
+#workoutNote { display: block; width: 100%; box-sizing: border-box; min-height: 96px; resize: vertical; background: var(--bg); border: 1px solid var(--input-border-idle);
+  color: var(--text); font-family: var(--font-body); font-size: var(--fs-3); line-height: 1.45; padding: 12px 14px; border-radius: var(--r-s); outline: none; }
+#workoutNote:focus { border-color: var(--fill); box-shadow: 0 0 0 1px var(--fill); }
+.workout-note-count { font-size: var(--fs-1); color: var(--muted); text-align: right; margin-top: 4px; }
+.workout-note-count:empty { display: none; }
+.cal-workout-note { font-size: var(--fs-1); color: var(--muted); line-height: 1.45; margin-top: 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.cal-workout-note-label { font-weight: 700; color: var(--text); margin-bottom: 2px; }
 /* Links in blue. */
 a:not([class]), .howto-link { color: var(--primary-text); }
 </style>
@@ -4292,6 +4303,15 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     <div class="lift-row"><div><div class="lift-name">Jefferson Curl (very light)</div><div class="lift-sets-reps">2 sets × 8 reps</div></div><div class="lift-rest">60 sec</div><div class="lift-time">~4 min</div></div>
   </div>
 
+  <!-- WORKOUT NOTES. One optional note per date, under the session. -->
+  <div class="workout-notes" id="workoutNotesWrap">
+    <div class="quicklog-field">
+      <label for="workoutNote">Workout notes <span class="workout-note-date" id="workoutNoteDate"></span></label>
+      <textarea id="workoutNote" rows="3" maxlength="1000" placeholder="How it felt, what to change next time." onblur="saveWorkoutNote()" oninput="workoutNoteCount()"></textarea>
+      <div class="workout-note-count" id="workoutNoteCount" aria-live="polite"></div>
+    </div>
+  </div>
+
 </section>
 
 
@@ -4874,7 +4894,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.24</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.25</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -5324,7 +5344,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     //  The meal passcode is deliberately not mirrored anywhere but this device.
     [['foodLogs', function() { return foodLogs; }, function(v) { foodLogs = v; persistFoodLogs(); }],
      ['foodTargets', function() { return foodTargets; }, function(v) { foodTargets = v; persistFoodTargets(); }],
-     ['bodyweight', function() { return bodyweight; }, function(v) { bodyweight = v; persistBodyweight(); }]
+     ['bodyweight', function() { return bodyweight; }, function(v) { bodyweight = v; persistBodyweight(); }],
+     ['workoutNotes', function() { return workoutNotes; }, function(v) { workoutNotes = cleanWorkoutNotes(v); persistWorkoutNotes(); renderWorkoutNote(); }]
     ].forEach(function(f) {
       idbGet(f[0]).then(function(v) {
         if (v && typeof v === 'object' && Object.keys(v).length > Object.keys(f[1]() || {}).length) {
@@ -11474,7 +11495,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       splitHistory: splitHistory, cycleStartMaxes: cycleStartMaxes,
       //  MEAL_PASS_KEY is left out on purpose: a backup file is not a place
       //  for a credential.
-      foodLogs: foodLogs, foodTargets: foodTargets, bodyweight: bodyweight, goalMode: goalMode,
+      foodLogs: foodLogs, foodTargets: foodTargets, bodyweight: bodyweight, goalMode: goalMode, workoutNotes: workoutNotes,
       hiddenEx: hiddenEx,
       sessionPrefs: { size: sessionSize, budget: sessionBudget, equip: equipOwned },
       bwBand: bwBand, weekMoves: weekMoves, shortDays: shortDays, profile: userProfile, favEx: favEx,
@@ -11626,6 +11647,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         if (data.foodLogs && typeof data.foodLogs === 'object') { foodLogs = data.foodLogs; persistFoodLogs(); }
         if (data.foodTargets && typeof data.foodTargets === 'object') { foodTargets = data.foodTargets; persistFoodTargets(); }
         if (data.bodyweight && typeof data.bodyweight === 'object') { bodyweight = data.bodyweight; persistBodyweight(); }
+        if (data.workoutNotes && typeof data.workoutNotes === 'object') { workoutNotes = cleanWorkoutNotes(data.workoutNotes); persistWorkoutNotes(); renderWorkoutNote(); }
         //  Absent on every backup older than this feature — leaves goalMode
         //  at its already-loaded value (the 'bulk' default) rather than
         //  forcing it, same as maintenanceMode's own absent-on-old-backup rule.
@@ -12084,6 +12106,71 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     try { localStorage.setItem(FOOD_TARGET_KEY, JSON.stringify(foodTargets)); } catch(e) {}
     idbSet('foodTargets', foodTargets);
   }
+  //     WORKOUT NOTES. { 'YYYY-MM-DD': text }. One note per date, so a session on
+  //     any weekday keeps its own. Empty means no entry at all. Same local plus
+  //     IndexedDB mirror as bodyweight, and carried in backups.
+  const WORKOUT_NOTES_KEY = 'monk_workout_notes_v1';
+  var WORKOUT_NOTE_MAX = 1000;
+  var workoutNotes = {};
+  function cleanWorkoutNotes(v) {
+    var out = {};
+    if (!v || typeof v !== 'object' || Array.isArray(v)) return out;
+    Object.keys(v).forEach(function(k) {
+      if (/^\d{4}-\d{2}-\d{2}$/.test(k) && typeof v[k] === 'string' && v[k].trim()) out[k] = v[k].slice(0, WORKOUT_NOTE_MAX);
+    });
+    return out;
+  }
+  function loadWorkoutNotes() {
+    try { workoutNotes = cleanWorkoutNotes(JSON.parse(localStorage.getItem(WORKOUT_NOTES_KEY))); } catch(e) { workoutNotes = {}; }
+  }
+  function persistWorkoutNotes() {
+    try {
+      if (Object.keys(workoutNotes).length) localStorage.setItem(WORKOUT_NOTES_KEY, JSON.stringify(workoutNotes));
+      else localStorage.removeItem(WORKOUT_NOTES_KEY);
+    } catch(e) {}
+    if (typeof idbSet === 'function') idbSet('workoutNotes', workoutNotes);
+  }
+  function workoutNoteEscape(t) {
+    return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function workoutNoteCount() {
+    var el = document.getElementById('workoutNote'), c = document.getElementById('workoutNoteCount');
+    if (!el || !c) return;
+    var n = String(el.value || '').length;
+    c.textContent = n >= WORKOUT_NOTE_MAX - 100 ? n.toLocaleString('en-US') + ' of ' + WORKOUT_NOTE_MAX.toLocaleString('en-US') : '';
+  }
+  //  Saves to the date the box was showing, so a note started before midnight
+  //  stays with that session.
+  function saveWorkoutNote() {
+    var el = document.getElementById('workoutNote');
+    if (!el || !el.getAttribute) return;
+    var d = el.getAttribute('data-date') || todayKey();
+    var v = String(el.value || '').slice(0, WORKOUT_NOTE_MAX);
+    var had = workoutNotes[d] || '';
+    if (v.trim()) workoutNotes[d] = v; else delete workoutNotes[d];
+    if ((workoutNotes[d] || '') !== had) {
+      persistWorkoutNotes();
+      if (typeof renderWeekCalendar === 'function') try { renderWeekCalendar(); } catch(e) {}
+    }
+  }
+  function renderWorkoutNote() {
+    var el = document.getElementById('workoutNote');
+    if (!el || !el.setAttribute || document.activeElement === el) return;
+    var d = todayKey();
+    el.setAttribute('data-date', d);
+    el.value = workoutNotes[d] || '';
+    var lab = document.getElementById('workoutNoteDate');
+    if (lab) lab.textContent = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).replace(/,/g, '');
+    workoutNoteCount();
+  }
+  loadWorkoutNotes();
+  try {
+    if (document.addEventListener) {
+      document.addEventListener('DOMContentLoaded', renderWorkoutNote);
+      document.addEventListener('visibilitychange', function() { if (document.hidden) saveWorkoutNote(); else renderWorkoutNote(); });
+    }
+    if (window.addEventListener) window.addEventListener('pagehide', saveWorkoutNote);
+  } catch(e) {}
   function persistBodyweight() {
     try { localStorage.setItem(BODYWEIGHT_KEY, JSON.stringify(bodyweight)); } catch(e) {}
     idbSet('bodyweight', bodyweight);
@@ -14818,6 +14905,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       //  Only where a run is planned or already logged. Rest days with no run
       //  never show run fields.
       if (o.logs && !o.noRuns && (run || runLogs[dateKeyOfRun(date)])) parts.push(runLogInputsHTML({ date: date }, o.scope || 'cal'));
+      var wn = date.getTime() <= today.getTime() && typeof workoutNotes === 'object' ? workoutNotes[dateKeyOfRun(date)] : '';
+      if (wn) parts.push('<div class="cal-workout-note"><div class="cal-workout-note-label">Workout notes</div>' + workoutNoteEscape(wn) + '</div>');
       return '<div class="cal-day' + (!slot.rest || run ? ' has-work' : '') + (isToday ? ' is-today' : '') + '">'
         + '<div class="cal-dow"><span>' + RUN_DOWS[i] + ' ' + RUN_MONTHS[date.getMonth()] + ' ' + date.getDate() + '</span>'
         + (isToday ? '<span class="cal-today-chip">Today</span>' : '') + '</div>'
@@ -16017,6 +16106,8 @@ function tabBarOwner(t) {
   return (t === 'today' || t === 'training' || t === 'food' || t === 'running') ? t : 'more';
 }
 function goTab(t) {
+  if (typeof saveWorkoutNote === 'function') try { saveWorkoutNote(); } catch(e) {}
+  if (t === 'training' && typeof renderWorkoutNote === 'function') setTimeout(function() { try { renderWorkoutNote(); } catch(e) {} }, 0);
   var alias = TAB_ALIASES[t];
   if (alias) {
     goTab(alias);
