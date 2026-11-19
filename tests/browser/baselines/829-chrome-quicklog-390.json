@@ -1,0 +1,8 @@
+{
+ "nav": "{\"x\":0,\"y\":0,\"width\":390,\"height\":48,\"top\":0,\"right\":390,\"bottom\":48,\"left\":0}",
+ "gear": "{\"x\":334,\"y\":2,\"width\":44,\"height\":44,\"top\":2,\"right\":378,\"bottom\":46,\"left\":334}",
+ "gearHTML": 773,
+ "tabbar": "{\"x\":0,\"y\":639,\"width\":390,\"height\":61,\"top\":639,\"right\":390,\"bottom\":700,\"left\":0}",
+ "tabbarHTML": 1151,
+ "logo": "{\"x\":12,\"y\":2,\"width\":188.390625,\"height\":44,\"top\":2,\"right\":200.390625,\"bottom\":46,\"left\":12}"
+}

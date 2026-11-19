@@ -8,3 +8,5 @@ exercise_import_proposal.md
 
 # Master build prompt, local only
 PROMPT_MASTER_all_updates.md
+tests/browser/out/
+__pycache__/
