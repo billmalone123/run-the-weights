@@ -3567,6 +3567,28 @@ input[style*="224, 82, 82"], input[style*="E05252" i] { border-color: var(--warn
   background: var(--ultramarine) !important; color: var(--cream) !important; border-radius: var(--r-c); padding: 16px; }
 #tab-food .section-title::before, .ql-heading::before { display: none; }
 #tab-food .section-title .accent-word { color: var(--cream); }
+/* PERSIMMON IS NOW OR NEXT. Ultramarine is actions and done. */
+/* Selected time chip, on Today and in Quick Log. */
+.time-box-group .liftdays-btn.on, #qlTimes .liftdays-btn.on { background: var(--persimmon); border-color: var(--persimmon-burnt); color: var(--ink); }
+/* Plan: the current set is a persimmon circle; done sets stay ultramarine with a check. */
+.lift-row:not(.all-done) .set-row:not(.logged):not(.set-row:not(.logged) ~ .set-row) .set-num {
+  display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; margin: 0 auto;
+  border-radius: 50%; background: var(--persimmon); color: var(--ink); }
+.set-row.logged .set-done-btn { background: var(--ultramarine); border-color: var(--ultramarine); color: var(--cream); }
+/* Next session tag on Plan. */
+.badge.badge-day.is-next { background: var(--persimmon); border-color: var(--persimmon-burnt); color: var(--ink); }
+/* Rest day and Next workout eyebrows. */
+.today-card-kicker.kicker-now { color: var(--persimmon-burnt); font-weight: 700; }
+/* Snap meal: persimmon with ink text. */
+.food-photo-primary, label.food-photo-primary { background: var(--persimmon) !important; border-color: var(--persimmon-burnt) !important; color: var(--ink) !important; }
+.food-photo-primary * { color: var(--ink) !important; }
+/* Macro bars fill persimmon once they have a value. */
+.food-bar-fill:not([style*="width:0%"]) { background: var(--persimmon) !important; box-shadow: none !important; }
+/* Latest chart point. */
+.ch-dot:nth-last-of-type(2) { fill: var(--persimmon); }
+/* Persimmon never touches a big ultramarine block: Today's rule sits above the band. */
+.today-date { overflow: visible; margin-top: 22px; padding-top: 16px; }
+.today-date::before { top: -14px; left: 0; right: auto; width: 40px; height: 6px; border-radius: 0; }
 /* Links in blue. */
 a:not([class]), .howto-link { color: var(--primary-text); }
 </style>
@@ -6396,7 +6418,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     var host = document.getElementById('qlToday');
     if (host) {
       if (slot === 'rest') {
-        host.innerHTML = '<div class="today-card-kicker">Rest day today</div>'
+        host.innerHTML = '<div class="today-card-kicker kicker-now">Rest day today</div>'
           + '<div class="ql-rest-line">Resting counts. If you feel like moving, a quick workout below works too' + (day ? ' and counts as your ' + SPLIT_DAYS[day].title + ' day.' : '.') + '</div>';
       } else if (!day) {
         host.innerHTML = '<div class="today-card-kicker">This week</div><div class="ql-rest-line">Every workout this week is logged.</div>';
@@ -6602,7 +6624,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     var rp = restPlanFor(slot, currentTrainWeek), key = slotDateKey(slot), done = !!restDone[key];
     var runBtn = function(t) { return '<button type="button" class="rest-run-btn" onclick="openRunLog(\'easy\', \'' + key + '\')">' + t + '</button>'; };
     var main = REST_OPTS[rp.list[0]], alts = rp.list.slice(1).map(function(id) { return id === 'run' ? runBtn(REST_OPTS[id].text) : REST_OPTS[id].text; });
-    return '<div class="today-card-kicker">' + (rp.recovery ? 'Recovery' : 'Rest day') + ' · ' + TODAY_DOWS[slot] + '</div>'
+    return '<div class="today-card-kicker kicker-now">' + (rp.recovery ? 'Recovery' : 'Rest day') + ' · ' + TODAY_DOWS[slot] + '</div>'
       + '<div class="rest-main">' + (rp.list[0] === 'run' ? runBtn(main.text) : main.text) + '</div>'
       + '<div class="rest-alts">Or: ' + alts.join(' · ') + '</div>'
       + '<button type="button" class="today-secondary rest-done-btn' + (done ? ' on' : '') + '" aria-pressed="' + done + '" onclick="toggleRestDone(' + slot + ')">' + (done ? 'Done ✓' : 'Mark done') + '</button>';
@@ -6729,7 +6751,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         var dm = currentDayMode();
         var pickMin = dm && dm.date === todayKey() && dm.day === next && dm.week === currentTrainWeek && dm.min ? dm.min : null;
         host.innerHTML = (daysSinceLastLog() >= 3 ? '<div class="welcome-back">Welcome back. Pick up where you left off.</div>' : '')
-          + '<div class="today-card-kicker">' + (partial ? 'In progress' : restToday ? 'Next workout' : (slot === next ? 'Today' : 'Next workout')) + '</div>'
+          + '<div class="today-card-kicker' + (!partial && (restToday || slot !== next) ? ' kicker-now' : '') + '">' + (partial ? 'In progress' : restToday ? 'Next workout' : (slot === next ? 'Today' : 'Next workout')) + '</div>'
           + '<div class="today-card-title">' + (qk ? 'Quick workout: ' + quickLabel(qk.kind) : d.title) + '</div>'
           + '<div class="today-card-meta">' + (prog ? prog.done + ' of ' + prog.total + ' sets done' : b.list.length + ' exercises, about ' + estText(b.est)) + '</div>'
           + (partial ? '' : '<div class="today-time"><div class="today-time-q" id="todayTimeQ">How long do you have?</div>'
@@ -8857,6 +8879,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       return '<button class="plan-nav-btn' + (i === 0 ? ' active' : '') + '" id="altbtn-' + id
         + '" onclick="switchAltDay(\'' + id + '\')">' + d.tag + ' · ' + d.title + '</button>';
     }).join('') + '</div>';
+    var nextId = null;
+    try { nextId = partialDayThisWeek() || findNextUnloggedDay(); } catch(e) {}
     var body = ids.map(function(id, i) {
       var d = SPLIT_DAYS[id];
       var rows = liftRowsForDay(id);
@@ -8864,8 +8888,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         + '<div class="plan-day-header"><div>'
         + '<div class="plan-day-title">' + d.title.toUpperCase() + '</div>'
         + '<div class="plan-day-focus">' + (d.focus || '') + '</div></div>'
-        + '<div class="plan-badges"><span class="badge badge-day">'
-        + d.tag + '</span><span class="badge badge-est" data-est="' + id + '">' + sessionMinutesText(id) + '</span></div></div>'
+        + '<div class="plan-badges"><span class="badge badge-day' + (id === nextId ? ' is-next' : '') + '">'
+        + d.tag + (id === nextId ? ' · Next' : '') + '</span><span class="badge badge-est" data-est="' + id + '">' + sessionMinutesText(id) + '</span></div></div>'
         + '<div class="lift-table-header adv"><span>Exercise</span><span>Rest</span><span>Time</span><span></span></div>'
         + '<div class="lift-rows">' + rows + addExerciseHTML(id) + '</div></div>';
     }).join('');
