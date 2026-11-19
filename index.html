@@ -3668,12 +3668,27 @@ img[src$=".svg"][src*="assets/brand/"] { mix-blend-mode: normal; }
    button inside them stays tappable. The timer keeps running under them. */
 .settings-modal-overlay, .rest-modal-overlay { z-index: 340 !important; }
 .ql-session { margin: 16px 0 8px; }
+/* 8.30: run note, a small ruled line that opens to a text field. */
+.rl-note { margin: 0 0 8px; }
+.rl-note-toggle { display: block; width: 100%; min-height: 44px; padding: 0; margin: 0; border: 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  border-radius: 0; background: none; color: var(--text); font: inherit; font-size: var(--fs-2); font-weight: 600; text-align: left; cursor: pointer; }
+.rl-note-toggle[aria-expanded="true"] { border-bottom: 0; }
+.rl-note-toggle:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+.run-note-input { display: block; width: 100%; box-sizing: border-box; min-height: 72px; resize: vertical; background: var(--bg); border: 1px solid var(--input-border-idle);
+  color: var(--text); font-family: var(--font-body); font-size: var(--fs-3); line-height: 1.45; padding: 12px 14px; border-radius: var(--r-s); outline: none; }
+.run-note-input:focus { border-color: var(--fill); box-shadow: 0 0 0 1px var(--fill); }
+.rl-note-count { font-size: var(--fs-1); color: var(--muted); margin-top: 4px; }
+.rl-note-count:empty { display: none; }
+.run-table tr.has-note td { border-bottom: 0; }
+.run-note-row td { font-size: var(--fs-1); color: var(--text); line-height: 1.4; white-space: normal; word-break: break-word; padding-top: 0; }
+.run-note-tag { font-weight: 600; border-top: 1px solid var(--text); border-bottom: 1px solid var(--text); padding: 0 3px; margin-right: 4px; }
 /* 8.30: Food weigh in at the top. */
 .food-weighin .food-weighin-field { max-width: 220px; margin-bottom: 4px; }
 .food-weighin-last { font-size: var(--fs-1); color: var(--muted); line-height: 1.4; min-height: 1em; }
 .food-weighin-last:empty { display: none; }
 /* 8.30: recent workouts, ruled rows. */
 .ql-rw-wrap { margin: 0 0 20px; }
+.ql-rw-wrap > .today-label { margin-top: 0; }
 .ql-rw-list { border-top: 1px solid var(--border); }
 .ql-rw { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; min-height: 44px; padding: 10px 0; margin: 0;
   border: 0; border-bottom: 1px solid var(--border); border-radius: 0; background: none; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
@@ -3807,6 +3822,15 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     <div class="rl-pace" id="rlPace" aria-live="polite"></div>
     <div class="rl-types" role="radiogroup" aria-label="Type of run" id="rlTypes"></div>
     <details class="rl-feel" open><summary tabindex="-1">How did it feel?</summary><div class="rl-feel-btns" role="radiogroup" aria-label="How it felt" id="rlFeel"></div></details>
+    <!-- RUN NOTE (8.30). Closed by default; saves as you type. -->
+    <div class="rl-note">
+      <button type="button" class="rl-note-toggle" id="rlNoteBtn" aria-expanded="false" aria-controls="rlNoteBody" onclick="toggleRunNote()">Add a note</button>
+      <div id="rlNoteBody" hidden>
+        <label class="sr-only" for="rlNote">Note for this run</label>
+        <textarea class="run-note-input" id="rlNote" rows="3" maxlength="500" placeholder="How it went, the route, the weather" oninput="onRunNoteInput()" onblur="saveRunNote()"></textarea>
+        <div class="rl-note-count" id="rlNoteCount" aria-live="polite"></div>
+      </div>
+    </div>
     <div class="rl-msg" id="rlMsg" role="alert"></div>
     <button type="button" class="today-start" onclick="saveQuickRun()">Save</button>
     <button type="button" class="settings-cancel-btn" onclick="closeRunLog()">Cancel</button>
@@ -11873,7 +11897,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       //  MEAL_PASS_KEY is left out on purpose: a backup file is not a place
       //  for a credential.
       foodLogs: foodLogs, foodTargets: foodTargets, bodyweight: bodyweight, goalMode: goalMode, workoutNotes: workoutNotes,
-      trainStyle: trainStyle, ownPlan: ownPlan, liftNotes: liftNotes, tipsSeen: { v: 1, seen: loadTipsSeen() }, quickLogSession: readSavedQs(),
+      trainStyle: trainStyle, ownPlan: ownPlan, liftNotes: liftNotes, tipsSeen: { v: 1, seen: loadTipsSeen() }, quickLogSession: readSavedQs(), runNotes: { v: 1, notes: getRunNotes() },
       hiddenEx: hiddenEx,
       sessionPrefs: { size: sessionSize, budget: sessionBudget, equip: equipOwned },
       bwBand: bwBand, weekMoves: weekMoves, shortDays: shortDays, profile: userProfile, favEx: favEx,
@@ -12032,6 +12056,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         if (data.tipsSeen && typeof data.tipsSeen === 'object') tipsSeen = cleanTipsSeen(data.tipsSeen);
         else { var _ts = loadTipsSeen(); TIP_OLD.forEach(function(id) { _ts[id] = 1; }); tipsSeen = _ts; }
         saveTipsSeen(); hideTip();
+        if (data.runNotes && typeof data.runNotes === 'object') { runNotes = cleanRunNotes(data.runNotes); persistRunNotes(); }
         //  A Quick Log list in progress comes back only on the same day.
         if (data.quickLogSession && typeof data.quickLogSession === 'object') {
           var _rq = cleanQs(data.quickLogSession);
@@ -15867,7 +15892,9 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         var shown = _runMore ? rr : rr.slice(0, 5);
         tb.innerHTML = '<table class="prog-table run-table"><thead><tr><th scope="col">Date</th><th scope="col">Distance</th><th scope="col">Time</th><th scope="col">Pace</th><th scope="col">Type</th></tr></thead><tbody>'
           + shown.map(function(k) { var e = runLogs[k];
-              return '<tr><td>' + shortDate(k) + '</td><td>' + fmtDist(e.miles) + '</td><td>' + (e.secs ? fmtDur(e.secs) : '—') + '</td><td>' + (e.secs ? fmtPace(e.secs, e.miles).replace(' per ', '/') : '—') + '</td><td>' + runTypeLabel(e.type) + '</td></tr>'; }).join('')
+              var nt = runNoteFor(k);
+              return '<tr' + (nt ? ' class="has-note"' : '') + '><td>' + shortDate(k) + '</td><td>' + fmtDist(e.miles) + '</td><td>' + (e.secs ? fmtDur(e.secs) : '—') + '</td><td>' + (e.secs ? fmtPace(e.secs, e.miles).replace(' per ', '/') : '—') + '</td><td>' + runTypeLabel(e.type) + '</td></tr>'
+                + (nt ? '<tr class="run-note-row"><td colspan="5"><span class="run-note-tag">Note</span> ' + styleEsc(nt) + '</td></tr>' : ''); }).join('')
           + '</tbody></table>'
           + (rr.length > 5 ? '<button type="button" class="prog-more" aria-expanded="' + _runMore + '" onclick="toggleRunMore()">' + (_runMore ? 'Show less' : 'See all (' + rr.length + ')') + '</button>' : '');
       }
@@ -15895,11 +15922,67 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     if (mi) mi.value = today && today.secs ? String(Math.floor(today.secs / 60)) : '';
     if (se) se.value = today && today.secs ? String(today.secs % 60) : '';
     var msg = document.getElementById('rlMsg'); if (msg) msg.textContent = '';
-    renderRunLogUnits(); renderRunLogChoices(); updateRunLogPace();
+    renderRunLogUnits(); renderRunLogChoices(); updateRunLogPace(); renderRunNote();
     var m = document.getElementById('runLogSheet'); if (m) m.style.display = 'flex';
     if (d) d.focus();
   }
-  function closeRunLog() { var m = document.getElementById('runLogSheet'); if (m) m.style.display = 'none'; }
+  function closeRunLog() { saveRunNote(); var m = document.getElementById('runLogSheet'); if (m) m.style.display = 'none'; }
+  //     RUN NOTES (8.30). One plain text note per run date, 500 characters at
+  //  most. monk_run_notes_v1 = { v: 1, notes: { 'YYYY-MM-DD': text } }. Kept
+  //  apart from the run logs so nothing about a logged run changes.
+  const RUN_NOTES_KEY = 'monk_run_notes_v1', RUN_NOTE_MAX = 500;
+  var runNotes = null, _rnT = 0;
+  function cleanRunNotes(v) {
+    var src = v && typeof v === 'object' ? (v.notes && typeof v.notes === 'object' ? v.notes : v) : {}, out = {};
+    Object.keys(src).forEach(function(k) {
+      var d = /^\d{4}-\d{2}-\d{2}$/.test(k) ? parseDateKey(k) : null;
+      if (!d || d.getMonth() + 1 !== +k.slice(5, 7) || d.getDate() !== +k.slice(8, 10) || typeof src[k] !== 'string') return;
+      var t = src[k].replace(/\r\n?/g, '\n').slice(0, RUN_NOTE_MAX);
+      if (t.trim()) out[k] = t;
+    });
+    return out;
+  }
+  function getRunNotes() {
+    if (!runNotes) { try { runNotes = cleanRunNotes(JSON.parse(localStorage.getItem(RUN_NOTES_KEY))); } catch(e) { runNotes = {}; } }
+    return runNotes;
+  }
+  function persistRunNotes() { try { localStorage.setItem(RUN_NOTES_KEY, JSON.stringify({ v: 1, notes: getRunNotes() })); } catch(e) {} }
+  function runNoteFor(k) { return getRunNotes()[k] || ''; }
+  function renderRunNote() {
+    var t = document.getElementById('rlNote'), body = document.getElementById('rlNoteBody'), btn = document.getElementById('rlNoteBtn');
+    if (!t || !body || !btn) return;
+    t.value = runNoteFor(_rlDate || todayKey());
+    body.hidden = true;
+    btn.setAttribute('aria-expanded', 'false');
+    btn.textContent = t.value ? 'Note' : 'Add a note';
+    runNoteCount();
+  }
+  function toggleRunNote() {
+    var body = document.getElementById('rlNoteBody'), btn = document.getElementById('rlNoteBtn'), t = document.getElementById('rlNote');
+    if (!body || !btn) return;
+    var open = body.hidden;
+    if (!open) saveRunNote();
+    body.hidden = !open;
+    btn.setAttribute('aria-expanded', String(open));
+    if (open && t) t.focus();
+  }
+  function runNoteCount() {
+    var t = document.getElementById('rlNote'), c = document.getElementById('rlNoteCount');
+    if (t && c) c.textContent = t.value.length >= RUN_NOTE_MAX - 50 ? (RUN_NOTE_MAX - t.value.length) + ' characters left' : '';
+  }
+  function onRunNoteInput() { runNoteCount(); clearTimeout(_rnT); _rnT = setTimeout(saveRunNote, 400); }
+  function saveRunNote() {
+    clearTimeout(_rnT);
+    var t = document.getElementById('rlNote'), k = _rlDate;
+    if (!t || !k) return;
+    var v = String(t.value || '').replace(/\r\n?/g, '\n').slice(0, RUN_NOTE_MAX), notes = getRunNotes();
+    if ((notes[k] || '') === (v.trim() ? v : '')) return;
+    if (v.trim()) notes[k] = v; else delete notes[k];
+    persistRunNotes();
+    var btn = document.getElementById('rlNoteBtn');
+    if (btn) btn.textContent = v.trim() ? 'Note' : 'Add a note';
+    if (typeof renderRunHome === 'function') { try { renderRunHome(); } catch(e) {} }
+  }
   //  "27:30" or "1:05:30" in the minutes box, or minutes and seconds apart.
   function readRunLogInputs() {
     var dRaw = String((document.getElementById('rlDist') || {}).value || '').trim().replace(',', '.');
@@ -15934,6 +16017,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     if (r.secs >= 86400) return say('That is over 24 hours. Check the time.');
     var k = _rlDate || todayKey(), prev = runLogs[k] || {};
     if (runDateIsFuture(k)) return say('That day has not happened yet. Log it on the day.');
+    saveRunNote();
     runLogs[k] = { miles: Math.round(r.miles * 100) / 100, secs: Math.round(r.secs), hr: prev.hr || null, feel: _rlFeel || prev.feel || null, type: _rlType };
     if (prev.source) runLogs[k].source = prev.source;
     persistRunLogs();
