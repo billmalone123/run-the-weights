@@ -2,7 +2,7 @@
  "nav": "{\"x\":0,\"y\":0,\"width\":360,\"height\":48,\"top\":0,\"right\":360,\"bottom\":48,\"left\":0}",
  "gear": "{\"x\":304,\"y\":2,\"width\":44,\"height\":44,\"top\":2,\"right\":348,\"bottom\":46,\"left\":304}",
  "gearHTML": 773,
- "tabbar": "{\"x\":0,\"y\":639,\"width\":360,\"height\":61,\"top\":639,\"right\":360,\"bottom\":700,\"left\":0}",
+ "tabbar": "{\"x\":16,\"y\":624,\"width\":328,\"height\":64,\"top\":624,\"right\":344,\"bottom\":688,\"left\":16}",
  "tabbarHTML": 1151,
  "logo": "{\"x\":12,\"y\":2,\"width\":188.390625,\"height\":44,\"top\":2,\"right\":200.390625,\"bottom\":46,\"left\":12}"
 }

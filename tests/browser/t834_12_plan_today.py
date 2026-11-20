@@ -1,0 +1,178 @@
+"""8.34 Parts 1 and 2: Plan active exercise card, Today, floating tab bar, weekly streak."""
+import sys, os, json, datetime; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from common import *
+from playwright.sync_api import sync_playwright
+EXPORT="(()=>{let out=null;const o=URL.createObjectURL;const a=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){};URL.createObjectURL=function(bl){out=bl;return 'blob:x'};exportData();URL.createObjectURL=o;HTMLAnchorElement.prototype.click=a;return out?out.text():null})()"
+CS="(s=>{const e=document.querySelector(s);if(!e)return null;const c=getComputedStyle(e),r=e.getBoundingClientRect();return {bg:c.backgroundColor,fg:c.color,ff:c.fontFamily,fs:parseFloat(c.fontSize),h:Math.round(r.height),w:Math.round(r.width),br:c.borderBottomLeftRadius,bc:c.borderTopColor,bw:c.borderTopWidth,disp:c.display}})"
+def cs(pg, sel): return pg.evaluate(CS+"('%s')"%sel)
+ULTRA='rgb(28, 47, 181)'; PERS='rgb(242, 85, 44)'; INK='rgb(20, 20, 20)'; TRACK='rgb(228, 223, 208)'
+T=datetime.date(2026,11,19)
+def mon(k): return T-datetime.timedelta(days=T.weekday())+datetime.timedelta(days=7*k)
+def ds(d): return d.strftime('%Y-%m-%d')
+def plant(pg, dates, ex='flat-bb-bench'):
+    ent=[{'d':ds(d),'week':0,'weight':100,'reps':8,'s1':{'w':100,'r':8},'s2':None,'failure':False} for d in dates]
+    return pg.evaluate("(()=>{sessions={'%s':%s};return weekStreak()})()"%(ex,json.dumps(ent)))
+def week(k, n, start=0): return [mon(k)+datetime.timedelta(days=start+i) for i in range(n)]
+with sync_playwright() as p:
+    b=p.chromium.launch()
+    ctx,pg,errs=page(b,390,844)
+    pg.evaluate("saveUserName('Billy')")
+    # ---------- Tab bar ----------
+    go(pg,'today')
+    tb=pg.evaluate("[...document.querySelectorAll('#tabbar .tabbar-btn')].filter(b=>b.offsetParent).map(b=>b.innerText.trim())")
+    check('tab bar: Today, Plan, Run, Food, Progress for a runner', tb==['Today','Plan','Run','Food','Progress'], tb)
+    bar=cs(pg,'#tabbar'); cur=cs(pg,'#tabbar .tabbar-btn.current')
+    check('tab bar floats on ink with a rounded edge', bar['bg']==INK and float(bar['br'][:-2])>=24 and pg.evaluate("innerHeight-document.getElementById('tabbar').getBoundingClientRect().bottom")>=10, bar)
+    check('current tab is a persimmon pill with ink text', cur['bg']==PERS and cur['fg']==INK and cur['h']>=44, cur)
+    check('Run stays reachable from the logo menu', pg.evaluate("openNavMenu();const r=[...document.querySelectorAll('#navMenu [data-tab]')].some(e=>e.dataset.tab==='running');closeNavMenu();r"))
+    # ---------- Today ----------
+    hl=pg.evaluate("document.getElementById('tbHello').textContent"); h=cs(pg,'#tbHello')
+    check('greeting reads Ready to lift, Billy.', hl=='Ready to lift, Billy.', hl)
+    check('greeting is Antonio, about 52 px, uppercase', 'Antonio' in h['ff'] and 48<=h['fs']<=56 and pg.evaluate("getComputedStyle(tbHello).textTransform")=='uppercase', h)
+    pill=cs(pg,'#navStreak'); pt=pg.evaluate("navStreak.hidden?'':navStreak.textContent")
+    check('streak pill: ink with cream text, real count', (pt=='' and pg.evaluate("weekStreak()")==0) or (pill['bg']==INK and pill['fg']=='rgb(242, 238, 228)' and pt==str(pg.evaluate("weekStreak()"))+' week streak'), [pt,pill])
+    check('no gear or menu glyph on Today', not pg.evaluate("!!navGear.offsetParent"))
+    ring=pg.evaluate("[document.querySelector('.tb-ring-n').textContent,document.querySelectorAll('.tb-strip li').length,document.querySelectorAll('.tb-dot.now').length,document.querySelector('.tb-ring').getAttribute('aria-label')]")
+    check('week card: ring count, seven day strip, today marked', '/' in ring[0] and ring[1]==7 and ring[2]<=1 and 'sessions done this week' in ring[3], ring)
+    now=cs(pg,'.tb-dot.now')
+    check('today in the strip is white with a 3 px persimmon border', now is None or (now['bc']==PERS and now['bw']=='3px'), now)
+    wc=cs(pg,'#tbWork'); dn=cs(pg,'.tb-day'); st=cs(pg,'.tb-start')
+    check('workout card is ultramarine with the day in Antonio 56', wc['bg']==ULTRA and dn['fs']==56 and 'Antonio' in dn['ff'], [wc['bg'],dn['fs']])
+    check('START WORKOUT is persimmon, 44 px or taller', st['bg']==PERS and st['fg']==INK and st['h']>=44, st)
+    vol=pg.evaluate("lastWeekVolume()"); tiles=pg.evaluate("[...document.querySelectorAll('.tb-tile')].map(t=>t.innerText.replace(/\\s+/g,' '))")
+    check('last week volume tile shows the real total', (vol==0 and not any('Last week' in t for t in tiles)) or any(('{:,}'.format(round(vol)) in t) for t in tiles), [vol,tiles])
+    run=pg.evaluate("nextPlannedRun()")
+    check('run tile only when a run is planned', (run is None)==(not any(t.lower().startswith('run') for t in tiles)), [run,tiles])
+    copy=' '.join([hl]+tiles+[pg.evaluate("document.querySelector('.tb-week-copy').textContent"),pg.evaluate("tbWork.innerText")])
+    check('no dashes or exclamation marks on Today', not any(c in copy for c in '-–—!'), copy[:200])
+    check('no sideways scroll on Today at 390', pg.evaluate("document.documentElement.scrollWidth<=innerWidth"))
+    pg.screenshot(path=shot('834-today-390.png'))
+    # empty stat tiles hide, no fake numbers
+    pg.evaluate("window._sv=sessions;sessions={};setRunning(false);renderToday()")
+    check('no data: stat row hidden', pg.evaluate("tbStats.hidden&&!document.querySelector('.tb-tile')"))
+    check('no data: streak pill hidden', pg.evaluate("navStreak.hidden"))
+    pg.evaluate("sessions=window._sv;setRunning(true);saveUserName('');renderToday()")
+    check('no name: greeting reads Ready to lift.', pg.evaluate("tbHello.textContent")=='Ready to lift.')
+    pg.evaluate("saveUserName('  <b>Al</b>\\u0007ex  ')")
+    check('name is cleaned and capped', pg.evaluate("userName")=='bAl/bex' and pg.evaluate("tbHello.innerHTML").count('<')==0, pg.evaluate("userName"))
+    pg.evaluate("saveUserName('Billy')")
+    # ---------- streak cases ----------
+    cases=[
+      ('no logs', [], 0),
+      ('3 full weeks, this week partial', week(-3,4)+week(-2,4)+week(-1,4)+week(0,1), 3),
+      ('this week complete counts', week(-1,4)+week(0,4), 2),
+      ('a short week ends the run', week(-3,4)+week(-2,3)+week(-1,4), 1),
+      ('sessions moved onto rest days count', week(-2,4,3)+week(-1,4,3), 2),
+      ('last week incomplete, this week partial', week(-1,2)+week(0,1), 0),
+      ('weeks before the first log do not count', week(-1,4), 1),
+    ]
+    for name,dates,want in cases:
+        got=plant(pg,dates); check('streak: '+name, got==want, [got,want])
+    two=pg.evaluate("(()=>{const d='%s';const e=(x,dd)=>[{d:dd,week:0,weight:100,reps:8,s1:{w:100,r:8},s2:null,failure:false}];sessions={};const ids=Object.keys(EX_BY_ID).filter(k=>EX_BY_ID[k].day&&EX_BY_ID[k].day!=='library');const byDay={};ids.forEach(k=>{if(!byDay[EX_BY_ID[k].day])byDay[EX_BY_ID[k].day]=k});const days=Object.keys(byDay).slice(0,4);days.forEach((dy,i)=>{sessions[byDay[dy]]=e(0,i<2?'%s':'%s')});return [days.length,weekStreak()]})()"%(ds(mon(-1)),ds(mon(-1)),ds(mon(-1)+datetime.timedelta(days=2))))
+    check('streak: two sessions on one date count as two', two[1]==1, two)
+    pg.reload(); pg.wait_for_timeout(1500); pg.evaluate("setRunning(true);document.querySelectorAll('.settings-modal-overlay').forEach(m=>m.style.display='none')")
+    # ---------- Plan active card ----------
+    go(pg,'today'); pg.click('.tb-start'); pg.wait_for_timeout(600)
+    check('START WORKOUT opens Plan on the card', pg.evaluate("document.body.dataset.tab==='training'&&document.body.classList.contains('pa-on')&&!planActive.hidden"))
+    check('app header is hidden on the card', not pg.evaluate("!!document.querySelector('nav').offsetParent"))
+    hd=cs(pg,'.pa-head'); ti=cs(pg,'.pa-title')
+    check('header is ultramarine with a 32 px bottom radius', hd['bg']==ULTRA and hd['br']=='32px', hd)
+    meta=pg.evaluate("[...document.querySelectorAll('.pa-meta span')].map(s=>s.textContent)")
+    check('header reads Week n of N and Exercise 1 of n', meta[0].startswith('Week ') and ' of ' in meta[0] and meta[1].startswith('Exercise 1 of '), meta)
+    check('day title in Antonio, one line beside the switch, persimmon period', 'Antonio' in ti['ff'] and 38<=ti['fs']<=46 and ti['h']<60 and cs(pg,'.pa-dot')['fg']==PERS, ti)
+    tg=pg.evaluate("(()=>{const t=document.querySelector('.pa-title').getBoundingClientRect(),g=document.querySelector('.pa-head .len-tog').getBoundingClientRect();return [g.left>t.right-1, Math.abs((g.top+g.bottom)/2-(t.top+t.bottom)/2)<16]})()")
+    check('Normal and Short sit at the right of the title', all(tg), tg)
+    sm=pg.evaluate("document.querySelector('.pa-sum').textContent")
+    check('summary line: minutes, lifts, moves', sm.split(' · ')[0].endswith(' min') and 'lift' in sm and (' and ' in sm or sm.count(' · ')>=1), sm)
+    nm=cs(pg,'.pa-name')
+    check('exercise name Antonio 30 px', 'Antonio' in nm['ff'] and nm['fs']==30, nm)
+    sub=pg.evaluate("document.querySelector('.pa-sub').textContent")
+    check('sub line: last time and target a to b', ('Last time' in sub or 'First time' in sub) and ' · target ' in sub and ' to ' in sub, sub)
+    fr=cs(pg,'.pa-frame'); fh=pg.evaluate("paFh.textContent"); num=cs(pg,'.pa-num')
+    check('current set is a white frame with a 3 px ultramarine border', fr['bg']=='rgb(255, 255, 255)' and fr['bc']==ULTRA and fr['bw']=='3px', fr)
+    check('frame reads Set 1 of n with a persimmon number', fh.startswith('1Set 1 of ') and num['bg']==PERS, [fh,num['bg']])
+    big=cs(pg,'#paW')
+    check('numbers in Antonio 56 px ink inside the boxes', 'Antonio' in big['ff'] and big['fs']==56 and big['fg']==INK, big)
+    nx=pg.evaluate("[...document.querySelectorAll('.pa-set')].map(b=>[b.className,b.innerText.replace(/\\s+/g,' ')])")
+    check('upcoming set is a row with an empty circle', nx and 'next' in nx[0][0] and nx[0][1].startswith('Set 2') and ' to ' in nx[0][1], nx)
+    sb=pg.evaluate("[...document.querySelectorAll('.pa-sb')].map(b=>{const r=b.getBoundingClientRect();return [Math.round(r.width),Math.round(r.height)]})")
+    check('stepper buttons are 44 px', len(sb)==4 and all(w>=44 and h>=44 for w,h in sb), sb)
+    km=pg.evaluate("[paR.getAttribute('inputmode'),paW.getAttribute('inputmode')]")
+    check('tapping a number opens a numeric keypad', km==['numeric','decimal'], km)
+    lg=cs(pg,'#paLogBtn')
+    check('LOG SET 1 is persimmon with ink text, 56 px', lg['bg']==PERS and lg['fg']==INK and lg['h']>=56 and pg.evaluate("paLogBtn.textContent")=='Log set 1', lg)
+    lk=pg.evaluate("[...document.querySelectorAll('.pa-links .pa-link')].map(b=>b.textContent)")
+    check('links row: Rest, Warm up, Add set, Swap', len(lk)==4 and lk[0].startswith('Rest ') and lk[1:]==['Warm up','Add set','Swap'], lk)
+    ex=pg.evaluate("PA.ex")
+    # stepper and keypad entry
+    pg.click('#paR ~ .pa-pm .pa-sb >> nth=1'); r0=pg.evaluate("PA.r")
+    check('focus stays on the stepper after a tap', pg.evaluate("document.activeElement.getAttribute('aria-label')")=='One more')
+    check('card number fields are not wrapped or recolored', pg.evaluate("paW.parentNode.classList.contains('pa-box')&&paR.parentNode.classList.contains('pa-box')&&!paW.style.borderColor"))
+    pg.fill('#paW','137.5'); pg.press('#paW','Enter'); pg.wait_for_timeout(100); pg.evaluate("paW.dispatchEvent(new Event('change'))")
+    check('typed weight is taken', abs(pg.evaluate("PA.wLb")-137.5)<0.01 and pg.evaluate("paW.value")=='137.5', pg.evaluate("PA.wLb"))
+    pg.click('#paLogBtn'); pg.wait_for_timeout(400)
+    e=pg.evaluate("(()=>{const ex=EX_BY_ID[PA.ex||'%s'];const h=sessions['%s']||[];return h[h.length-1]})()"%(ex,ex))
+    check('LOG SET saves set 1 through the real save path', e and e['s1']['r']==r0 and abs(e['s1']['w']-137.5)<0.01, e)
+    check('logging starts the rest timer', pg.evaluate("timerRunning===true"))
+    tl=pg.evaluate("[...document.querySelectorAll('.pa-set')].map(t=>[t.className,getComputedStyle(t.querySelector('.pa-ck')).backgroundColor,t.innerText.replace(/\\s+/g,' ')])")
+    check('set 1 is a done row with an ultramarine check above the set 2 frame', tl and 'done' in tl[0][0] and tl[0][1]==ULTRA and tl[0][2].startswith('Set 1') and ' x ' in tl[0][2] and pg.evaluate("paLogBtn.textContent")=='Log set 2' and pg.evaluate("paFh.textContent").startswith('2Set 2 of'), tl)
+    check('the old row shows set 1 done too', pg.evaluate("document.getElementById('done-s1-%s').classList.contains('done')||document.getElementById('done-s1-%s').getAttribute('aria-pressed')==='true'||slotLogged(EX_BY_ID['%s'],'s1')"%(ex,ex,ex)))
+    # edit and delete a logged set
+    pg.click('.pa-set.done'); pg.wait_for_timeout(200)
+    check('picking a done set offers Save set 1 and Delete set 1', pg.evaluate("paLogBtn.textContent")=='Save set 1' and 'Delete set 1' in pg.evaluate("document.querySelector('.pa-links2').innerText"))
+    pg.click('text=Delete set 1'); pg.wait_for_timeout(300)
+    check('Delete set removes set 1', not pg.evaluate("slotLogged(EX_BY_ID['%s'],'s1')"%ex))
+    pg.click('#swapToast .swap-undo'); pg.wait_for_timeout(300)
+    check('Undo brings set 1 back', pg.evaluate("slotLogged(EX_BY_ID['%s'],'s1')"%ex))
+    # finish the lift: card moves on
+    pg.evaluate("paPick(paOpenSlot(EX_BY_ID['%s']))"%ex); pg.click('#paLogBtn'); pg.wait_for_timeout(400)
+    check('after the last set the card moves to the next lift', pg.evaluate("PA.ex")!=ex and pg.evaluate("document.querySelectorAll('.pa-meta span')[1].textContent").startswith('Exercise 2 of'), pg.evaluate("PA.ex"))
+    fd=pg.evaluate("[...document.querySelectorAll('.pa-lift-done')].map(b=>[b.innerText.replace(/\\s+/g,' '),b.getBoundingClientRect().bottom<=document.querySelector('.pa-card').getBoundingClientRect().top+1])")
+    check('the finished lift sits above the card with its sets', len(fd)==1 and ' of ' in fd[0][0] and ' sets · ' in fd[0][0] and fd[0][1], fd)
+    check('the finished lift has no second row in the list', not pg.evaluate("!!document.getElementById('row-%s').offsetParent"%ex))
+    nxt=pg.evaluate("PA.ex"); pg.click('.pa-lift-done'); pg.wait_for_timeout(200)
+    check('tapping the finished lift opens it again to change a set', pg.evaluate("PA.ex")==ex and pg.evaluate("paLogBtn.textContent").startswith('Save set'), pg.evaluate("PA.ex"))
+    pg.evaluate("paPickEx('%s')"%nxt); pg.wait_for_timeout(150)
+    # keypad open, then LOG SET straight away: the tap must land and save the typed number
+    pg.click('#paW'); pg.wait_for_timeout(50); pg.keyboard.press('ControlOrMeta+a'); pg.keyboard.type('140'); exn=pg.evaluate("PA.ex"); sl=pg.evaluate("PA.slot")
+    pg.click('#paLogBtn'); pg.wait_for_timeout(400)
+    got=pg.evaluate("(()=>{const e=entryForWeek(getHistory('%s'),currentTrainWeek,EX_BY_ID['%s']);return e?normSet(e,e['%s']):null})()"%(exn,exn,sl))
+    check('typing a weight then tapping LOG SET logs that weight', got and abs(got['w']-140)<0.01, got)
+    # other rows
+    rows=pg.evaluate("[...document.querySelectorAll('#plan .lift-row')].filter(r=>r.offsetParent).map(r=>[r.id,Math.round(r.querySelector('.lift-head').getBoundingClientRect().height),!!r.querySelector('.lift-body').offsetParent])")
+    check('other lifts are collapsed rows of 56 px or more', rows and all(h>=56 and not open_ for _,h,open_ in rows), rows[:3])
+    check('the active lift has no second row in the list', not any(r[0]=='row-'+pg.evaluate("PA.ex") for r in rows))
+    other=[r[0] for r in rows if r[0]!='row-'+ex][-1]
+    pg.click('#'+other+' .lift-head'); pg.wait_for_timeout(300)
+    check('tapping a row makes that lift the card', pg.evaluate("'row-'+PA.ex")==other)
+    # links
+    pg.click('.pa-links .pa-link >> nth=1'); pg.wait_for_timeout(150)
+    check('Warm up opens the warm up list', pg.evaluate("!!document.getElementById('paWarm')"))
+    n0=pg.evaluate("document.querySelectorAll('.pa-set, .pa-frame').length"); pg.click('text=Add set'); pg.wait_for_timeout(200)
+    check('Add set adds a set row', pg.evaluate("document.querySelectorAll('.pa-set, .pa-frame').length")==n0+1, n0)
+    pg.evaluate("dismissTimer&&dismissTimer()"); pg.click('.pa-links .pa-link >> nth=0'); pg.wait_for_timeout(150)
+    check('Rest starts the timer', pg.evaluate("timerRunning===true"))
+    pg.evaluate("dismissTimer();document.querySelectorAll('.rest-modal-overlay').forEach(m=>m.classList.remove('visible'))"); pg.wait_for_timeout(200)
+    pg.click('text=Notes and details'); pg.wait_for_timeout(200)
+    check('Notes and details shows the full row', pg.evaluate("!!document.querySelector('.lift-row.pa-cur.pa-details').offsetParent"))
+    pg.click('.pa-links .pa-link >> text=Swap'); pg.wait_for_timeout(300)
+    check('Swap opens the swap sheet', pg.evaluate("[...document.querySelectorAll('[id*=swap i]')].some(e=>e.offsetParent&&e.id!=='swapToast')"))
+    pg.keyboard.press('Escape'); pg.evaluate("typeof closeSwapSheet==='function'&&closeSwapSheet()")
+    check('no sideways scroll on Plan at 390', pg.evaluate("document.documentElement.scrollWidth<=innerWidth"))
+    pcopy=pg.evaluate("planActive.innerText")
+    check('no dashes or exclamation marks on the card', not any(c in pcopy for c in '–—!') and ' - ' not in pcopy, pcopy[:160])
+    pg.evaluate("scrollTo(0,0)"); pg.screenshot(path=shot('834-plan-390.png'))
+    # motion
+    check('LOG SET has a scale animation', pg.evaluate("getComputedStyle(paLogBtn).transitionProperty").find('transform')>=0)
+    check('no page errors', not errs, errs); ctx.close()
+    ctx=b.new_context(viewport={'width':390,'height':844}, service_workers='block', reduced_motion='reduce'); pg=ctx.new_page(); pg.clock.install(time=T0); pg.add_init_script(INIT); pg.goto(URL); pg.wait_for_timeout(900); pg.evaluate(SEED); pg.reload(); pg.wait_for_timeout(1500)
+    pg.evaluate("document.querySelectorAll('.settings-modal-overlay').forEach(m=>m.style.display='none');goTab('training')"); pg.wait_for_timeout(400)
+    check('reduced motion: no transition on LOG SET', float(pg.evaluate("getComputedStyle(paLogBtn).transitionDuration")[:-1])<0.001)
+    # kg
+    pg.evaluate("setWeightUnit('kg')"); pg.wait_for_timeout(1500); pg.evaluate("document.querySelectorAll('.settings-modal-overlay').forEach(m=>m.style.display='none');goTab('training')"); pg.wait_for_timeout(400)
+    kgd=pg.evaluate("[wUnit(),document.querySelector('#paW ~ .pa-lab').textContent,paW.value,PA.wLb]")
+    check('kg: the card shows kg', kgd[1]=='kg' and pg.evaluate("document.getElementById('paW').getAttribute('aria-label')").startswith('Weight in kilograms') and abs(float(kgd[2])-round(kgd[3]/2.20462262,1))<0.06, kgd)
+    # backup carries the name
+    pg.evaluate("weightUnit='lb';saveUserName('Billy')"); bk=json.loads(pg.evaluate(EXPORT))
+    check('backup carries the name', bk.get('userName')=='Billy', bk.get('userName')); ctx.close()
+sys.exit(1 if done() else 0)

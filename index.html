@@ -3807,6 +3807,145 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 .rtwh:not([hidden]) + #progressHome > .today-date,
 .rtwh:not([hidden]) + #runHome .run-home-top > .today-date { display: none; }
 .rtwh:not([hidden]) + #runHome .run-home-top { justify-content: flex-end; margin-bottom: 8px; }
+
+/* ── 8.34 PARTS 1 AND 2. Plan active exercise card, Today, floating tab bar.
+   Locked palette only: cream, ultramarine, persimmon, ink, surface #FBF9F3,
+   muted #55544D, track #E4DFD0. Antonio for display, DM Sans for text. */
+:root { --s834-surface: #FBF9F3; --s834-muted: #55544D; --s834-track: #E4DFD0; }
+.sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* Tab bar: floating ink bar, text labels, persimmon pill for the current tab. */
+.tabbar { left: 16px; right: 16px; bottom: calc(12px + env(safe-area-inset-bottom)); padding: 6px; background: var(--ink); border: 0; border-radius: 30px; grid-template-columns: repeat(4, 1fr) !important; gap: 4px; box-shadow: 0 8px 24px rgba(20,20,20,0.18); }
+body.running .tabbar { grid-template-columns: repeat(5, 1fr) !important; }
+body.running .tabbar-btn { font-size: 14px; }
+.tabbar-btn svg { display: none; }
+.tabbar-btn { min-height: 52px; border-radius: 24px; color: #D8D3C7; font-size: 15px; font-weight: 600; letter-spacing: 0.01em; }
+.tabbar-btn.current { background: var(--persimmon); color: var(--ink); border-radius: 24px; }
+.tabbar-btn.current span { font-weight: 700; }
+.tabbar-btn:focus-visible { outline: 2px solid var(--cream); outline-offset: -4px; border-radius: 24px; }
+body { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+.timer-bar { bottom: calc(82px + env(safe-area-inset-bottom)) !important; }
+
+/* Header on Today: wordmark and the streak pill, no gear or menu glyph. */
+.nav-streak { display: none; margin-left: auto; align-items: center; min-height: 40px; padding: 0 18px; border-radius: 999px; background: var(--ink); color: var(--cream); font-family: var(--font-body); font-size: 14px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; }
+body[data-tab="today"] .nav-streak:not([hidden]) { display: inline-flex; }
+body[data-tab="today"] nav .nav-gear, body[data-tab="today"] .nav-logo-chevron { display: none; }
+
+/* ── TODAY ── */
+body.tb-on #hero-today, body.tb-on #todayDate, body.tb-on #todayWorkout, body.tb-on #tab-today [data-glance],
+body.tb-on #todaySection > .today-label:first-of-type, body.tb-on #todayGoal { display: none !important; }
+.tb { padding: 4px 0 8px; }
+.tb-dow { font-family: var(--font-body); font-size: 15px; color: var(--s834-muted); margin: 6px 0 2px; }
+.tb-hello { font-family: 'Antonio', var(--font-display, sans-serif); font-weight: 700; font-size: clamp(40px, 13.4vw, 56px); line-height: 0.95; text-transform: uppercase; letter-spacing: 0.005em; color: var(--ink); margin: 0 0 18px; overflow-wrap: anywhere; }
+.tb-week { background: var(--s834-surface); border-radius: 24px; padding: 18px 16px 16px; margin-bottom: 12px; }
+.tb-week-top { display: flex; align-items: center; gap: 16px; }
+.tb-ring { position: relative; flex: 0 0 104px; width: 104px; height: 104px; }
+.tb-ring svg { width: 104px; height: 104px; transform: rotate(-90deg); }
+.tb-ring circle { fill: none; stroke-width: 11; }
+.tb-ring .trk { stroke: var(--s834-track); }
+.tb-ring .val { stroke: var(--ultramarine); stroke-linecap: round; }
+.tb-ring-c { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.tb-ring-n { font-family: 'Antonio', sans-serif; font-weight: 700; font-size: 32px; line-height: 1; color: var(--ink); }
+.tb-ring-l { font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--s834-muted); margin-top: 2px; }
+.tb-week-copy { font-size: 15px; line-height: 1.45; color: var(--ink); margin: 0; }
+.tb-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 16px; list-style: none; padding: 0; }
+.tb-strip li { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.tb-dl { font-size: 12px; font-weight: 600; color: var(--s834-muted); }
+.tb-dot { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--s834-track); color: var(--s834-muted); font-size: 14px; font-weight: 700; box-sizing: border-box; }
+.tb-dot.done { background: var(--ultramarine); color: var(--cream); }
+.tb-dot.done svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.tb-dot.now { background: #fff; color: var(--ink); border: 3px solid var(--persimmon); border-radius: 14px; width: 40px; height: 40px; }
+.tb-work { background: var(--ultramarine); color: var(--cream); border-radius: 28px; padding: 22px 20px 20px; margin-bottom: 12px; }
+.tb-kick { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin: 0; }
+.tb-day { font-family: 'Antonio', sans-serif; font-weight: 700; font-size: 56px; line-height: 1; text-transform: uppercase; margin: 6px 0 4px; overflow-wrap: anywhere; }
+.tb-meta { font-size: 15px; margin: 0 0 16px; }
+.tb-start { display: block; width: 100%; min-height: 60px; border: 0; border-radius: 22px; background: var(--persimmon); color: var(--ink); font-family: 'Antonio', sans-serif; font-weight: 700; font-size: 26px; letter-spacing: 0.03em; text-transform: uppercase; cursor: pointer; }
+.tb-start:focus-visible, .pa-log:focus-visible, .pa-sb:focus-visible, .pa-link:focus-visible, .pa-tile:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.tb-work .tb-start:focus-visible { outline-color: var(--cream); }
+.tb-links { display: flex; gap: 20px; margin-top: 10px; }
+.tb-links { margin: -4px 0 12px; }
+.tb-links button { min-height: 44px; background: none; border: 0; padding: 0; color: var(--primary-text); font: inherit; font-size: 15px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.tb-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.tb-stats.one { grid-template-columns: 1fr; }
+.tb-tile { background: var(--s834-surface); border-radius: 24px; padding: 16px 16px 14px; }
+.tb-tile-k { font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--s834-muted); margin: 0; }
+.tb-tile-v { font-family: 'Antonio', sans-serif; font-weight: 700; font-size: 32px; line-height: 1.05; text-transform: uppercase; color: var(--ink); margin: 6px 0 2px; }
+.tb-tile-l { font-size: 15px; color: var(--s834-muted); margin: 0; }
+
+/* ── PLAN ACTIVE EXERCISE ── */
+.pa { padding: 0 16px; overflow-x: clip; }
+.pa[hidden] { display: none; }
+body.pa-on nav { display: none; }
+body.pa-on { padding-top: 0; }
+body.pa-on #hero-training, body.pa-on #plan > .section-label, body.pa-on #plan > .lift-hero,
+body.pa-on #plan .plan-day-header, body.pa-on #plan .lift-table-header, body.pa-on #plan .lift-row.pa-cur:not(.pa-details) { display: none !important; }
+body.pa-on #plan .lift-row:not(.pa-cur) .lift-body { display: none !important; }
+body.pa-on #plan .lift-row:not(.pa-cur) .lift-head { min-height: 56px; }
+body.pa-on #plan .lift-row:not(.pa-cur) { margin-bottom: 8px; }
+.len-tog { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; margin: 14px 0 0; }
+.len-tog button { min-height: 44px; min-width: 88px; padding: 0 18px; border-radius: 999px; border: 2px solid transparent; background: transparent; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }
+.len-tog.on-blue { background: rgba(242,238,228,0.14); }
+.len-tog.on-blue button { color: var(--cream); }
+.len-tog.on-blue button[aria-pressed="true"] { background: var(--cream); color: var(--ink); }
+.len-tog button:focus-visible { outline: 3px solid var(--cream); outline-offset: 2px; }
+.tb-work .len-tog { margin: 0 0 14px; }
+.pa-head { background: var(--ultramarine); color: var(--cream); margin: 0 -16px; padding: calc(18px + env(safe-area-inset-top)) 20px 20px; border-radius: 0 0 32px 32px; }
+.pa-meta { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin: 0; }
+.pa-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 8px 0 6px; }
+.pa-title { font-family: 'Antonio', sans-serif; font-weight: 700; font-size: clamp(38px, 11.8vw, 46px); line-height: 0.95; text-transform: uppercase; margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.pa-dot { color: var(--persimmon); }
+.pa-head .len-tog { margin: 0; flex: none; }
+.pa-head .len-tog { gap: 2px; padding: 3px; }
+.pa-head .len-tog button { min-width: 60px; padding: 0 12px; font-size: 14px; }
+.pa-sum { font-size: 15px; margin: 0; color: var(--cream); }
+.pa-body { padding: 16px 0 8px; }
+.pa-lift-done { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 64px; background: var(--s834-surface); border: 0; border-radius: 22px; padding: 12px 16px; margin: 0 0 10px; text-align: left; font: inherit; color: var(--ink); cursor: pointer; }
+.pa-lift-done .t { min-width: 0; }
+.pa-lift-done b { display: block; font-size: 17px; font-weight: 700; }
+.pa-lift-done .d { display: block; font-size: 15px; color: var(--s834-muted); }
+.pa-card { background: var(--s834-surface); border-radius: 28px; padding: 20px 16px 8px; }
+.pa-name { font-family: 'Antonio', sans-serif; font-weight: 700; font-size: 30px; line-height: 1.05; text-transform: uppercase; color: var(--ink); margin: 0; }
+.pa-sub { font-size: 15px; color: var(--s834-muted); margin: 4px 0 10px; }
+.pa-set { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 52px; padding: 4px; background: none; border: 0; border-radius: 14px; font: inherit; font-size: 17px; color: var(--s834-muted); text-align: left; cursor: pointer; }
+.pa-set .r { margin-left: auto; font-size: 16px; }
+.pa-set.done .r { color: var(--ink); font-weight: 700; font-size: 17px; }
+.pa-set:focus-visible, .pa-lift-done:focus-visible { outline: 3px solid var(--ultramarine); outline-offset: 2px; }
+.pa-ck { flex: none; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; }
+.pa-ck svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.pa-set.done .pa-ck, .pa-lift-done .pa-ck { background: var(--ultramarine); color: #fff; }
+.pa-set.next .pa-ck { border: 2px solid #8F897C; }
+.pa-frame { background: #fff; border: 3px solid var(--ultramarine); border-radius: 24px; padding: 12px 12px 12px; margin: 6px 0; }
+.pa-fh { display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 700; color: var(--ink); margin: 0 0 12px; }
+.pa-num { flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--persimmon); color: var(--ink); display: inline-flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; }
+.pa-steps { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.pa-box { background: var(--cream); border-radius: 20px; padding: 6px 6px 6px; display: flex; flex-direction: column; align-items: center; min-width: 0; }
+.pa-in { width: 100%; min-width: 0; height: 64px; border: 0; border-radius: 14px; background: transparent; text-align: center; font-family: 'Antonio', sans-serif; font-weight: 700; font-size: 56px; line-height: 1; color: var(--ink); padding: 0; }
+.pa-in:focus { outline: 2px solid var(--ultramarine); outline-offset: 0; }
+.pa-lab { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--s834-muted); margin: 0 0 8px; }
+.pa-pm { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; }
+.pa-sb { min-width: 44px; height: 48px; border: 0; border-radius: 14px; background: var(--s834-surface); color: var(--ultramarine); font-size: 26px; font-weight: 700; line-height: 1; cursor: pointer; touch-action: manipulation; }
+.pa-sb:focus-visible { outline: 3px solid var(--ultramarine); outline-offset: 1px; }
+.pa-sb:active { transform: scale(0.94); }
+.pa-bw { justify-content: center; }
+.pa-bwt { font-size: 15px; font-weight: 700; color: var(--ink); }
+.pa-log { display: block; width: 100%; min-height: 56px; border: 0; border-radius: 18px; background: var(--persimmon); color: var(--ink); font-family: 'Antonio', sans-serif; font-weight: 700; font-size: 28px; letter-spacing: 0.02em; text-transform: uppercase; cursor: pointer; transition: transform 120ms ease-out; touch-action: manipulation; }
+.pa-log:focus-visible { outline: 3px solid var(--ultramarine); outline-offset: 3px; }
+.pa-log:active { transform: scale(0.97); }
+.pa-log.pa-pop { animation: paPop 280ms ease-out; }
+.pa-set.pa-flash .pa-ck { animation: paPop 280ms ease-out; }
+@keyframes paPop { 0% { transform: scale(0.94); } 60% { transform: scale(1.04); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .pa-log, .pa-sb { transition: none; } .pa-log:active, .pa-sb:active { transform: none; } .pa-log.pa-pop, .pa-set.pa-flash .pa-ck { animation: none; } }
+.pa-msg { font-size: 15px; color: var(--persimmon-burnt); margin: 8px 0 0; }
+.pa-msg:empty { display: none; }
+.pa-links { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0 8px; margin-top: 8px; padding-top: 4px; border-top: 1px solid var(--s834-track); }
+.pa-link { min-height: 44px; padding: 0 2px; background: none; border: 0; color: var(--ultramarine); font: inherit; font-size: 17px; font-weight: 700; cursor: pointer; }
+.pa-links2 { display: flex; gap: 20px; }
+.pa-links2 .pa-link { font-size: 15px; font-weight: 600; color: var(--s834-muted); text-decoration: underline; text-underline-offset: 3px; }
+.pa-warm { background: var(--cream); border-radius: 18px; padding: 12px 16px; margin: 6px 0 4px; font-size: 15px; color: var(--ink); }
+.pa-warm ol { margin: 4px 0 0 18px; padding: 0; }
+.pa-done { background: var(--s834-surface); border-radius: 24px; padding: 18px; font-size: 15px; color: var(--ink); }
+.pa-done .pa-name { margin-bottom: 6px; }
+body.pa-on #plan .lift-row.pa-fin { display: none !important; }
 </style>
 </head>
 <body style="background:var(--bg)">
@@ -3941,9 +4080,21 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       document.querySelectorAll('.wu-val').forEach(function(e) { e.textContent = wTxt(+e.dataset.lb); });
       document.querySelectorAll('[data-wu-btn]').forEach(function(b) { var on = b.dataset.wuBtn === weightUnit; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
       var tw = document.getElementById('todayWeight'); if (tw) tw.placeholder = wLbs();
+      var sn = document.getElementById('setName'); if (sn && document.activeElement !== sn) sn.value = userName;
     } catch(e) {}
   }
   try { document.addEventListener('DOMContentLoaded', applyWeightUnitUI); } catch(e) {}
+  //  8.34: an optional first name for the Today greeting. Plain text, 24
+  //  characters at most, control characters dropped.
+  var NAME_KEY = 'monk_user_name_v1', userName = '';
+  function cleanUserName(v) { return typeof v === 'string' ? v.replace(/[\u0000-\u001f\u007f<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, 24) : ''; }
+  try { userName = cleanUserName(localStorage.getItem(NAME_KEY) || ''); } catch(e) {}
+  function saveUserName(v) {
+    userName = cleanUserName(v);
+    try { if (userName) localStorage.setItem(NAME_KEY, userName); else localStorage.removeItem(NAME_KEY); } catch(e) {}
+    var f = document.getElementById('setName'); if (f && f.value !== userName) f.value = userName;
+    try { if (typeof renderTodayB === 'function') renderTodayB(); } catch(e) {}
+  }
   function setWeightUnit(u) {
     u = u === 'kg' ? 'kg' : 'lb';
     if (u === weightUnit) return;
@@ -4094,6 +4245,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     <span class="nav-logo-text" aria-hidden="true">Run the Weights</span>
     <span class="nav-logo-chevron" aria-hidden="true">≡</span>
   </button>
+  <span class="nav-streak" id="navStreak" hidden></span>
   <button type="button" class="nav-gear" id="navGear" aria-label="Settings" onclick="openSettingsModal()">
     <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
   </button>
@@ -4271,6 +4423,14 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 <div id="tab-today" class="tab-main" style="background:var(--bg);display:none">
 <div class="rtwh" id="hero-today" data-max="168" data-min="56" hidden><p class="rtwh-word"></p><p class="rtwh-line"></p></div>
 <section id="todaySection">
+  <div class="tb" id="todayB">
+    <p class="tb-dow" id="tbDow"></p>
+    <h1 class="tb-hello" id="tbHello"></h1>
+    <div class="tb-week" id="tbWeek" hidden></div>
+    <div class="tb-work" id="tbWork" hidden></div>
+    <div class="tb-stats" id="tbStats" hidden></div>
+    <div class="tb-links" id="tbMore"></div>
+  </div>
   <div class="today-date" id="todayDate"></div>
   <div class="today-card rest-card" id="todayRest" style="display:none"></div>
   <div class="today-card run-today" id="todayRun" style="display:none"></div>
@@ -4298,6 +4458,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 </div>
 
 <div id="tab-training" class="tab-main" style="background:var(--bg)">
+<div class="pa" id="planActive" hidden></div>
+<p class="sr-only" id="lenSay" role="status" aria-live="polite"></p>
 <div class="rtwh" id="hero-training" data-max="96" data-min="40" hidden><p class="rtwh-word"></p><p class="rtwh-line"></p></div>
 
 <section id="plan">
@@ -5147,6 +5309,11 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         <button class="liftdays-btn" data-adv-btn="on" onclick="setAdvanced(true)">On</button>
       </div>
       <span class="liftdays-desc">On shows exercise swaps, warm up logging, set counts, the session builder and the reason for each pick.</span>
+    </div>
+    <div class="liftdays-wrap" style="margin-bottom:16px;">
+      <label class="liftdays-label" for="setName">Your name</label>
+      <input class="run-input" id="setName" type="text" maxlength="24" autocomplete="given-name" placeholder="Optional" onchange="saveUserName(this.value)">
+      <span class="liftdays-desc">Shown on Today.</span>
     </div>
     <div class="liftdays-wrap" style="margin-bottom:16px;">
       <span class="liftdays-label" id="wuLabel">Weight unit</span>
@@ -6867,12 +7034,12 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       if (!d || d === 'rest' || !SPLIT_DAYS[d] || SPLIT_DAYS[d].rest) return false;
       //  A day already running a quick workout or a time limit stays the
       //  target after its first set, so it can be changed or undone.
-      var shaped = !!quickFor(d, week) || TIME_BOX_CHOICES.indexOf(boxChoice(d, week)) !== -1;
+      var shaped = !!quickFor(d, week) || TIME_BOX_CHOICES.indexOf(boxChoice(d, week)) !== -1 || isShortDay(d, week);
       return shaped || !hasLogsForDay(d, week);
     };
     if (open(_qlDay)) return _qlDay;
     var part = partialDayThisWeek();
-    if (part && (quickFor(part, week) || TIME_BOX_CHOICES.indexOf(boxChoice(part, week)) !== -1)) return part;
+    if (part && (quickFor(part, week) || TIME_BOX_CHOICES.indexOf(boxChoice(part, week)) !== -1 || isShortDay(part, week))) return part;
     var todays = activeSplit().week[mondayIndex(startOfToday())];
     if (open(todays)) return todays;
     return findNextUnloggedDay();
@@ -6968,6 +7135,39 @@ a:not([class]), .howto-link { color: var(--primary-text); }
     persistQuick(); persistSessionShape(); persistLifeHappens(); invalidateBuild();
     renderDaySections(); renderAllRowStates();
     if (typeof renderToday === 'function') renderToday();
+  }
+  //  8.34 fix: Short and Normal, both ways, before or during a workout.
+  //  Only the session's shape changes (shortDays, timeBoxes, quickSessions
+  //  for this week and day). Logged sets live in sessions and are never read
+  //  or written here; every slot is restored from storage on redraw, so a
+  //  set hidden by the shorter list is still there when Normal comes back.
+  function sessionIsShort(dayId) {
+    var w = currentTrainWeek;
+    return isShortDay(dayId, w) || !!quickFor(dayId, w) || TIME_BOX_CHOICES.indexOf(boxChoice(dayId, w)) !== -1;
+  }
+  function setSessionLength(dayId, mode) {
+    if (!dayId || !SPLIT_DAYS[dayId]) return;
+    if ((mode === 'short') === sessionIsShort(dayId)) return;
+    var k = boxKey(dayId);
+    claimDayChoice(dayId);
+    delete quickSessions[k]; delete timeBoxes[k]; delete shortDays[k];
+    if (mode === 'short') { shortDays[k] = true; stampDayChoice(dayId, 'short', null); }
+    else { timeBoxes[k] = 'full'; stampDayChoice(dayId, 'full', null); }
+    persistQuick(); persistSessionShape(); persistLifeHappens(); invalidateBuild();
+    renderDaySections(); renderAllRowStates();
+    var onPlan = document.body && document.body.dataset.tab === 'training';
+    if (onPlan && typeof switchDay === 'function') switchDay(dayId);
+    if (typeof renderToday === 'function') renderToday();
+    if (typeof renderQuickLog === 'function') try { renderQuickLog(); } catch(e) {}
+    var ann = document.getElementById('lenSay');
+    if (ann) ann.textContent = (mode === 'short' ? 'Short session. ' : 'Normal session. ') + 'Logged sets are kept.';
+  }
+  function sessionLengthHTML(dayId, cls) {
+    var sh = sessionIsShort(dayId);
+    return '<div class="len-tog ' + (cls || '') + '" role="group" aria-label="Session length">'
+      + '<button type="button" aria-pressed="' + !sh + '" onclick="setSessionLength(\'' + dayId + '\',\'full\')">Normal</button>'
+      + '<button type="button" aria-pressed="' + sh + '" onclick="setSessionLength(\'' + dayId + '\',\'short\')">Short</button>'
+      + '</div>';
   }
   function useFullPlan() {
     var day = quickTargetDay();
@@ -12031,7 +12231,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
       quick: { sessions: quickSessions, minutes: quickMinutes },
       rest: restPrefs, swapsToday: swapsToday,
       runPrefs: { units: runUnits, lastType: runLastType },
-      weightUnit: wUnit(),
+      weightUnit: wUnit(), userName: userName,
       aboutSeen: aboutSeen(), dayMode: currentDayMode()
     };
     var blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
@@ -12144,6 +12344,7 @@ a:not([class]), .howto-link { color: var(--primary-text); }
         if (data.swapsToday && typeof data.swapsToday === 'object') { swapsToday = cleanSwapsToday(data.swapsToday); persistSwapsToday(); }
         //  8.34: only 'lb' or 'kg' comes back; anything else keeps the current unit.
         if (data.weightUnit === 'lb' || data.weightUnit === 'kg') { weightUnit = data.weightUnit; try { localStorage.setItem(WU_KEY, weightUnit); } catch(e) {} applyWeightUnitUI(); }
+        if (typeof data.userName === 'string') saveUserName(data.userName);
         var rp2 = data.runPrefs;
         if (rp2 && typeof rp2 === 'object') {
           if (rp2.units === 'mi' || rp2.units === 'km') { runUnits = rp2.units; try { localStorage.setItem(RUN_UNITS_KEY, runUnits); } catch(e) {} }
@@ -13443,8 +13644,8 @@ a:not([class]), .howto-link { color: var(--primary-text); }
   //  Seen tips: monk_tips_seen_v1 = { v: 1, seen: { id: 1 } }, in backups.
   const TIPS_KEY = 'monk_tips_seen_v1';
   var TIP_DEFS = [
-    { id: 'today', scr: 'today', t: 'Start here. This screen shows what is next today.', a: function() { return document.getElementById('todayDate'); }, at: 'after' },
-    { id: 'plan', scr: 'training', t: 'Log each set here. Tap a lift to see Swap and Add set.', a: function() { return tipFirstLift(); }, at: 'before' },
+    { id: 'today', scr: 'today', t: 'Start here. This screen shows what is next today.', a: function() { var b = document.body.classList.contains('tb-on') && document.getElementById('tbHello'); return b || document.getElementById('todayDate'); }, at: 'after' },
+    { id: 'plan', scr: 'training', t: 'Log each set here. Tap any lift below to switch to it.', a: function() { var l = document.body.classList.contains('pa-on') && document.getElementById('paLogBtn'); return l && l.offsetParent ? l : tipFirstLift(); }, at: 'before' },
     { id: 'lnote', scr: 'training', isNew: 1, t: 'Tap a lift, then Note. Your last note for it shows there.', a: function() { return tipFirstLift(); }, at: 'after' },
     { id: 'wnote', scr: 'training', isNew: 1, t: 'Write how it felt. It saves by date in the full calendar.', a: function() { return document.getElementById('workoutNotesWrap'); }, at: 'before' },
     { id: 'quicklog', scr: 'quicklog', isNew: 1, t: 'Pick any lift or type your own. Log as you go.', a: function() { return document.getElementById('qlAddExBtn'); }, at: 'before' },
@@ -17348,6 +17549,8 @@ function caretSelectable(inp) {
 
 function enhanceSmoothInput(inp) {
   if (!inp || inp._smoothDone) return false;
+  //  8.34: the Plan card's big numbers keep their own look and markup.
+  if (inp.classList && inp.classList.contains('pa-in')) return false;
   var t = (inp.type || 'text').toLowerCase();
   //  Genuine typing fields only — never sliders, dates, files, checkboxes or
   //  buttons, where a text caret is meaningless.
@@ -17437,6 +17640,7 @@ function enhanceAllInputs() {
 var INPUT_COLOR_VALID = '#52C27A', INPUT_COLOR_INVALID = '#E05252';
 function enhanceInputColorState(inp) {
   if (!inp) return false;
+  if (inp.classList && inp.classList.contains('pa-in')) return false;
   var t = (inp.type || 'text').toLowerCase();
   if (['text', 'search', 'tel', 'url', 'email', 'password', 'number'].indexOf(t) === -1) return false;
   function refresh() {
@@ -18185,6 +18389,464 @@ document.addEventListener('DOMContentLoaded', function() {
     animateRingOnLoad();
   }, 120);
 });
+
+//  ===== 8.34 PARTS 1 AND 2 =====
+//  Plan: one active exercise as a card, the rest as 56 px rows. The card
+//  writes into the exercise's own set inputs and saves through
+//  autoSaveExercise(), so history, targets, PRs and the old rows all see
+//  exactly what typing in the rows would have produced. No new data.
+var PA = { day: null, ex: null, slot: null, key: null, wLb: null, r: null, msg: '', warm: false, details: false, flash: null, at: 0 };
+var PA_DOWS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+function paEsc(t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function paDk(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+function paAddDays(d, n) { var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() + n); return x; }
+function paRange(ex) { return effectiveRepRangeText(ex).replace(/\s*[–—-]\s*/g, ' to '); }
+function paViewedDay() {
+  var ids = [], id = null;
+  try { ids = splitDayIds(); } catch(e) {}
+  try { id = localStorage.getItem(LAST_DAY_KEY); } catch(e) {}
+  if (id && ids.indexOf(id) !== -1) return id;
+  try { id = pickTrainingDay(); } catch(e) { id = null; }
+  return ids.indexOf(id) !== -1 ? id : null;
+}
+function paList(day) {
+  var list = [];
+  try { list = buildSession(day, currentTrainWeek).list || []; } catch(e) {}
+  return list.filter(function(ex) { return ex && document.getElementById('row-' + ex.id); });
+}
+function paLoggedSet(ex, slot) {
+  var e = entryForWeek(getHistory(ex.id), currentTrainWeek, ex);
+  return e ? normSet(e, e[slot]) : null;
+}
+function paOpenSlot(ex) {
+  for (var n = 1; n <= shownSets(ex.id); n++) if (!slotLogged(ex, 's' + n)) return 's' + n;
+  return null;
+}
+function paMoves(list) {
+  var has = {}, out = [];
+  list.forEach(function(ex) { var p = ex.pattern; has[p === 'push' ? 'push' : p === 'pull' ? 'pull' : 'legs'] = 1; });
+  ['push', 'pull', 'legs'].forEach(function(k) { if (has[k]) out.push(k); });
+  return out.join(' + ');
+}
+//  Starting numbers for a set, the same order guided mode used: what is
+//  logged, then the set before it, then the box, then the target.
+function paSeed(ex, slot) {
+  var lg = paLoggedSet(ex, slot);
+  var wEl = document.getElementById(slot + 'w-' + ex.id), rEl = document.getElementById(slot + 'r-' + ex.id);
+  var hist = getHistory(ex.id), target = effectiveTarget(ex, hist);
+  var ps = prevSlotLogged(ex, slot);
+  var aimR = parseInt((document.getElementById('r-' + ex.id) || {}).value, 10);
+  var w0 = lg ? lg.w : ps && ps.w ? ps.w : (wEl && parseFloat(wEl.value) > 0 ? parseFloat(wEl.value) : (target.weight > 0 ? target.weight : 0));
+  var r0 = lg ? lg.r : (rEl && parseInt(rEl.value, 10) > 0 ? parseInt(rEl.value, 10) : (ps ? ps.r : (aimR > 0 ? aimR : (parseInt((rEl || {}).placeholder, 10) || ex.repRange[0]))));
+  PA.wLb = w0 > 0 ? w0 : 0; PA.r = r0 > 0 ? r0 : ex.repRange[0];
+  PA.key = ex.id + '|' + slot + '|' + currentTrainWeek;
+}
+function paOn() {
+  var tab = document.body && document.body.dataset.tab;
+  return tab === 'training' && typeof trainStyle === 'object' && trainStyle.style !== 'free' && (typeof _planRestSlot === 'undefined' || _planRestSlot == null);
+}
+function paSoon() {
+  clearTimeout(paSoon._t);
+  paSoon._t = setTimeout(function() {
+    //  Not while a number on the card is being typed, and not right after a
+    //  render the card itself just made.
+    var a = document.activeElement;
+    if (a && a.classList && a.classList.contains('pa-in')) return;
+    if (Date.now() - PA.at > 60) try { renderPlanActive(); } catch(e) {}
+  }, 0);
+}
+function paCk() { return '<span class="pa-ck" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7"/></svg></span>'; }
+function paSetTxt(lg, ex) { return lg.w > 0 ? wNum(lg.w) + ' ' + wLbs() + ' x ' + lg.r : lg.r + ' ' + (ex.unit || 'reps'); }
+function paMovesText(list) {
+  var m = paMoves(list).split(' + ').filter(Boolean);
+  return m.length > 1 ? m.slice(0, -1).join(', ') + ' and ' + m[m.length - 1] : (m[0] || '');
+}
+function paPickEx(id) {
+  PA.ex = id; PA.slot = null; PA.key = null; PA.warm = false; PA.details = false;
+  renderPlanActive();
+  var c = document.getElementById('paName'); if (c) try { c.scrollIntoView({ block: 'center' }); } catch(e) {}
+  var b = document.getElementById('paLogBtn'); if (b) b.focus({ preventScroll: true });
+}
+function renderPlanActive() {
+  var host = document.getElementById('planActive');
+  if (!host) return;
+  PA.at = Date.now();
+  var day = paOn() ? paViewedDay() : null;
+  var list = day ? paList(day) : [];
+  document.querySelectorAll('#plan .lift-row.pa-cur, #plan .lift-row.pa-fin').forEach(function(r) { r.classList.remove('pa-cur', 'pa-details', 'pa-fin'); });
+  if (!day || !list.length) { host.hidden = true; host.innerHTML = ''; PA.html = null; document.body.classList.remove('pa-on'); return; }
+  document.body.classList.add('pa-on');
+  if (PA.day !== day) { PA.day = day; PA.ex = null; PA.slot = null; PA.key = null; PA.warm = false; PA.details = false; }
+  var ex = PA.ex && list.filter(function(x) { return x.id === PA.ex; })[0];
+  //  An exercise picked on purpose stays, even when all its sets are in.
+  //  Otherwise the first exercise with a set left.
+  if (!ex) { ex = list.filter(function(x) { return paOpenSlot(x); })[0] || null; PA.slot = null; }
+  var d = SPLIT_DAYS[day] || {}, b = {};
+  try { b = buildSession(day, currentTrainWeek); } catch(e) {}
+  var mins = b.minutes || 0;
+  var idx = ex ? list.indexOf(ex) + 1 : 0;
+  var title = String(d.title || '').replace(/\.$/, '');
+  var moves = paMovesText(list);
+  var head = '<header class="pa-head">'
+    + '<p class="pa-meta"><span>Week ' + (currentTrainWeek + 1) + ' of ' + totalTrainWeeks() + '</span><span>' + (ex ? 'Exercise ' + idx + ' of ' + list.length : 'All ' + list.length + ' done') + '</span></p>'
+    + '<div class="pa-row"><h2 class="pa-title">' + paEsc(title) + '<span class="pa-dot" aria-hidden="true">.</span></h2>' + sessionLengthHTML(day, 'on-blue') + '</div>'
+    + '<p class="pa-sum">' + [mins ? mins + ' min' : '', list.length + (list.length === 1 ? ' lift' : ' lifts'), moves].filter(Boolean).join(' · ') + '</p>'
+    + '</header>';
+  //  Finished lifts sit above the card, each one a tap away from editing.
+  var fin = list.filter(function(x) { return x !== ex && !paOpenSlot(x); });
+  var finHTML = fin.map(function(x) {
+    var n = shownSets(x.id), done = [];
+    for (var i = 1; i <= n; i++) { var lg = paLoggedSet(x, 's' + i); if (lg) done.push(lg.w > 0 ? wNum(lg.w) + ' x ' + lg.r : String(lg.r)); }
+    var r = document.getElementById('row-' + x.id); if (r) r.classList.add('pa-fin');
+    return '<button type="button" class="pa-lift-done" onclick="paPickEx(\'' + x.id + '\')" aria-label="' + paEsc(activeVariant(x)) + ', done, ' + done.length + ' of ' + n + ' sets. Change a set">'
+      + paCk() + '<span class="t"><b>' + paEsc(activeVariant(x)) + '</b><span class="d">' + done.length + ' of ' + n + ' sets · ' + done.join(', ') + '</span></span></button>';
+  }).join('');
+  if (!ex) {
+    host.innerHTML = head + '<div class="pa-body">' + finHTML + '<div class="pa-done"><h3 class="pa-name">Every set is in</h3><p>' + list.length + ' lifts logged for ' + paEsc(d.title || 'this day') + '. Tap any lift to change a set.</p></div></div>';
+    PA.html = null;
+    host.hidden = false;
+    return;
+  }
+  var row = document.getElementById('row-' + ex.id);
+  if (row) { row.classList.add('pa-cur'); row.classList.toggle('pa-details', PA.details); }
+  var sets = shownSets(ex.id);
+  if (!PA.slot || PA.ex !== ex.id || parseInt(PA.slot.slice(1), 10) > sets) PA.slot = paOpenSlot(ex) || 's' + sets;
+  PA.ex = ex.id;
+  var slot = PA.slot, n = parseInt(slot.slice(1), 10);
+  if (PA.key !== ex.id + '|' + slot + '|' + currentTrainWeek) paSeed(ex, slot);
+  var hist = getHistory(ex.id), prevRef = movementPrevEntry(hist, currentTrainWeek, ex);
+  var unit = ex.unit || 'reps';
+  var noLoad = weightOptional(ex) && !(PA.wLb > 0);
+  var sub = (prevRef && prevRef.reps ? 'Last time ' + (prevRef.weight > 0 ? wNum(prevRef.weight) + ' x ' : '') + prevRef.reps : 'First time on this lift') + ' · target ' + paRange(ex) + ' ' + unit;
+  var isLogged = !!paLoggedSet(ex, slot);
+  var wBox = noLoad
+    ? '<div class="pa-box pa-bw"><span class="pa-bwt">Body weight</span></div>'
+    : '<div class="pa-box"><input class="pa-in" id="paW" type="text" inputmode="decimal" autocomplete="off" value="' + wNum(PA.wLb) + '" aria-label="Weight in ' + (wUnit() === 'kg' ? 'kilograms' : 'pounds') + ' for set ' + n + '" onfocus="var t=this;setTimeout(function(){t.select()},0)" oninput="if(this.value.length&&!/[.,]$/.test(this.value))paSet(\'w\',this.value)" onchange="paSet(\'w\',this.value)">'
+      + '<span class="pa-lab" aria-hidden="true">' + wLbs() + '</span>'
+      + '<div class="pa-pm"><button type="button" class="pa-sb" aria-label="Lighter" onclick="paStep(\'w\',-1)">−</button><button type="button" class="pa-sb" aria-label="Heavier" onclick="paStep(\'w\',1)">+</button></div></div>';
+  var rBox = '<div class="pa-box"><input class="pa-in" id="paR" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" value="' + PA.r + '" aria-label="' + paEsc(unit) + ' for set ' + n + '" onfocus="var t=this;setTimeout(function(){t.select()},0)" oninput="if(this.value.length)paSet(\'r\',this.value)" onchange="paSet(\'r\',this.value)">'
+      + '<span class="pa-lab" aria-hidden="true">' + paEsc(unit) + '</span>'
+      + '<div class="pa-pm"><button type="button" class="pa-sb" aria-label="One less" onclick="paStep(\'r\',-1)">−</button><button type="button" class="pa-sb" aria-label="One more" onclick="paStep(\'r\',1)">+</button></div></div>';
+  var frame = '<div class="pa-frame" role="group" aria-labelledby="paFh">'
+    + '<p class="pa-fh" id="paFh"><span class="pa-num" aria-hidden="true">' + n + '</span>Set ' + n + ' of ' + sets + '</p>'
+    + '<div class="pa-steps">' + wBox + rBox + '</div>'
+    + '<button type="button" class="pa-log' + (PA.flash ? ' pa-pop' : '') + '" id="paLogBtn" onclick="paLog()">' + (isLogged ? 'Save set ' : 'Log set ') + n + '</button>'
+    + '<p class="pa-msg" id="paMsg" role="status" aria-live="polite">' + paEsc(PA.msg) + '</p>'
+    + '</div>';
+  var rows = '';
+  for (var i = 1; i <= sets; i++) {
+    var s = 's' + i, lg = paLoggedSet(ex, s);
+    if (s === slot) { rows += frame; continue; }
+    if (lg) rows += '<button type="button" class="pa-set done' + (PA.flash === s ? ' pa-flash' : '') + '" onclick="paPick(\'' + s + '\')" aria-label="Set ' + i + ', ' + paSetTxt(lg, ex) + ', done. Change this set">' + paCk() + '<span aria-hidden="true">Set ' + i + '</span><span class="r" aria-hidden="true">' + paSetTxt(lg, ex) + '</span></button>';
+    else rows += '<button type="button" class="pa-set next" onclick="paPick(\'' + s + '\')" aria-label="Set ' + i + ', next. Go to this set"><span class="pa-ck" aria-hidden="true"></span><span aria-hidden="true">Set ' + i + '</span><span class="r" aria-hidden="true">' + (PA.wLb > 0 ? wNum(PA.wLb) + ' ' + wLbs() + ' · ' : '') + paRange(ex) + ' ' + unit + '</span></button>';
+  }
+  var rest = restFor(ex) || 90;
+  var restTxt = Math.floor(rest / 60) + ':' + ('0' + (rest % 60)).slice(-2);
+  var warm = null;
+  try { warm = PA.wLb > 0 ? computeWarmups(ex.tag, PA.wLb) : null; } catch(e) {}
+  var warmHTML = PA.warm ? '<div class="pa-warm" id="paWarm">' + (warm && warm.length ? 'Warm up before set 1:<ol>' + warm.map(function(l) {
+      var p = String(l).split('×'); var w = parseFloat(p[0]);
+      return '<li>' + (isFinite(w) ? wTxt(w) : paEsc(p[0])) + ' x ' + paEsc((p[1] || '').trim()) + '</li>'; }).join('') + '</ol>'
+    : 'Two easy sets at about half your working weight, then go.') + '</div>' : '';
+  var html = head + '<div class="pa-body">' + finHTML
+    + '<section class="pa-card" aria-labelledby="paName">'
+    + '<h3 class="pa-name" id="paName">' + paEsc(activeVariant(ex)) + '</h3>'
+    + '<p class="pa-sub">' + sub + '</p>'
+    + '<div class="pa-sets">' + rows + '</div>'
+    + '<div class="pa-links">'
+    + '<button type="button" class="pa-link" onclick="paRest()" aria-label="Start a ' + restTxt + ' rest timer">Rest ' + restTxt + '</button>'
+    + '<button type="button" class="pa-link" aria-expanded="' + PA.warm + '" aria-controls="paWarm" onclick="paToggle(\'warm\')">Warm up</button>'
+    + (sets < MAX_SETS ? '<button type="button" class="pa-link" onclick="paAddSet()">Add set</button>' : '')
+    + '<button type="button" class="pa-link" onclick="openSwapSheet(\'' + ex.id + '\')">Swap</button>'
+    + '</div>' + warmHTML
+    + '<div class="pa-links2">' + (isLogged ? '<button type="button" class="pa-link" onclick="paDelete()">Delete set ' + n + '</button>' : '')
+    + '<button type="button" class="pa-link" aria-expanded="' + PA.details + '" onclick="paToggle(\'details\')">' + (PA.details ? 'Hide details' : 'Notes and details') + '</button></div>'
+    + '</section></div>';
+  if (html !== PA.html || host.hidden) { host.innerHTML = html; PA.html = html; }
+  host.hidden = false;
+  PA.msg = '';
+  if (PA.flash) { var f = PA.flash; setTimeout(function() { if (PA.flash === f) PA.flash = null; }, 400); }
+}
+function paStep(k, dir) {
+  if (k === 'r') PA.r = Math.max(1, Math.min(100, (PA.r || 0) + dir));
+  else {
+    var step = wUnit() === 'kg' ? 2.5 : 5, cur = wNum(PA.wLb || 0);
+    var next = Math.max(0, Math.round((cur + dir * step) / step) * step);
+    PA.wLb = wToLb(next);
+  }
+  renderPlanActive();
+  var b = (document.getElementById(k === 'r' ? 'paR' : 'paW') || {}).parentNode;
+  var btn = b && b.querySelectorAll && b.querySelectorAll('.pa-sb')[dir < 0 ? 0 : 1];
+  if (btn) btn.focus();
+}
+//  Typed numbers update the card in place. A rebuild here would replace the
+//  LOG SET button under a finger that is already on its way to it, since the
+//  keypad closing fires change right before the tap lands.
+function paSet(k, v) {
+  var n = parseFloat(String(v).replace(',', '.')), msg = '';
+  var inp = document.getElementById(k === 'r' ? 'paR' : 'paW');
+  if (k === 'r') { if (isFinite(n) && n >= 1 && n <= 100) PA.r = Math.round(n); else msg = 'Enter a number from 1 to 100.'; }
+  else {
+    var max = wUnit() === 'kg' ? 900 : 2000;
+    if (isFinite(n) && n >= 0 && n <= max) PA.wLb = wToLb(n); else msg = 'Enter a weight from 0 to ' + max + ' ' + wLb() + '.';
+  }
+  if (inp) inp.value = k === 'r' ? PA.r : wNum(PA.wLb);
+  var m = document.getElementById('paMsg'); if (m) m.textContent = msg;
+  PA.html = null;
+}
+function paPick(slot) { PA.slot = slot; PA.key = null; renderPlanActive(); var t = document.getElementById('paLogBtn'); if (t) t.focus(); }
+function paToggle(k) { PA[k] = !PA[k]; renderPlanActive(); }
+function paRest() { var ex = EX_BY_ID[PA.ex]; if (ex) startTimer(restFor(ex) || 90, activeVariant(ex)); }
+function paAddSet() {
+  var ex = EX_BY_ID[PA.ex]; if (!ex) return;
+  addSetFromAbove(ex.id);
+  PA.slot = paOpenSlot(ex) || PA.slot; PA.key = null;
+  renderPlanActive();
+}
+function paLog() {
+  var ex = EX_BY_ID[PA.ex], slot = PA.slot;
+  if (!ex || !slot) return;
+  var wEl = document.getElementById(slot + 'w-' + ex.id), rEl = document.getElementById(slot + 'r-' + ex.id);
+  var r = PA.r, w = PA.wLb;
+  if (!(r > 0)) { PA.msg = 'Enter how many you did.'; renderPlanActive(); return; }
+  if (!(w > 0) && !weightOptional(ex)) { PA.msg = 'Enter the weight you used.'; renderPlanActive(); return; }
+  if (!wEl || !rEl) { PA.msg = 'This lift is not on the Plan screen right now.'; renderPlanActive(); return; }
+  wEl.value = w > 0 ? w : ''; wEl.dataset.dirty = 1; rEl.value = r;
+  clearTimeout(_autoSaveT[ex.id]);
+  autoSaveExercise(ex.id, true);
+  if (!slotLogged(ex, slot)) { PA.msg = 'That set did not save. Check the weight and try again.'; renderPlanActive(); return; }
+  try { markDoneBtn(ex.id, slot, true); renderLiftRowState(ex); } catch(e) {}
+  PA.flash = slot;
+  //  Next open set on this lift, else the next lift with work left.
+  var nx = paOpenSlot(ex);
+  if (nx) { PA.slot = nx; }
+  else { PA.ex = null; PA.slot = null; PA.details = false; PA.warm = false; }
+  PA.key = null;
+  renderPlanActive();
+  var lb = document.getElementById('paLogBtn'); if (lb) lb.focus();
+  if (!nx) { var ph = document.getElementById('planActive'); if (ph) try { ph.scrollIntoView({ block: 'start' }); } catch(e) {} }
+}
+var _paUndo = null, _paUndoT = null;
+function paDelete() {
+  var ex = EX_BY_ID[PA.ex], slot = PA.slot;
+  if (!ex || !slot) return;
+  var lg = paLoggedSet(ex, slot);
+  if (!lg) return;
+  var wEl = document.getElementById(slot + 'w-' + ex.id), rEl = document.getElementById(slot + 'r-' + ex.id);
+  if (!wEl || !rEl) return;
+  _paUndo = { ex: ex.id, slot: slot, w: lg.w, r: lg.r };
+  wEl.value = ''; rEl.value = ''; delete wEl.dataset.dirty;
+  clearTimeout(_autoSaveT[ex.id]);
+  autoSaveExercise(ex.id, false);
+  try { markDoneBtn(ex.id, slot, false); renderLiftRowState(ex); } catch(e) {}
+  PA.key = null;
+  renderPlanActive();
+  var t = document.getElementById('swapToast');
+  if (t) {
+    t.innerHTML = '<span>Set ' + slot.slice(1) + ' deleted.</span><button type="button" class="swap-undo" onclick="paUndoDelete()">Undo</button>';
+    t.style.display = 'flex';
+    clearTimeout(_paUndoT);
+    _paUndoT = setTimeout(function() { t.style.display = 'none'; _paUndo = null; }, 6000);
+  }
+}
+function paUndoDelete() {
+  var u = _paUndo; _paUndo = null; clearTimeout(_paUndoT);
+  var t = document.getElementById('swapToast'); if (t) t.style.display = 'none';
+  var ex = u && EX_BY_ID[u.ex];
+  if (!ex || slotLogged(ex, u.slot)) return;
+  var wEl = document.getElementById(u.slot + 'w-' + ex.id), rEl = document.getElementById(u.slot + 'r-' + ex.id);
+  if (!wEl || !rEl) return;
+  wEl.value = u.w > 0 ? u.w : ''; rEl.value = u.r;
+  clearTimeout(_autoSaveT[ex.id]);
+  autoSaveExercise(ex.id, false);
+  try { markDoneBtn(ex.id, u.slot, true); renderLiftRowState(ex); } catch(e) {}
+  PA.ex = ex.id; PA.slot = u.slot; PA.key = null;
+  renderPlanActive();
+}
+//  On the card layout a tap on another lift's row makes it the active lift.
+//  The active lift's own row opens only through Notes and details.
+if (typeof document !== 'undefined' && document.addEventListener) document.addEventListener('click', function(e) {
+  if (!document.body.classList.contains('pa-on')) return;
+  var h = e.target && e.target.closest && e.target.closest('#plan .lift-head');
+  if (!h) return;
+  var row = h.closest('.lift-row');
+  if (!row || row.classList.contains('pa-cur')) return;
+  e.preventDefault(); e.stopPropagation();
+  PA.ex = h.dataset.ex; PA.slot = null; PA.key = null; PA.details = false; PA.warm = false;
+  renderPlanActive();
+  var host = document.getElementById('planActive');
+  if (host) try { host.scrollIntoView({ block: 'start' }); } catch(err) {}
+  var nm = document.getElementById('paLogBtn'); if (nm) nm.focus({ preventScroll: true });
+}, true);
+
+//  ===== TODAY =====
+function paPlannedPerWeek() {
+  try { return activeSplit().week.filter(function(id) { var d = SPLIT_DAYS[id] || {}; return id !== 'rest' && !d.rest; }).length; } catch(e) { return 0; }
+}
+//  Sessions done in [a, b): distinct dates, or distinct plan days when two
+//  were done on one date. A moved session counts once wherever it landed.
+function paSessionsIn(a, b) {
+  var dates = {}, days = {};
+  Object.keys(sessions || {}).forEach(function(id) {
+    var ex = EX_BY_ID[id];
+    (sessions[id] || []).forEach(function(e) {
+      if (!e || !e.d || e.d < a || e.d >= b) return;
+      dates[e.d] = 1;
+      if (ex && ex.day && ex.day !== 'library' && !e.quickLog) days[ex.day] = 1;
+    });
+  });
+  return Math.max(Object.keys(dates).length, Object.keys(days).length);
+}
+function paFirstLog() {
+  var first = null;
+  Object.keys(sessions || {}).forEach(function(id) { (sessions[id] || []).forEach(function(e) { if (e && e.d && (!first || e.d < first)) first = e.d; }); });
+  return first;
+}
+//  Weeks in a row, Monday to Sunday, where the sessions done reached the
+//  sessions planned. This week counts once it is complete and never breaks
+//  the run while it is still going. Rest days are not planned sessions.
+function weekStreak() {
+  var planned = paPlannedPerWeek(), first = paFirstLog();
+  if (!planned || !first) return 0;
+  var t = startOfToday(), ws = paAddDays(t, -mondayIndex(t)), n = 0;
+  if (paSessionsIn(paDk(ws), paDk(paAddDays(ws, 7))) >= planned) n++;
+  for (var i = 1; i < 530; i++) {
+    var a = paAddDays(ws, -7 * i), b = paAddDays(a, 7);
+    if (paDk(b) <= first) break;
+    if (paSessionsIn(paDk(a), paDk(b)) >= planned) n++; else break;
+  }
+  return n;
+}
+function lastWeekVolume() {
+  var t = startOfToday(), ws = paAddDays(t, -mondayIndex(t)), a = paDk(paAddDays(ws, -7)), b = paDk(ws), v = 0;
+  Object.keys(sessions || {}).forEach(function(id) {
+    (sessions[id] || []).forEach(function(e) {
+      if (!e || !e.d || e.d < a || e.d >= b) return;
+      var sl = ALL_SLOTS.map(function(k) { return normSet(e, e[k]); }).filter(Boolean);
+      if (sl.length) sl.forEach(function(s) { v += (s.w || 0) * (s.r || 0); });
+      else v += (e.weight || 0) * (e.reps || 0) * (entrySetCount(e) || 1);
+    });
+  });
+  return v;
+}
+function nextPlannedRun() {
+  if (!runningEnabled || !runPlan || !runPlan.raceDate || typeof generateRunPlan !== 'function') return null;
+  try {
+    var plan = generateRunPlan(readRunInputs(), startOfToday());
+    if (!plan || plan.error || !plan.weeks) return null;
+    var t0 = startOfToday(), best = null, doneToday = runLogs[todayKey()] && runLogs[todayKey()].miles > 0;
+    plan.weeks.forEach(function(w) { w.cells.forEach(function(c) {
+      if (c.before || c.after || !c.date || !(c.miles > 0)) return;
+      var dd = Math.round((c.date.getTime() - t0.getTime()) / 864e5);
+      if (dd < 0 || dd > 6 || (dd === 0 && doneToday)) return;
+      if (!best || dd < best.dd) best = { dd: dd, miles: c.miles, type: c.type === 'long' ? 'long' : c.type === 'tempo' ? 'fast' : 'easy', date: c.date };
+    }); });
+    return best;
+  } catch(e) { return null; }
+}
+var PA_NUM = ['zero','one','two','three','four','five','six','seven'];
+function paWord(n, cap) { var w = PA_NUM[n] || String(n); return cap ? w.charAt(0).toUpperCase() + w.slice(1) : w; }
+function renderTodayB() {
+  var root = document.getElementById('todayB');
+  if (!root) return;
+  var free = typeof trainStyle === 'object' && trainStyle.style === 'free';
+  document.body.classList.toggle('tb-on', !free);
+  var today = startOfToday(), ti = mondayIndex(today);
+  var dow = document.getElementById('tbDow'); if (dow) dow.textContent = PA_DOWS[ti];
+  var week = []; try { week = activeSplit().week; } catch(e) {}
+  var isRest = week[ti] === 'rest' || (SPLIT_DAYS[week[ti]] || {}).rest;
+  var hello = document.getElementById('tbHello');
+  var nm = (typeof userName === 'string' && userName) ? userName : '';
+  if (hello) hello.textContent = (isRest ? 'Rest day' : 'Ready to lift') + (nm ? ', ' + nm : '') + '.';
+  //  Streak pill in the header. Hidden at zero: no number we cannot back.
+  var st = document.getElementById('navStreak'), sn = weekStreak();
+  if (st) { st.hidden = !sn; st.textContent = sn + ' week streak'; }
+  var wk = document.getElementById('tbWeek'), work = document.getElementById('tbWork');
+  if (free) { if (wk) wk.hidden = true; if (work) work.hidden = true; var mf = document.getElementById('tbMore'); if (mf) mf.innerHTML = ''; }
+  else {
+    var ids = []; try { ids = splitDayIds(); } catch(e) {}
+    var planned = ids.length, done = ids.filter(function(id) { return hasLogsForDay(id, currentTrainWeek); }).length;
+    var left = Math.max(0, planned - done);
+    var C = 2 * Math.PI * 44, frac = planned ? Math.min(1, done / planned) : 0;
+    var copy = !planned ? '' : left === 0 ? 'All ' + paWord(planned) + ' done this week.' : (done ? paWord(done, true) + ' done. ' : '') + paWord(left, true) + ' to go. A day you did not get to moves forward, it does not disappear.';
+    var lift = 0, strip = week.map(function(id, i) {
+      var d = SPLIT_DAYS[id] || {}, rest = id === 'rest' || d.rest;
+      var logged = !rest && hasLogsForDay(id, currentTrainWeek);
+      if (!rest) lift++;
+      var cls = 'tb-dot' + (logged ? ' done' : (i === ti && !rest) ? ' now' : '');
+      var inner = rest ? 'R' : logged ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' : String(lift);
+      var say = PA_DOWS[i] + ', ' + (rest ? 'rest' : (d.title || 'session') + (logged ? ', done' : i === ti ? ', today' : ''));
+      return '<li><span class="sr-only">' + paEsc(say) + '</span><span class="tb-dl" aria-hidden="true">' + PA_DOWS[i].charAt(0) + '</span><span class="' + cls + '" aria-hidden="true">' + inner + '</span></li>';
+    }).join('');
+    if (wk) {
+      wk.hidden = !planned;
+      wk.innerHTML = '<div class="tb-week-top"><div class="tb-ring" role="img" aria-label="' + done + ' of ' + planned + ' sessions done this week">'
+        + '<svg viewBox="0 0 104 104" aria-hidden="true"><circle class="trk" cx="52" cy="52" r="44"/><circle class="val" cx="52" cy="52" r="44" stroke-dasharray="' + (C * frac).toFixed(1) + ' ' + C.toFixed(1) + '"' + (frac ? '' : ' style="display:none"') + '/></svg>'
+        + '<div class="tb-ring-c" aria-hidden="true"><span class="tb-ring-n">' + done + '/' + planned + '</span><span class="tb-ring-l">This week</span></div></div>'
+        + '<p class="tb-week-copy">' + copy + '</p></div>'
+        + '<ul class="tb-strip" aria-label="This week">' + strip + '</ul>';
+    }
+    if (work) {
+      work.hidden = false;
+      var partial = null, next = null;
+      try { partial = partialDayThisWeek(); next = partial || findNextUnloggedDay(); } catch(e) {}
+      var mo0 = document.getElementById('tbMore'); if (mo0) mo0.innerHTML = '';
+      if (!next) {
+        work.innerHTML = '<p class="tb-kick">Week ' + (currentTrainWeek + 1) + '</p><p class="tb-day">Week done</p><p class="tb-meta">Every workout this week is logged.</p>'
+          + '<button type="button" class="tb-start" onclick="advanceToNextWeek(); renderToday();">Start week ' + (currentTrainWeek + 2) + '</button>';
+      } else {
+        var dd = SPLIT_DAYS[next] || {}, bs = {}; try { bs = buildSession(next, currentTrainWeek); } catch(e) {}
+        var nLifts = (bs.list || []).length, mins = bs.minutes || 0;
+        var kick = partial ? 'In progress' : (week[ti] === next ? 'Today' : 'Next workout');
+        var back = '';
+        try { back = backFromBreak() ? BREAK_LINE : daysSinceLastLog() >= 3 ? 'Welcome back. Pick up where you left off.' : ''; } catch(e) {}
+        work.innerHTML = (back ? '<p class="tb-meta" style="margin-bottom:12px">' + back + '</p>' : '') + '<p class="tb-kick">' + kick + '</p>'
+          + '<h2 class="tb-day">' + paEsc(dd.title || '') + '</h2>'
+          + '<p class="tb-meta">' + nLifts + (nLifts === 1 ? ' lift' : ' lifts') + (mins ? ' · about ' + mins + ' min' : '') + ' · Week ' + (currentTrainWeek + 1) + ' of ' + totalTrainWeeks() + '</p>'
+          + sessionLengthHTML(next, 'on-blue')
+          + '<button type="button" class="tb-start" onclick="tbStart(\'' + next + '\')">' + (partial ? 'Continue workout' : 'Start workout') + '</button>'
+          ;
+        var mo = document.getElementById('tbMore');
+        if (mo) mo.innerHTML = '<button type="button" onclick="openQuickLog(null, \'' + next + '\')">Short on time</button><button type="button" onclick="openGoingOut(\'' + next + '\')">Going out?</button>';
+      }
+    }
+  }
+  var stats = document.getElementById('tbStats');
+  if (stats) {
+    var tiles = [], vol = lastWeekVolume(), run = nextPlannedRun();
+    if (vol > 0) tiles.push('<div class="tb-tile"><p class="tb-tile-k">Last week</p><p class="tb-tile-v">' + fmtInt(wNum(vol)) + ' ' + wLbs() + '</p><p class="tb-tile-l">total volume</p></div>');
+    if (run) tiles.push('<div class="tb-tile"><p class="tb-tile-k">Run</p><p class="tb-tile-v">' + paEsc(fmtDist(run.miles)) + '</p><p class="tb-tile-l">' + paEsc(runTypeLabel(run.type).toLowerCase()) + ', ' + (run.dd === 0 ? 'today' : run.dd === 1 ? 'tomorrow' : PA_DOWS[mondayIndex(run.date)]) + '</p></div>');
+    stats.hidden = !tiles.length;
+    stats.className = 'tb-stats' + (tiles.length === 1 ? ' one' : '');
+    stats.innerHTML = tiles.join('');
+  }
+}
+function tbStart(dayId) {
+  goTab('training'); switchDay(dayId);
+  PA.day = dayId; PA.ex = null; PA.slot = null; PA.key = null;
+  renderPlanActive();
+  scrollTo(0, 0);
+}
+
+//  Hooks. Every path that redraws the Plan rows or switches tabs redraws
+//  the card after it, once.
+(function() {
+  function after(name, fn) {
+    if (typeof window === 'undefined' || typeof window[name] !== 'function') return;
+    var o = window[name];
+    window[name] = function() { var r = o.apply(this, arguments); try { fn.apply(this, arguments); } catch(e) {} return r; };
+  }
+  ['renderDaySections', 'switchDay', 'switchAltDay', 'renderLiftRowState', 'renderRowStatus', 'setExerciseSets', 'afterSwap', 'stepTrainWeek', 'hidePlanRestDay', 'showPlanRestDay', 'undoSwap'].forEach(function(n) { after(n, paSoon); });
+  after('renderToday', function() { renderTodayB(); });
+  after('goTab', function() {
+    try {
+      var t = localStorage.getItem(LAST_TAB_KEY) || '';
+      var shown = ['today', 'training', 'running', 'calendar', 'food', 'quicklog', 'more', 'info'].filter(function(n) { var el = document.getElementById('tab-' + n); return el && el.style.display === 'block'; })[0] || t;
+      document.body.dataset.tab = shown;
+    } catch(e) {}
+    renderPlanActive();
+  });
+})();
 </script>
 </body>
 </html>

@@ -49,12 +49,18 @@ Each check pins the clock to a fixed day in November 2026 and loads the same see
 | `t831_3_weight_history.py` | 8.31 item 3: weight history on Body, units, the Food link, chart labels, backup and restore, the Body tip |
 | `t832_food_locked.py` | 8.32: Food locked. Only the hero and the coming soon message, Open Body, no food input reachable, data kept through reload, backup and restore, no Food tip, flag on brings Food back |
 | `t834_0_units.py` | 8.34 Part 0: Settings Food targets and the setup calorie line hidden while Food is locked; the weight unit setting (lb or kg) apart from mi and km, the migration that changes no stored number, kg entry stored in lb, kg steppers, no lb text left in kg, backup and restore of the unit |
+| `t834_12_plan_today.py` | 8.34 Parts 1 and 2: the Plan active exercise card (header, big weight, set tiles, steppers, keypad, LOG SET, links, delete and undo, other lifts as rows), Today (greeting, streak pill, week ring and strip, workout card, stat tiles with no fake numbers), the floating tab bar, weekly streak cases, reduced motion, kg |
+| `t834_short_normal.py` | 8.34 fix: the Normal and Short switch on the Plan card and on Today, before and during a workout, with sets logged on a lift Short keeps and on one it drops. Checks that switching never changes logged data in memory or in storage, that hidden sets show again on Normal, that the choice survives a reload, and that Quick Log aims at a short day with logs |
 
 `common.py` holds the shared helpers: the page setup, `check()` and `baseline()`. `gapfn.js` measures the gap under a hero.
 
 ## Food lock (8.32)
 
 Food is locked by `FOOD_ENABLED = false` in index.html and in `api/_food.js`. The checks that cover the Food screen itself (8.30 items 3 and 5, and 8.31 item 3) turn Food on inside the page with `FOOD_ON` from `common.py`. That way the Food code stays tested for when it comes back. `node food.js` section 11 proves that with Food locked, `/api/meal` and `/api/barcode` answer "Not available", make no outside call and read no key.
+
+## Plan card and Today (8.34)
+
+Plan shows the next lift as a card and the other lifts as rows; the full row for the card's lift opens through Notes and details. `t825` and `t826` test the full rows, so they turn the card off with an init script (`PA_OFF` in `common.py` does the same inside a page). The 8.29 and 8.30 hero checks for Today and Plan are retired, since both screens now use the headers from the references. The header and tab bar baselines were re-recorded in 8.34 for the floating tab bar; only the tab bar values changed.
 
 ## Baselines
 

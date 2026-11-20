@@ -7,7 +7,8 @@ SNAP="(()=>{const o={};for(let i=0;i<localStorage.length;i++){const k=localStora
 def settle(pg):
     pg.wait_for_timeout(1500); pg.evaluate("setRunning(true);document.querySelectorAll('.settings-modal-overlay').forEach(m=>m.style.display='none')")
 def first_set(pg):
-    return pg.evaluate("(()=>{const i=[...document.querySelectorAll('input.set-cell.wu-in')].find(e=>e.offsetParent&&e.id.startsWith('s1w-'));return i?i.id:null})()")
+    #  8.34: the active lift is a card; its full row opens through Notes and details.
+    return pg.evaluate("(()=>{PA.details=true;renderPlanActive();const i=document.getElementById('s1w-'+PA.ex);return i&&i.offsetParent?i.id:null})()")
 with sync_playwright() as p:
     b=p.chromium.launch()
     ctx,pg,errs=page(b,390,844)
@@ -53,7 +54,7 @@ with sync_playwright() as p:
     check('kg button shows pressed', pg.evaluate("[...document.querySelectorAll('[data-wu-btn]')].map(b=>b.getAttribute('aria-pressed')).join()")=='false,true')
     pg.evaluate("document.querySelectorAll('.settings-modal-overlay').forEach(m=>m.style.display='none')")
     check('Body follows the setting', pg.evaluate("bwUnit()")=='kg')
-    go(pg,'training')
+    go(pg,'training'); first_set(pg)
     head=pg.evaluate("[...document.querySelectorAll('.set-table-head')].filter(e=>e.offsetParent).map(e=>e.innerText.replace(/\\s+/g,' '))[0]")
     check('kg: set table head says kg', head and 'kg' in head and 'lbs' not in head, head)
     lbls=pg.evaluate("[...document.querySelectorAll('.wu-lbl')].map(e=>e.textContent)")

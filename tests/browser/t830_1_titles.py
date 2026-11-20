@@ -11,7 +11,7 @@ with sync_playwright() as p:
     b=p.chromium.launch()
     for W in (360,390):
         ctx,pg,errs=page(b,W,700)
-        for t in ['today','training','quicklog','calendar','running','food']:
+        for t in ['quicklog','calendar','running','food']:  # 8.34: Today and Plan use the reference headers
             go(pg,t); i=pg.evaluate(VIS,t)
             words=set(i['word'].split())
             rep=[h for h in i['heads'] if words & set(h[1].upper().replace('.','').split()) and h[2]>18]
@@ -19,7 +19,7 @@ with sync_playwright() as p:
             g=pg.evaluate(GAPFN,t)
             check('%d %s: gap hero to first element about 24 px'%(W,t), 20<=g[1]<=30, g)
         go(pg,'today')
-        d=pg.evaluate("(()=>{const e=document.getElementById('todayDate');return [e.innerText,parseFloat(getComputedStyle(e).fontSize),getComputedStyle(e).backgroundColor]})()")
+        d=pg.evaluate("(()=>{const e=document.getElementById('tbDow');return [e.innerText,parseFloat(getComputedStyle(e).fontSize),getComputedStyle(e).backgroundColor]})()")
         check('%d Today: day kept as a small line'%W, d[0]=='Thursday' and d[1]<=16 and d[2] in ('rgba(0, 0, 0, 0)','transparent'), d)
         go(pg,'running')
         r=pg.evaluate("(()=>{const u=document.getElementById('runUnits').getBoundingClientRect(),h=document.getElementById('hero-running').getBoundingClientRect(),c=document.getElementById('runTodayCard');const top=document.querySelector('#runHome .run-home-top');return {ur:Math.round(u.right),ut:Math.round(u.top-h.bottom),btn:c.innerText.trim(),bt:Math.round(c.getBoundingClientRect().top-u.bottom),firstKid:top===document.getElementById('runHome').firstElementChild,big:[...document.querySelectorAll('#runHome .today-date')].filter(e=>e.offsetParent).length,ubtn:[...document.querySelectorAll('#runUnits button')].map(b=>[b.innerText,Math.round(b.getBoundingClientRect().height),Math.round(b.getBoundingClientRect().width)])}})()")

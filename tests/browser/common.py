@@ -41,3 +41,6 @@ def page(b, w=360, h=700, seed=True, init=INIT, url=URL, clock=True):
 #  itself turn it on inside the page, as setting the flag to true would.
 FOOD_ON = "FOOD_ENABLED=true;document.documentElement.classList.remove('food-off')"
 def go(pg, t): pg.evaluate("goTab('%s');scrollTo(0,0)" % t); pg.wait_for_timeout(550)
+#  8.34: Plan shows one lift as a card and the other lifts as rows. Checks
+#  that cover the full row UI (now behind Notes and details) turn the card off.
+PA_OFF = "window.paOn=function(){return false};renderPlanActive()"

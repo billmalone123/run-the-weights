@@ -9,6 +9,7 @@ with sync_playwright() as p:
     b=p.chromium.launch(); pg=b.new_page(viewport={'width':360,'height':780}); errs=[]
     pg.on('pageerror',lambda e: errs.append(str(e))); pg.on('dialog',lambda d:d.accept())
     pg.clock.install(time=T0)
+    pg.add_init_script("document.addEventListener('DOMContentLoaded',()=>{window.paOn=function(){return false}})")  # 8.34: test the full rows, card off
     pg.add_init_script("localStorage.setItem('monk_onboarded_v1','1');localStorage.setItem('monk_onboarding_complete_v1','true');document.addEventListener('DOMContentLoaded',()=>{const st=document.createElement('style');st.textContent='#timerBar{pointer-events:none!important}';document.head.appendChild(st)})")
     pg.goto(URL); pg.wait_for_timeout(1000); pg.evaluate(SEED); pg.reload(); pg.wait_for_timeout(1500)
     ev=pg.evaluate

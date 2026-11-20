@@ -14,6 +14,7 @@ with sync_playwright() as p:
     pg.on('dialog', lambda d: d.accept())
     pg.add_init_script("document.addEventListener('DOMContentLoaded',()=>{const st=document.createElement('style');st.textContent='#timerBar{pointer-events:none!important}';document.head.appendChild(st)})")
     pg.clock.install(time=T0)
+    pg.add_init_script("document.addEventListener('DOMContentLoaded',()=>{window.paOn=function(){return false}})")  # 8.34: test the full rows, card off
     pg.add_init_script("localStorage.setItem('monk_onboarded_v1','1');localStorage.setItem('monk_onboarding_complete_v1','true');")
     pg.goto(URL); pg.wait_for_timeout(1000); pg.evaluate(SEED); pg.reload(); pg.wait_for_timeout(1500)
     ev=pg.evaluate
@@ -180,13 +181,14 @@ with sync_playwright() as p:
         ev("setRunning(%s)"%('true' if run else 'false')); ev("goTab('today')"); pg.wait_for_timeout(300)
         info=ev("""[...document.querySelectorAll('#tabbar .tabbar-btn')].filter(b=>getComputedStyle(b).display!=='none').map(b=>{const s=b.querySelector('span');return b.dataset.tab+':'+Math.round(b.getBoundingClientRect().width)+':'+(s.scrollWidth<=s.clientWidth+1)+':'+Math.round(b.getBoundingClientRect().height)})""")
         ok=all(x.split(':')[2]=='true' and int(x.split(':')[1])>=44 and int(x.split(':')[3])>=44 for x in info)
-        check('tab bar fits at 360, running %s'%('on' if run else 'off'), ok and len(info)==(5 if run else 4), info)
+        check('tab bar fits at 360, running %s'%('on' if run else 'off'), ok and len(info)==(5 if run else 4), info)  # 8.34: Run is a tab again for people who run
         pg.screenshot(path=shot('v825-tabbar-run%s-360.png')%('on' if run else 'off'), clip={'x':0,'y':700,'width':360,'height':80})
     ev("openNavMenu ? openNavMenu() : document.getElementById('navLogo').click()") if ev("typeof openNavMenu==='function'") else pg.locator('#navLogo').click()
     pg.wait_for_timeout(400)
     menu=ev("[...document.querySelectorAll('#navMenu .navmenu-item')].map(b=>b.innerText.replace(/\\W+$/,''))")
     # 8.30 moved Week review and The Edge from the menu to the More page.
     check('logo menu holds Progress and More, no About (8.30)', all(any(m.replace(' ','').startswith(x.replace(' ','')) for m in menu) for x in ['More','Progress']) and not any(m.startswith('About') for m in menu), menu)
+    ev("goTab('calendar')"); pg.wait_for_timeout(200)  # 8.34: Today hides the menu glyph, as in the reference
     check('logo says it opens a menu', ev("document.getElementById('navLogo').getAttribute('aria-haspopup')")=='menu' and pg.locator('.nav-logo-chevron').is_visible())
     pg.screenshot(path=shot('v825-menu-360.png'))
     pg.locator('#navMenu .navmenu-item[data-tab="more"]').click(); pg.wait_for_timeout(400)

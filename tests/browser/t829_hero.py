@@ -7,7 +7,8 @@ T0=datetime.datetime(2026,11,19,10,0,0); RES=[]
 def check(n, ok, d=''): RES.append((n,bool(ok),str(d)[:220])); print(('PASS ' if ok else 'FAIL ')+n+('  ['+str(d)[:220]+']' if d!='' else ''))
 SEEN="localStorage.setItem('monk_tips_seen_v1',JSON.stringify({v:1,seen:{today:1,plan:1,lnote:1,wnote:1,quicklog:1,progress:1,run:1,food:1,style:1,menu:1}}));"
 INIT="localStorage.setItem('monk_onboarded_v1','1');localStorage.setItem('monk_onboarding_complete_v1','true');"+SEEN
-TABS=['today','training','quicklog','calendar','running','food']
+#  8.34: Today and Plan have their own headers from the references; their heroes are retired.
+TABS=['quicklog','calendar','running','food']
 MAX={'today':168,'training':96,'quicklog':168,'calendar':96,'running':168,'food':168}
 HERO="""(t)=>{const h=document.getElementById('hero-'+t);if(!h||h.hidden)return null;const w=h.querySelector('.rtwh-word'),f=h.querySelector('.rtwh-fit'),d=h.querySelector('.rtwh-dot');const r=f.getBoundingClientRect(),dr=d.getBoundingClientRect(),fs=parseFloat(getComputedStyle(w).fontSize);
 const lh=parseFloat(getComputedStyle(w).lineHeight);return {word:w.innerText,line:h.querySelector('.rtwh-line').hidden?'':h.querySelector('.rtwh-line').textContent,fs,left:r.left,right:r.right,lines:Math.round(r.height/lh),clip:w.scrollWidth>w.clientWidth+0.5,
@@ -52,25 +53,12 @@ with sync_playwright() as p:
             if W==360:
                 print('   %s: %s | %s | %dpx'%(t,i['word'],i['line'],i['fs']))
                 pg.screenshot(path=shot('final-%s-360.png')%t)
-        # words and lines from real data
-        go(pg,'today'); d=pg.evaluate("(()=>{const n=partialDayThisWeek()||findNextUnloggedDay();const b=buildSession(n,currentTrainWeek);return [SPLIT_DAYS[n].title.toUpperCase(),'Week '+(currentTrainWeek+1)+' of '+totalTrainWeeks()+'. '+b.list.length+' lifts. About '+estText(b.est).replace(/ min$/,' minutes')+'.']})()")
-        i=pg.evaluate(HERO,'today')
-        check('%d Today: session name and line from real data'%W, i['word']==d[0]+'' and i['line']==d[1], (i['word'],i['line'],d))
         check('%d no page errors'%W, not errs, errs[:3]); ctx.close()
     # long names, rest day, freestyle, run plan line
     for W in (360,390):
         ctx,pg,errs=page(b,URL,W,700)
         pg.clock.set_system_time(datetime.datetime(2026,11,16,10)); pg.reload(); pg.wait_for_timeout(1400)
-        pg.evaluate("setSplit('full-body')"); go(pg,'today'); i=pg.evaluate(HERO,'today')
-        check('%d FULL BODY session fits cleanly'%W, i and 'FULL BODY' in i['word'] and not i['clip'] and i['right']<=W-23.5, i and (i['word'],i['fs'],i['lines']))
-        pg.evaluate("ownPlan={days:[{id:'d1',name:'Full Body Strength Conditioning',ex:[{id:'flat-bb-bench',sets:3,lo:5,hi:8}]}]};ownPlan=cleanOwnPlan(ownPlan);persistOwnPlan();registerOwnPlan();setTrainStyle('own',1)")
-        idx=pg.evaluate("activeSplit().week.findIndex(d=>d!=='rest')"); pg.clock.set_system_time(datetime.datetime(2026,11,16+idx,10)); pg.reload(); pg.wait_for_timeout(1400)
-        go(pg,'today'); i=pg.evaluate(HERO,'today')
-        check('%d very long own day name wraps at the min (56 px, two or more lines), never clips'%W, i and not i['clip'] and i['right']<=W-23.5 and i['fs']==56 and i['lines']>=2, i and (i['word'],i['fs'],i['lines'],i['line']))
-        if W==360: pg.screenshot(path=shot('o829-longname-360.png'))
-        check('%d own plan Today line leaves out the plan week'%W, i and not i['line'].startswith('Week'), i and i['line'])
-        pg.evaluate("setTrainStyle('free')"); go(pg,'today'); i=pg.evaluate(HERO,'today')
-        check('%d freestyle Today shows only what exists'%W, i and i['word'].startswith('TODAY') and i['line']=='', i and (i['word'],i['line']))
+        pg.evaluate("setTrainStyle('free')")
         go(pg,'quicklog'); i=pg.evaluate(HERO,'quicklog')
         check('%d QUICK LOG on one line with the square after LOG'%W, i and i['lines']==1 and i['word'].startswith('QUICK LOG') and not i['clip'], i and (i['fs'],i['lines']))
         pg.evaluate("setTrainStyle('plan')")

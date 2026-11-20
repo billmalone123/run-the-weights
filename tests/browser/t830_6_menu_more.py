@@ -21,7 +21,7 @@ with sync_playwright() as p:
     hs=pg.evaluate("[...document.querySelectorAll('#navMenu .navmenu-item')].map(b=>Math.round(b.getBoundingClientRect().height))")
     check('Menu rows 44 px or taller', min(hs)>=44, hs)
     # ghost tap: tap Start workout under the open menu area (outside the panel)
-    sx,sy=center(pg,'#todayWorkout .today-start')
+    sx,sy=center(pg,'.tb-start')
     inside=pg.evaluate("([x,y])=>{const r=document.getElementById('navMenu').getBoundingClientRect();return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom}",[sx,sy])
     if inside: sx,sy=(sx, pg.evaluate("document.getElementById('navMenu').getBoundingClientRect().bottom")+30)
     pg.evaluate("window._hit=0;document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('button:not(.navmenu-item)'))window._hit++},true)")
@@ -59,7 +59,7 @@ with sync_playwright() as p:
     # mouse: click outside only closes
     ctx,pg,errs=tpage(b,390,touch=False); go(pg,'today')
     pg.click('#navLogo'); pg.wait_for_timeout(250)
-    sx,sy=center(pg,'#todayWorkout .today-start')
+    sx,sy=center(pg,'.tb-start')
     if pg.evaluate("([x,y])=>{const r=document.getElementById('navMenu').getBoundingClientRect();return y<=r.bottom}",[sx,sy]): sy=pg.evaluate("document.getElementById('navMenu').getBoundingClientRect().bottom")+30
     pg.evaluate("window._hit=0;document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('button:not(.navmenu-item)'))window._hit++},true)")
     pg.mouse.click(sx,sy); pg.wait_for_timeout(300)
