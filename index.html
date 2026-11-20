@@ -3946,6 +3946,35 @@ body.pa-on #plan .lift-row:not(.pa-cur) { margin-bottom: 8px; }
 .pa-done { background: var(--s834-surface); border-radius: 24px; padding: 18px; font-size: 15px; color: var(--ink); }
 .pa-done .pa-name { margin-bottom: 6px; }
 body.pa-on #plan .lift-row.pa-fin { display: none !important; }
+/* 8.34 Part 3: finish card */
+.pa-fin-btn { margin-top: 14px; }
+.fin { position: fixed; inset: 0; z-index: 3000; background: var(--cream); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.fin[hidden] { display: none; }
+body.fin-open { overflow: hidden; }
+.fin-in { max-width: 520px; margin: 0 auto; padding: 0 16px calc(24px + env(safe-area-inset-bottom)); }
+.fin-head { background: var(--ultramarine); color: var(--cream); margin: 0 -16px; padding: calc(20px + env(safe-area-inset-top)) 20px 24px; border-radius: 0 0 32px 32px; }
+.fin-k { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin: 0; }
+.fin-title { font-family: 'Antonio', sans-serif; font-weight: 700; font-size: clamp(48px, 15vw, 64px); line-height: 0.95; text-transform: uppercase; margin: 10px 0 8px; overflow-wrap: anywhere; outline: none; }
+.fin-title:focus-visible { outline: 3px solid var(--cream); outline-offset: 4px; }
+.fin-cmp { font-size: 16px; font-weight: 600; margin: 0; }
+.fin-stats { list-style: none; display: grid; grid-template-columns: repeat(var(--n, 3), 1fr); gap: 8px; margin: 16px 0 0; padding: 0; }
+.fin-stats li { background: var(--s834-surface); border-radius: 20px; padding: 14px 12px; min-width: 0; }
+.fin-stats b { display: block; font-family: 'Antonio', sans-serif; font-weight: 700; font-size: 28px; white-space: nowrap; line-height: 1.05; color: var(--ink); overflow-wrap: anywhere; }
+.fin-stats span { font-size: 13px; font-weight: 600; color: var(--s834-muted); }
+.fin-l { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--s834-muted); margin: 20px 0 8px; }
+.fin-hl { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.fin-hl li { background: var(--s834-surface); border-radius: 22px; padding: 16px; color: var(--ink); }
+.fin-hl .lab { display: block; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--s834-muted); }
+.fin-hl b { display: block; font-family: 'Antonio', sans-serif; font-weight: 700; font-size: 34px; line-height: 1.05; text-transform: uppercase; margin: 4px 0; }
+.fin-hl .d { display: block; font-size: 15px; }
+.fin-hl li.top { background: var(--ultramarine); color: var(--cream); }
+.fin-hl li.top .lab { color: var(--cream); }
+.fin-btns { display: grid; gap: 10px; margin: 20px 0 0; }
+.fin-share { min-height: 56px; border: 0; border-radius: 18px; background: var(--persimmon); color: var(--ink); font-family: 'Antonio', sans-serif; font-weight: 700; font-size: 26px; letter-spacing: 0.02em; text-transform: uppercase; cursor: pointer; }
+.fin-done { min-height: 52px; border: 2px solid var(--ink); border-radius: 18px; background: transparent; color: var(--ink); font: inherit; font-size: 17px; font-weight: 700; cursor: pointer; }
+.fin-share:focus-visible, .fin-done:focus-visible { outline: 3px solid var(--ultramarine); outline-offset: 3px; }
+.fin-msg { font-size: 15px; color: var(--s834-muted); margin: 10px 0 0; text-align: center; }
+.fin-msg:empty { display: none; }
 </style>
 </head>
 <body style="background:var(--bg)">
@@ -12225,7 +12254,7 @@ body.pa-on #plan .lift-row.pa-fin { display: none !important; }
       trainStyle: trainStyle, ownPlan: ownPlan, liftNotes: liftNotes, tipsSeen: { v: 1, seen: loadTipsSeen() }, quickLogSession: readSavedQs(), runNotes: { v: 1, notes: getRunNotes() },
       hiddenEx: hiddenEx,
       sessionPrefs: { size: sessionSize, budget: sessionBudget, equip: equipOwned },
-      bwBand: bwBand, weekMoves: weekMoves, shortDays: shortDays, profile: userProfile, favEx: favEx,
+      bwBand: bwBand, weekMoves: weekMoves, shortDays: shortDays, sessionTimes: (typeof finTimes === 'object' ? finTimes : {}), profile: userProfile, favEx: favEx,
       sessionShape: { timeBoxes: timeBoxes, usualMinutes: usualMinutes, liftExperience: liftExperience, dropLogs: dropLogs, sessionSets: sessionSets },
       restDays: { done: restDone, goingOut: goingOutDays },
       quick: { sessions: quickSessions, minutes: quickMinutes },
@@ -12315,6 +12344,8 @@ body.pa-on #plan .lift-row.pa-fin { display: none !important; }
         if (Array.isArray(data.favEx)) { favEx = data.favEx.filter(function(x) { return typeof x === 'string'; }); persistFavEx(); }
         if (data.weekMoves && typeof data.weekMoves === 'object') { weekMoves = data.weekMoves; }
         if (data.shortDays && typeof data.shortDays === 'object') { shortDays = data.shortDays; }
+        //  8.34: session times are range checked; anything odd is dropped.
+        if (data.sessionTimes && typeof finCleanTimes === 'function') { finTimes = finCleanTimes(data.sessionTimes); finSaveTimes(); }
         if (data.weekMoves || data.shortDays) { persistLifeHappens(); invalidateBuild(); }
         //  8.15 stores. Older backups have none of these and leave them as they are.
         var sh = data.sessionShape;
@@ -18502,7 +18533,7 @@ function renderPlanActive() {
       + paCk() + '<span class="t"><b>' + paEsc(activeVariant(x)) + '</b><span class="d">' + done.length + ' of ' + n + ' sets · ' + done.join(', ') + '</span></span></button>';
   }).join('');
   if (!ex) {
-    host.innerHTML = head + '<div class="pa-body">' + finHTML + '<div class="pa-done"><h3 class="pa-name">Every set is in</h3><p>' + list.length + ' lifts logged for ' + paEsc(d.title || 'this day') + '. Tap any lift to change a set.</p></div></div>';
+    host.innerHTML = head + '<div class="pa-body">' + finHTML + '<div class="pa-done"><h3 class="pa-name">Every set is in</h3><p>' + list.length + ' lifts logged for ' + paEsc(d.title || 'this day') + '. Tap any lift to change a set.</p><button type="button" class="pa-log pa-fin-btn" id="paFinishBtn" onclick="openFinish()">Finish workout</button></div></div>';
     PA.html = null;
     host.hidden = false;
     return;
@@ -18623,7 +18654,7 @@ function paLog() {
   else { PA.ex = null; PA.slot = null; PA.details = false; PA.warm = false; }
   PA.key = null;
   renderPlanActive();
-  var lb = document.getElementById('paLogBtn'); if (lb) lb.focus();
+  var lb = document.getElementById('paLogBtn') || document.getElementById('paFinishBtn'); if (lb) lb.focus();
   if (!nx) { var ph = document.getElementById('planActive'); if (ph) try { ph.scrollIntoView({ block: 'start' }); } catch(e) {} }
 }
 var _paUndo = null, _paUndoT = null;
@@ -18847,6 +18878,265 @@ function tbStart(dayId) {
     renderPlanActive();
   });
 })();
+//  ===== 8.34 PART 3: FINISH CARD =====
+//  Opened from Finish workout once every set is in. Everything is worked out
+//  from the logged sets when it opens, so an edited or deleted set is always
+//  reflected. Weights compare in lb, the stored unit; only the text converts.
+//  monk_session_times_v1 keeps the first and last set time per date and day,
+//  for the duration. Nothing else is stored.
+var FIN_TIMES_KEY = 'monk_session_times_v1';
+function finCleanTimes(o) {
+  var out = {};
+  if (!o || typeof o !== 'object' || Array.isArray(o)) return out;
+  Object.keys(o).filter(function(k) { return /^\d{4}-\d\d-\d\d\|[A-Za-z0-9_-]{1,40}$/.test(k); }).sort().slice(-120).forEach(function(k) {
+    var v = o[k]; if (!v || typeof v !== 'object') return;
+    var s = +v.s, l = +v.l;
+    if (!(s > 1e12 && s < 1e13)) return;
+    var r = { s: s };
+    if (l >= s && l < s + 864e5) r.l = l;
+    out[k] = r;
+  });
+  return out;
+}
+var finTimes = {};
+try { finTimes = finCleanTimes(JSON.parse(localStorage.getItem(FIN_TIMES_KEY))); } catch(e) { finTimes = {}; }
+function finSaveTimes() { try { localStorage.setItem(FIN_TIMES_KEY, JSON.stringify(finTimes)); } catch(e) {} }
+function finStamp(day) {
+  if (!day || !SPLIT_DAYS[day]) return;
+  var k = todayKey() + '|' + day, now = Date.now();
+  var t = finTimes[k] || (finTimes[k] = { s: now });
+  t.l = now;
+  finTimes = finCleanTimes(finTimes); finSaveTimes();
+}
+function finDayOf(ex) {
+  if (PA.day && paList(PA.day).some(function(x) { return x.id === ex.id; })) return PA.day;
+  return ex.day && SPLIT_DAYS[ex.day] ? ex.day : PA.day;
+}
+(function() {
+  var o = window.autoSaveExercise;
+  if (typeof o !== 'function') return;
+  window.autoSaveExercise = function(exId) {
+    var r = o.apply(this, arguments);
+    try {
+      var ex = EX_BY_ID[exId], e = ex && entryForWeek(getHistory(exId), currentTrainWeek, ex);
+      if (e && e.d === todayKey() && finSets(e).length) finStamp(finDayOf(ex));
+    } catch(x) {}
+    return r;
+  };
+})();
+function finSets(e) {
+  if (!e) return [];
+  if (e.quickLog) return e.reps > 0 ? [{ w: e.weight > 0 ? e.weight : 0, r: e.reps }] : [];
+  return ALL_SLOTS.map(function(k) { return normSet(e, e[k]); }).filter(Boolean).map(function(s) { return { w: s.w > 0 ? +s.w : 0, r: +s.r }; });
+}
+function finVol(sets) { return sets.reduce(function(t, s) { return t + s.w * s.r; }, 0); }
+function finInt(n) { return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+function finW(lb) { return wNum(lb) + ' ' + wLb(); }
+//  Highlights from plain data so the rules are testable on their own.
+//  items: [{ name, sets: [{w, r}], others: [entries for the same lift and
+//  variant, this session left out] }], week: this plan week. Max 3, ranked
+//  weight PR, rep PR at a weight, then a run of weekly top weights going up.
+//  One highlight per lift. With no earlier logs a lift has no PR.
+function finHighlights(items, week) {
+  var wPR = [], rPR = [], runs = [];
+  items.forEach(function(it) {
+    var cur = it.sets || [], prev = [];
+    (it.others || []).forEach(function(o) { prev = prev.concat(finSets(o)); });
+    if (!cur.length) return;
+    var got = null;
+    if (prev.length) {
+      var cm = Math.max.apply(null, cur.map(function(s) { return s.w; }));
+      var pm = Math.max.apply(null, prev.map(function(s) { return s.w; }));
+      if (cm > 0 && cm > pm + 0.001) got = { kind: 'w', rank: (cm - pm) / (pm || 1), label: 'Weight PR', big: finW(cm), sub: it.name,
+        note: 'Your best before was ' + wNum(pm) + '.', line: finW(cm) + ' on ' + it.name + '. Your best before was ' + wNum(pm) + '.' };
+      if (!got) {
+        cur.slice().sort(function(a, b) { return b.w - a.w || b.r - a.r; }).some(function(s) {
+          var at = prev.filter(function(p) { return Math.abs(p.w - s.w) < 0.01; });
+          if (!at.length) return false;
+          var best = Math.max.apply(null, at.map(function(p) { return p.r; }));
+          if (s.r <= best) return false;
+          var where = s.w > 0 ? ' at ' + finW(s.w) : ' at body weight';
+          got = { kind: 'r', rank: s.w, label: 'Rep PR', big: s.r + ' reps' + (s.w > 0 ? ' at ' + finW(s.w) : ''), sub: it.name,
+            note: 'Your best' + (s.w > 0 ? ' at that weight' : '') + ' was ' + best + '.', line: s.r + ' reps' + where + ' on ' + it.name + '. Your best' + (s.w > 0 ? ' at that weight' : '') + ' was ' + best + '.' };
+          return true;
+        });
+      }
+    }
+    if (!got) {
+      //  Top working weight per plan week, this session included.
+      var wk = {};
+      (it.others || []).concat([{ week: week, _cur: cur }]).forEach(function(o) {
+        if (o.week == null || o.quickLog) return;
+        var ss = o._cur || finSets(o);
+        var m = Math.max.apply(null, [0].concat(ss.map(function(s) { return s.w; })));
+        if (m > 0) wk[o.week] = Math.max(wk[o.week] || 0, m);
+      });
+      var n = 0, steps = [], w0 = week;
+      while (wk[w0] != null && wk[w0 - 1] != null && wk[w0] > wk[w0 - 1] + 0.001) { steps.push(wk[w0] - wk[w0 - 1]); n++; w0--; }
+      if (n >= 2) {
+        var same = steps.every(function(x) { return Math.abs(x - steps[0]) < 0.01; });
+        var add = same ? 'adding ' + finW(steps[0]) : 'adding weight';
+        got = { kind: 'p', rank: n, label: 'Progress', big: n + ' weeks up', sub: it.name,
+          note: n + ' weeks in a row ' + add + '. Real progress.', line: n + ' weeks in a row ' + add + ' on ' + it.name + '. Real progress.' };
+      }
+    }
+    if (got) (got.kind === 'w' ? wPR : got.kind === 'r' ? rPR : runs).push(got);
+  });
+  var by = function(a, b) { return b.rank - a.rank; };
+  return wPR.sort(by).concat(rPR.sort(by), runs.sort(by)).slice(0, 3);
+}
+function finBlockSession() {
+  var d = {}, N = totalTrainWeeks();
+  Object.keys(sessions || {}).forEach(function(id) { (sessions[id] || []).forEach(function(e) { if (e && e.d && e.week != null && e.week < N && !e.quickLog) d[e.d] = 1; }); });
+  return Math.max(1, Object.keys(d).length);
+}
+function finSummary(day, week) {
+  var ids = {};
+  try { programmedDayExercises(day).forEach(function(e) { ids[e.id] = 1; }); } catch(x) {}
+  paList(day).forEach(function(e) { ids[e.id] = 1; });
+  var items = [], sets = 0, vol = 0, reps = 0, lastVol = 0, lastAny = false;
+  Object.keys(ids).forEach(function(id) {
+    var ex = EX_BY_ID[id]; if (!ex) return;
+    var hist = getHistory(id), e = entryForWeek(hist, week, ex), cur = finSets(e);
+    if (cur.length) {
+      sets += cur.length; vol += finVol(cur); cur.forEach(function(s) { reps += s.r; });
+      items.push({ name: activeVariant(ex), sets: cur, others: hist.filter(function(h) { return h && h !== e && entryVariant(h, ex) === activeVariant(ex); }) });
+    }
+    hist.forEach(function(h) { if (h && h.week === week - 1 && !h.quickLog) { var s = finSets(h); if (s.length) { lastAny = true; lastVol += finVol(s); } } });
+  });
+  var t = finTimes[todayKey() + '|' + day], mins = t && t.l ? Math.round((t.l - t.s) / 60000) : 0;
+  var hl = finHighlights(items, week);
+  if (!hl.length) hl = [{ kind: 'f', label: 'Session ' + finBlockSession() + ' of the block', big: 'Showed up', sub: '', line: 'Showed up. Session ' + finBlockSession() + ' of the block.' }];
+  return { day: day, week: week, title: String((SPLIT_DAYS[day] || {}).title || '').replace(/\.$/, ''), sets: sets, vol: vol, reps: reps,
+    mins: mins >= 1 && mins < 300 ? mins : 0, cmp: lastAny && (vol > 0 || lastVol > 0) ? vol - lastVol : null, hl: hl };
+}
+var FIN = { sum: null, blob: null, back: null };
+function finEl() {
+  var el = document.getElementById('finSheet');
+  if (el) return el;
+  el = document.createElement('div');
+  el.className = 'fin'; el.id = 'finSheet'; el.hidden = true;
+  el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-labelledby', 'finTitle');
+  el.addEventListener('keydown', function(ev) {
+    if (ev.key === 'Escape') { ev.preventDefault(); finClose(false); return; }
+    if (ev.key !== 'Tab') return;
+    var f = el.querySelectorAll('button'), a = f[0], z = f[f.length - 1];
+    if (ev.shiftKey && (document.activeElement === a || document.activeElement === document.getElementById('finTitle'))) { ev.preventDefault(); z.focus(); }
+    else if (!ev.shiftKey && document.activeElement === z) { ev.preventDefault(); a.focus(); }
+  });
+  document.body.appendChild(el);
+  return el;
+}
+function openFinish() {
+  var day = PA.day || paViewedDay();
+  if (!day) return;
+  var s = FIN.sum = finSummary(day, currentTrainWeek);
+  FIN.blob = null; FIN.back = document.activeElement;
+  var stats = [];
+  if (s.mins) stats.push([s.mins + ' min', 'Duration']);
+  stats.push([String(s.sets), s.sets === 1 ? 'Set' : 'Sets']);
+  stats.push(s.vol > 0 ? [finInt(wNum(s.vol)), 'Volume, ' + wLb()] : [String(s.reps), 'Reps']);
+  var cmp = '';
+  if (s.cmp != null) {
+    var d = Math.round(wNum(Math.abs(s.cmp)));
+    cmp = d === 0 ? 'Same volume as last week' : '<span aria-hidden="true">' + (s.cmp > 0 ? '↑' : '↓') + '</span> ' + finInt(d) + ' ' + wLb() + (s.cmp > 0 ? ' more than last week' : ' less than last week');
+  }
+  var el = finEl();
+  el.innerHTML = '<div class="fin-in">'
+    + '<header class="fin-head"><p class="fin-k">Workout done · Week ' + (s.week + 1) + ' of ' + totalTrainWeeks() + '</p>'
+    + '<h2 class="fin-title" id="finTitle" tabindex="-1">' + paEsc(s.title) + '<span class="pa-dot" aria-hidden="true">.</span></h2>'
+    + (cmp ? '<p class="fin-cmp">' + cmp + '</p>' : '') + '</header>'
+    + '<ul class="fin-stats" style="--n:' + stats.length + '">' + stats.map(function(x) { return '<li><b>' + paEsc(x[0]) + '</b><span>' + x[1] + '</span></li>'; }).join('') + '</ul>'
+    + '<h3 class="fin-l">' + (s.hl[0].kind === 'f' ? 'Today' : 'Highlights') + '</h3>'
+    + '<ol class="fin-hl">' + s.hl.map(function(h, i) { return '<li' + (i ? '' : ' class="top"') + '><span class="lab">' + paEsc(h.label) + '</span><b>' + paEsc(h.big) + '</b>' + (h.kind === 'f' ? '' : '<span class="d">' + paEsc(h.sub) + '. ' + paEsc(h.note) + '</span>') + '</li>'; }).join('') + '</ol>'
+    + '<div class="fin-btns"><button type="button" class="fin-share" id="finShareBtn" onclick="finShare()">Share</button><button type="button" class="fin-done" onclick="finClose(true)">Done</button></div>'
+    + '<p class="fin-msg" id="finMsg" role="status" aria-live="polite"></p></div>';
+  el.hidden = false; el.scrollTop = 0;
+  document.body.classList.add('fin-open');
+  var t = document.getElementById('finTitle'); if (t) t.focus();
+  //  Drawn now, so Share can hand the file over inside the tap itself.
+  finFonts().then(function() { finDrawImage(s).toBlob(function(b) { if (FIN.sum === s) FIN.blob = b; }, 'image/png'); });
+}
+function finClose(done) {
+  var el = document.getElementById('finSheet');
+  if (el) { el.hidden = true; el.innerHTML = ''; }
+  document.body.classList.remove('fin-open');
+  FIN.sum = null; FIN.blob = null;
+  if (done) { goTab('today'); var b = document.querySelector('.tb-start') || document.getElementById('tbHello'); if (b) try { b.focus(); } catch(e) {} }
+  else if (FIN.back && FIN.back.focus) try { FIN.back.focus(); } catch(e) {}
+}
+function finFonts() {
+  if (!document.fonts || !document.fonts.load) return Promise.resolve();
+  return Promise.all(['700 200px Antonio', '700 40px "DM Sans"', '500 40px "DM Sans"'].map(function(f) { return document.fonts.load(f).catch(function() {}); })).catch(function() {});
+}
+function finWrap(g, text, maxW, maxLines) {
+  var words = String(text).split(/\s+/), lines = [], cur = '';
+  words.forEach(function(w) { var t = cur ? cur + ' ' + w : w; if (g.measureText(t).width <= maxW || !cur) cur = t; else { lines.push(cur); cur = w; } });
+  if (cur) lines.push(cur);
+  return lines.length <= maxLines ? lines : null;
+}
+//  1080 x 1350, ultramarine, cream type. Big enough to read as a thumbnail.
+function finDrawImage(s) {
+  var c = document.createElement('canvas'); c.width = 1080; c.height = 1350;
+  var g = c.getContext('2d'), X = 80, W = 920, CR = '#F2EEE4';
+  function font(wt, px, fam) { g.font = wt + ' ' + px + 'px ' + fam; }
+  function track(v) { if ('letterSpacing' in g) g.letterSpacing = v; }
+  g.fillStyle = '#1C2FB5'; g.fillRect(0, 0, 1080, 1350);
+  g.fillStyle = CR; g.textBaseline = 'alphabetic';
+  font(700, 36, '"DM Sans", sans-serif'); track('4px');
+  g.fillText(('Week ' + (s.week + 1) + ' of ' + totalTrainWeeks()).toUpperCase(), X, 140);
+  track('0px');
+  var title = s.title.toUpperCase(), px = 210;
+  font(700, px, 'Antonio, sans-serif');
+  while (px > 90 && g.measureText(title + '.').width > W) { px -= 6; font(700, px, 'Antonio, sans-serif'); }
+  g.fillText(title, X, 150 + px * 0.92);
+  g.fillStyle = '#F2552C'; g.fillText('.', X + g.measureText(title).width, 150 + px * 0.92); g.fillStyle = CR;
+  var h = s.hl[0], y = 560;
+  font(700, 40, '"DM Sans", sans-serif'); track('4px');
+  g.fillText(String(h.kind === 'f' ? 'Today' : h.label).toUpperCase(), X, y); track('0px');
+  var bp = 150, lines;
+  do { font(700, bp, 'Antonio, sans-serif'); lines = finWrap(g, String(h.big).toUpperCase(), W, 2); bp -= 8; } while (!lines && bp > 70);
+  lines = lines || [String(h.big).toUpperCase()];
+  lines.forEach(function(l) { y += bp * 1.0; g.fillText(l, X, y); });
+  var sub = h.kind === 'f' ? h.label : h.sub;
+  if (sub) { font(500, 48, '"DM Sans", sans-serif'); (finWrap(g, sub, W, 2) || [sub]).forEach(function(l) { y += 64; g.fillText(l, X, y); }); }
+  g.globalAlpha = 0.35; g.fillRect(X, 1010, W, 3); g.globalAlpha = 1;
+  var st = [[String(s.sets), s.sets === 1 ? 'set' : 'sets'], s.vol > 0 ? [finInt(wNum(s.vol)), wLb() + ' moved'] : [String(s.reps), 'reps']];
+  st.forEach(function(p, i) {
+    var x = X + i * 470;
+    font(700, 104, 'Antonio, sans-serif'); g.fillText(p[0], x, 1140);
+    font(500, 38, '"DM Sans", sans-serif'); g.fillText(p[1], x, 1192);
+  });
+  font(700, 52, 'Antonio, sans-serif'); track('2px');
+  var wm = 'RUN THE WEIGHTS'; g.fillText(wm, X, 1290);
+  g.fillStyle = '#F2552C'; g.fillText('.', X + g.measureText(wm).width, 1290);
+  track('0px');
+  return c;
+}
+function finShare() {
+  var msg = document.getElementById('finMsg'), s = FIN.sum;
+  if (!s) return;
+  var name = 'run-the-weights-' + todayKey() + '.png';
+  function save(blob) {
+    var u = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function() { URL.revokeObjectURL(u); }, 4000);
+    if (msg) msg.textContent = 'Image saved to your downloads.';
+  }
+  function go(blob) {
+    if (!blob) { if (msg) msg.textContent = 'The image could not be made. Try again.'; return; }
+    var file = null;
+    try { file = new File([blob], name, { type: 'image/png' }); } catch(e) {}
+    if (file && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      navigator.share({ files: [file], title: s.title }).then(function() { if (msg) msg.textContent = ''; }, function(err) {
+        if (err && err.name === 'AbortError') return;
+        save(blob);
+      });
+    } else save(blob);
+  }
+  if (FIN.blob) go(FIN.blob);
+  else { if (msg) msg.textContent = 'Making the image.'; finFonts().then(function() { finDrawImage(s).toBlob(go, 'image/png'); }); }
+}
 </script>
 </body>
 </html>
