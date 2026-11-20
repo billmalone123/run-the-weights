@@ -32,6 +32,8 @@ with sync_playwright() as p:
     r=hl(pg,[it('A',[(140,5)],[e(0,(150,5)),e(3,(125,8)),e(4,(130,8)),e(5,(135,8))]), it('B',[(100,9)],[e(5,(100,8))]), it('C',[(200,3)],[e(5,(190,3))]), it('D',[(60,8)],[e(5,(50,8))])])
     check('max 3, ranked weight PR, rep PR, run', [x['kind'] for x in r]==['w','w','r'] and r[0]['sub']=='D', [(x['kind'],x['sub']) for x in r])
     check('one highlight per lift', len(hl(pg,[it('Bench',[(145,8),(135,12)],[e(5,(140,8),(135,10))])]))==1)
+    hit=pg.evaluate("""(()=>{window._hit=null;window._x=function(a){window._hit=a};const d=document.createElement('div');d.innerHTML='<button onclick="_x(\\''+paJs("a');alert(1);('b\\\\")+'\\')">x</button>';d.firstChild.click();return window._hit})()""")
+    check('an id with quotes stays a string inside onclick', hit=="a');alert(1);('b\\", hit)
     # session times are range checked
     ct=pg.evaluate("finCleanTimes({'bad key':{s:1763500000000},'2026-11-19|x':{s:'x'},'2026-11-19|upperA':{s:1763500000000,l:1763502520000},'2026-11-18|upperB':{s:1763400000000,l:1}})")
     check('session times: bad keys and values dropped, l before s dropped', ct=={'2026-11-19|upperA':{'s':1763500000000,'l':1763502520000},'2026-11-18|upperB':{'s':1763400000000}}, ct)

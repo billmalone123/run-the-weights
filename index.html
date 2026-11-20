@@ -7194,8 +7194,8 @@ body.fin-open { overflow: hidden; }
   function sessionLengthHTML(dayId, cls) {
     var sh = sessionIsShort(dayId);
     return '<div class="len-tog ' + (cls || '') + '" role="group" aria-label="Session length">'
-      + '<button type="button" aria-pressed="' + !sh + '" onclick="setSessionLength(\'' + dayId + '\',\'full\')">Normal</button>'
-      + '<button type="button" aria-pressed="' + sh + '" onclick="setSessionLength(\'' + dayId + '\',\'short\')">Short</button>'
+      + '<button type="button" aria-pressed="' + !sh + '" onclick="setSessionLength(\'' + paJs(dayId) + '\',\'full\')">Normal</button>'
+      + '<button type="button" aria-pressed="' + sh + '" onclick="setSessionLength(\'' + paJs(dayId) + '\',\'short\')">Short</button>'
       + '</div>';
   }
   function useFullPlan() {
@@ -18428,6 +18428,8 @@ document.addEventListener('DOMContentLoaded', function() {
 //  exactly what typing in the rows would have produced. No new data.
 var PA = { day: null, ex: null, slot: null, key: null, wLb: null, r: null, msg: '', warm: false, details: false, flash: null, at: 0 };
 var PA_DOWS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+//  For an id inside a quoted JS string in an onclick attribute.
+function paJs(t) { return paEsc(String(t == null ? '' : t).replace(/\\/g, '\\\\').replace(/'/g, "\\'")); }
 function paEsc(t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 function paDk(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
 function paAddDays(d, n) { var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() + n); return x; }
@@ -18529,7 +18531,7 @@ function renderPlanActive() {
     var n = shownSets(x.id), done = [];
     for (var i = 1; i <= n; i++) { var lg = paLoggedSet(x, 's' + i); if (lg) done.push(lg.w > 0 ? wNum(lg.w) + ' x ' + lg.r : String(lg.r)); }
     var r = document.getElementById('row-' + x.id); if (r) r.classList.add('pa-fin');
-    return '<button type="button" class="pa-lift-done" onclick="paPickEx(\'' + x.id + '\')" aria-label="' + paEsc(activeVariant(x)) + ', done, ' + done.length + ' of ' + n + ' sets. Change a set">'
+    return '<button type="button" class="pa-lift-done" onclick="paPickEx(\'' + paJs(x.id) + '\')" aria-label="' + paEsc(activeVariant(x)) + ', done, ' + done.length + ' of ' + n + ' sets. Change a set">'
       + paCk() + '<span class="t"><b>' + paEsc(activeVariant(x)) + '</b><span class="d">' + done.length + ' of ' + n + ' sets · ' + done.join(', ') + '</span></span></button>';
   }).join('');
   if (!ex) {
@@ -18588,7 +18590,7 @@ function renderPlanActive() {
     + '<button type="button" class="pa-link" onclick="paRest()" aria-label="Start a ' + restTxt + ' rest timer">Rest ' + restTxt + '</button>'
     + '<button type="button" class="pa-link" aria-expanded="' + PA.warm + '" aria-controls="paWarm" onclick="paToggle(\'warm\')">Warm up</button>'
     + (sets < MAX_SETS ? '<button type="button" class="pa-link" onclick="paAddSet()">Add set</button>' : '')
-    + '<button type="button" class="pa-link" onclick="openSwapSheet(\'' + ex.id + '\')">Swap</button>'
+    + '<button type="button" class="pa-link" onclick="openSwapSheet(\'' + paJs(ex.id) + '\')">Swap</button>'
     + '</div>' + warmHTML
     + '<div class="pa-links2">' + (isLogged ? '<button type="button" class="pa-link" onclick="paDelete()">Delete set ' + n + '</button>' : '')
     + '<button type="button" class="pa-link" aria-expanded="' + PA.details + '" onclick="paToggle(\'details\')">' + (PA.details ? 'Hide details' : 'Notes and details') + '</button></div>'
@@ -18835,10 +18837,10 @@ function renderTodayB() {
           + '<h2 class="tb-day">' + paEsc(dd.title || '') + '</h2>'
           + '<p class="tb-meta">' + nLifts + (nLifts === 1 ? ' lift' : ' lifts') + (mins ? ' · about ' + mins + ' min' : '') + ' · Week ' + (currentTrainWeek + 1) + ' of ' + totalTrainWeeks() + '</p>'
           + sessionLengthHTML(next, 'on-blue')
-          + '<button type="button" class="tb-start" onclick="tbStart(\'' + next + '\')">' + (partial ? 'Continue workout' : 'Start workout') + '</button>'
+          + '<button type="button" class="tb-start" onclick="tbStart(\'' + paJs(next) + '\')">' + (partial ? 'Continue workout' : 'Start workout') + '</button>'
           ;
         var mo = document.getElementById('tbMore');
-        if (mo) mo.innerHTML = '<button type="button" onclick="openQuickLog(null, \'' + next + '\')">Short on time</button><button type="button" onclick="openGoingOut(\'' + next + '\')">Going out?</button>';
+        if (mo) mo.innerHTML = '<button type="button" onclick="openQuickLog(null, \'' + paJs(next) + '\')">Short on time</button><button type="button" onclick="openGoingOut(\'' + paJs(next) + '\')">Going out?</button>';
       }
     }
   }
