@@ -94,7 +94,7 @@ All checks ran at 390 x 844. Older tests were updated where 8.34 changed the scr
 2. **Run tab:** Run is a tab again, at the user's request.
 3. **LOG SET size:** 56 px rather than 64 px, matching the image, in persimmon as the user asked.
 4. **Copy:** the image's line about missed days was reworded to "A day you did not get to moves forward, it does not disappear.", because an 8.25 rule bans "missed" on Today.
-5. **Plan toolbar:** the week toolbar and the day strip still sit between the card and the remaining lifts. The image shows the lifts directly under the card. Not changed yet.
+5. **Plan toolbar:** moved under the header, above the current lift, in a follow-up commit.
 
 ## Security review
 
