@@ -3946,6 +3946,9 @@ body.pa-on #plan .lift-row:not(.pa-cur) { margin-bottom: 8px; }
 .pa-done { background: var(--s834-surface); border-radius: 24px; padding: 18px; font-size: 15px; color: var(--ink); }
 .pa-done .pa-name { margin-bottom: 6px; }
 body.pa-on #plan .lift-row.pa-fin { display: none !important; }
+.pa-week { padding-top: 16px; }
+.pa-week .lift-toolbar { margin-top: 0; }
+.pa-week .week-glance { margin-bottom: 0; }
 /* 8.34 Part 3: finish card */
 .pa-fin-btn { margin-top: 14px; }
 .fin { position: fixed; inset: 0; z-index: 3000; background: var(--cream); overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -4496,6 +4499,7 @@ body.fin-open { overflow: hidden; }
   <h2 class="lift-hero adv">This is where you win.</h2>
   <div id="trainStyleBar" style="display:none"></div>
 
+  <span id="paWeekHome" hidden></span>
   <!-- COMPACT WEEK + REST ROW. One week shown; arrows change it. -->
   <div class="lift-toolbar">
     <button type="button" class="tool-arrow" onclick="stepTrainWeek(-1)" aria-label="Previous week">&#8249;</button>
@@ -18500,6 +18504,23 @@ function paPickEx(id) {
   var c = document.getElementById('paName'); if (c) try { c.scrollIntoView({ block: 'center' }); } catch(e) {}
   var b = document.getElementById('paLogBtn'); if (b) b.focus({ preventScroll: true });
 }
+//  On the card layout the week toolbar and day strip sit under the header,
+//  above the lift. The same nodes move, so every handler and renderer keeps
+//  working; they go home before the card rewrites itself.
+function paWeekHome() {
+  var home = document.getElementById('paWeekHome');
+  if (!home) return;
+  var tb = document.querySelector('.lift-toolbar'), gl = document.getElementById('weekGlance');
+  if (gl && gl.parentNode !== home.parentNode) home.parentNode.insertBefore(gl, home.nextSibling);
+  if (tb && tb.parentNode !== home.parentNode) home.parentNode.insertBefore(tb, home.nextSibling);
+}
+function paWeekUp() {
+  var slot = document.getElementById('paWeekSlot');
+  if (!slot) return;
+  var tb = document.querySelector('.lift-toolbar'), gl = document.getElementById('weekGlance');
+  if (tb && tb.parentNode !== slot) slot.appendChild(tb);
+  if (gl && gl.parentNode !== slot) slot.appendChild(gl);
+}
 function renderPlanActive() {
   var host = document.getElementById('planActive');
   if (!host) return;
@@ -18507,7 +18528,7 @@ function renderPlanActive() {
   var day = paOn() ? paViewedDay() : null;
   var list = day ? paList(day) : [];
   document.querySelectorAll('#plan .lift-row.pa-cur, #plan .lift-row.pa-fin').forEach(function(r) { r.classList.remove('pa-cur', 'pa-details', 'pa-fin'); });
-  if (!day || !list.length) { host.hidden = true; host.innerHTML = ''; PA.html = null; document.body.classList.remove('pa-on'); return; }
+  if (!day || !list.length) { paWeekHome(); host.hidden = true; host.innerHTML = ''; PA.html = null; document.body.classList.remove('pa-on'); return; }
   document.body.classList.add('pa-on');
   if (PA.day !== day) { PA.day = day; PA.ex = null; PA.slot = null; PA.key = null; PA.warm = false; PA.details = false; }
   var ex = PA.ex && list.filter(function(x) { return x.id === PA.ex; })[0];
@@ -18524,7 +18545,7 @@ function renderPlanActive() {
     + '<p class="pa-meta"><span>Week ' + (currentTrainWeek + 1) + ' of ' + totalTrainWeeks() + '</span><span>' + (ex ? 'Exercise ' + idx + ' of ' + list.length : 'All ' + list.length + ' done') + '</span></p>'
     + '<div class="pa-row"><h2 class="pa-title">' + paEsc(title) + '<span class="pa-dot" aria-hidden="true">.</span></h2>' + sessionLengthHTML(day, 'on-blue') + '</div>'
     + '<p class="pa-sum">' + [mins ? mins + ' min' : '', list.length + (list.length === 1 ? ' lift' : ' lifts'), moves].filter(Boolean).join(' · ') + '</p>'
-    + '</header>';
+    + '</header><div class="pa-week" id="paWeekSlot"></div>';
   //  Finished lifts sit above the card, each one a tap away from editing.
   var fin = list.filter(function(x) { return x !== ex && !paOpenSlot(x); });
   var finHTML = fin.map(function(x) {
@@ -18535,9 +18556,11 @@ function renderPlanActive() {
       + paCk() + '<span class="t"><b>' + paEsc(activeVariant(x)) + '</b><span class="d">' + done.length + ' of ' + n + ' sets · ' + done.join(', ') + '</span></span></button>';
   }).join('');
   if (!ex) {
+    paWeekHome();
     host.innerHTML = head + '<div class="pa-body">' + finHTML + '<div class="pa-done"><h3 class="pa-name">Every set is in</h3><p>' + list.length + ' lifts logged for ' + paEsc(d.title || 'this day') + '. Tap any lift to change a set.</p><button type="button" class="pa-log pa-fin-btn" id="paFinishBtn" onclick="openFinish()">Finish workout</button></div></div>';
     PA.html = null;
     host.hidden = false;
+    paWeekUp();
     return;
   }
   var row = document.getElementById('row-' + ex.id);
@@ -18595,8 +18618,9 @@ function renderPlanActive() {
     + '<div class="pa-links2">' + (isLogged ? '<button type="button" class="pa-link" onclick="paDelete()">Delete set ' + n + '</button>' : '')
     + '<button type="button" class="pa-link" aria-expanded="' + PA.details + '" onclick="paToggle(\'details\')">' + (PA.details ? 'Hide details' : 'Notes and details') + '</button></div>'
     + '</section></div>';
-  if (html !== PA.html || host.hidden) { host.innerHTML = html; PA.html = html; }
+  if (html !== PA.html || host.hidden) { paWeekHome(); host.innerHTML = html; PA.html = html; }
   host.hidden = false;
+  paWeekUp();
   PA.msg = '';
   if (PA.flash) { var f = PA.flash; setTimeout(function() { if (PA.flash === f) PA.flash = null; }, 400); }
 }
