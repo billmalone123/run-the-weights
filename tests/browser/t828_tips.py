@@ -32,7 +32,7 @@ def visit(pg, scr, shown, infos):
         info=ev(COVER)
         if info: break
         if scr=='settings': break
-        ev("scrollTo(0,%d)"%y); pg.wait_for_timeout(420)
+        ev("scrollTo({top:%d,behavior:'instant'})"%y); pg.wait_for_timeout(420)  # 8.35c: instant, so the tip is not placed mid scroll
     info=ev(COVER)
     if info:
         shown.append(info['id']); infos.append(info)
@@ -46,6 +46,8 @@ with sync_playwright() as p:
     b=p.chromium.launch()
     # 0. during onboarding: no tip
     ctx,pg,errs=newpage(b, onb=False); pg.wait_for_timeout(800)
+    check('no tip while the intro story is on screen', pg.evaluate("getComputedStyle(document.getElementById('introStory')).display!=='none'") and pg.evaluate("document.querySelectorAll('.tip').length")==0)
+    pg.evaluate("introDone()"); pg.wait_for_timeout(800)
     check('no tip while onboarding is on screen', pg.evaluate("getComputedStyle(document.getElementById('onbFlow')).display!=='none'") and pg.evaluate("document.querySelectorAll('.tip').length")==0)
     ctx.close()
     # 1. fresh install

@@ -14144,7 +14144,7 @@ body.fin-open { overflow: hidden; }
     return first && first.offsetParent ? first.firstElementChild : null;
   }
   function tipBlocked() {
-    var open = Array.prototype.some.call(document.querySelectorAll('.settings-modal-overlay, .rest-modal-overlay, #onbFlow'), function(m) {
+    var open = Array.prototype.some.call(document.querySelectorAll('.settings-modal-overlay, .rest-modal-overlay, #onbFlow, #introStory'), function(m) {
       return m.id !== 'settingsModal' && getComputedStyle(m).display !== 'none';
     });
     var menu = document.getElementById('navMenu');

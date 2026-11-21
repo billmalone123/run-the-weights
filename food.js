@@ -507,6 +507,9 @@ ctx.userMaxes = {}; ctx.sessions = {};   // undo the direct-assignment cases abo
 
 section('2h. Welcome flow: shown for a genuinely fresh install, and the draft is isolated from real state');
 reset(); boot(); ctx.loadFoodData();
+//  8.35c: the intro story comes first on a fresh install; t835c_intro.py covers it.
+//  These blocks are about setup, and earlier async blocks clear storage, so the check is stubbed.
+ctx.introSeen = function () { return true; };
 eq('starts unflagged', ctx.onboardedFlowDone(), false);
 ctx.startOnbFlow();
 eq('not decided synchronously — this path waits on the IDB cross-check', ctx.onboardedFlowDone(), false);
