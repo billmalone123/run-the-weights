@@ -3943,6 +3943,7 @@ body.pa-on #plan .lift-row:not(.pa-cur) { margin-bottom: 8px; }
 .pa-links2 .pa-link { font-size: 15px; font-weight: 600; color: var(--s834-muted); text-decoration: underline; text-underline-offset: 3px; }
 .pa-warm { background: var(--cream); border-radius: 18px; padding: 12px 16px; margin: 6px 0 4px; font-size: 15px; color: var(--ink); }
 .pa-warm ol { margin: 4px 0 0 18px; padding: 0; }
+.dt-msg { font-size: 17px; line-height: 1.4; margin: 0 0 18px; color: var(--ink, #141414); }
 .pa-done { background: var(--s834-surface); border-radius: 24px; padding: 18px; font-size: 15px; color: var(--ink); }
 .pa-done .pa-name { margin-bottom: 6px; }
 body.pa-on #plan .lift-row.pa-fin { display: none !important; }
@@ -5144,6 +5145,15 @@ body.fin-open { overflow: hidden; }
   </div>
 </div>
 
+<!-- 8.35b: switching a day that already has sets logged. -->
+<div class="settings-modal-overlay" id="dayTakeover" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="dayTakeoverMsg">
+  <div class="settings-modal-card">
+    <p class="dt-msg" id="dayTakeoverMsg"></p>
+    <button class="settings-save-btn" id="dayTakeoverYes" onclick="dayTakeoverAnswer(true)">Switch</button>
+    <button class="settings-cancel-btn" onclick="dayTakeoverAnswer(false)">Keep planned workout</button>
+  </div>
+</div>
+
 <!-- MAXES MODAL -->
 <div class="settings-modal-overlay" id="maxesModal" style="display:none;">
   <div class="settings-modal-card" id="maxesModalCard">
@@ -5900,6 +5910,11 @@ body.fin-open { overflow: hidden; }
         }
       });
     });
+    idbGet('dayAdded').then(function(v) {
+      var ls = null;
+      try { ls = localStorage.getItem(DAY_ADDED_KEY); } catch(e) {}
+      if (ls === null && v && typeof v === 'object') { dayAdded = cleanDayAdded(v); persistDayAdded(); if (typeof renderDaySections === 'function') renderDaySections(); }
+    }).catch(function() {});
     //  Train style and own plan: recover only when localStorage lost the key.
     [['trainStyle', TRAIN_STYLE_KEY, function(v) { trainStyle = cleanTrainStyle(v); persistTrainStyle(); }],
      ['ownPlan', OWN_PLAN_KEY, function(v) { ownPlan = cleanOwnPlan(v); persistOwnPlan(); registerOwnPlan(); }]
@@ -6393,8 +6408,8 @@ body.fin-open { overflow: hidden; }
     var q = quickSessions[week + '|' + dayId];
     if (q && Array.isArray(q.ids)) q.ids.forEach(function(id) { ids[id] = 1; });
     return Object.keys(ids).some(function(id) {
-      return (sessions[id] || []).some(function(e) { return e && e.week === week && !e.quickLog; });
-    });
+      return (sessions[id] || []).some(function(e) { return e && e.week === week && !e.quickLog && entryForDay(e, dayId); });
+    }) || Object.keys(dayOwnLogs(dayId, week).ids).length > 0;
   }
   //  Does a stored choice for this slot count right now?
   function choiceCounts(dayId, week) {
@@ -6676,6 +6691,123 @@ body.fin-open { overflow: hidden; }
   var quickSessions = {}, quickMinutes = 30;
   try { quickSessions = JSON.parse(localStorage.getItem(QUICK_SESSIONS_KEY)) || {}; } catch(e) { quickSessions = {}; }
   try { var _qm = parseInt(localStorage.getItem(QUICK_MIN_KEY), 10); if (TIME_BOX_CHOICES.indexOf(_qm) !== -1) quickMinutes = _qm; } catch(e) {}
+  //  8.35b DAY LOG. A day shows its workout plus every lift logged on that
+  //  day, marked as added. New entries carry the day they were logged on
+  //  (entry.day). Older entries are never rewritten; they are placed by rule:
+  //  the exercise's own day when only one day has it, then the day recorded
+  //  for that date, then the day scheduled for that weekday.
+  const DAY_ADDED_KEY = 'monk_day_added_v1';   // { 'week|dayId': [exercise ids] }
+  var dayAdded = {};
+  function cleanDayAdded(o) {
+    var out = {}, n = 0;
+    if (!o || typeof o !== 'object' || Array.isArray(o)) return out;
+    Object.keys(o).forEach(function(k) {
+      var m = /^(\d{1,3})\|([A-Za-z0-9_-]{1,40})$/.exec(k);
+      if (!m || +m[1] > 200 || n >= 400 || !Array.isArray(o[k])) return;
+      var ids = o[k].filter(function(id, i, a) { return typeof id === 'string' && /^[a-z0-9-]{1,60}$/.test(id) && a.indexOf(id) === i; }).slice(0, 20);
+      if (ids.length) { out[k] = ids; n++; }
+    });
+    return out;
+  }
+  try { dayAdded = cleanDayAdded(JSON.parse(localStorage.getItem(DAY_ADDED_KEY))); } catch(e) { dayAdded = {}; }
+  function persistDayAdded() {
+    try { localStorage.setItem(DAY_ADDED_KEY, JSON.stringify(dayAdded)); } catch(e) {}
+    idbSet('dayAdded', dayAdded);
+  }
+  function addToDay(dayId, exId) {
+    if (!SPLIT_DAYS[dayId] || !EX_BY_ID[exId]) return;
+    var k = currentTrainWeek + '|' + dayId, l = dayAdded[k] || [];
+    if (l.indexOf(exId) === -1 && l.length < 20) { dayAdded[k] = l.concat(exId); persistDayAdded(); invalidateBuild(); }
+  }
+  function validDayLabel(v) { return typeof v === 'string' && /^[A-Za-z0-9_-]{1,40}$/.test(v); }
+  //  exercise id -> the active split's days that program it.
+  function programmedDayMap() {
+    var m = {};
+    splitDayIds().forEach(function(d) { programmedDayExercises(d).forEach(function(e) { (m[e.id] = m[e.id] || []).push(d); }); });
+    return m;
+  }
+  function entryDayOf(e, exId, map) {
+    if (!e) return null;
+    if (validDayLabel(e.day)) return e.day;
+    var own = (map || programmedDayMap())[exId] || [];
+    if (own.length === 1) return own[0];
+    var k = e.week + '|', hit = null;
+    Object.keys(dayAdded).forEach(function(x) { if (!hit && x.indexOf(k) === 0 && dayAdded[x].indexOf(exId) !== -1) hit = x.slice(k.length); });
+    if (hit) return hit;
+    if (e.d && typeof finTimes === 'object') {
+      var fd = Object.keys(finTimes).filter(function(x) { return x.indexOf(e.d + '|') === 0; }).map(function(x) { return x.slice(11); });
+      if (own.length) fd = fd.filter(function(d) { return own.indexOf(d) !== -1; });
+      if (fd.length === 1) return fd[0];
+    }
+    if (e.d && validDateKey(e.d)) {
+      var p = e.d.split('-'), slot = activeSplit().week[mondayIndex(new Date(+p[0], +p[1] - 1, +p[2]))];
+      if (slot && slot !== 'rest' && SPLIT_DAYS[slot] && (!own.length || own.indexOf(slot) !== -1)) return slot;
+    }
+    return own[0] || null;
+  }
+  //  Lifts this day owns beyond the old rule: entries labelled with this day,
+  //  and Quick Log single sets that belong here. quick: { id: [{w, r}] }.
+  function dayOwnLogs(dayId, week) {
+    var ids = {}, quick = {}, map = null;
+    Object.keys(sessions || {}).forEach(function(id) {
+      (sessions[id] || []).forEach(function(e) {
+        if (!e || e.week !== week) return;
+        if (e.quickLog) {
+          if (!(e.reps > 0)) return;
+          if (!validDayLabel(e.day)) map = map || programmedDayMap();
+          if (entryDayOf(e, id, map) !== dayId) return;
+          ids[id] = 1; (quick[id] = quick[id] || []).push({ w: e.weight > 0 ? +e.weight : 0, r: +e.reps });
+        } else if (e.day === dayId) ids[id] = 1;
+      });
+    });
+    return { ids: ids, quick: quick };
+  }
+  //  An entry logged for another day does not count for this one.
+  function entryForDay(e, dayId) { return !validDayLabel(e.day) || e.day === dayId; }
+  function dayExtraIds(dayId, week, have) {
+    var own = dayOwnLogs(dayId, week), out = [];
+    Object.keys(own.ids).concat(dayAdded[week + '|' + dayId] || []).forEach(function(id) {
+      if (!have[id] && EX_BY_ID[id] && out.indexOf(id) === -1) out.push(id);
+    });
+    return out;
+  }
+  function withDayExtras(dayId, week, b) {
+    if (_ignoreDayChoice || !b || !b.list) return b;
+    var have = {};
+    b.list.forEach(function(e) { have[e.id] = 1; });
+    var extra = dayExtraIds(dayId, week, have);
+    if (!extra.length) return b;
+    var added = {}, reasons = Object.assign({}, b.reasons);
+    extra.forEach(function(id) { added[id] = true; reasons[id] = 'Added to this day.'; });
+    return Object.assign({}, b, { list: b.list.concat(extra.map(function(id) { return EX_BY_ID[id]; })), added: added, reasons: reasons });
+  }
+  function isAddedOn(dayId, exId) {
+    try { var b = buildSession(dayId, currentTrainWeek); return !!(b.added && b.added[exId]); } catch(e) { return false; }
+  }
+  function quickSetsOn(dayId, exId) { return dayOwnLogs(dayId, currentTrainWeek).quick[exId] || []; }
+  //  The day a row belongs to: the day section it sits in, else the card's day.
+  function rowDayOf(exId) {
+    var r = document.getElementById('row-' + exId), h = r && r.closest && r.closest('[id^="altday-"], [data-rows]');
+    var d = h ? (h.dataset && h.dataset.rows) || h.id.replace(/^altday-/, '') : null;
+    if (d && SPLIT_DAYS[d]) return d;
+    return typeof PA === 'object' && PA.day && SPLIT_DAYS[PA.day] ? PA.day : null;
+  }
+  //  Today's workout day, the one Today shows: a day chosen today, else the
+  //  day worked on today, else the day Today offers, else today's slot.
+  function todayDayId() {
+    var m = liveDayKey();
+    if (m && SPLIT_DAYS[m.split('|')[1]]) return m.split('|')[1];
+    var t = todayKey() + '|', best = null;
+    if (typeof finTimes === 'object') Object.keys(finTimes).forEach(function(k) {
+      if (k.indexOf(t) === 0 && SPLIT_DAYS[k.slice(t.length)] && (!best || (finTimes[k].l || finTimes[k].s) > (finTimes[best].l || finTimes[best].s))) best = k;
+    });
+    if (best) return best.slice(t.length);
+    var n = null;
+    try { n = partialDayThisWeek() || findNextUnloggedDay(); } catch(e) {}
+    if (n && SPLIT_DAYS[n]) return n;
+    var s = activeSplit().week[mondayIndex(startOfToday())];
+    return s && s !== 'rest' && SPLIT_DAYS[s] ? s : null;
+  }
   function persistQuick() {
     try { localStorage.setItem(QUICK_SESSIONS_KEY, JSON.stringify(quickSessions)); localStorage.setItem(QUICK_MIN_KEY, String(quickMinutes)); } catch(e) {}
   }
@@ -6809,6 +6941,12 @@ body.fin-open { overflow: hidden; }
       if (+parts[0] !== week || parts[1] === dayId || !quickFor(parts[1], week)) return;
       buildSession(parts[1], week).list.forEach(function(e) { out[e.id] = true; });
     });
+    //  A lift added to another day this week shows there, not here as well.
+    splitDayIds().forEach(function(d) {
+      if (d === dayId) return;
+      var b = buildSession(d, week);
+      Object.keys(b.added || {}).forEach(function(id) { out[id] = true; });
+    });
     return out;
   }
   //  A day's own exercises for counting, minus any a quick workout on another
@@ -6818,7 +6956,8 @@ body.fin-open { overflow: hidden; }
     return buildSession(dayId, week).list.filter(function(e) { return !skip[e.id]; });
   }
 
-  function buildSession(dayId, week) {
+  function buildSession(dayId, week) { return withDayExtras(dayId, week, buildSessionCore(dayId, week)); }
+  function buildSessionCore(dayId, week) {
     var q = quickFor(dayId, week);
     if (q) {
       var qk = 'quick|' + dayId + '|' + week + '|' + JSON.stringify(q) + '|' + JSON.stringify(setCounts) + '|' + dropSetsOn();
@@ -7070,6 +7209,11 @@ body.fin-open { overflow: hidden; }
       var shaped = !!quickFor(d, week) || TIME_BOX_CHOICES.indexOf(boxChoice(d, week)) !== -1 || isShortDay(d, week);
       return shaped || !hasLogsForDay(d, week);
     };
+    //  8.35b: the tapped day and today's day are the target even with sets
+    //  logged. Picking asks first and keeps every logged set.
+    var real = function(d) { return !!d && d !== 'rest' && !!SPLIT_DAYS[d] && !SPLIT_DAYS[d].rest; };
+    if (real(_qlDay)) return _qlDay;
+    if (real(todayDayId())) return todayDayId();
     if (open(_qlDay)) return _qlDay;
     var part = partialDayThisWeek();
     if (part && (quickFor(part, week) || TIME_BOX_CHOICES.indexOf(boxChoice(part, week)) !== -1 || isShortDay(part, week))) return part;
@@ -7132,9 +7276,40 @@ body.fin-open { overflow: hidden; }
     if (typeof renderToday === 'function') renderToday();
     goTab('training'); switchDay(day);
   }
+  //  Asks once before a new workout takes over a day that has sets logged.
+  var _dtFn = null, _dtBack = null;
+  function confirmTakeover(day, name, fn) {
+    var shaped = !!quickFor(day, currentTrainWeek) || TIME_BOX_CHOICES.indexOf(boxChoice(day, currentTrainWeek)) !== -1 || isShortDay(day, currentTrainWeek);
+    if (shaped || !hasLogsForDay(day, currentTrainWeek)) { fn(); return; }
+    var m = document.getElementById('dayTakeover');
+    if (!m) { fn(); return; }
+    _dtFn = fn; _dtBack = document.activeElement;
+    document.getElementById('dayTakeoverMsg').textContent = 'Switch today to ' + name + '? Your logged sets stay.';
+    m.style.display = 'flex';
+    document.getElementById('dayTakeoverYes').focus();
+  }
+  function dayTakeoverAnswer(yes) {
+    var m = document.getElementById('dayTakeover'), fn = _dtFn;
+    if (m) m.style.display = 'none';
+    _dtFn = null;
+    if (yes && fn) fn(); else if (_dtBack && _dtBack.focus) try { _dtBack.focus(); } catch(e) {}
+  }
+  document.addEventListener('keydown', function(e) {
+    var m = document.getElementById('dayTakeover');
+    if (!m || m.style.display === 'none') return;
+    if (e.key === 'Escape') { e.preventDefault(); dayTakeoverAnswer(false); }
+    if (e.key === 'Tab') {
+      var f = m.querySelectorAll('button'), first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
   function startQuickToday() {
     var day = quickTargetDay();
     if (!day) return;
+    confirmTakeover(day, 'a ' + quickMinutes + ' minute ' + SPLIT_DAYS[day].title, function() { startQuickTodayNow(day); });
+  }
+  function startQuickTodayNow(day) {
     var k = boxKey(day);
     claimDayChoice(day);
     delete quickSessions[k]; delete shortDays[k];
@@ -7145,6 +7320,9 @@ body.fin-open { overflow: hidden; }
   function startQuick(kind) {
     var day = quickTargetDay();
     if (!day) return;
+    confirmTakeover(day, quickLabel(kind), function() { startQuickNow(kind, day); });
+  }
+  function startQuickNow(kind, day) {
     var k = boxKey(day);
     var w = quickWorkout(kind, quickMinutes, currentTrainWeek);
     if (!w.list.length) return;
@@ -7588,8 +7766,12 @@ body.fin-open { overflow: hidden; }
   //  boxed day is complete when its own sets are in.
   function dayProgress(dayId) {
     var done = 0, total = 0;
+    var own = dayOwnLogs(dayId, currentTrainWeek), b = buildSession(dayId, currentTrainWeek);
     dayCountList(dayId, currentTrainWeek).forEach(function(ex) {
-      for (var n = 1; n <= shownSets(ex.id); n++) { total++; if (slotLogged(ex, 's' + n)) done++; }
+      var q = (own.quick[ex.id] || []).length, slots = 0;
+      for (var n = 1; n <= shownSets(ex.id); n++) if (slotLogged(ex, 's' + n)) slots++;
+      if (b.added && b.added[ex.id] && slots + q > 0) { done += slots + q; total += slots + q; return; }
+      done += slots + q; total += shownSets(ex.id) + q;
     });
     return { done: done, total: total };
   }
@@ -10442,10 +10624,11 @@ body.fin-open { overflow: hidden; }
     //  entry it started on yesterday.
     var idx = -1, yest = (function() { var y = new Date(); y.setDate(y.getDate() - 1); return y.getFullYear() + '-' + (y.getMonth() < 9 ? '0' : '') + (y.getMonth() + 1) + '-' + (y.getDate() < 10 ? '0' : '') + y.getDate(); })();
     var lateNight = new Date().getHours() < 5;
+    var lday = rowDayOf(exId);
     for (var i = hist.length - 1; i >= 0; i--) {
       //  Old entries with no variant field read as the exercise's own name.
       if (hist[i].week === currentTrainWeek && !hist[i].quickLog && entryVariant(hist[i], ex) === activeVariant(ex)
-          && (hist[i].d === t || (lateNight && hist[i].d === yest))) { idx = i; break; }
+          && (hist[i].d === t || (lateNight && hist[i].d === yest)) && (!lday || entryForDay(hist[i], lday))) { idx = i; break; }
     }
     var prev = idx >= 0 ? hist[idx] : null;
     if (!anySet) {
@@ -10476,6 +10659,8 @@ body.fin-open { overflow: hidden; }
     //  drops the key again rather than leaving an orphan third set behind.
     //  s3 to s6 only when logged, so two set entries keep their old shape.
     ALL_SLOTS.slice(2).forEach(function(sl) { if (got[sl]) entry[sl] = got[sl]; });
+    //  8.35b: new entries carry their day. An entry saved before keeps its shape.
+    if (lday && (!prev || validDayLabel(prev.day))) entry.day = lday;
     var changed = !prev || JSON.stringify(prev) !== JSON.stringify(entry);
     if (idx >= 0) hist[idx] = entry; else hist.push(entry);
     if (!changed) return;
@@ -10588,6 +10773,8 @@ body.fin-open { overflow: hidden; }
     autoBackupOnce();
     var hist = sessions[exId] = sessions[exId] || [];
     var entry = { d: todayKey(), ts: Date.now(), week: currentTrainWeek, weight: weight, reps: reps, quickLog: true };
+    var qday = todayDayId();
+    if (qday) entry.day = qday;
     if (rpe != null) entry.rpe = rpe;
     if (notes) entry.notes = notes;
     hist.push(entry);
@@ -12265,7 +12452,7 @@ body.fin-open { overflow: hidden; }
       rest: restPrefs, swapsToday: swapsToday,
       runPrefs: { units: runUnits, lastType: runLastType },
       weightUnit: wUnit(), userName: userName,
-      aboutSeen: aboutSeen(), dayMode: currentDayMode()
+      aboutSeen: aboutSeen(), dayMode: currentDayMode(), dayAdded: dayAdded
     };
     var blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
     var a = document.createElement('a');
@@ -12289,6 +12476,10 @@ body.fin-open { overflow: hidden; }
         var data = JSON.parse(reader.result);
         if (!data || data.app !== 'monk-mode' || typeof data.sessions !== 'object') throw new Error('bad file');
         sessions = data.sessions || {};
+        //  A day label from a file is kept only when it is a plain id.
+        Object.keys(sessions).forEach(function(id) { if (Array.isArray(sessions[id])) sessions[id].forEach(function(e) { if (e && typeof e === 'object' && 'day' in e && !validDayLabel(e.day)) delete e.day; }); });
+        //  Older backups have no dayAdded; the key is left as it is then.
+        if (data.dayAdded !== undefined) { dayAdded = cleanDayAdded(data.dayAdded); persistDayAdded(); }
         saveSessions();
         if (data.maxes) { userMaxes = data.maxes; persistMaxes(); }
         if (data.archive) { setLSMirrored(ARCHIVE_KEY, 'archive', data.archive); }
@@ -18317,8 +18508,8 @@ function hasLogsForDay(dayId, week) {
     //  Quick Log entries don't count as "did the planned day" — they're a
     //  one-off anchor-lift set, not the structured session this (and the
     //  next-unlogged-day picker) is tracking.
-    return (sessions[ex.id] || []).some(function(e) { return e.week === week && !e.quickLog; });
-  });
+    return (sessions[ex.id] || []).some(function(e) { return e.week === week && !e.quickLog && entryForDay(e, dayId); });
+  }) || (typeof dayOwnLogs === 'function' && Object.keys(dayOwnLogs(dayId, week).ids).length > 0);
 }
 
 function renderRing() {
@@ -18456,9 +18647,12 @@ function paLoggedSet(ex, slot) {
   return e ? normSet(e, e[slot]) : null;
 }
 function paOpenSlot(ex) {
+  //  A lift added to the day is done once it has any set in.
+  if (PA.day && isAddedOn(PA.day, ex.id) && (paAnySlot(ex) || quickSetsOn(PA.day, ex.id).length)) return null;
   for (var n = 1; n <= shownSets(ex.id); n++) if (!slotLogged(ex, 's' + n)) return 's' + n;
   return null;
 }
+function paAnySlot(ex) { for (var n = 1; n <= MAX_SETS; n++) if (slotLogged(ex, 's' + n)) return true; return false; }
 function paMoves(list) {
   var has = {}, out = [];
   list.forEach(function(ex) { var p = ex.pattern; has[p === 'push' ? 'push' : p === 'pull' ? 'pull' : 'legs'] = 1; });
@@ -18551,6 +18745,8 @@ function renderPlanActive() {
   var finHTML = fin.map(function(x) {
     var n = shownSets(x.id), done = [];
     for (var i = 1; i <= n; i++) { var lg = paLoggedSet(x, 's' + i); if (lg) done.push(lg.w > 0 ? wNum(lg.w) + ' x ' + lg.r : String(lg.r)); }
+    quickSetsOn(day, x.id).forEach(function(q) { done.push(q.w > 0 ? wNum(q.w) + ' x ' + q.r : String(q.r)); });
+    if (b.added && b.added[x.id]) n = done.length;
     var r = document.getElementById('row-' + x.id); if (r) r.classList.add('pa-fin');
     return '<button type="button" class="pa-lift-done" onclick="paPickEx(\'' + paJs(x.id) + '\')" aria-label="' + paEsc(activeVariant(x)) + ', done, ' + done.length + ' of ' + n + ' sets. Change a set">'
       + paCk() + '<span class="t"><b>' + paEsc(activeVariant(x)) + '</b><span class="d">' + done.length + ' of ' + n + ' sets · ' + done.join(', ') + '</span></span></button>';
@@ -18573,7 +18769,8 @@ function renderPlanActive() {
   var hist = getHistory(ex.id), prevRef = movementPrevEntry(hist, currentTrainWeek, ex);
   var unit = ex.unit || 'reps';
   var noLoad = weightOptional(ex) && !(PA.wLb > 0);
-  var sub = (prevRef && prevRef.reps ? 'Last time ' + (prevRef.weight > 0 ? wNum(prevRef.weight) + ' x ' : '') + prevRef.reps : 'First time on this lift') + ' · target ' + paRange(ex) + ' ' + unit;
+  var qs = quickSetsOn(day, ex.id), isAdd = !!(b.added && b.added[ex.id]);
+  var sub = (isAdd ? 'Added to this day · ' : '') + (qs.length ? 'Quick Log ' + qs.map(function(x) { return paSetTxt(x, ex); }).join(', ') + ' · ' : '') + (prevRef && prevRef.reps ? 'Last time ' + (prevRef.weight > 0 ? wNum(prevRef.weight) + ' x ' : '') + prevRef.reps : 'First time on this lift') + ' · target ' + paRange(ex) + ' ' + unit;
   var isLogged = !!paLoggedSet(ex, slot);
   var wBox = noLoad
     ? '<div class="pa-box pa-bw"><span class="pa-bwt">Body weight</span></div>'

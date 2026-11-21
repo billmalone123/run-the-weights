@@ -33,7 +33,8 @@ with sync_playwright() as p:
     check('three sets are logged', pg.evaluate("[slotLogged(EX_BY_ID['%s'],'s1'),slotLogged(EX_BY_ID['%s'],'s2'),slotLogged(EX_BY_ID['%s'],'s1')]"%(kept[0],kept[0],dropped[-1]))==[True,True,True])
     # Normal to Short during the workout
     pg.click('#planActive .len-tog button:has-text("Short")'); pg.wait_for_timeout(500)
-    check('Short is on and the card shows the short list', pg.evaluate("sessionIsShort('%s')"%D) and ids(pg,D)==shortList and pressed(pg,'#planActive')=='Normal:false,Short:true', [ids(pg,D),shortList])
+    # 8.35b: a lift Short drops stays on the day, marked added, once a set is logged on it.
+    check('Short is on and the card shows the short list plus the logged lift', pg.evaluate("sessionIsShort('%s')"%D) and ids(pg,D)==shortList+[dropped[-1]] and pressed(pg,'#planActive')=='Normal:false,Short:true', [ids(pg,D),shortList])
     check('switching to Short changes no logged data', pg.evaluate(LOGS)==before)
     check('the stored copy is unchanged too', pg.evaluate(STORE)==storedBefore)
     check('the set on the dropped lift is still logged', pg.evaluate("slotLogged(EX_BY_ID['%s'],'s1')"%dropped[-1]))
