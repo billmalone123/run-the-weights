@@ -3359,8 +3359,10 @@ nav .nav-gear:focus-visible { outline: 2px solid var(--fill); outline-offset: 2p
 .about-short .about-note { font-size: var(--fs-2); color: var(--muted); }
 
 /* RUN TAB. Only on screen when running is on. */
-body:not(.running) .tabbar-btn[data-tab="running"] { display: none; }
-body.running .tabbar { grid-template-columns: repeat(5, 1fr); }
+/* 8.35b: five places, Run always shown. Quick Log holds Food's slot while
+   FOOD_ENABLED is false; Food returns to it when the flag is on. */
+html.food-off .tabbar-btn[data-tab="food"], html:not(.food-off) .tabbar-btn[data-tab="quicklog"] { display: none; }
+.tabbar { grid-template-columns: repeat(5, 1fr); }
 .run-home-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .run-units { display: flex; gap: 4px; }
 .run-log-big { margin-top: 0; }
@@ -3798,15 +3800,15 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 /* 8.30: no repeated title under a hero, and about 24 px from the hero to
    the first thing below it. Every rule waits for the hero to show, so a
    screen whose hero is hidden (a rest day on Today) keeps its old heading. */
-.rtwh:not([hidden]) + section { padding-top: 24px !important; }
+.rtwh:not([hidden]) + section, .rtwh:not([hidden]) + #runOff + #runHome { padding-top: 24px !important; }
 .rtwh:not([hidden]) + #todaySection .today-date { background: none; color: var(--text); font-family: var(--font-body); font-weight: 600;
   font-size: var(--fs-2); line-height: 1.4; text-transform: none; letter-spacing: 0; padding: 0; margin: 0 0 12px; border-radius: 0; }
 .rtwh:not([hidden]) + #todaySection .today-date::before { display: none; }
 .rtwh:not([hidden]) + #plan > .section-label,
 .rtwh:not([hidden]) + #foodSection > .section-label, .rtwh:not([hidden]) + #foodSection > .section-title,
 .rtwh:not([hidden]) + #progressHome > .today-date,
-.rtwh:not([hidden]) + #runHome .run-home-top > .today-date { display: none; }
-.rtwh:not([hidden]) + #runHome .run-home-top { justify-content: flex-end; margin-bottom: 8px; }
+.rtwh:not([hidden]) + #runOff + #runHome .run-home-top > .today-date { display: none; }
+.rtwh:not([hidden]) + #runOff + #runHome .run-home-top { justify-content: flex-end; margin-bottom: 8px; }
 
 /* ── 8.34 PARTS 1 AND 2. Plan active exercise card, Today, floating tab bar.
    Locked palette only: cream, ultramarine, persimmon, ink, surface #FBF9F3,
@@ -3815,11 +3817,11 @@ a:not([class]), .howto-link { color: var(--primary-text); }
 .sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 /* Tab bar: floating ink bar, text labels, persimmon pill for the current tab. */
-.tabbar { left: 16px; right: 16px; bottom: calc(12px + env(safe-area-inset-bottom)); padding: 6px; background: var(--ink); border: 0; border-radius: 30px; grid-template-columns: repeat(4, 1fr) !important; gap: 4px; box-shadow: 0 8px 24px rgba(20,20,20,0.18); }
-body.running .tabbar { grid-template-columns: repeat(5, 1fr) !important; }
-body.running .tabbar-btn { font-size: 14px; }
+.tabbar { left: 16px; right: 16px; bottom: calc(12px + env(safe-area-inset-bottom)); padding: 6px; background: var(--ink); border: 0; border-radius: 30px; grid-template-columns: repeat(5, 1fr) !important; gap: 4px; box-shadow: 0 8px 24px rgba(20,20,20,0.18); }
+.tabbar-btn span { display: block; text-align: center; line-height: 1.1; white-space: normal; overflow-wrap: normal; }
+@media (max-width: 360px) { .tabbar { gap: 2px; padding: 5px; } .tabbar-btn { font-size: 13px !important; letter-spacing: 0; } }
 .tabbar-btn svg { display: none; }
-.tabbar-btn { min-height: 52px; border-radius: 24px; color: #D8D3C7; font-size: 15px; font-weight: 600; letter-spacing: 0.01em; }
+.tabbar-btn { min-height: 52px; border-radius: 24px; color: #D8D3C7; font-size: 14px; font-weight: 600; letter-spacing: 0.01em; padding: 0 2px; }
 .tabbar-btn.current { background: var(--persimmon); color: var(--ink); border-radius: 24px; }
 .tabbar-btn.current span { font-weight: 700; }
 .tabbar-btn:focus-visible { outline: 2px solid var(--cream); outline-offset: -4px; border-radius: 24px; }
@@ -3952,6 +3954,19 @@ body.pa-on #plan .lift-row:not(.pa-cur) { margin-bottom: 8px; }
 .ql-short-acts .quicklog-back { min-height: 44px; min-width: 44px; padding: 0 8px; }
 #quicklogSection.ql-short #qlRecentW, #quicklogSection.ql-short #qlSession, #quicklogSection.ql-short #qlOldBtn, #quicklogSection.ql-short #qlOld, #quicklogSection.ql-short #freeHome { display: none !important; }
 #quicklogSection.ql-short:not(.ql-others-open) #qlOthersLabel, #quicklogSection.ql-short:not(.ql-others-open) #qlOthers { display: none !important; }
+html { scroll-padding-bottom: 100px; }
+.run-off { display: none; padding: 8px 0 24px; }
+body:not(.running) #runOff { display: block; }
+body:not(.running) #tab-running > :not(#runOff):not(.rtwh) { display: none !important; }
+.run-off-t { color: var(--ink, #141414); margin: 0 0 8px; }
+.run-off-p { font-size: 16px; line-height: 1.45; margin: 0 0 18px; color: var(--muted, #55544D); }
+.tb-ql { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-height: 44px; margin-top: 10px; padding: 8px 16px; border: 2px solid var(--ink, #141414); border-radius: 999px; background: transparent; color: var(--ink, #141414); font: inherit; font-weight: 700; font-size: 16px; cursor: pointer; }
+.tb-ql small { font-weight: 400; font-size: 13px; color: var(--muted, #55544D); }
+.lift-toolbar { gap: 4px; }
+.lift-toolbar .tool-week { min-width: 0; padding: 0 6px; }
+.lift-toolbar .tool-rest { padding: 0 10px; margin-left: 0; }
+.tool-end { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; }
+.tool-ql { min-height: 44px; min-width: 44px; padding: 0 4px; font-size: 14px !important; border: 0; background: none; color: inherit; font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .dt-msg { font-size: 17px; line-height: 1.4; margin: 0 0 18px; color: var(--ink, #141414); }
 .pa-done { background: var(--s834-surface); border-radius: 24px; padding: 18px; font-size: 15px; color: var(--ink); }
 .pa-done .pa-name { margin-bottom: 6px; }
@@ -3995,8 +4010,9 @@ body.fin-open { overflow: hidden; }
      About live in More; goTab() lights More for each of them. -->
 <div class="tabbar" id="tabbar" role="navigation" aria-label="Main">
   <button class="tabbar-btn" data-tab="today" onclick="goTab('today')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4M6 7v10M18 7v10M21 10v4M6 12h12"/></svg><span>Today</span></button>
-  <button class="tabbar-btn" data-tab="training" onclick="goTab('training')"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg><span>Plan</span></button>
+  <button class="tabbar-btn" data-tab="training" onclick="goTab('training')"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg><span>Lift</span></button>
   <button class="tabbar-btn" data-tab="running" onclick="goTab('running')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="14" cy="4.5" r="1.8"/><path d="M8 21l3-6 3 2v5M6 12l3-4 4 1 3 3 3 1M11 15l-2-4"/></svg><span>Run</span></button>
+  <button class="tabbar-btn" data-tab="quicklog" onclick="openQuickLog()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Quick Log</span></button>
   <button class="tabbar-btn" data-tab="food" onclick="goTab('food')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M16 21V3c-2.5 1.5-3 4.5-3 8h3"/></svg><span>Food</span></button>
   <button class="tabbar-btn" data-tab="calendar" onclick="goTab('calendar')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M7 20v-7M12 20V6M17 20v-10"/></svg><span>Progress</span></button>
 </div>
@@ -4470,6 +4486,7 @@ body.fin-open { overflow: hidden; }
     <h1 class="tb-hello" id="tbHello"></h1>
     <div class="tb-week" id="tbWeek" hidden></div>
     <div class="tb-work" id="tbWork" hidden></div>
+    <button type="button" class="tb-ql" id="tbQl" onclick="openQuickLog()">Quick Log<small>Log a lift without a plan</small></button>
     <div class="tb-stats" id="tbStats" hidden></div>
     <div class="tb-links" id="tbMore"></div>
   </div>
@@ -4505,7 +4522,7 @@ body.fin-open { overflow: hidden; }
 <div class="rtwh" id="hero-training" data-max="96" data-min="40" hidden><p class="rtwh-word"></p><p class="rtwh-line"></p></div>
 
 <section id="plan">
-  <div class="section-label adv">Plan</div>
+  <div class="section-label adv">Lift</div>
   <h2 class="lift-hero adv">This is where you win.</h2>
   <div id="trainStyleBar" style="display:none"></div>
 
@@ -4515,7 +4532,7 @@ body.fin-open { overflow: hidden; }
     <button type="button" class="tool-arrow" onclick="stepTrainWeek(-1)" aria-label="Previous week">&#8249;</button>
     <span class="tool-week" id="toolWeek">Week 1</span>
     <button type="button" class="tool-arrow" onclick="stepTrainWeek(1)" aria-label="Next week">&#8250;</button>
-    <button type="button" class="tool-rest" id="toolRestBtn" aria-expanded="false" aria-controls="restPresets" onclick="toggleRestPresets()">Rest timer</button>
+    <span class="tool-end"><button type="button" class="tool-ql" id="toolQlBtn" onclick="openQuickLog()">Quick Log</button><button type="button" class="tool-rest" id="toolRestBtn" aria-expanded="false" aria-controls="restPresets" onclick="toggleRestPresets()">Rest timer</button></span>
     <!-- REST TIMER QUICK-START. A one-off timer that leaves every exercise's
          saved rest alone, and the only timer on a rest day. The card's rest
          chip covers 30s to 3 min but changes the saved rest, so this stays.
@@ -4793,6 +4810,12 @@ body.fin-open { overflow: hidden; }
 <div id="tab-running" class="tab-main" style="background:var(--bg)">
 <div class="rtwh" id="hero-running" data-max="168" data-min="56" hidden><p class="rtwh-word"></p><p class="rtwh-line"></p></div>
 
+<!-- 8.35b: Run is always in the bar. With running off, this is all it shows. -->
+<section id="runOff" class="run-off">
+  <h2 class="tb-day run-off-t">Running is off.</h2>
+  <p class="run-off-p">Turn it on to plan and log your runs next to your lifting.</p>
+  <button type="button" class="today-start" onclick="setRunning(true)">Turn on running</button>
+</section>
 <!-- RUN HOME. Today's run or a big Log a run, the week, weekly distance and
      the last five runs. The race plan and full schedule sit one tap down. -->
 <section id="runHome">
@@ -5456,7 +5479,7 @@ body.fin-open { overflow: hidden; }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.34</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.35b</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -7271,7 +7294,8 @@ body.fin-open { overflow: hidden; }
           + '<button type="button" class="today-start ql-ok" onclick="startQuickToday()"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>Use this workout</button>'
           + (_qlShort ? '<div class="ql-short-acts"><button type="button" class="quicklog-back" onclick="qlBack()">Back</button>'
               + '<button type="button" class="quicklog-back" aria-expanded="' + _qlOthersOpen + '" aria-controls="qlOthers" onclick="qlToggleOthers()">Different workout</button></div>'
-            : (active ? '<button type="button" class="quicklog-back" onclick="useFullPlan()">Use the full plan instead</button>' : ''));
+            : (active ? '<button type="button" class="quicklog-back" onclick="useFullPlan()">Use the full plan instead</button>' : '')
+              + '<div class="ql-short-acts"><button type="button" class="quicklog-back ql-back" onclick="qlBack()">Back</button></div>');
       }
     }
     var sec = document.getElementById('quicklogSection');
@@ -7286,7 +7310,7 @@ body.fin-open { overflow: hidden; }
         + (open ? sessionListHTML({ list: w.list, caps: w.caps, drops: w.drops })
           + (Object.keys(w.drops).length ? '<div class="session-note">Drop sets are a time saver.</div>' : (dropSetsOn() ? '' : '<div class="session-note">Drop sets: added after your first month.</div>'))
           + (day ? '<button type="button" class="today-start" onclick="startQuick(\'' + k.id + '\')">Start</button>'
-                 : '<div class="session-note">Every workout this week is logged. Start next week from Plan.</div>') : '')
+                 : '<div class="session-note">Every workout this week is logged. Start next week from Lift.</div>') : '')
         + '</div>';
     }).join('');
   }
@@ -7968,7 +7992,8 @@ body.fin-open { overflow: hidden; }
     document.querySelectorAll('[data-run-btn]').forEach(function(b) { b.classList.toggle('on', (b.dataset.runBtn === 'on') === runningEnabled); });
     //  The Run tab comes and goes with the switch, no reload.
     var onRun = document.getElementById('tab-running');
-    if (!runningEnabled && onRun && onRun.style.display === 'block' && typeof goTab === 'function') goTab('today');
+    //  8.35b: Run is always a tab; with running off it shows how to turn it on.
+    if (onRun && onRun.style.display === 'block' && typeof goTab === 'function') goTab('running');
     if (typeof renderToday === 'function' && document.getElementById('todayWorkout')) { try { renderToday(); } catch(e) {} }
   }
   function renderSessionPrefs() {
@@ -13928,7 +13953,7 @@ body.fin-open { overflow: hidden; }
     { id: 'run', scr: 'running', t: 'Your running plan lives here. Log each run when you finish it.', a: function() { var h = document.getElementById('runHome'); return h && h.firstElementChild; }, at: 'before' },
     { id: 'food', scr: 'food', t: 'Weigh in here. Add meals below and your totals show under them.', a: function() { return document.getElementById('foodWeighTop'); }, at: 'after' },
     { id: 'style', scr: 'settings', isNew: 1, t: 'Follow a plan or train your own way. Switch under Set your maxes.', a: function() { return document.getElementById('settingsOpenBtn'); }, at: 'after' },
-    { id: 'menu', scr: '*', isNew: 1, t: 'More lives here now: Week review and The Edge.', a: function() { return tipTabTop(); }, at: 'before' }
+    { id: 'menu', scr: '*', isNew: 1, t: 'Week review, The Edge and Settings live here.', a: function() { return tipTabTop(); }, at: 'before' }
   ];
   var TIP_IDS = TIP_DEFS.map(function(d) { return d.id; });
   var TIP_OLD = TIP_DEFS.filter(function(d) { return !d.isNew; }).map(function(d) { return d.id; });
@@ -14089,7 +14114,7 @@ body.fin-open { overflow: hidden; }
       var days = activeSplit().week.filter(function(d) { return d !== 'rest'; }), nx = findNextUnloggedDay(), p2 = [];
       if (style === 'plan') p2.push(heroPlanWeek());
       if (days.length) p2.push(nx && days.indexOf(nx) !== -1 ? 'Session ' + (days.indexOf(nx) + 1) + ' of ' + days.length + '.' : !nx ? 'All ' + days.length + ' sessions done.' : '');
-      return { w: 'Plan', l: p2.filter(Boolean).join(' ') };
+      return { w: 'Lift', l: p2.filter(Boolean).join(' ') };
     }
     if (t === 'quicklog') return { w: 'Quick Log', l: 'Log anything. Last numbers fill in.' };
     if (t === 'calendar') return { w: 'Progress', l: 'Your lifts by date.' };
@@ -17206,7 +17231,7 @@ body.fin-open { overflow: hidden; }
     var html = '';
     if (_progView === 'lifts') {
       var ids = loggedLiftIds();
-      if (!ids.length) html = progEmpty('No lifts logged yet. Your first set shows up here.', 'Go to Plan', "goTab('training')");
+      if (!ids.length) html = progEmpty('No lifts logged yet. Your first set shows up here.', 'Go to Lift', "goTab('training')");
       else {
         if (ids.indexOf(_progEx) === -1) _progEx = ids[0];
         var ex = EX_BY_ID[_progEx], l = liftEntries(_progEx), name = activeVariant(ex);
@@ -18190,14 +18215,14 @@ function buildNavMenu() {
   //  on Today and Settings behind the header gear, so neither is listed.
   //  About opens the About page; the rest of Info is in the More tab.
   //  8.27: Quick Log sits under Plan; About is part of The Edge.
+  //  8.35b: places live in the bottom bar. The menu keeps the rare items,
+  //  plus Quick Log as one of its four entry points.
   var items = [
-    { id: 'today', label: 'Today' },
-    { id: 'training', label: 'Plan' },
     { id: 'quicklog', label: 'Quick Log' },
-    { id: 'food', label: 'Food' }
-  ].concat(runningEnabled ? [{ id: 'running', label: 'Run' }] : [])
-   //  8.30: Week review and The Edge sit one tap down, on the More page.
-   .concat([{ id: 'calendar', label: 'Progress' }, { id: 'more', label: 'More' }]);
+    { id: 'info', sec: 'overview', label: 'Week review' },
+    { id: 'info', sec: 'edge', label: 'The Edge' },
+    { id: 'settings', action: 'settings', label: 'Settings' }
+  ];
   //  No header row here — the trigger pill itself (the wordmark you just
   //  tapped) already says what this is; a repeated "Run the Weights" label
   //  inside the panel was redundant and cost every item extra scroll room.
@@ -18207,7 +18232,7 @@ function buildNavMenu() {
   //  current-section highlighting below.
   el.innerHTML = items.map(function(it) {
     return '<button class="navmenu-item' + (it.primary ? ' primary' : '') + '" role="menuitem"'
-      + ' data-tab="' + it.id + '"' + (it.sec ? ' data-sec="' + it.sec + '"' : '') + '>' + it.label + '<span class="navmenu-tick">&#9679;</span></button>';
+      + (it.action ? ' data-action="' + it.action + '"' : ' data-tab="' + it.id + '"') + (it.sec ? ' data-sec="' + it.sec + '"' : '') + '>' + it.label + '<span class="navmenu-tick">&#9679;</span></button>';
   }).join('');
   document.body.appendChild(el);
   el.querySelectorAll('.navmenu-item').forEach(function(b) {
@@ -18216,6 +18241,7 @@ function buildNavMenu() {
       closeNavMenu();
       if (b.dataset.action === 'settings') openSettingsModal();
       else if (b.dataset.sec) { goTab('info'); goSec(b.dataset.sec); }
+      else if (b.dataset.tab === 'quicklog') openQuickLog();
       else goTab(b.dataset.tab);
     });
     //  Same letter-roll as the primary tabs, driven the same way: a .rolling
@@ -18387,7 +18413,7 @@ var TAB_ALIASES = { workout: 'training', plan: 'training', progress: 'calendar',
 //  The bar has four buttons. More lights for More and the pages listed in
 //  it. Quick Log and Progress are not under any button, so none lights.
 function tabBarOwner(t) {
-  if (t === 'quicklog') return (typeof trainStyle === 'object' && trainStyle.style === 'free') ? 'training' : null;
+  if (t === 'quicklog') return (typeof trainStyle === 'object' && trainStyle.style === 'free') ? 'training' : (typeof FOOD_ENABLED !== 'undefined' && !FOOD_ENABLED ? 'quicklog' : null);
   return (t === 'today' || t === 'training' || t === 'food' || t === 'running' || t === 'calendar') ? t : null;
 }
 function goTab(t) {
@@ -18408,7 +18434,6 @@ function goTab(t) {
   }
   if (MAIN_TABS.indexOf(t) === -1) t = 'today';
   //  Run is hidden unless switched on in Settings.
-  if (t === 'running' && !runningEnabled) t = 'today';
   var owner = tabBarOwner(t);
   document.querySelectorAll('.tabbar-btn[data-tab]').forEach(function(b) {
     var on = b.dataset.tab === owner;
@@ -18917,7 +18942,7 @@ function paLog() {
   var r = PA.r, w = PA.wLb;
   if (!(r > 0)) { PA.msg = 'Enter how many you did.'; renderPlanActive(); return; }
   if (!(w > 0) && !weightOptional(ex)) { PA.msg = 'Enter the weight you used.'; renderPlanActive(); return; }
-  if (!wEl || !rEl) { PA.msg = 'This lift is not on the Plan screen right now.'; renderPlanActive(); return; }
+  if (!wEl || !rEl) { PA.msg = 'This lift is not on the Lift screen right now.'; renderPlanActive(); return; }
   wEl.value = w > 0 ? w : ''; wEl.dataset.dirty = 1; rEl.value = r;
   clearTimeout(_autoSaveT[ex.id]);
   autoSaveExercise(ex.id, true);

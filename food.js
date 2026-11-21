@@ -718,22 +718,23 @@ var menuHtml = ctx.buildNavMenu().innerHTML;
 //  The Edge are listed there, and Progress too.
 //  8.27: About is part of The Edge, so it has no row of its own.
 //  8.30: Week review and The Edge moved one tap down, behind a More row.
-['Today', 'Plan', 'Food', 'Quick Log', 'Progress', 'More'].forEach(function (label) {
+//  8.35b: places live in the bottom bar. The menu keeps Quick Log and the rare items.
+['Quick Log', 'Week review', 'The Edge', 'Settings'].forEach(function (label) {
   ok(label + ' is in the logo menu', menuHtml.indexOf('>' + label + '<') > -1);
 });
-eq('logo menu order (running off)', (menuHtml.match(/data-tab="([a-z]+)"/g) || []).map(function (m) { return m.slice(10, -1); }).join(','), 'today,training,quicklog,food,calendar,more');
-// Settings sits behind the gear, so it is not listed.
-['Settings', 'About and more', 'About', 'Week review', 'The Edge'].forEach(function (label) {
+eq('logo menu order', (menuHtml.match(/data-(?:sec|action)="([a-z]+)"|data-tab="(quicklog)"/g) || []).map(function (m) { return m.split('"')[1]; }).join(','), 'quicklog,overview,edge,settings');
+['Today', 'Lift', 'Plan', 'Food', 'Progress', 'More', 'About and more', 'About'].forEach(function (label) {
   eq(label + ' is not in the logo menu', menuHtml.indexOf('>' + label + '<') > -1, false);
 });
 eq('Run stays out of the menu while running is off', menuHtml.indexOf('>Run<') > -1, false);
-['today', 'training', 'food', 'calendar'].forEach(function (t) {
+['today', 'training', 'running', 'quicklog', 'food', 'calendar'].forEach(function (t) {
   ok('bottom bar has ' + t, html.indexOf('class="tabbar-btn" data-tab="' + t + '"') > -1);
 });
-eq('bottom bar markup has four tabs plus Run', (html.match(/class="tabbar-btn"/g) || []).length, 5);
+eq('bottom bar markup has six buttons, Food and Quick Log share a slot', (html.match(/class="tabbar-btn"/g) || []).length, 6);
 ok('Run sits between Plan and Food', /data-tab="training"[\s\S]*?data-tab="running"[\s\S]*?data-tab="food"/.test(html));
-ok('Run is hidden unless running is on', html.indexOf('body:not(.running) .tabbar-btn[data-tab="running"] { display: none; }') > -1);
-ok('the Workout tab is labelled Plan', /data-tab="training"[^\n]*<span>Plan<\/span>/.test(html));
+ok('Run is always in the bar', html.indexOf('body:not(.running) .tabbar-btn[data-tab="running"] { display: none; }') === -1);
+ok('Quick Log takes the Food slot while Food is locked', html.indexOf('html.food-off .tabbar-btn[data-tab="food"], html:not(.food-off) .tabbar-btn[data-tab="quicklog"] { display: none; }') > -1);
+ok('the Workout tab is labelled Lift', /data-tab="training"[^\n]*<span>Lift<\/span>/.test(html));
 // Settings sits behind the header gear, which is in the nav on every tab.
 ok('the header gear opens Settings', /<nav>[\s\S]*?id="navGear" aria-label="Settings" onclick="openSettingsModal\(\)"[\s\S]*?<\/nav>/.test(html));
 // More is four rows, in order. Progress moved to Today.
@@ -771,7 +772,8 @@ eq('lands on tab-quicklog', ctx.document.getElementById('tab-quicklog').style.di
 });
 //  8.19: Progress and Quick Log are not under any bar button, so none lights.
 //  8.25: Progress lights its own tab; info, Quick Log and More light none.
-eq('Progress lights Progress; info, Quick Log and More light none', ['calendar', 'info', 'quicklog', 'more'].map(function (t) { return String(ctx.tabBarOwner(t)); }).join(), 'calendar,null,null,null');
+//  8.35b: while Food is locked Quick Log is a tab and lights itself.
+eq('Progress lights Progress; Quick Log lights Quick Log; info and More light none', ['calendar', 'info', 'quicklog', 'more'].map(function (t) { return String(ctx.tabBarOwner(t)); }).join(), 'calendar,null,quicklog,null');
 // The dropdown's "current tab" tick now maps info/quicklog onto More —
 // verified as source logic above (dynamically-created menu nodes aren't
 // discoverable via this stub's getElementById, so this can't be driven

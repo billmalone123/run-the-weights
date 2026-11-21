@@ -20,11 +20,11 @@ with sync_playwright() as p:
     # ---------- Tab bar ----------
     go(pg,'today')
     tb=pg.evaluate("[...document.querySelectorAll('#tabbar .tabbar-btn')].filter(b=>b.offsetParent).map(b=>b.innerText.trim())")
-    check('tab bar: Today, Plan, Run, Food, Progress for a runner', tb==['Today','Plan','Run','Food','Progress'], tb)
+    check('tab bar: Today, Lift, Run, Quick Log, Progress while Food is locked', [t.replace('\n',' ') for t in tb]==['Today','Lift','Run','Quick Log','Progress'], tb)
     bar=cs(pg,'#tabbar'); cur=cs(pg,'#tabbar .tabbar-btn.current')
     check('tab bar floats on ink with a rounded edge', bar['bg']==INK and float(bar['br'][:-2])>=24 and pg.evaluate("innerHeight-document.getElementById('tabbar').getBoundingClientRect().bottom")>=10, bar)
     check('current tab is a persimmon pill with ink text', cur['bg']==PERS and cur['fg']==INK and cur['h']>=44, cur)
-    check('Run stays reachable from the logo menu', pg.evaluate("openNavMenu();const r=[...document.querySelectorAll('#navMenu [data-tab]')].some(e=>e.dataset.tab==='running');closeNavMenu();r"))
+    check('Run is always in the bar (8.35b)', pg.evaluate("setRunning(false);const r=!!document.querySelector('#tabbar [data-tab=running]').offsetParent;setRunning(true);r"))
     # ---------- Today ----------
     hl=pg.evaluate("document.getElementById('tbHello').textContent"); h=cs(pg,'#tbHello')
     check('greeting reads Ready to lift, Billy.', hl=='Ready to lift, Billy.', hl)

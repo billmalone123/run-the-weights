@@ -90,12 +90,13 @@ with sync_playwright() as p:
     ev("closeExSheet()")
     # Part B: menu
     ev("goTab('today')"); pg.wait_for_timeout(200); pg.locator('#navLogo').click(); pg.wait_for_timeout(400)
-    menu=ev("[...document.querySelectorAll('#navMenu .navmenu-item')].map(b=>b.dataset.sec||b.dataset.tab)")
-    check('menu order: Quick Log under Plan, no About row', menu==['today','training','quicklog','food','calendar','more'], menu)
+    menu=ev("[...document.querySelectorAll('#navMenu .navmenu-item')].map(b=>b.dataset.sec||b.dataset.tab||b.dataset.action)")
+    # 8.35b: places moved to the bottom bar; the menu keeps the rare items and Quick Log.
+    check('menu: Quick Log, Week review, The Edge, Settings, no About row', menu==['quicklog','overview','edge','settings'], menu)
     pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
     ev("setRunning(true)"); ev("_navMenu&&_navMenu.remove();_navMenu=null"); pg.locator('#navLogo').click(); pg.wait_for_timeout(400)
-    menu2=ev("[...document.querySelectorAll('#navMenu .navmenu-item')].map(b=>b.dataset.sec||b.dataset.tab)")
-    check('with running on every other item keeps its order', menu2==['today','training','quicklog','food','running','calendar','more'], menu2)
+    menu2=ev("[...document.querySelectorAll('#navMenu .navmenu-item')].map(b=>b.dataset.sec||b.dataset.tab||b.dataset.action)")
+    check('with running on the menu is the same', menu2==['quicklog','overview','edge','settings'], menu2)
     pg.keyboard.press('Escape'); ev("setRunning(false)")
     # About links
     for how in ["goTab('info');goSec('about')", "goTab('about')", "onbFlowExploreAbout()"]:

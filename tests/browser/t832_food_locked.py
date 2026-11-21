@@ -49,9 +49,11 @@ with sync_playwright() as p:
     rows=pg.evaluate("[...document.querySelectorAll('#progView .bw-row')].map(r=>r.innerText.replace(/\\s+/g,' '))")
     check('weights saved from Food still show on Body', any('Nov 19 183.2 lb' in r for r in rows) and any('Nov 12 184.6 lb' in r for r in rows), rows[:3])
     # tab bar and menu keep Food
-    check('Food stays in the bottom tab bar', pg.evaluate("!!document.querySelector('#tabbar [data-tab=food]').offsetParent"))
+    # 8.35b: while Food is locked, Quick Log holds its slot in the bar.
+    check('Quick Log holds the Food slot while Food is locked', pg.evaluate("!document.querySelector('#tabbar [data-tab=food]').offsetParent&&!!document.querySelector('#tabbar [data-tab=quicklog]').offsetParent"))
     pg.evaluate("openNavMenu()"); pg.wait_for_timeout(300)
-    check('Food stays in the logo menu', 'food' in pg.evaluate("[...document.querySelectorAll('#navMenu [data-tab]')].map(e=>e.dataset.tab)"))
+    # 8.35b: the menu keeps rare items only; locked Food has no entry point until the flag is on.
+    check('Food is not in the logo menu while locked', 'food' not in pg.evaluate("[...document.querySelectorAll('#navMenu [data-tab]')].map(e=>e.dataset.tab)"))
     pg.evaluate("closeNavMenu()")
     # Today and onboarding
     go(pg,'today')

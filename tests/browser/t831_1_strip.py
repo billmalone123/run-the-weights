@@ -31,8 +31,8 @@ with sync_playwright() as p:
     m=pg.evaluate("[...document.querySelectorAll('#tab-more .more-row-title')].filter(e=>e.offsetParent).map(e=>e.innerText.trim())")
     check('More lists only Week review and The Edge', m==['Week review','The Edge'], m)
     pg.evaluate("openNavMenu()"); pg.wait_for_timeout(300)
-    mi=pg.evaluate("[...document.querySelectorAll('#navMenu [data-tab],#navMenu [data-sec]')].map(e=>e.dataset.tab||e.dataset.sec)")
-    check('logo menu unchanged', mi==['today','training','quicklog','food','running','calendar','more'], mi)
+    mi=pg.evaluate("[...document.querySelectorAll('#navMenu .navmenu-item')].map(e=>e.dataset.sec||e.dataset.tab||e.dataset.action)")
+    check('logo menu is the 8.35b set', mi==['quicklog','overview','edge','settings'], mi)
     pg.evaluate("closeNavMenu&&closeNavMenu()")
     for sec in ('home','edge','overview'):
         pg.evaluate("goTab('info');goSec('%s')"%sec); pg.wait_for_timeout(200)
