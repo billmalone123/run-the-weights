@@ -20,7 +20,7 @@ with sync_playwright() as p:
     check('toggle buttons are 44 px tall', all(h>=44 and w>=44 for w,h in tg), tg)
     # what Short keeps and drops, without changing anything
     # before the workout: Short, then Normal, nothing logged yet
-    pg.click('#planActive .len-tog button:has-text("Short")'); pg.wait_for_timeout(400)
+    pg.evaluate("setSessionLength('%s','short')"%D); pg.wait_for_timeout(400)
     shortList=ids(pg,D)
     check('Short before the workout', pg.evaluate("sessionIsShort('%s')"%D) and pressed(pg,'#planActive')=='Normal:false,Short:true')
     pg.click('#planActive .len-tog button:has-text("Normal")'); pg.wait_for_timeout(400)
@@ -32,7 +32,7 @@ with sync_playwright() as p:
     before=pg.evaluate(LOGS); storedBefore=pg.evaluate(STORE)
     check('three sets are logged', pg.evaluate("[slotLogged(EX_BY_ID['%s'],'s1'),slotLogged(EX_BY_ID['%s'],'s2'),slotLogged(EX_BY_ID['%s'],'s1')]"%(kept[0],kept[0],dropped[-1]))==[True,True,True])
     # Normal to Short during the workout
-    pg.click('#planActive .len-tog button:has-text("Short")'); pg.wait_for_timeout(500)
+    pg.evaluate("setSessionLength('%s','short')"%D); pg.wait_for_timeout(500)
     # 8.35b: a lift Short drops stays on the day, marked added, once a set is logged on it.
     check('Short is on and the card shows the short list plus the logged lift', pg.evaluate("sessionIsShort('%s')"%D) and ids(pg,D)==shortList+[dropped[-1]] and pressed(pg,'#planActive')=='Normal:false,Short:true', [ids(pg,D),shortList])
     check('switching to Short changes no logged data', pg.evaluate(LOGS)==before)
@@ -52,13 +52,13 @@ with sync_playwright() as p:
     # and back again, from Today, before going on
     go(pg,'today')
     check('Today shows the same choice', pressed(pg,'#tbWork')=='Normal:true,Short:false', pressed(pg,'#tbWork'))
-    pg.click('#tbWork .len-tog button:has-text("Short")'); pg.wait_for_timeout(400)
+    pg.evaluate("setSessionLength('%s','short')"%D); pg.wait_for_timeout(400)
     check('Short from Today', pg.evaluate("sessionIsShort('%s')"%D) and pressed(pg,'#tbWork')=='Normal:false,Short:true')
     pg.click('#tbWork .len-tog button:has-text("Normal")'); pg.wait_for_timeout(400)
     check('Normal from Today', not pg.evaluate("sessionIsShort('%s')"%D))
     check('Today switches change no logged data', pg.evaluate(LOGS)==mid)
     # the choice and the data survive a reload
-    pg.click('#tbWork .len-tog button:has-text("Short")'); pg.wait_for_timeout(300)
+    pg.evaluate("setSessionLength('%s','short')"%D); pg.wait_for_timeout(300)
     pg.reload(); pg.wait_for_timeout(1500); pg.evaluate("document.querySelectorAll('.settings-modal-overlay').forEach(m=>m.style.display='none')")
     check('after a reload Short is kept and the data is unchanged', pg.evaluate("sessionIsShort('%s')"%D) and pg.evaluate(LOGS)==mid and pg.evaluate(STORE)==storedMid)
     # the old path that failed: Quick Log now aims at this day and offers the full plan
@@ -69,5 +69,8 @@ with sync_playwright() as p:
     check('Use the full plan instead brings Normal back', not pg.evaluate("sessionIsShort('%s')"%D) and pg.evaluate(LOGS)==mid)
     an=pg.evaluate("lenSay.textContent")
     check('the switch is announced without dashes or exclamation marks', not any(c in an for c in '-–—!'), an)
+    # 8.35b: tapping Short opens the time picker instead of trimming in place.
+    go(pg,'today'); pg.click('#tbWork .len-tog button:has-text("Short")'); pg.wait_for_timeout(400)
+    check('8.35b: Short opens the time picker', pg.evaluate("document.body.dataset.tab")=='quicklog' and pg.evaluate("quicklogSection.classList.contains('ql-short')"))
     check('no page errors', not errs, errs); ctx.close()
 sys.exit(1 if done() else 0)
