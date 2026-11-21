@@ -4003,6 +4003,32 @@ body.fin-open { overflow: hidden; }
 .fin-share:focus-visible, .fin-done:focus-visible { outline: 3px solid var(--ultramarine); outline-offset: 3px; }
 .fin-msg { font-size: 15px; color: var(--s834-muted); margin: 10px 0 0; text-align: center; }
 .fin-msg:empty { display: none; }
+/* 8.35c: first open story. Light theme, locked palette. */
+.intro-story { position: fixed; inset: 0; z-index: 600; display: none; flex-direction: column; background: #F2EEE4; color: #141414; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; }
+.intro-skip { align-self: flex-end; flex: none; min-width: 64px; min-height: 44px; margin: calc(12px + env(safe-area-inset-top)) 16px 8px 0; padding: 0 20px; border: 0; border-radius: 999px; background: #141414; color: #F2EEE4; font: 700 16px 'DM Sans', sans-serif; cursor: pointer; }
+.intro-photo { margin: 0 16px 12px; border-radius: 32px; overflow: hidden; flex: none; }
+.intro-photo img { display: block; width: 100%; height: 20vh; max-height: 220px; object-fit: cover; }
+.intro-top { flex: none; margin: 0 16px; background: #1C2FB5; color: #F2EEE4; padding: 24px 24px 26px; border-radius: 32px; }
+.intro-mark { display: block; width: 16px; height: 16px; background: #F2552C; margin: 0 0 14px; }
+.intro-h { margin: 0; font-family: 'RTW Hero', Antonio, sans-serif; font-weight: 700; font-size: clamp(40px, 13vw, 64px); line-height: 0.95; text-transform: uppercase; outline: none; }
+.intro-body { flex: 1 0 auto; display: flex; flex-direction: column; width: 100%; max-width: 560px; margin: 0 auto; padding: 24px 24px 12px; box-sizing: border-box; }
+.intro-p { margin: 0 0 24px; font: 400 18px/1.5 'DM Sans', sans-serif; color: #141414; }
+.intro-foot { position: sticky; bottom: 0; margin-top: auto; padding: 12px 0 calc(8px + env(safe-area-inset-bottom)); background: #F2EEE4; }
+.intro-dots { display: flex; gap: 8px; margin: 0 0 16px; }
+.intro-dots i { width: 10px; height: 10px; border-radius: 5px; border: 1px solid #55544D; box-sizing: border-box; }
+.intro-dots i.on { width: 26px; background: #1C2FB5; border-color: #1C2FB5; }
+.intro-next { width: 100%; min-height: 56px; border: 0; border-radius: 999px; background: #1C2FB5; color: #F2EEE4; font: 700 22px 'RTW Hero', Antonio, sans-serif; cursor: pointer; }
+.intro-privacy { display: block; min-height: 44px; line-height: 44px; margin-top: 8px; text-align: center; color: #141414; font: 400 14px 'DM Sans', sans-serif; text-decoration: underline; text-underline-offset: 3px; }
+.intro-privacy[hidden], .intro-photo[hidden] { display: none; }
+.intro-skip:focus-visible, .intro-next:focus-visible, .intro-privacy:focus-visible { outline: 3px solid #1C2FB5; outline-offset: 3px; }
+@media (max-width: 360px) { .intro-p { font-size: 16px; } .intro-body { padding-top: 20px; } }
+/* Short screens: the story text matters more than the photo, so the photo steps aside. */
+@media (max-height: 700px) { .intro-photo { display: none !important; } }
+.why-section { padding: 24px 20px 48px; max-width: 640px; }
+.why-h { margin: 28px 0 8px; font-family: 'RTW Hero', Antonio, sans-serif; font-weight: 700; font-size: 32px; line-height: 1; text-transform: uppercase; color: var(--text); }
+.why-p { margin: 0; font-size: 17px; line-height: 1.55; color: var(--text); }
+.why-link { display: block; min-height: 44px; margin: 8px 0 32px; padding: 0; border: 0; background: none; color: var(--text); font: 600 16px var(--font-body); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.intro-replay { min-height: 44px; }
 </style>
 </head>
 <body style="background:var(--bg)">
@@ -4223,6 +4249,21 @@ body.fin-open { overflow: hidden; }
      install, gated on monk_onboarded_v1. See startOnbFlow() for who gets
      shown this versus silently flagged past it. Hidden by default; shown
      by JS once the rest of the app has finished initializing. -->
+<!-- 8.35c: first open story, before setup, fresh installs only. Words live in INTRO_STORY. -->
+<div class="intro-story" id="introStory" role="dialog" aria-modal="true" aria-labelledby="introH">
+  <button type="button" class="intro-skip" onclick="introDone()">Skip</button>
+  <div class="intro-photo" id="introPhoto" hidden></div>
+  <div class="intro-top"><span class="intro-mark" aria-hidden="true"></span><h1 class="intro-h" id="introH" tabindex="-1"></h1></div>
+  <div class="intro-body">
+    <p class="intro-p" id="introP"></p>
+    <div class="intro-foot">
+      <div class="intro-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+      <p class="sr-only" id="introStep"></p>
+      <button type="button" class="intro-next" id="introNext" onclick="introNext()">Next</button>
+      <a class="intro-privacy" id="introPrivacy" href="privacy.html" target="_blank" rel="noopener" hidden>Read the privacy page</a>
+    </div>
+  </div>
+</div>
 <div class="onb-flow" id="onbFlow" style="display:none;">
   <div class="onb-flow-inner">
     <div class="onb-flow-progress" id="onbFlowProgress" role="progressbar" aria-label="Setup progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="33"><div class="onb-flow-progress-fill" id="onbFlowProgressFill"></div></div>
@@ -4361,6 +4402,7 @@ body.fin-open { overflow: hidden; }
   <p class="about-note">This is not medical advice. If something hurts, stop and check with a doctor.</p>
   <p class="about-follow">Follow along on Instagram: <a class="about-ig" href="https://www.instagram.com/run_the_weights" target="_blank" rel="noopener noreferrer">@run_the_weights</a></p>
   </div>
+  <button type="button" class="why-link" onclick="goSec('why')">Why I built this</button>
   <div class="section-label">Why it matters</div>
   <h2 class="section-title" style="margin-bottom:24px;">STRONG<br>FEELS GOOD</h2>
   <p style="font-size:var(--fs-3);color:var(--muted);max-width:600px;line-height:1.8;margin-bottom:72px;">
@@ -4427,6 +4469,10 @@ body.fin-open { overflow: hidden; }
     </div>
   </div>
 </section></div>
+  <div id="sec-why" class="sub-sec"><section id="why" class="why-section">
+    <h2 class="section-title">WHY I BUILT THIS</h2>
+    <div id="whyBody"></div>
+  </section></div>
   <div id="sec-overview" class="sub-sec"><section id="overview">
   <div class="section-label">This Week</div>
   <h2 class="section-title">ONE WEEK.<br>BOTH PLANS.</h2>
@@ -5478,8 +5524,9 @@ body.fin-open { overflow: hidden; }
       <span class="liftdays-desc" id="foodSettingsMsg"></span>
     </div>
 
+    <button class="settings-open-btn intro-replay" id="replayIntroBtn" onclick="replayIntro()">Replay intro</button>
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.35b</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.35c</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -11887,7 +11934,8 @@ body.fin-open { overflow: hidden; }
         markOnboardedFlowDone();
         return;
       }
-      showOnbFlow();
+      //  8.35c: the intro story comes first, once. Skip or the last button goes on to setup.
+      if (introSeen()) showOnbFlow(); else showIntro(showOnbFlow);
     });
   }
   function showOnbFlow() {
@@ -12143,6 +12191,102 @@ body.fin-open { overflow: hidden; }
   function setAboutSeen(on) {
     try { if (on) localStorage.setItem(ABOUT_SEEN_KEY, '1'); else localStorage.removeItem(ABOUT_SEEN_KEY); } catch(e) {}
   }
+  //     8.35c INTRO STORY. Three screens before setup on a fresh install.
+  //  One flag, in backups as a boolean. Skip counts as seen.
+  const INTRO_SEEN_KEY = 'monk_intro_seen_v1';
+  var INTRO_STORY = [
+    { h: "HI, I'M BILLY.", b: 'Next', p: 'I have trained most of my life. I played sports in college and went through the ringer, with injuries, comebacks and long seasons. Then school ended, and the team, the coach and the schedule went away.' },
+    { h: 'LIFE GETS BUSY.', b: 'Next', p: 'Work, commutes, family, long days. No two weeks look the same. Almost everyone I know still wants to stay strong and healthy so they can keep doing what they love, like golf, surfing, running and family sports. The hard part is fitting it into a week that keeps changing.' },
+    { h: 'A PLAN THAT BENDS WITH YOUR WEEK.', b: 'Set up my week', p: 'Run the Weights is what I built for myself first. A full plan on a normal day. A short version when you only have 20 minutes. Running when you want it. It adjusts to what your day looks like, so you can stay consistent. Your training data stays on your phone.' }
+  ];
+  var _introStep = 0, _introThen = null, _introImgs = [], _introBack = null;
+  function introSeen() {
+    try { return localStorage.getItem(INTRO_SEEN_KEY) === '1'; } catch(e) { return false; }
+  }
+  function setIntroSeen(on) {
+    try { if (on) localStorage.setItem(INTRO_SEEN_KEY, '1'); else localStorage.removeItem(INTRO_SEEN_KEY); } catch(e) {}
+  }
+  //  Optional photos. A missing file leaves the typographic layout, never an empty frame.
+  function loadIntroPhotos() {
+    [1, 2, 3].forEach(function(n) {
+      if (_introImgs[n - 1] !== undefined) return;
+      _introImgs[n - 1] = null;
+      var im = new Image();
+      im.alt = ''; im.decoding = 'async';
+      im.onload = function() { _introImgs[n - 1] = im; if (_introStep === n - 1) renderIntro(); };
+      im.src = 'references/photo_billy_' + n + '.jpg';
+    });
+  }
+  function renderIntro() {
+    var d = INTRO_STORY[_introStep], last = _introStep === INTRO_STORY.length - 1;
+    document.getElementById('introH').textContent = d.h;
+    document.getElementById('introP').textContent = d.p;
+    document.getElementById('introNext').textContent = d.b;
+    document.getElementById('introPrivacy').hidden = !last;
+    document.getElementById('introStep').textContent = 'Screen ' + (_introStep + 1) + ' of ' + INTRO_STORY.length;
+    document.querySelectorAll('#introStory .intro-dots i').forEach(function(i, k) { i.className = k === _introStep ? 'on' : ''; });
+    var ph = document.getElementById('introPhoto'), im = _introImgs[_introStep];
+    ph.innerHTML = '';
+    if (im) ph.appendChild(im);
+    ph.hidden = !im;
+  }
+  function showIntro(then) {
+    var el = document.getElementById('introStory');
+    if (!el) { if (then) then(); return; }
+    _introThen = then || null; _introStep = 0;
+    _introBack = document.activeElement;
+    loadIntroPhotos(); renderIntro();
+    el.style.display = 'flex'; el.scrollTop = 0;
+    document.getElementById('introH').focus();
+  }
+  function introNext() {
+    if (_introStep < INTRO_STORY.length - 1) {
+      _introStep++; renderIntro();
+      document.getElementById('introStory').scrollTop = 0;
+      document.getElementById('introH').focus();
+    } else introDone();
+  }
+  function introDone() {
+    setIntroSeen(true);
+    var el = document.getElementById('introStory');
+    if (el) el.style.display = 'none';
+    var t = _introThen; _introThen = null;
+    if (t) t(); else if (_introBack && _introBack.focus) _introBack.focus();
+  }
+  function replayIntro() {
+    closeSettingsModal();
+    showIntro(null);
+  }
+  function renderWhy() {
+    var host = document.getElementById('whyBody');
+    if (!host || host.childNodes.length) return;
+    INTRO_STORY.forEach(function(d) {
+      var h = document.createElement('h3'); h.className = 'why-h'; h.textContent = d.h;
+      var p = document.createElement('p'); p.className = 'why-p'; p.textContent = d.p;
+      host.appendChild(h); host.appendChild(p);
+    });
+  }
+  (function() {
+    var el = document.getElementById('introStory'), x0 = null, y0 = 0;
+    if (!el) return;
+    //  Swipe left for Next, right to go back a screen. Buttons do the same.
+    el.addEventListener('touchstart', function(e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    el.addEventListener('touchend', function(e) {
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
+      if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return;
+      if (dx < 0) introNext();
+      else if (_introStep > 0) { _introStep--; renderIntro(); }
+    });
+    el.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') { introDone(); return; }
+      if (e.key !== 'Tab') return;
+      var f = [].filter.call(el.querySelectorAll('button, a[href]'), function(b) { return !b.hidden && b.offsetParent; });
+      if (!f.length) return;
+      if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+      else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+    });
+  })();
   function maybeShowAboutIntro() {
     if (aboutSeen()) return;
     setAboutSeen(true);
@@ -12525,7 +12669,7 @@ body.fin-open { overflow: hidden; }
       rest: restPrefs, swapsToday: swapsToday,
       runPrefs: { units: runUnits, lastType: runLastType },
       weightUnit: wUnit(), userName: userName,
-      aboutSeen: aboutSeen(), dayMode: currentDayMode(), dayAdded: dayAdded
+      aboutSeen: aboutSeen(), introSeen: introSeen(), dayMode: currentDayMode(), dayAdded: dayAdded
     };
     var blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
     var a = document.createElement('a');
@@ -12590,6 +12734,7 @@ body.fin-open { overflow: hidden; }
         }
         //  Only a real boolean is accepted. Absent on older backups.
         if (typeof data.aboutSeen === 'boolean') setAboutSeen(data.aboutSeen);
+        if (typeof data.introSeen === 'boolean') setIntroSeen(data.introSeen);
         if (data.runLogs && typeof data.runLogs === 'object') {
           runLogs = data.runLogs;
           persistRunLogs();
@@ -17560,7 +17705,7 @@ body.fin-open { overflow: hidden; }
 <script>
 //  8.31: Progression left the strip. Its cards already live on the Progress
 //  tab (moved into #progAll at load), so the old route lands there.
-var INFO_SECS = ['home','about','edge','overview'];
+var INFO_SECS = ['home','about','edge','why','overview'];
 
 //     The valid days are the ACTIVE split's own, not the six this list was
 //     hardcoded to before the split templates existed. A user on a 4-day split
@@ -18505,6 +18650,7 @@ function goSec(id) {
   //  8.27: About lives at the top of The Edge. Old routes land there.
   if (id === 'about') id = 'edge';
   if (id === 'progression') { goTab('calendar'); return; }
+  if (id === 'why') renderWhy();
   //  About is one screen: the long footer stays off it.
   var info = document.getElementById('tab-info');
   if (info) info.classList.toggle('on-about', id === 'about');
