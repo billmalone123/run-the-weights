@@ -32,7 +32,7 @@ def visit(pg, scr, shown, infos):
         info=ev(COVER)
         if info: break
         if scr=='settings': break
-        ev("scrollTo({top:%d,behavior:'instant'})"%y); pg.wait_for_timeout(420)  # 8.35c: instant, so the tip is not placed mid scroll
+        ev("scrollTo({top:%d,behavior:'instant'})"%y); pg.wait_for_timeout(420)  # instant, so the tip is not placed mid scroll
     info=ev(COVER)
     if info:
         shown.append(info['id']); infos.append(info)
