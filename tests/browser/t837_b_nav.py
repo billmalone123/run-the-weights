@@ -59,7 +59,7 @@ with sync_playwright() as p:
         check('%d: The Edge opens from Settings' % W, tab(pg) == 'info' and pg.evaluate("document.getElementById('sec-edge').style.display") == 'block' and pg.evaluate("settingsModal.style.display") == 'none')
         go(pg, 'today'); pg.click('#navGear'); pg.wait_for_timeout(300)
         pg.click('#settingsModal .settings-about button:has-text("Why I built this")'); pg.wait_for_timeout(400)
-        check('%d: Why I built this opens its text' % W, pg.evaluate("(()=>{var r=document.getElementById('about').getBoundingClientRect();return r.top<innerHeight&&r.bottom>0})()"))
+        check('%d: Why I built this opens its page' % W, pg.evaluate("(()=>{var e=document.getElementById('sec-why'),r=e.getBoundingClientRect();return e.style.display==='block'&&r.top<innerHeight&&r.bottom>0})()"))
         # Short and Change workout, visible, on Today and Lift.
         for t, host in [('today', '#tbAdj'), ('training', '#planActive')]:
             go(pg, t)
