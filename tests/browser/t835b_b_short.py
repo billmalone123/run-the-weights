@@ -22,7 +22,7 @@ with sync_playwright() as p:
     for name, setup in PLANS:
         ctx, pg, errs, D = fresh(b, setup)
         before = pg.evaluate(STORE)
-        pg.click('#tbWork .len-tog button:has-text("Short")'); pg.wait_for_timeout(400)
+        pg.click('#tbAdj .day-adj-btn:has-text("Short")'); pg.wait_for_timeout(400)
         check(name + ': Short on Today opens the time picker', tab(pg) == 'quicklog' and pg.evaluate("quicklogSection.classList.contains('ql-short')"))
         check(name + ': the picker offers 20, 30, 45 and 60', pg.evaluate("[...qlTimes.querySelectorAll('button')].map(b=>b.textContent)") == ['20 min', '30 min', '45 min', '60 min'])
         check(name + ': opening the picker changes nothing', pg.evaluate(STORE) == before and not pg.evaluate("sessionIsShort('%s')" % D))
@@ -42,7 +42,7 @@ with sync_playwright() as p:
         check(name + ': Back returns to Today with nothing changed', tab(pg) == 'today' and pg.evaluate(STORE) == before and not pg.evaluate("sessionIsShort('%s')" % D))
         # Short from the Lift header, then the check.
         go(pg, 'training'); pg.evaluate("switchDay('%s');PA.day='%s';renderPlanActive()" % (D, D)); pg.wait_for_timeout(300)
-        pg.click('#planActive .len-tog button:has-text("Short")'); pg.wait_for_timeout(400)
+        pg.click('#planActive .day-adj-btn:has-text("Short")'); pg.wait_for_timeout(400)
         check(name + ': Short in the Lift header opens the time picker', tab(pg) == 'quicklog' and pg.evaluate("quicklogSection.classList.contains('ql-short')"))
         pg.click('#qlTimes button:has-text("30 min")'); pg.wait_for_timeout(300)
         pg.click('#qlToday .ql-ok'); pg.wait_for_timeout(500)
@@ -59,17 +59,17 @@ with sync_playwright() as p:
         check(name + ': the logged set is still there', pg.evaluate("slotLogged(EX_BY_ID['%s'],'s1')" % prop[0]))
         reload(pg)
         check(name + ': Restore holds after a reload', not pg.evaluate("sessionIsShort('%s')" % D) and pg.evaluate(STORE) == s1)
-        # Normal does the same.
+        # 8.37: Normal is gone; Restore does it again after a takeover.
         pg.evaluate("openShortPicker('%s')" % D); pg.wait_for_timeout(300); pg.click('#qlToday .ql-ok'); pg.wait_for_timeout(500)
         check(name + ': a day with sets logged asks before Short', pg.evaluate("dayTakeover.style.display") == 'flex' and 'Your logged sets stay.' in pg.evaluate("dayTakeoverMsg.textContent"))
         pg.click('#dayTakeoverYes'); pg.wait_for_timeout(500)
         check(name + ': after Switch today is short, not the next day', pg.evaluate("sessionIsShort('%s')" % D) and pg.evaluate("todayDayId()") == D)
         reload(pg)
         check(name + ': the switch holds after a reload', pg.evaluate("sessionIsShort('%s')" % D))
-        pg.click('#tbWork .len-tog button:has-text("Normal")'); pg.wait_for_timeout(400)
-        check(name + ': Normal brings the plan back with no data changed', not pg.evaluate("sessionIsShort('%s')" % D) and pg.evaluate(STORE) == s1)
+        pg.click('#tbWork .restore-btn'); pg.wait_for_timeout(400)
+        check(name + ': Restore after the takeover brings the plan back with no data changed', not pg.evaluate("sessionIsShort('%s')" % D) and pg.evaluate(STORE) == s1)
         reload(pg)
-        check(name + ': Normal holds after a reload', not pg.evaluate("sessionIsShort('%s')" % D))
+        check(name + ': that Restore holds after a reload', not pg.evaluate("sessionIsShort('%s')" % D))
         # Next week has no trace of it.
         pg.evaluate("openShortPicker('%s')" % D); pg.wait_for_timeout(300); pg.click('#qlToday .ql-ok'); pg.wait_for_timeout(500)
         nxt = pg.evaluate("(()=>{var w=currentTrainWeek+1;return [isShortDay('%s',w),!!quickFor('%s',w),boxChoice('%s',w)===undefined,buildSession('%s',w).list.length===programmedDayExercises('%s').length||buildSession('%s',w).list.length>=paList('%s').length]})()" % ((D,) * 7))

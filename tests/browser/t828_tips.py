@@ -75,7 +75,7 @@ with sync_playwright() as p:
         ev("goTab('%s')"%SCREENS[k%6]); pg.wait_for_timeout(40 if k%3 else 380)
         maxn=max(maxn, ev("document.querySelectorAll('.tip').length"))
     for k in range(12):
-        pg.locator('.tabbar-btn[data-tab="%s"]'%['today','training','quicklog','calendar'][k%4]).click(); pg.wait_for_timeout(60 if k%2 else 400)
+        pg.locator('.tabbar-btn[data-tab="%s"]'%['today','training','running','calendar'][k%4]).click(); pg.wait_for_timeout(60 if k%2 else 400)
         maxn=max(maxn, ev("document.querySelectorAll('.tip').length"))
     check('switching tabs fast never stacks two tips', maxn<=1, maxn)
     # show tips again

@@ -30,10 +30,8 @@ with sync_playwright() as p:
     go(pg,'more')
     m=pg.evaluate("[...document.querySelectorAll('#tab-more .more-row-title')].filter(e=>e.offsetParent).map(e=>e.innerText.trim())")
     check('More lists only Week review and The Edge', m==['Week review','The Edge'], m)
-    pg.evaluate("openNavMenu()"); pg.wait_for_timeout(300)
-    mi=pg.evaluate("[...document.querySelectorAll('#navMenu .navmenu-item')].map(e=>e.dataset.sec||e.dataset.tab||e.dataset.action)")
-    check('logo menu is the 8.35b set', mi==['quicklog','overview','edge','settings'], mi)
-    pg.evaluate("closeNavMenu&&closeNavMenu()")
+    # 8.37: no logo menu; Week review is in Progress, The Edge in Settings.
+    check('no logo menu, Week review in Progress, The Edge in Settings', pg.evaluate("!document.getElementById('navMenu')&&!!document.querySelector('#progressHome .prog-review')&&/The Edge/.test(document.querySelector('#settingsModal .settings-about').textContent)"))
     for sec in ('home','edge','overview'):
         pg.evaluate("goTab('info');goSec('%s')"%sec); pg.wait_for_timeout(200)
         check('%s screen shows content'%sec, pg.evaluate("document.getElementById('sec-%s').innerText.trim().length>40"%sec))

@@ -48,13 +48,8 @@ with sync_playwright() as p:
     check('button opens Progress on the Body view', o==[True,'body',True,'true'], o)
     rows=pg.evaluate("[...document.querySelectorAll('#progView .bw-row')].map(r=>r.innerText.replace(/\\s+/g,' '))")
     check('weights saved from Food still show on Body', any('Nov 19 183.2 lb' in r for r in rows) and any('Nov 12 184.6 lb' in r for r in rows), rows[:3])
-    # tab bar and menu keep Food
-    # 8.35b: while Food is locked, Quick Log holds its slot in the bar.
-    check('Quick Log holds the Food slot while Food is locked', pg.evaluate("!document.querySelector('#tabbar [data-tab=food]').offsetParent&&!!document.querySelector('#tabbar [data-tab=quicklog]').offsetParent"))
-    pg.evaluate("openNavMenu()"); pg.wait_for_timeout(300)
-    # 8.35b: the menu keeps rare items only; locked Food has no entry point until the flag is on.
-    check('Food is not in the logo menu while locked', 'food' not in pg.evaluate("[...document.querySelectorAll('#navMenu [data-tab]')].map(e=>e.dataset.tab)"))
-    pg.evaluate("closeNavMenu()")
+    # 8.37: while Food is locked the bar has four tabs and no Food; there is no menu to hold it.
+    check('Food is out of the bar while locked, four tabs', pg.evaluate("!document.querySelector('#tabbar [data-tab=food]').offsetParent&&[...document.querySelectorAll('#tabbar .tabbar-btn')].filter(b=>b.offsetParent).length===4&&!document.getElementById('navMenu')"))
     # Today and onboarding
     go(pg,'today')
     td=pg.evaluate("[!!document.querySelector('.today-food-card').offsetParent,[...document.querySelectorAll('#tab-today button,#tab-today a')].filter(e=>e.offsetParent).map(e=>e.innerText.trim()).filter(t=>/meal|food/i.test(t)),!!document.getElementById('todayWeight').offsetParent]")

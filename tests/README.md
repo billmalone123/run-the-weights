@@ -63,6 +63,10 @@ Food is locked by `FOOD_ENABLED = false` in index.html and in `api/_food.js`. Th
 
 Plan shows the next lift as a card and the other lifts as rows; the full row for the card's lift opens through Notes and details. `t825` and `t826` test the full rows, so they turn the card off with an init script (`PA_OFF` in `common.py` does the same inside a page). The 8.29 and 8.30 hero checks for Today and Plan are retired, since both screens now use the headers from the references. The header and tab bar baselines were re-recorded in 8.34 for the floating tab bar; only the tab bar values changed.
 
+## Week strip and navigation (8.37)
+
+`t837_a_strip.py` covers the shared week strip on Today and Lift for three plans at 390 and 320: past, today, future and rest days, previewing next week without saving it, Short and Change workout per day, and storage unchanged after a round trip. `t837_b_nav.py` covers the four or five tab bar, the gear, the logo going to Today, the Change workout sheet and the removal of every Quick Log label. `baselines/storage_keys_835b.json` lists the storage keys on master before 8.37, so a new key fails the check. 8.37 removed the logo menu and the Quick Log tab, so the older checks for them now test where those items moved. The header and tab bar baselines were re-recorded for the narrower logo and the four tab bar.
+
 ## Baselines
 
 Some checks used to compare against a copy of the previous build served on a second port. In the repo they compare against saved values in `tests/browser/baselines` instead:

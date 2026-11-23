@@ -1,4 +1,4 @@
-"""8.35b Parts C and D: bottom bar for both Food flag states, Lift rename, Quick Log entry points, menu rule, title not interactive, fit at 390 and 320, screenshots."""
+"""8.35b Parts C and D, updated for 8.37: bottom bar for both Food flag states, Lift rename, Change workout entry points, no menu, title not interactive, fit at 390 and 320, screenshots."""
 import sys, os, json; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import *
 from playwright.sync_api import sync_playwright
@@ -14,7 +14,7 @@ with sync_playwright() as p:
     for W in [390, 320]:
         ctx, pg, errs = page(b, W, 844); go(pg, 'today')
         bar = pg.evaluate(BAR)
-        check('%d: bar while Food is locked is Today, Lift, Run, Quick Log, Progress' % W, [x['l'] for x in bar] == ['Today', 'Lift', 'Run', 'Quick Log', 'Progress'], bar)
+        check('%d: bar while Food is locked is Today, Lift, Run, Progress' % W, [x['l'] for x in bar] == ['Today', 'Lift', 'Run', 'Progress'], bar)
         check('%d: no label cut, 44 px targets' % W, all(not x['cut'] and x['w'] >= 44 and x['h'] >= 44 for x in bar), bar)
         pg.screenshot(path=shot('835b-bar-%d.png' % W), clip={'x': 0, 'y': 844 - 90, 'width': W, 'height': 90})
         pg.evaluate("setRunning(false)"); go(pg, 'today')
@@ -36,36 +36,33 @@ with sync_playwright() as p:
             c = pg.evaluate(CLEAR, t)
             check('%d %s: content clears the floating bar' % (W, t), c[0] <= c[1], c)
         go(pg, 'today')
-        q = pg.evaluate("(()=>{var e=tbQl,cs=getComputedStyle(e),r=e.getBoundingClientRect();return {txt:e.innerText.replace(/\\n/g,'|'),h:Math.round(r.height),border:cs.borderTopColor,bg:cs.backgroundColor,below:r.top>=tbWork.getBoundingClientRect().bottom}})()")
-        check('%d: Today has a Quick Log button under START WORKOUT' % W, q['txt'] == 'Quick Log|Log a lift without a plan' and q['below'], q)
-        check('%d: it is an ink outline, 44 px, never persimmon' % W, q['h'] >= 44 and q['border'] == 'rgb(20, 20, 20)' and q['bg'] in ('rgba(0, 0, 0, 0)', 'transparent'), q)
-        pg.evaluate("tbQl.focus()"); pg.wait_for_timeout(200)
-        cov = pg.evaluate("[Math.round(tbQl.getBoundingClientRect().bottom),Math.round(tabbar.getBoundingClientRect().top)]")
-        check('%d: the bar does not cover the button once it is in view' % W, cov[0] <= cov[1], cov)
+        # 8.37: Short and Change workout replace the Quick Log button under the card.
+        q = pg.evaluate("[...document.querySelectorAll('#tbAdj .day-adj-btn')].map(e=>{var cs=getComputedStyle(e),r=e.getBoundingClientRect();return {txt:e.innerText,h:Math.round(r.height),border:cs.borderTopColor,bg:cs.backgroundColor,below:r.top>=tbWork.getBoundingClientRect().bottom}})")
+        check('%d: Today has Short and Change workout under the card' % W, [x['txt'] for x in q] == ['Short', 'Change workout'] and all(x['below'] for x in q), q)
+        check('%d: they are ink outlines, 44 px, never persimmon' % W, all(x['h'] >= 44 and x['border'] == 'rgb(20, 20, 20)' and x['bg'] in ('rgba(0, 0, 0, 0)', 'transparent') for x in q), q)
+        pg.evaluate("document.querySelector('#tbAdj .day-adj-btn').focus()"); pg.wait_for_timeout(200)
+        cov = pg.evaluate("[Math.round(document.querySelector('#tbAdj .day-adj').getBoundingClientRect().bottom),Math.round(tabbar.getBoundingClientRect().top)]")
+        check('%d: the bar does not cover the buttons once they are in view' % W, cov[0] <= cov[1], cov)
         pg.screenshot(path=shot('835b-today-%d.png' % W), full_page=True)
         check('%d: no page errors' % W, not errs, errs); ctx.close()
     # Quick Log entry points and the way back.
     ctx, pg, errs = page(b, 390, 844)
-    for name, start, how in [('tab', 'today', "document.querySelector('#tabbar [data-tab=quicklog]').click()"),
-                             ('Today button', 'today', "tbQl.click()"),
-                             ('Lift link', 'training', "toolQlBtn.click()"),
-                             ('logo menu', 'calendar', "openNavMenu();document.querySelector('#navMenu [data-tab=quicklog]').click()")]:
-        go(pg, start); pg.evaluate(how); pg.wait_for_timeout(500)
-        check('%s opens Quick Log' % name, tab(pg) == 'quicklog' and pg.evaluate("document.getElementById('tab-quicklog').style.display") == 'block')
+    # 8.37: the old Quick Log ways in are one Change workout sheet on Today and Lift.
+    for name, start, sel in [('Today', 'today', '#tbAdj .day-adj-btn:has-text("Change workout")'),
+                             ('Lift', 'training', '#planActive .day-adj-btn:has-text("Change workout")')]:
+        go(pg, start); pg.click(sel); pg.wait_for_timeout(300)
+        pg.click('#cwSheet .cw-opt >> nth=0'); pg.wait_for_timeout(500)
+        check('%s: Change workout, Pick another workout opens the workout screen' % name, tab(pg) == 'quicklog' and pg.evaluate("document.getElementById('tab-quicklog').style.display") == 'block')
         lit = pg.evaluate("(document.querySelector('.tabbar-btn.current')||{}).dataset")
-        check('%s: Quick Log is lit in the bar' % name, lit and lit.get('tab') == 'quicklog', lit)
+        check('%s: the tab it came from stays lit' % name, lit and lit.get('tab') == start, lit)
         pg.click('#qlToday .ql-back'); pg.wait_for_timeout(400)
         check('%s: Back returns to %s' % (name, start), tab(pg) == start, tab(pg))
-    go(pg, 'today'); pg.evaluate("tbQl.click()"); pg.wait_for_timeout(400)
+    go(pg, 'today'); pg.click('#tbAdj .day-adj-btn:has-text("Change workout")'); pg.wait_for_timeout(300); pg.click('#cwSheet .cw-opt >> nth=0'); pg.wait_for_timeout(400)
     pg.evaluate("_qlOpen='push';renderQuickLog()"); pg.click('#qlOthers .today-start'); pg.wait_for_timeout(500)
     check('picking a workout lands on Today showing it', tab(pg) == 'today' and pg.evaluate("tbWork.querySelector('.tb-day').textContent") == 'Push')
-    # Menu rule and title.
-    menu = pg.evaluate("openNavMenu();var m=[...document.querySelectorAll('#navMenu .navmenu-item')].map(b=>b.dataset.sec||b.dataset.tab||b.dataset.action);closeNavMenu();m")
-    check('logo menu keeps only rare items and Quick Log', menu == ['quicklog', 'overview', 'edge', 'settings'], menu)
-    hs = pg.evaluate("openNavMenu();var h=[...document.querySelectorAll('#navMenu .navmenu-item')].map(b=>Math.round(b.getBoundingClientRect().height));closeNavMenu();h")
-    check('menu rows 44 px', min(hs) >= 44, hs)
-    daily = pg.evaluate("['#tabbar [data-tab=quicklog]','#tbQl','#toolQlBtn','#tbWork .len-tog button','#tbWork .tb-start'].map(s=>!!(document.querySelector(s)||{}).offsetParent||s.indexOf('toolQl')>-1)")
-    check('daily actions are on screen, not only in a dropdown', all(daily), daily)
+    check('no logo menu anywhere', pg.evaluate("!document.querySelector('#navMenu,[role=menu],[aria-haspopup=menu]')"))
+    daily = pg.evaluate("['#tbAdj .day-adj-btn','#tbWork .tb-start','#navGear'].map(s=>!!(document.querySelector(s)||{}).offsetParent)")
+    check('daily actions are on screen, not in a dropdown', all(daily), daily)
     go(pg, 'training'); pg.evaluate("renderPlanActive()")
     ti = pg.evaluate("(()=>{var t=document.querySelector('.pa-title');return [t.tagName,t.closest('button,a,[onclick],[role=button]')===null,t.getAttribute('onclick'),getComputedStyle(t).cursor,t.tabIndex]})()")
     check('the workout title on Lift is a plain label', ti[0] == 'H2' and ti[1] and ti[2] is None and ti[3] != 'pointer' and ti[4] < 0, ti)

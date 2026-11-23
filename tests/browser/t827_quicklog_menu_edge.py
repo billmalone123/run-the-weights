@@ -1,4 +1,4 @@
-"""8.27 Quick Log Add exercise, logo menu order, About merged into The Edge, rest timer over sheets."""
+"""8.27 Quick Log Add exercise, logo (8.37: no menu), About merged into The Edge, rest timer over sheets."""
 import sys, os; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import json, datetime, re, html as H
 from playwright.sync_api import sync_playwright
@@ -88,16 +88,13 @@ with sync_playwright() as p:
     small=ev("[...document.querySelectorAll('#exSheet button, #exSheet input, #qlSession button, #qlSession input')].filter(e=>e.offsetParent).map(e=>{const r=e.getBoundingClientRect();return [e.innerText||e.id,Math.round(r.width),Math.round(r.height)]}).filter(x=>x[1]<44||x[2]<44)")
     check('sheet and session tap targets at least 44 px', not small, small)
     ev("closeExSheet()")
-    # Part B: menu
-    ev("goTab('today')"); pg.wait_for_timeout(200); pg.locator('#navLogo').click(); pg.wait_for_timeout(400)
-    menu=ev("[...document.querySelectorAll('#navMenu .navmenu-item')].map(b=>b.dataset.sec||b.dataset.tab||b.dataset.action)")
-    # 8.35b: places moved to the bottom bar; the menu keeps the rare items and Quick Log.
-    check('menu: Quick Log, Week review, The Edge, Settings, no About row', menu==['quicklog','overview','edge','settings'], menu)
-    pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
-    ev("setRunning(true)"); ev("_navMenu&&_navMenu.remove();_navMenu=null"); pg.locator('#navLogo').click(); pg.wait_for_timeout(400)
-    menu2=ev("[...document.querySelectorAll('#navMenu .navmenu-item')].map(b=>b.dataset.sec||b.dataset.tab||b.dataset.action)")
-    check('with running on the menu is the same', menu2==['quicklog','overview','edge','settings'], menu2)
-    pg.keyboard.press('Escape'); ev("setRunning(false)")
+    # Part B: 8.37 removed the logo menu. The rare items moved: Week review to
+    # Progress, The Edge and Why I built this to Settings. t837_b_nav covers them.
+    ev("goTab('calendar')"); pg.wait_for_timeout(200); pg.locator('#navLogo').click(); pg.wait_for_timeout(400)
+    check('the logo goes to Today, no menu, running off', ev("document.body.dataset.tab")=='today' and not ev("!!document.querySelector('#navMenu,[role=menu]')"))
+    ev("setRunning(true)"); ev("goTab('calendar')"); pg.locator('#navLogo').click(); pg.wait_for_timeout(400)
+    check('with running on the logo does the same', ev("document.body.dataset.tab")=='today' and not ev("!!document.querySelector('#navMenu,[role=menu]')"))
+    ev("setRunning(false)")
     # About links
     for how in ["goTab('info');goSec('about')", "goTab('about')", "onbFlowExploreAbout()"]:
         ev(how); pg.wait_for_timeout(300)
