@@ -100,8 +100,11 @@ with sync_playwright() as p:
         ev(how); pg.wait_for_timeout(300)
         check('old About link lands on The Edge: '+how, ev("document.getElementById('sec-edge').style.display")=='block' and ev("getComputedStyle(document.getElementById('about')).display")!='none')
     et=re.sub(r'\s+',' ',ev("document.getElementById('sec-edge').textContent"))
-    miss=[t for t in about_old+edge_old if t not in et]
-    check('every About and Edge line kept, About first', not miss and et.find(about_old[1])<et.find('STRONG'), miss[:3])
+    # The About lead was shortened on purpose: no college or team claims.
+    LEAD_OLD="I'm Billy. I captained Division 1 cross country in college, and I've lifted and run for years."
+    check('the About lead is the short version', "I'm Billy. I've lifted and run for years." in et and LEAD_OLD not in et)
+    miss=[t for t in about_old+edge_old if t not in et and t!=LEAD_OLD]
+    check('every About and Edge line kept, About first', not miss and -1<et.find("I'm Billy.")<et.find('STRONG'), miss[:3])
     check('subnav has no separate About', ev("!document.getElementById('sb-about')"))
     pg.screenshot(path=shot('o827-edge-360.png'))
     # intro once
