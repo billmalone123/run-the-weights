@@ -5479,7 +5479,7 @@ body.fin-open { overflow: hidden; }
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.35b</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.35b1</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -18498,7 +18498,8 @@ function goTab(t) {
   // Renders above may have rebuilt inputs and indicators
   if (typeof enhanceAllInputs === 'function') enhanceAllInputs();
   if (typeof attachAllTooltips === 'function') attachAllTooltips();
-  window.scrollTo(0,0);
+  //  8.35b1: a tab switch jumps, html is scroll-behavior: smooth. Older browsers may reject 'instant'.
+  try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch(e) { window.scrollTo(0, 0); }
 }
 
 function goSec(id) {
