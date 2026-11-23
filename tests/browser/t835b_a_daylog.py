@@ -42,7 +42,7 @@ with sync_playwright() as p:
         go(pg, 'training'); pg.evaluate("switchDay('%s');PA.day='%s';PA.ex='%s';renderPlanActive()" % (D, D, ex))
         pr1 = pg.evaluate("dayProgress('%s')" % D)
         check(name + ' B: the Quick Log set counts for the day', pg.evaluate("hasLogsForDay('%s',currentTrainWeek)" % D) and pr1['done'] == pr0['done'] + 1, [pr0, pr1])
-        check(name + ' B: the card shows it', 'Quick Log' in pg.evaluate("document.querySelector('.pa-sub').textContent"))
+        check(name + ' B: the card shows it (8.37 copy: Single sets)', 'Single sets' in pg.evaluate("document.querySelector('.pa-sub').textContent"))
         check(name + ' B: the entry carries the day', pg.evaluate("(sessions['%s']||[]).slice(-1)[0].day" % ex) == D)
         reload(pg, D)
         check(name + ' B after reload (case D)', pg.evaluate("dayProgress('%s').done" % D) == pr1['done'] and pg.evaluate("hasLogsForDay('%s',currentTrainWeek)" % D))

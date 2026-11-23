@@ -636,18 +636,12 @@ ok('Apply is now a compact, accent-filled button with the same inner glow', /cla
 ok('.food-apply-btn uses the blue token --fill, not a new color, and no shadow', /\.food-apply-btn \{[^}]*background: var\(--fill\);/.test(html) && /\.food-apply-btn \{[^}]*box-shadow: none;/.test(html) && LIGHT_FILL_BLUE);
 ok('and stays inline, not full width (no layout change to the recommendation line)', /\.food-apply-btn \{[^}]*display: inline-block;/.test(html));
 
-// 3. Nav dropdown: clearer icon, first-open pulse.
-ok('chevron is now the clearer menu icon (≡), not ▾', /<span class="nav-logo-chevron" aria-hidden="true">≡<\/span>/.test(html));
-ok('a pulse ring is defined, gated in CSS to the .nav-hint class (never on by default)', /\.nav-logo\.nav-hint::after/.test(html));
-eq('the ring plays once — no infinite loop', /animation: navHintPulse[^;]*infinite/.test(html), false);
+// 3. 8.37: no nav dropdown. The logo goes to Today and writes no hint flag.
+eq('no menu glyph on the logo', /nav-logo-chevron" aria-hidden="true">/.test(html), false);
 reset(); boot();
-eq('nothing writes the nav-hint flag just from booting', storage.getItem('monk_nav_hint_v1'), null);
-var navEl = ctx.document.getElementById('navLogo');
-navEl.classList.add('nav-hint');
-ctx.openNavMenu();
-eq('opening the nav sets the flag', storage.getItem('monk_nav_hint_v1'), '1');
-eq('and clears the hint class immediately', navEl.classList.contains('nav-hint'), false);
-ctx.closeNavMenu();
+eq('nothing writes the old nav-hint flag from booting', storage.getItem('monk_nav_hint_v1'), null);
+ok('the logo goes to Today', /id="navLogo" aria-label="Run the Weights, go to Today" onclick="goTab\('today'\);scrollTo\(0,0\)"/.test(html));
+eq('no menu code is left', /function (openNavMenu|buildNavMenu|toggleNavMenu)\b/.test(html), false);
 
 // 4. Empty states: a clear call to action, not just a bare statement.
 reset(); boot(); ctx.loadFoodData();
@@ -703,40 +697,21 @@ eq('and starts uncolored', freshEl.style.borderColor, undefined);
 ok('enhanceAllInputs also drives color state now (same call sites, no new ones needed)',
    /function enhanceAllInputs\(\) \{[\s\S]{0,200}enhanceInputColorState\(inp\);/.test(html));
 
-section('2l. Nav pill: accent background/border, centered content, tap flash');
+section('2l. Nav pill: accent background/border, centered content');
 ok('background is --accent at 15% opacity, not a new color', /\.nav-logo \{[\s\S]{0,220}background: rgba\((?:241,239,225|var\(--ink-rgb\)),0\.15\);/.test(html));
 ok('border is --accent at 40% opacity', /border: 1px solid rgba\((?:241,239,225|var\(--ink-rgb\)),0\.4\);/.test(html));
 ok('no grey logo pill: transparent, no border, no shadow (open or closed), content still centered', /\.nav-logo, \.nav-logo\[aria-expanded="true"\] \{ background: transparent !important; border: 0 !important; box-shadow: none !important;/.test(html) && /\.nav-logo \{[^}]*align-items: center; justify-content: center;/.test(html));
-ok('a tap-flash class and its 100ms timeout both exist', /nav-tap-flash/.test(html) && /setTimeout\(function\(\) \{ trigger\.classList\.remove\('nav-tap-flash'\); \}, 100\)/.test(html));
-reset(); boot();
-var navBtn = ctx.document.getElementById('navLogo');
-noThrow('tapping the pill does not throw', function () { ctx.toggleNavMenu({ stopPropagation: function () {} }); });
-eq('the flash class is applied immediately on tap', navBtn.classList.contains('nav-tap-flash'), true);
-ctx.closeNavMenu();
-
 section('2m. Navigation: bottom bar is primary, the logo menu indexes everything, nothing lost');
 eq('MAIN_TABS adds today and keeps every older tab', ev('MAIN_TABS').join(','), 'today,info,training,running,calendar,food,quicklog,more');
-var menuHtml = ctx.buildNavMenu().innerHTML;
-//  8.25 Option A: More moved into the logo menu, so About, Week review and
-//  The Edge are listed there, and Progress too.
-//  8.27: About is part of The Edge, so it has no row of its own.
-//  8.30: Week review and The Edge moved one tap down, behind a More row.
-//  8.35b: places live in the bottom bar. The menu keeps Quick Log and the rare items.
-['Quick Log', 'Week review', 'The Edge', 'Settings'].forEach(function (label) {
-  ok(label + ' is in the logo menu', menuHtml.indexOf('>' + label + '<') > -1);
-});
-eq('logo menu order', (menuHtml.match(/data-(?:sec|action)="([a-z]+)"|data-tab="(quicklog)"/g) || []).map(function (m) { return m.split('"')[1]; }).join(','), 'quicklog,overview,edge,settings');
-['Today', 'Lift', 'Plan', 'Food', 'Progress', 'More', 'About and more', 'About'].forEach(function (label) {
-  eq(label + ' is not in the logo menu', menuHtml.indexOf('>' + label + '<') > -1, false);
-});
-eq('Run stays out of the menu while running is off', menuHtml.indexOf('>Run<') > -1, false);
-['today', 'training', 'running', 'quicklog', 'food', 'calendar'].forEach(function (t) {
+//  8.37: no logo menu. Places live in the bottom bar, Settings behind the gear.
+eq('no menu markup', /id="navMenu"|role="menu"|aria-haspopup="menu"/.test(html), false);
+['today', 'training', 'running', 'food', 'calendar'].forEach(function (t) {
   ok('bottom bar has ' + t, html.indexOf('class="tabbar-btn" data-tab="' + t + '"') > -1);
 });
-eq('bottom bar markup has six buttons, Food and Quick Log share a slot', (html.match(/class="tabbar-btn"/g) || []).length, 6);
+eq('bottom bar markup has five buttons, no Quick Log tab (8.37)', (html.match(/class="tabbar-btn"/g) || []).length, 5);
 ok('Run sits between Plan and Food', /data-tab="training"[\s\S]*?data-tab="running"[\s\S]*?data-tab="food"/.test(html));
 ok('Run is always in the bar', html.indexOf('body:not(.running) .tabbar-btn[data-tab="running"] { display: none; }') === -1);
-ok('Quick Log takes the Food slot while Food is locked', html.indexOf('html.food-off .tabbar-btn[data-tab="food"], html:not(.food-off) .tabbar-btn[data-tab="quicklog"] { display: none; }') > -1);
+ok('Food is hidden while locked and the bar has four slots', html.indexOf('html.food-off .tabbar-btn[data-tab="food"] { display: none; }') > -1 && html.indexOf('html.food-off .tabbar { grid-template-columns: repeat(4, 1fr) !important; }') > -1);
 ok('the Workout tab is labelled Lift', /data-tab="training"[^\n]*<span>Lift<\/span>/.test(html));
 // Settings sits behind the header gear, which is in the nav on every tab.
 ok('the header gear opens Settings', /<nav>[\s\S]*?id="navGear" aria-label="Settings" onclick="openSettingsModal\(\)"[\s\S]*?<\/nav>/.test(html));
@@ -766,7 +741,7 @@ ok('dark training-mode chrome applies to More, same as Lift/Run/Food/Calendar', 
 noThrow('More -> Home reaches the info tab and its Home section', function () { ctx.goTab('info'); ctx.goSec('home'); });
 eq('lands on tab-info', ctx.document.getElementById('tab-info').style.display, 'block');
 eq('with Home active', ctx.document.getElementById('sec-home').style.display, 'block');
-noThrow('More -> Quick Log still resets and renders the Quick Log tab', function () { ctx.goTab('quicklog'); });
+noThrow('the Quick Log screen still resets and renders (reached through Change workout)', function () { ctx.goTab('quicklog'); });
 eq('lands on tab-quicklog', ctx.document.getElementById('tab-quicklog').style.display, 'block');
 // Old and plain tab names still land in the right place.
 [['progress', 'calendar'], ['workout', 'training'], ['plan', 'training']].forEach(function (p) {
@@ -775,8 +750,8 @@ eq('lands on tab-quicklog', ctx.document.getElementById('tab-quicklog').style.di
 });
 //  8.19: Progress and Quick Log are not under any bar button, so none lights.
 //  8.25: Progress lights its own tab; info, Quick Log and More light none.
-//  8.35b: while Food is locked Quick Log is a tab and lights itself.
-eq('Progress lights Progress; Quick Log lights Quick Log; info and More light none', ['calendar', 'info', 'quicklog', 'more'].map(function (t) { return String(ctx.tabBarOwner(t)); }).join(), 'calendar,null,quicklog,null');
+//  8.37: the Quick Log screen lights the tab it was opened from, Today by default.
+eq('Progress lights Progress; the Quick Log screen lights Today; info and More light none', ['calendar', 'info', 'quicklog', 'more'].map(function (t) { return String(ctx.tabBarOwner(t)); }).join(), 'calendar,null,today,null');
 // The dropdown's "current tab" tick now maps info/quicklog onto More —
 // verified as source logic above (dynamically-created menu nodes aren't
 // discoverable via this stub's getElementById, so this can't be driven

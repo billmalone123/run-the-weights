@@ -60,7 +60,7 @@ with sync_playwright() as p:
         pg.clock.set_system_time(datetime.datetime(2026,11,16,10)); pg.reload(); pg.wait_for_timeout(1400)
         pg.evaluate("setTrainStyle('free')")
         go(pg,'quicklog'); i=pg.evaluate(HERO,'quicklog')
-        check('%d QUICK LOG on one line with the square after LOG'%W, i and i['lines']==1 and i['word'].startswith('QUICK LOG') and not i['clip'], i and (i['fs'],i['lines']))
+        check('%d WORKOUT on one line with the square after it (8.37: the Quick Log screen is Change workout)'%W, i and i['lines']==1 and i['word'].startswith('WORKOUT') and not i['clip'], i and (i['fs'],i['lines']))
         pg.evaluate("setTrainStyle('plan')")
         ctx.close()
     ctx,pg,errs=page(b,URL,360,700)

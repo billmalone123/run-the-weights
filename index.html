@@ -2050,17 +2050,6 @@ body.training-mode footer { display: none; }
   background: var(--fill); color: var(--on-accent); border-radius: var(--r-s); padding: 2px 7px; margin: 6px 8px 0 0;
 }
 .pr-note { font-size: var(--fs-1); color: var(--text); }
-.week-glance { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; margin: 0 0 18px; }
-.wg-day {
-  background: var(--surface); border: 1px solid var(--field); border-radius: var(--r-c); padding: 7px 2px 8px; min-width: 0;
-  text-align: center; cursor: pointer; min-height: 64px; color: var(--muted); font-family: var(--font-body);
-}
-.wg-day.rest { cursor: default; opacity: 0.6; }
-.wg-day.today { border-color: var(--fill); color: var(--text); box-shadow: 0 0 0 1px var(--accent) inset; }
-.wg-day.logged .wg-title { text-decoration: line-through; text-decoration-color: var(--dim); }
-.wg-dow { font-family: var(--font-body); font-weight: 700; font-size: var(--fs-1); letter-spacing: 0.01em;  }
-.wg-title { font-size: var(--fs-1); line-height: 1.25; margin-top: 3px; color: var(--text); overflow-wrap: normal; white-space: nowrap; overflow: hidden; text-overflow: clip; }
-.wg-time { font-size: var(--fs-1); margin-top: 3px; font-family: var(--font-body); }
 .maxes-est-1rm.warn { color: var(--warn); }
 .maxes-set-wrap { flex-basis: 100%; }
 .settings-modal-card.maxes-mode-reps .maxes-reps-row { flex-wrap: wrap; }
@@ -2187,8 +2176,6 @@ body:not(.owner-tools) .owner-only { display: none !important; }
 /* LIFT SCREEN, LEAN. */
 .lift-hero { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-5); color: var(--text); margin: 0 0 12px; }
 .lift-toolbar { display: flex; align-items: center; gap: 6px; margin: 0 0 12px; flex-wrap: wrap; }
-.tool-arrow { width: 44px; height: 44px; border: 1px solid var(--field); border-radius: var(--r-c); background: none; color: var(--text); font-size: var(--fs-4); cursor: pointer; }
-.tool-week { min-width: 84px; text-align: center; font-size: var(--fs-3); font-weight: 600; color: var(--text); }
 .tool-rest { margin-left: auto; min-height: 44px; padding: 0 14px; border: 1px solid var(--field); border-radius: var(--r-c); background: none; color: var(--text); font-family: var(--font-body); font-size: var(--fs-2); cursor: pointer; }
 .tool-rest.on { background: var(--fill); color: var(--on-accent); border-color: var(--fill); }
 .lift-toolbar .maintenance-quick { margin-left: 0; }
@@ -2238,7 +2225,7 @@ body:not(.advanced) #tab-training .plan-day-focus { display: none; }
    One language everywhere: anything that opens something below it shows a
    chevron that flips when open; the open control fills solid; every tap
    visibly presses in; keyboard focus always shows a ring. */
-button, summary, a.howto-link, .wg-day { -webkit-tap-highlight-color: transparent; }
+button, summary, a.howto-link { -webkit-tap-highlight-color: transparent; }
 button:active:not(:disabled), summary:active, a.howto-link:active { transform: scale(0.97); }
 button:focus-visible, summary:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--fill); outline-offset: 2px; }
 .card-foot-btn, .tool-rest, .warmup-toggle-btn, .variant-more-btn, .day-action { transition: background 0.12s, color 0.12s, border-color 0.12s, transform 0.08s; }
@@ -3166,9 +3153,6 @@ button, input, select, textarea { font-family: inherit; }
 #planRestDay { margin: 12px 0; }
 #todayRest { margin-bottom: 12px; }
 #plan.plan-resting > .plan-content, #plan.plan-resting #altPlan, #plan.plan-resting #planNav { display: none !important; }
-.wg-day.rest { cursor: pointer; opacity: 0.75; }
-.wg-day.picked { box-shadow: inset 0 -4px 0 var(--accent); opacity: 1; color: var(--text); }
-.wg-day.today.picked { box-shadow: 0 0 0 1px var(--accent) inset, inset 0 -4px 0 var(--accent); }
 
 /* 8.15 PLAN SETUP. One row per option with a plain line and a week strip. */
 .plan-days-options { display: flex; flex-direction: column; gap: 6px; }
@@ -3206,14 +3190,11 @@ body:not(.advanced) #tab-training .plan-badges .badge { display: none; }
 .plan-notice .maintenance-quick { margin-left: 0; }
 /* Rest timer presets: a popover under the toolbar, out of the page flow. */
 .lift-toolbar { position: relative; }
-.lift-toolbar .rest-timer-strip#restPresets.open { position: absolute; top: calc(100% + 6px); right: 0; z-index: 30; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; max-width: 100%; margin: 0; padding: 8px; border: 1px solid var(--field); border-radius: var(--r-c); background: var(--bg); box-shadow: 0 6px 20px rgba(0,0,0,0.18); }
+/* 8.37: no dropdowns. The presets open in place, in the page flow. */
+.lift-toolbar .rest-timer-strip#restPresets.open { flex: 1 1 100%; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; margin: 0; padding: 8px 0 0; border: 0; background: none; }
 .lift-toolbar .rest-preset-btn { min-width: 52px; min-height: 44px; }
 /* Week strip. Rest days get a dashed outline on the page color, never a fade,
    so the 12px labels keep full contrast. */
-.week-glance { margin-bottom: 12px; }
-.wg-day.rest, .wg-day.rest.picked { opacity: 1; background: var(--bg); border-style: dashed; }
-#weekGlance .wg-title, [data-glance] .wg-title { white-space: normal; }
-.wg-letter { white-space: nowrap; }
 /* Day titles and badges, formerly inline. */
 .plan-day-title { color: var(--accent); }
 .plan-day-title.is-rest { color: var(--text-soft); }
@@ -3361,7 +3342,8 @@ nav .nav-gear:focus-visible { outline: 2px solid var(--fill); outline-offset: 2p
 /* RUN TAB. Only on screen when running is on. */
 /* 8.35b: five places, Run always shown. Quick Log holds Food's slot while
    FOOD_ENABLED is false; Food returns to it when the flag is on. */
-html.food-off .tabbar-btn[data-tab="food"], html:not(.food-off) .tabbar-btn[data-tab="quicklog"] { display: none; }
+html.food-off .tabbar-btn[data-tab="food"] { display: none; }
+html.food-off .tabbar { grid-template-columns: repeat(4, 1fr) !important; }
 .tabbar { grid-template-columns: repeat(5, 1fr); }
 .run-home-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .run-units { display: flex; gap: 4px; }
@@ -3391,13 +3373,6 @@ html.food-off .tabbar-btn[data-tab="food"], html:not(.food-off) .tabbar-btn[data
 /* ===== 8.22 LOOK: cream, blue, orange. Light only. Visual rules only. ===== */
 /* Week strip: one marker per meaning. Viewed day is solid blue, today is an
    orange fill, both at once is blue with an orange top edge. */
-.wg-day { border-color: var(--border); border-radius: var(--r-s); box-shadow: none; }
-.wg-day.today { background: var(--hi); border-color: var(--hi); color: var(--on-hi); box-shadow: none; }
-.wg-day.today .wg-title, .wg-day.today .wg-time, .wg-day.today .wg-dow { color: var(--on-hi); }
-.wg-day.picked, .wg-day.rest.picked { background: var(--fill); border-color: var(--fill); border-style: solid; color: var(--on-primary); box-shadow: none; }
-.wg-day.today.picked { background: var(--fill); border-color: var(--fill); color: var(--on-primary); box-shadow: inset 0 5px 0 var(--hi); }
-.wg-day.picked .wg-title, .wg-day.picked .wg-time, .wg-day.picked .wg-dow { color: var(--on-primary); }
-.wg-time { font-family: var(--font-mono); line-height: 1.25; }
 /* Done exercise: a plain 1px edge on all sides; the blue check says done. */
 body.training-mode .lift-row, body.training-mode .lift-row.has-logs, body.training-mode .lift-row:hover { border-left-width: 1px; border-left-color: var(--border); }
 .lift-row.open { box-shadow: inset 0 0 0 1px var(--border); }
@@ -3405,7 +3380,7 @@ body.training-mode .lift-row, body.training-mode .lift-row.has-logs, body.traini
 .set-table-head span { white-space: nowrap; }
 
 /* Hairlines instead of heavy outlines on controls. */
-.tool-arrow, .tool-rest, .day-action, .today-secondary, .liftdays-btn, .card-foot-btn, .warmup-toggle-btn { border-color: var(--border); }
+.tool-rest, .day-action, .today-secondary, .liftdays-btn, .card-foot-btn, .warmup-toggle-btn { border-color: var(--border); }
 
 /* Header: a plain wordmark in ink, no pill. Focus ring only for keyboard. */
 .nav-logo, .nav-logo[aria-expanded="true"] { background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 6px 4px; }
@@ -3448,7 +3423,6 @@ body.training-mode .lift-row, body.training-mode .lift-row.has-logs, body.traini
 .onb-progress-fill, .guided-bar-fill, .food-bar-fill { background: var(--hi); }
 
 .time-box-group .liftdays-btn.on { background: var(--fill); color: var(--on-primary); border-color: var(--fill); }
-.wg-day.today:not(.picked) * { color: var(--on-hi) !important; }
 .pw-day.today { background: var(--hi); border-color: var(--hi); color: var(--on-hi); box-shadow: none; }
 .pw-day.today * { color: var(--on-hi) !important; }
 .plan-nav-btn.active, body.training-mode .plan-nav-btn.active { box-shadow: none; }
@@ -3537,7 +3511,6 @@ input:focus, select:focus, textarea:focus { border-color: var(--fill) !important
 #info-subnav button { color: var(--muted); }
 #info-subnav button.on { color: var(--ink); box-shadow: inset 0 -3px 0 var(--persimmon); }
 /* Persimmon fills on cream get a burnt edge so the shape holds at 3:1. */
-.wg-day.today:not(.picked), .pw-day.today { border-color: var(--hi-edge); }
 .ch-dot:nth-last-of-type(2) { stroke: var(--hi-edge); }
 /* Color with a job on the ink band screens. Lifting is ultramarine: each
    quick workout card carries an ultramarine edge. Rows that open a page read
@@ -3594,9 +3567,6 @@ input[style*="224, 82, 82"], input[style*="E05252" i] { border-color: var(--warn
 .today-date { overflow: visible; margin-top: 22px; padding-top: 16px; }
 .today-date::before { top: -14px; left: 0; right: auto; width: 40px; height: 6px; border-radius: 0; }
 /* Plan week pill: a logged session gets a small ultramarine check, not a strike. */
-.wg-day.logged .wg-title { text-decoration: none !important; }
-.wg-day.logged .wg-title::after { content: '\2713'; margin-left: 3px; color: var(--ultramarine); font-weight: 700; }
-.wg-day.logged.picked .wg-title::after { color: var(--cream); }
 /* Set column wide enough for the current set badge. */
 .set-table-head, .set-row { grid-template-columns: 32px minmax(0, 1fr) 60px 58px 44px; }
 /* Rest timer: never wider than the screen, digits ink at full strength. */
@@ -3610,7 +3580,6 @@ input[style*="224, 82, 82"], input[style*="E05252" i] { border-color: var(--warn
 /* Accessibility: placeholders at 4.5:1 or more (muted is 5.35:1 on cream). */
 input::placeholder, textarea::placeholder { color: var(--muted) !important; opacity: 1; }
 /* Accessibility: week pills stay 44px wide at 360. */
-@media (max-width: 380px) { .week-glance { gap: 2px; } }
 /* Timer digits stay ink at full strength while counting: the roll slides, it never fades. */
 @keyframes tdigitSlide { from { transform: translateY(-30%); } to { transform: none; } }
 .tdigit.roll { animation-name: tdigitSlide; opacity: 1; }
@@ -3831,7 +3800,6 @@ body { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
 /* Header on Today: wordmark and the streak pill, no gear or menu glyph. */
 .nav-streak { display: none; margin-left: auto; align-items: center; min-height: 40px; padding: 0 18px; border-radius: 999px; background: var(--ink); color: var(--cream); font-family: var(--font-body); font-size: 14px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; }
 body[data-tab="today"] .nav-streak:not([hidden]) { display: inline-flex; }
-body[data-tab="today"] nav .nav-gear, body[data-tab="today"] .nav-logo-chevron { display: none; }
 
 /* ── TODAY ── */
 body.tb-on #hero-today, body.tb-on #todayDate, body.tb-on #todayWorkout, body.tb-on #tab-today [data-glance],
@@ -3850,13 +3818,6 @@ body.tb-on #todaySection > .today-label:first-of-type, body.tb-on #todayGoal { d
 .tb-ring-n { font-family: 'Antonio', sans-serif; font-weight: 700; font-size: 32px; line-height: 1; color: var(--ink); }
 .tb-ring-l { font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--s834-muted); margin-top: 2px; }
 .tb-week-copy { font-size: 15px; line-height: 1.45; color: var(--ink); margin: 0; }
-.tb-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 16px; list-style: none; padding: 0; }
-.tb-strip li { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.tb-dl { font-size: 12px; font-weight: 600; color: var(--s834-muted); }
-.tb-dot { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--s834-track); color: var(--s834-muted); font-size: 14px; font-weight: 700; box-sizing: border-box; }
-.tb-dot.done { background: var(--ultramarine); color: var(--cream); }
-.tb-dot.done svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
-.tb-dot.now { background: #fff; color: var(--ink); border: 3px solid var(--persimmon); border-radius: 14px; width: 40px; height: 40px; }
 .tb-work { background: var(--ultramarine); color: var(--cream); border-radius: 28px; padding: 22px 20px 20px; margin-bottom: 12px; }
 .tb-kick { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin: 0; }
 .tb-day { font-family: 'Antonio', sans-serif; font-weight: 700; font-size: 56px; line-height: 1; text-transform: uppercase; margin: 6px 0 4px; overflow-wrap: anywhere; }
@@ -3877,8 +3838,6 @@ body.tb-on #todaySection > .today-label:first-of-type, body.tb-on #todayGoal { d
 /* ── PLAN ACTIVE EXERCISE ── */
 .pa { padding: 0 16px; overflow-x: clip; }
 .pa[hidden] { display: none; }
-body.pa-on nav { display: none; }
-body.pa-on { padding-top: 0; }
 body.pa-on #hero-training, body.pa-on #plan > .section-label, body.pa-on #plan > .lift-hero,
 body.pa-on #plan .plan-day-header, body.pa-on #plan .lift-table-header, body.pa-on #plan .lift-row.pa-cur:not(.pa-details) { display: none !important; }
 body.pa-on #plan .lift-row:not(.pa-cur) .lift-body { display: none !important; }
@@ -3960,20 +3919,15 @@ body:not(.running) #runOff { display: block; }
 body:not(.running) #tab-running > :not(#runOff):not(.rtwh) { display: none !important; }
 .run-off-t { color: var(--ink, #141414); margin: 0 0 8px; }
 .run-off-p { font-size: 16px; line-height: 1.45; margin: 0 0 18px; color: var(--muted, #55544D); }
-.tb-ql { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; min-height: 44px; margin-top: 10px; padding: 8px 16px; border: 2px solid var(--ink, #141414); border-radius: 999px; background: transparent; color: var(--ink, #141414); font: inherit; font-weight: 700; font-size: 16px; cursor: pointer; }
-.tb-ql small { font-weight: 400; font-size: 13px; color: var(--muted, #55544D); }
 .lift-toolbar { gap: 4px; }
-.lift-toolbar .tool-week { min-width: 0; padding: 0 6px; }
 .lift-toolbar .tool-rest { padding: 0 10px; margin-left: 0; }
 .tool-end { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; }
-.tool-ql { min-height: 44px; min-width: 44px; padding: 0 4px; font-size: 14px !important; border: 0; background: none; color: inherit; font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .dt-msg { font-size: 17px; line-height: 1.4; margin: 0 0 18px; color: var(--ink, #141414); }
 .pa-done { background: var(--s834-surface); border-radius: 24px; padding: 18px; font-size: 15px; color: var(--ink); }
 .pa-done .pa-name { margin-bottom: 6px; }
 body.pa-on #plan .lift-row.pa-fin { display: none !important; }
 .pa-week { padding-top: 16px; }
 .pa-week .lift-toolbar { margin-top: 0; }
-.pa-week .week-glance { margin-bottom: 0; }
 /* 8.34 Part 3: finish card */
 .pa-fin-btn { margin-top: 14px; }
 .fin { position: fixed; inset: 0; z-index: 3000; background: var(--cream); overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -4029,6 +3983,66 @@ body.fin-open { overflow: hidden; }
 .why-p { margin: 0; font-size: 17px; line-height: 1.55; color: var(--text); }
 .why-link { display: block; min-height: 44px; margin: 8px 0 32px; padding: 0; border: 0; background: none; color: var(--text); font: 600 16px var(--font-body); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .intro-replay { min-height: 44px; }
+
+/* ── 8.37 WEEK STRIP, CHANGE WORKOUT, HEADER ── */
+body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 6px; }
+.ws { margin: 0 -16px 14px; }
+.ws-nav { display: flex; align-items: center; gap: 4px; padding: 0 10px; margin-bottom: 2px; }
+.ws-arr { flex: 0 0 44px; width: 44px; height: 44px; border: 0; border-radius: 999px; background: none; color: var(--ink); font-size: 30px; line-height: 1; cursor: pointer; }
+.ws-arr:disabled { opacity: 0.35; cursor: default; }
+.ws-wk { flex: 1 1 auto; min-width: 0; margin: 0; text-align: center; font-size: 15px; color: var(--ink); display: flex; flex-direction: column; line-height: 1.25; }
+.ws-wk b { font-weight: 700; }
+.ws-wk span { font-size: 13px; color: var(--s834-muted); }
+.ws-home { flex: 0 0 auto; min-height: 44px; padding: 0 12px; border: 2px solid var(--ink); border-radius: 999px; background: none; color: var(--ink); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.ws-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); padding: 0 2px; }
+.wg-day { min-height: 80px; min-width: 0; padding: 2px; border: 0; background: none; font: inherit; color: var(--ink); cursor: pointer; display: flex; -webkit-tap-highlight-color: transparent; }
+.wg-in { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; border-radius: 16px; padding: 6px 0; border: 2px solid transparent; }
+.wg-dow { font-size: 12px; font-weight: 600; color: var(--s834-muted); }
+.wg-date { font-family: 'Antonio', sans-serif; font-weight: 700; font-size: 19px; line-height: 1; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+.wg-day.today .wg-date { background: var(--persimmon); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
+.wg-title { font-size: 11px; font-weight: 600; line-height: 1.2; max-width: 100%; white-space: nowrap; overflow: hidden; }
+.wg-title.wg-cut { visibility: hidden; }
+.wg-day.rest .wg-title { color: var(--s834-muted); }
+.wg-mark { height: 12px; display: flex; align-items: center; }
+.wg-mark svg { width: 12px; height: 12px; fill: none; stroke: var(--ultramarine); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.wg-ring, .wg-half { display: block; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--s834-muted); box-sizing: border-box; }
+.wg-half { border-color: var(--ultramarine); background: linear-gradient(90deg, var(--ultramarine) 50%, transparent 50%); }
+.wg-day.picked .wg-in { background: var(--ink); border-color: var(--ink); }
+.wg-day.picked .wg-dow, .wg-day.picked .wg-title, .wg-day.picked .wg-date { color: var(--cream); }
+.wg-day.picked.today .wg-date { color: var(--ink); }
+.wg-day.picked .wg-mark svg { stroke: var(--cream); }
+.wg-day.picked .wg-ring { border-color: var(--cream); }
+.wg-day.picked .wg-half { border-color: var(--cream); background: linear-gradient(90deg, var(--cream) 50%, transparent 50%); }
+.wg-day:focus-visible { outline: none; }
+.wg-day:focus-visible .wg-in { outline: 3px solid var(--ultramarine); outline-offset: 1px; }
+.ws-arr:focus-visible, .ws-home:focus-visible, .day-adj-btn:focus-visible, .tb-logfor:focus-visible, .cw-opt:focus-visible, .prog-review:focus-visible { outline: 3px solid var(--ultramarine); outline-offset: 2px; }
+.day-adj { display: flex; gap: 10px; margin: 0 0 12px; }
+.pa .day-adj { margin: 12px 0 0; }
+.tb-meta .nb { white-space: nowrap; }
+@media (max-width: 374px) { .day-adj-btn { font-size: 15px; } .day-adj-btn[aria-pressed] { flex-grow: .7; } }
+.day-adj-btn { flex: 1 1 0; min-width: 0; min-height: 48px; padding: 0 8px; white-space: nowrap; border: 2px solid var(--ink); border-radius: 18px; background: transparent; color: var(--ink); font: inherit; font-size: 16px; font-weight: 700; cursor: pointer; }
+.day-adj-btn[aria-pressed="true"] { background: var(--ink); color: var(--cream); }
+.tb-work.tb-prev { background: var(--s834-surface); color: var(--ink); border: 2px solid var(--s834-track); }
+.tb-prev .tb-day { font-size: 44px; }
+.tb-prev .restore-line { color: var(--ink); margin: 0 0 12px; }
+.tb-list { margin: 0 0 12px; padding-left: 20px; font-size: 15px; line-height: 1.5; }
+.tb-list span { color: var(--s834-muted); }
+.tb-quiet { margin: 0; font-size: 15px; color: var(--s834-muted); }
+.tb-logfor { display: block; width: 100%; min-height: 48px; margin-top: 4px; border: 2px solid var(--ink); border-radius: 18px; background: transparent; color: var(--ink); font: inherit; font-size: 16px; font-weight: 700; cursor: pointer; }
+.cw-sub { font-size: 15px; line-height: 1.4; color: var(--s834-muted); margin: 4px 0 14px; }
+.cw-opt { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; min-height: 56px; margin: 0 0 10px; padding: 10px 16px; border: 2px solid var(--ink); border-radius: 18px; background: transparent; color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.cw-opt b { font-size: 17px; }
+.cw-opt span { font-size: 14px; color: var(--s834-muted); }
+.cw-opt:disabled { opacity: 0.4; cursor: default; }
+.settings-about { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+.settings-about .settings-open-btn { flex: 1 1 130px; min-height: 44px; margin: 0; }
+.prog-review { display: flex; flex-direction: column; align-items: flex-start; width: 100%; min-height: 56px; margin: 0 0 14px; padding: 10px 16px; border: 2px solid var(--ink); border-radius: 18px; background: transparent; color: var(--ink); font: inherit; font-size: 17px; font-weight: 700; text-align: left; cursor: pointer; }
+@media (max-width: 374px) {
+  body[data-tab="today"] nav .nav-logo { flex: 0 0 auto; padding: 4px 0; }
+  body[data-tab="today"] nav .nav-logo img { height: 20px; }
+  .nav-streak { font-size: 11px; padding: 0 8px; min-height: 34px; letter-spacing: 0; margin-left: 8px; }
+}
+.prog-review small { font-size: 14px; font-weight: 400; color: var(--s834-muted); }
 </style>
 </head>
 <body style="background:var(--bg)">
@@ -4038,11 +4052,22 @@ body.fin-open { overflow: hidden; }
   <button class="tabbar-btn" data-tab="today" onclick="goTab('today')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4M6 7v10M18 7v10M21 10v4M6 12h12"/></svg><span>Today</span></button>
   <button class="tabbar-btn" data-tab="training" onclick="goTab('training')"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg><span>Lift</span></button>
   <button class="tabbar-btn" data-tab="running" onclick="goTab('running')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="14" cy="4.5" r="1.8"/><path d="M8 21l3-6 3 2v5M6 12l3-4 4 1 3 3 3 1M11 15l-2-4"/></svg><span>Run</span></button>
-  <button class="tabbar-btn" data-tab="quicklog" onclick="openQuickLog()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Quick Log</span></button>
   <button class="tabbar-btn" data-tab="food" onclick="goTab('food')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M16 21V3c-2.5 1.5-3 4.5-3 8h3"/></svg><span>Food</span></button>
   <button class="tabbar-btn" data-tab="calendar" onclick="goTab('calendar')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M7 20v-7M12 20V6M17 20v-10"/></svg><span>Progress</span></button>
 </div>
 
+<p class="sr-only" id="wsSay" role="status" aria-live="polite"></p>
+<!-- CHANGE WORKOUT (8.37). The Quick Log ways in, for one day. -->
+<div class="settings-modal-overlay" id="cwSheet" style="display:none" onclick="if (event.target === this) closeChangeSheet()">
+  <div class="settings-modal-card cw-card" role="dialog" aria-modal="true" aria-labelledby="cwTitle" aria-describedby="cwSub">
+    <div class="settings-modal-title" id="cwTitle">Change workout</div>
+    <p class="cw-sub" id="cwSub"></p>
+    <button type="button" class="cw-opt" onclick="cwGo('pick')"><b>Pick another workout</b><span>Saved and recent workouts</span></button>
+    <button type="button" class="cw-opt" onclick="cwGo('add')"><b>Add an exercise</b><span>Search, or pick a muscle</span></button>
+    <button type="button" class="cw-opt" onclick="cwGo('build')"><b>Build my own</b><span>Pick lifts one at a time and log as you go</span></button>
+    <button type="button" class="settings-cancel-btn" onclick="closeChangeSheet()">Cancel</button>
+  </div>
+</div>
 <!-- GOING OUT. Two choices, no lecture. -->
 <div class="settings-modal-overlay" id="goingOutSheet" style="display:none" onclick="if (event.target === this) closeGoingOut()">
   <div class="settings-modal-card going-out-card" role="dialog" aria-modal="true" aria-labelledby="goingOutTitle">
@@ -4338,19 +4363,16 @@ body.fin-open { overflow: hidden; }
 </div>
 
 <nav>
-  <button class="nav-logo" id="navLogo" aria-haspopup="menu" aria-expanded="false" aria-label="Run the Weights, open menu">
+  <button type="button" class="nav-logo" id="navLogo" aria-label="Run the Weights, go to Today" onclick="goTab('today');scrollTo(0,0)">
     <img class="nav-logo-word" src="assets/brand/rtw-header-solid-horizontal.svg" alt="Run the Weights" width="137" height="20">
     <img class="nav-logo-mark" src="assets/brand/rtw-wordmark-solid-stack.svg" alt="" aria-hidden="true">
     <span class="nav-logo-text" aria-hidden="true">Run the Weights</span>
-    <span class="nav-logo-chevron" aria-hidden="true">≡</span>
   </button>
   <span class="nav-streak" id="navStreak" hidden></span>
   <button type="button" class="nav-gear" id="navGear" aria-label="Settings" onclick="openSettingsModal()">
     <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
   </button>
-  <!-- The logo dropdown is the whole nav now. The horizontal tab row and its
-       sliding indicator were removed in build 7.32; goTab() is untouched and
-       every destination lives in #navMenu, built in buildNavMenu(). -->
+  <!-- 8.37: no menu. The logo goes to Today, the gear opens Settings. -->
 </nav>
 
 <div id="tab-info" class="tab-main on" style="background:var(--bg)">
@@ -4530,9 +4552,10 @@ body.fin-open { overflow: hidden; }
   <div class="tb" id="todayB">
     <p class="tb-dow" id="tbDow"></p>
     <h1 class="tb-hello" id="tbHello"></h1>
-    <div class="tb-week" id="tbWeek" hidden></div>
+    <div class="ws-host" id="tbStrip"></div>
     <div class="tb-work" id="tbWork" hidden></div>
-    <button type="button" class="tb-ql" id="tbQl" onclick="openQuickLog()">Quick Log<small>Log a lift without a plan</small></button>
+    <div id="tbAdj"></div>
+    <div class="tb-week" id="tbWeek" hidden></div>
     <div class="tb-stats" id="tbStats" hidden></div>
     <div class="tb-links" id="tbMore"></div>
   </div>
@@ -4542,7 +4565,6 @@ body.fin-open { overflow: hidden; }
   <div class="today-card" id="todayWorkout"></div>
   <div class="today-label">This week</div>
   <div class="week-goal" id="todayGoal"></div>
-  <div class="week-glance" data-glance aria-label="This week at a glance"></div>
   <div class="today-label">Muscles this week</div>
   <div class="fresh-card" id="todayFresh"></div>
   <div class="today-grid">
@@ -4575,10 +4597,7 @@ body.fin-open { overflow: hidden; }
   <span id="paWeekHome" hidden></span>
   <!-- COMPACT WEEK + REST ROW. One week shown; arrows change it. -->
   <div class="lift-toolbar">
-    <button type="button" class="tool-arrow" onclick="stepTrainWeek(-1)" aria-label="Previous week">&#8249;</button>
-    <span class="tool-week" id="toolWeek">Week 1</span>
-    <button type="button" class="tool-arrow" onclick="stepTrainWeek(1)" aria-label="Next week">&#8250;</button>
-    <span class="tool-end"><button type="button" class="tool-ql" id="toolQlBtn" onclick="openQuickLog()">Quick Log</button><button type="button" class="tool-rest" id="toolRestBtn" aria-expanded="false" aria-controls="restPresets" onclick="toggleRestPresets()">Rest timer</button></span>
+    <span class="tool-end"><button type="button" class="tool-rest" id="toolRestBtn" aria-expanded="false" aria-controls="restPresets" onclick="toggleRestPresets()">Rest timer</button></span>
     <!-- REST TIMER QUICK-START. A one-off timer that leaves every exercise's
          saved rest alone, and the only timer on a rest day. The card's rest
          chip covers 30s to 3 min but changes the saved rest, so this stays.
@@ -4596,7 +4615,7 @@ body.fin-open { overflow: hidden; }
     <span style="font-size:var(--fs-1);font-weight:700;letter-spacing:0.01em;color:var(--muted);">Training Week</span>
     <div style="display:flex;gap:4px;flex-wrap:wrap;" id="trainWeekSelector"></div>
   </div>
-  <div class="week-glance" id="weekGlance" aria-label="This week at a glance"></div>
+  <div class="ws-host" id="weekGlance"></div>
   <!-- PLAN NOTICES. At most one shows; updatePlanNotices() picks it in this
        order: storage, week done, backup, logging tip, easy week. Each one's
        own check only says whether it wants to show (data-want). -->
@@ -5007,6 +5026,7 @@ body.fin-open { overflow: hidden; }
      tap away under "See full calendar and every lift". -->
 <section id="progressHome">
   <div class="today-date">Progress</div>
+  <button type="button" class="prog-review" onclick="goTab('info'); goSec('overview');">Week review<small>How a week of training fits together</small></button>
   <div class="prog-tiles" id="progTiles"></div>
   <div class="prog-seg" role="tablist" aria-label="Progress view">
     <button type="button" role="tab" id="progTabLifts" aria-selected="true" onclick="setProgView('lifts')">Lifts</button>
@@ -5191,7 +5211,7 @@ body.fin-open { overflow: hidden; }
   </div>
 
   <div class="quicklog-recent">
-    <div class="quicklog-recent-title">Recent Quick Logs</div>
+    <div class="quicklog-recent-title">Recent single sets</div>
     <div id="quicklogRecent"></div>
   </div>
   </div>
@@ -5394,6 +5414,10 @@ body.fin-open { overflow: hidden; }
     <div class="settings-modal-brand">
       <div class="settings-modal-title">Settings</div>
     </div>
+    <div class="settings-about" role="group" aria-label="About Run the Weights">
+      <button type="button" class="settings-open-btn" onclick="settingsGo('edge')">The Edge</button>
+      <button type="button" class="settings-open-btn" onclick="settingsGo('about')">Why I built this</button>
+    </div>
 
     <div class="settings-maxes-display" id="maxesDisplay" style="margin-bottom:16px;">
       <div class="settings-max-chip">
@@ -5526,7 +5550,7 @@ body.fin-open { overflow: hidden; }
 
     <button class="settings-open-btn intro-replay" id="replayIntroBtn" onclick="replayIntro()">Replay intro</button>
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.35c</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.37c</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -6496,6 +6520,9 @@ body.fin-open { overflow: hidden; }
     var k = week + '|' + dayId;
     if (k === liveDayKey() || k === _previewKey) return true;
     if (timeBoxes[k] === undefined && !shortDays[k] && !quickSessions[k]) return false;
+    //  8.37: a choice made ahead for a day counts until that day has passed.
+    var dk = typeof dayDateKey === 'function' ? dayDateKey(dayId, week) : null;
+    if (dk && dk >= todayKey()) return true;
     return slotHasLogs(dayId, week);
   }
   function boxChoice(dayId, week) { return choiceCounts(dayId, week) ? timeBoxes[week + '|' + dayId] : undefined; }
@@ -6507,6 +6534,9 @@ body.fin-open { overflow: hidden; }
     delete timeBoxes[k]; delete shortDays[k]; delete quickSessions[k];
   }
   function stampDayChoice(dayId, mode, min) {
+    //  8.37: a day ahead keeps its choice by date; today's record stays.
+    var dk = typeof dayDateKey === 'function' ? dayDateKey(dayId, currentTrainWeek) : null;
+    if (dk && dk > todayKey()) return;
     saveDayMode({ date: todayKey(), week: currentTrainWeek, day: dayId, mode: mode, min: min == null ? null : min });
   }
   //  The full workout's length, whatever today's choice is.
@@ -7377,7 +7407,9 @@ body.fin-open { overflow: hidden; }
     _qlShort = null;
     goTab('today'); scrollTo(0, 0);
     var ann = document.getElementById('lenSay');
-    if (ann) ann.textContent = 'Today is now ' + dayWorkoutName(day) + '. Logged sets are kept.';
+    var dw = dayWord(day), say = document.getElementById('wsSay');
+    if (ann) ann.textContent = dw.charAt(0).toUpperCase() + dw.slice(1) + ' is now ' + dayWorkoutName(day) + '. Logged sets are kept.';
+    if (say && ann) say.textContent = ann.textContent;
   }
   //  Asks once before a new workout takes over a day that has sets logged.
   var _dtFn = null, _dtBack = null;
@@ -7387,7 +7419,7 @@ body.fin-open { overflow: hidden; }
     var m = document.getElementById('dayTakeover');
     if (!m) { fn(); return; }
     _dtFn = fn; _dtBack = document.activeElement;
-    document.getElementById('dayTakeoverMsg').textContent = 'Switch today to ' + name + '? Your logged sets stay.';
+    document.getElementById('dayTakeoverMsg').textContent = 'Switch ' + dayWord(day) + ' to ' + name + '? Your logged sets stay.';
     m.style.display = 'flex';
     document.getElementById('dayTakeoverYes').focus();
   }
@@ -7546,11 +7578,8 @@ body.fin-open { overflow: hidden; }
       if (wu) { wu.classList.add('day-action'); div.appendChild(wu); }
     });
   }
-  function stepTrainWeek(d) {
-    var n = Math.max(0, Math.min(totalTrainWeeks() - 1, currentTrainWeek + d));
-    if (n !== currentTrainWeek) setTrainWeek(n);
-    updateLiftToolbar();
-  }
+  //  8.37: the arrows and a swipe preview a week. Only this week is saved.
+  function stepTrainWeek(d) { viewWeek(currentTrainWeek + d); }
   function updateLiftToolbar() {
     var w = document.getElementById('toolWeek');
     if (w) w.textContent = 'Week ' + (currentTrainWeek + 1) + (isDeloadWeek(currentTrainWeek) ? ', easy' : '');
@@ -7564,16 +7593,7 @@ body.fin-open { overflow: hidden; }
     if (b) { b.setAttribute('aria-expanded', open ? 'true' : 'false'); b.classList.toggle('on', open); }
     if (open) { var f = r.querySelector('button'); if (f) f.focus(); }
   }
-  //  The presets are a popover: a tap outside or Escape closes them. The
-  //  outside tap is caught before it reaches anything underneath, so it only
-  //  closes the popover. Added once, at load.
-  document.addEventListener('click', function(e) {
-    var r = document.getElementById('restPresets');
-    if (!r || !r.classList.contains('open') || (e.target.closest && e.target.closest('#restPresets, #toolRestBtn'))) return;
-    e.stopPropagation(); e.preventDefault();
-    toggleRestPresets();
-    var b = document.getElementById('toolRestBtn'); if (b) b.focus();
-  }, true);
+  //  8.37: the presets open in place, so a tap elsewhere is just a tap.
   document.addEventListener('keydown', function(e) {
     var r = document.getElementById('restPresets');
     if (e.key === 'Escape' && r && r.classList.contains('open')) { toggleRestPresets(); var b = document.getElementById('toolRestBtn'); if (b) b.focus(); }
@@ -7647,6 +7667,7 @@ body.fin-open { overflow: hidden; }
     if (!host || !plan) return;
     var next = findNextUnloggedDay();
     host.innerHTML = '<div class="today-card rest-card">' + restCardHTML(slot) + '</div>'
+      + (slotWhen(slot) === 'past' ? '' : dayAdjustHTML('rest', slot))
       + (next ? '<button type="button" class="today-secondary" onclick="switchDay(\'' + next + '\')">See ' + (SPLIT_DAYS[next] || {}).title + '</button>' : '');
     host.style.display = '';
     plan.classList.add('plan-resting');
@@ -7654,17 +7675,13 @@ body.fin-open { overflow: hidden; }
   }
   //  The strip has two markers: an outline for today's date and a bar along
   //  the bottom for the day open below it. Logged days are struck through.
-  function viewedGlanceSlot() {
-    if (_planRestSlot != null) return _planRestSlot;
-    var d = null;
-    try { d = localStorage.getItem(LAST_DAY_KEY); } catch(e) {}
-    return d ? activeSplit().week.indexOf(d) : -1;
-  }
+  //  8.37: the strip marks the one selected day, shared with Today.
+  function viewedGlanceSlot() { return selSlot(); }
   function markViewedDay() {
     var v = viewedGlanceSlot();
-    document.querySelectorAll('#weekGlance .wg-day').forEach(function(b, i) {
-      b.classList.toggle('picked', i === v);
-      if (i === v) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+    document.querySelectorAll('.ws .wg-day').forEach(function(b, i) {
+      b.classList.toggle('picked', i % 7 === v);
+      b.setAttribute('aria-pressed', String(i % 7 === v));
     });
   }
   function hidePlanRestDay() {
@@ -7672,37 +7689,6 @@ body.fin-open { overflow: hidden; }
     var host = document.getElementById('planRestDay'), plan = document.getElementById('plan');
     if (host) host.style.display = 'none';
     if (plan) plan.classList.remove('plan-resting');
-    markViewedDay();
-  }
-
-  function renderWeekGlance() {
-    var hosts = document.querySelectorAll('#weekGlance, [data-glance]');
-    if (!hosts.length) return;
-    var week = activeSplit().week, today = mondayIndex(startOfToday()), viewedSlot = viewedGlanceSlot();
-    var html = week.map(function(id, i) {
-      var d = SPLIT_DAYS[id] || {}, rest = id === 'rest' || d.rest;
-      var logged = !rest && hasLogsForDay(id, currentTrainWeek);
-      var cls = 'wg-day' + (rest ? ' rest' : '') + (i === today ? ' today' : '') + (logged ? ' logged' : '') + (i === viewedSlot ? ' picked' : '');
-      var mins = rest ? 0 : (currentTrainWeek + '|' + id) === liveDayKey() ? buildSession(id, currentTrainWeek).minutes : fullMinutes(id, currentTrainWeek);
-      var time = mins ? (mins >= 60 ? Math.floor(mins / 60) + ':' + ('0' + (mins % 60)).slice(-2) : mins + 'm') : '';
-      //  Seven columns on a phone leave about 40px each, so the label is the
-      //  first word of the title, keeping a trailing B. Full title is in the
-      //  aria label and one tap away.
-      var title = rest ? REST_OPTS[restPlanFor(i, currentTrainWeek).list[0]].short : String(d.title || '');
-      //  Words longer than the column (about 36px at 360 wide) swap to a
-      //  shorter word. A day letter (A, B, C) stays on the word's line when
-      //  it fits and wraps to its own line when it does not, so it never clips.
-      var SHORT = { Shoulders: 'Arms', Mobility: 'Core' };
-      var first = title.split(' ')[0];
-      var letter = (title.match(/ ([A-C])$/) || [])[1];
-      var short = (SHORT[first] || first) + (letter ? ' <span class="wg-letter">' + letter + '</span>' : '');
-      return '<button type="button" class="' + cls + '"' + (rest ? ' onclick="goTab(\'training\'); showPlanRestDay(' + i + ')"' : ' onclick="switchDay(\'' + id + '\')"')
-        + ' aria-label="' + WG_DOWS[i] + ', ' + (rest ? (restPlanFor(i, currentTrainWeek).recovery ? 'recovery day' : 'rest day') + ', ' + REST_OPTS[restPlanFor(i, currentTrainWeek).list[0]].text : d.title) + (logged ? ', logged' : '') + (i === today ? ', today' : '') + '">'
-        + '<div class="wg-dow">' + WG_DOWS[i] + '</div>'
-        + '<div class="wg-title">' + short + '</div>'
-        + (time ? '<div class="wg-time">' + time + '</div>' : '') + '</button>';
-    }).join('');
-    hosts.forEach(function(h) { h.innerHTML = html; });
     markViewedDay();
   }
 
@@ -8035,7 +8021,6 @@ body.fin-open { overflow: hidden; }
     runningEnabled = !!on;
     try { localStorage.setItem(RUNNING_KEY, runningEnabled ? '1' : '0'); } catch(e) {}
     if (document.body) document.body.classList.toggle('running', runningEnabled);
-    if (typeof _navMenu !== 'undefined' && _navMenu) { _navMenu.remove(); _navMenu = null; }
     document.querySelectorAll('[data-run-btn]').forEach(function(b) { b.classList.toggle('on', (b.dataset.runBtn === 'on') === runningEnabled); });
     //  The Run tab comes and goes with the switch, no reload.
     var onRun = document.getElementById('tab-running');
@@ -8323,7 +8308,7 @@ body.fin-open { overflow: hidden; }
     //  split. It exists only so Quick Log has a real exercise id to log
     //  Deadlift sets against (for PR/progress-card tracking); the DAY_ORDER
     //  fallback pass in renderProgressView() is what still surfaces its card.
-    { id:"deadlift", day:"anchor", muscle:"glutes", pattern:"hinge", kind:"compound", name:"Barbell Deadlift", tag:"primary", repRange:[1,5], repWhy:"Quick Log only, so the reps track whatever you actually pulled that day.", increment:10, rest:"3–4 min", time:"~10 min", note:"Logged only through Quick Log, not scheduled into a training day. Track singles or working sets here whenever you pull." },
+    { id:"deadlift", day:"anchor", muscle:"glutes", pattern:"hinge", kind:"compound", name:"Barbell Deadlift", tag:"primary", repRange:[1,5], repWhy:"Logged on its own, so the reps track whatever you actually pulled that day.", increment:10, rest:"3–4 min", time:"~10 min", note:"Logged only through Quick Log, not scheduled into a training day. Track singles or working sets here whenever you pull." },
   ];
   //  FREE EXERCISE DB. Added in 8.20 to fill swap gaps for people with only
   //  dumbbells, only bands or only their body weight. Public domain (the
@@ -10970,7 +10955,7 @@ body.fin-open { overflow: hidden; }
     if (!host) return;
     var recent = allQuickLogEntries().slice(0, 5);
     if (!recent.length) {
-      host.innerHTML = '<div class="quicklog-recent-empty">No quick logs yet.</div>';
+      host.innerHTML = '<div class="quicklog-recent-empty">No single sets yet.</div>';
       return;
     }
     host.innerHTML = recent.map(function(item) {
@@ -11613,6 +11598,13 @@ body.fin-open { overflow: hidden; }
     if (m) m.style.display = 'flex';
     var tm = document.getElementById('tipsResetMsg'); if (tm) tm.textContent = '';
     if (typeof tipOnNav === 'function') tipOnNav();
+  }
+  //  8.37: The Edge and Why I built this open from Settings. 8.35c gave Why its own page.
+  function settingsGo(which) {
+    closeSettingsModal();
+    goTab('info'); goSec(which === 'about' ? 'why' : 'edge');
+    var el = which === 'about' ? null : document.querySelector('#edge > .section-label');
+    if (el) try { el.scrollIntoView({ block: 'start' }); } catch(e) {} else scrollTo(0, 0);
   }
   function closeSettingsModal() {
     var m = document.getElementById('settingsModal');
@@ -12867,7 +12859,7 @@ body.fin-open { overflow: hidden; }
   }
 
   //     PROGRESS VIEW — real logged history, per exercise
-  var DAY_LABELS = { 'chest':'1A', 'arms':'2A', 'legs':'3A', 'chest-b':'1B', 'arms-b':'2B', 'legs-b':'3B', 'anchor':'Quick Log' };
+  var DAY_LABELS = { 'chest':'1A', 'arms':'2A', 'legs':'3A', 'chest-b':'1B', 'arms-b':'2B', 'legs-b':'3B', 'anchor':'Single sets' };
 
   function progRow(label, value, noteHTML, accent) {
     return '<div class="prog-row"><div class="prog-week">' + label + '</div>'
@@ -12976,6 +12968,7 @@ body.fin-open { overflow: hidden; }
   //     week is NOT this: it is derived from today against the race date and is
   //     deliberately left alone here.
   function persistTrainWeek() {
+    if (_weekPreview) return;
     try { localStorage.setItem(TRAIN_WEEK_KEY, currentTrainWeek); } catch(e) {}
     idbSet('trainWeek', currentTrainWeek);   // mirrored like every other store
   }
@@ -13070,6 +13063,7 @@ body.fin-open { overflow: hidden; }
     if (isNaN(idx)) idx = 0;
     idx = Math.max(0, Math.min(totalTrainWeeks() - 1, idx));
     currentTrainWeek = idx;
+    if (!_weekPreview) _homeWeek = idx;
     currentWeek = idx;                       // the Overview's own pointer, kept aligned
     persistTrainWeek();
     // Re-render so every row shows the SELECTED week's logged data / target,
@@ -14029,7 +14023,7 @@ body.fin-open { overflow: hidden; }
   //  exercises; recents first when the box is empty; an exact miss offers to
   //  add the typed name, which asks one tap for the primary muscle.
   function openExSheet(mode) {
-    _sheetMode = mode === 'form' ? 'form' : 'session'; _sheetNew = null; _musclePick.sheet = null;
+    _sheetMode = mode === 'form' || mode === 'day' ? mode : 'session'; _sheetNew = null; _musclePick.sheet = null;
     var m = document.getElementById('exSheet'), q = document.getElementById('exSheetQ');
     if (!m) return;
     if (q) q.value = '';
@@ -14078,7 +14072,8 @@ body.fin-open { overflow: hidden; }
     if (_sheetMode === 'form') {
       var old = document.getElementById('qlOld'); if (old && old.style.display === 'none') toggleOldQuickLog();
       selectQuickLogLift(id);
-    } else qsAdd(id);
+    } else if (_sheetMode === 'day') cwAdded(id);
+    else qsAdd(id);
   }
 
   //     ONE TIME TIPS (8.28). One short tip the first time a screen opens.
@@ -14098,7 +14093,7 @@ body.fin-open { overflow: hidden; }
     { id: 'run', scr: 'running', t: 'Your running plan lives here. Log each run when you finish it.', a: function() { var h = document.getElementById('runHome'); return h && h.firstElementChild; }, at: 'before' },
     { id: 'food', scr: 'food', t: 'Weigh in here. Add meals below and your totals show under them.', a: function() { return document.getElementById('foodWeighTop'); }, at: 'after' },
     { id: 'style', scr: 'settings', isNew: 1, t: 'Follow a plan or train your own way. Switch under Set your maxes.', a: function() { return document.getElementById('settingsOpenBtn'); }, at: 'after' },
-    { id: 'menu', scr: '*', isNew: 1, t: 'Week review, The Edge and Settings live here.', a: function() { return tipTabTop(); }, at: 'before' }
+    { id: 'menu', scr: '*', isNew: 1, t: 'The gear at the top opens Settings, The Edge and Why I built this.', a: function() { return tipTabTop(); }, at: 'before' }
   ];
   var TIP_IDS = TIP_DEFS.map(function(d) { return d.id; });
   var TIP_OLD = TIP_DEFS.filter(function(d) { return !d.isNew; }).map(function(d) { return d.id; });
@@ -14147,8 +14142,7 @@ body.fin-open { overflow: hidden; }
     var open = Array.prototype.some.call(document.querySelectorAll('.settings-modal-overlay, .rest-modal-overlay, #onbFlow, #introStory'), function(m) {
       return m.id !== 'settingsModal' && getComputedStyle(m).display !== 'none';
     });
-    var menu = document.getElementById('navMenu');
-    return open || !!(menu && menu.offsetParent);
+    return open;
   }
   function tipInView(el, after) {
     if (!el || !el.offsetParent) return false;
@@ -14261,7 +14255,7 @@ body.fin-open { overflow: hidden; }
       if (days.length) p2.push(nx && days.indexOf(nx) !== -1 ? 'Session ' + (days.indexOf(nx) + 1) + ' of ' + days.length + '.' : !nx ? 'All ' + days.length + ' sessions done.' : '');
       return { w: 'Lift', l: p2.filter(Boolean).join(' ') };
     }
-    if (t === 'quicklog') return { w: 'Quick Log', l: 'Log anything. Last numbers fill in.' };
+    if (t === 'quicklog') return { w: 'Workout', l: 'Pick, add or build. Last numbers fill in.' };
     if (t === 'calendar') return { w: 'Progress', l: 'Your lifts by date.' };
     if (t === 'running') return { w: 'Run', l: heroRunLine() };
     if (t === 'food') return { w: 'Food', l: 'Today.' };
@@ -17689,14 +17683,6 @@ body.fin-open { overflow: hidden; }
     // Brand-new device only: the three-screen welcome + goal-setup flow.
     // Runs first; it calls maybeStartOnboarding() itself once it settles.
     startOnbFlow();
-    // Nav hint — the pulse ring plays once, ever, until the user opens the
-    // menu (openNavMenu() clears both the class and the flag's absence).
-    try {
-      if (!localStorage.getItem(NAV_HINT_KEY)) {
-        var navHintEl = document.getElementById('navLogo');
-        if (navHintEl) navHintEl.classList.add('nav-hint');
-      }
-    } catch(e) {}
     // First launch only: the one-question-per-screen setup wizard
     setTimeout(maybeStartOnboarding, 600);
   });
@@ -18337,215 +18323,6 @@ function initScrollAssembly() {
   apply(progress());
 }
 
-//     LOGO DROPDOWN — a second way into the four destinations, anchored to the
-//     brand mark. Additive: the horizontal tab row is untouched.
-//
-//     Nothing here is invented. The panel is appended to document.body and
-//     positioned from the trigger's getBoundingClientRect, which is the same
-//     thing showTooltip does and for the same reason — nav is a fixed, clipping
-//     ancestor, so a panel parented inside it would be cut off. The entrance is
-//     the tooltip's: opacity 0 -> 1 with scale(0.95) -> 1 over 0.13s, which the
-//     global reduced-motion block already neutralises to a snap. The menu items
-//     reuse wrapTextRoll, so a destination rolls the same way whether it is
-//     tapped in the tab row or in here.
-var _navMenu = null;
-
-function buildNavMenu() {
-  if (_navMenu) return _navMenu;
-  var el = document.createElement('div');
-  el.className = 'navmenu';
-  el.id = 'navMenu';
-  el.setAttribute('role', 'menu');
-  //  Today, Plan, Food, Run (when on), Quick Log and About. Progress lives
-  //  on Today and Settings behind the header gear, so neither is listed.
-  //  About opens the About page; the rest of Info is in the More tab.
-  //  8.27: Quick Log sits under Plan; About is part of The Edge.
-  //  8.35b: places live in the bottom bar. The menu keeps the rare items,
-  //  plus Quick Log as one of its four entry points.
-  var items = [
-    { id: 'quicklog', label: 'Quick Log' },
-    { id: 'info', sec: 'overview', label: 'Week review' },
-    { id: 'info', sec: 'edge', label: 'The Edge' },
-    { id: 'settings', action: 'settings', label: 'Settings' }
-  ];
-  //  No header row here — the trigger pill itself (the wordmark you just
-  //  tapped) already says what this is; a repeated "Run the Weights" label
-  //  inside the panel was redundant and cost every item extra scroll room.
-  //  Settings is appended after a divider rather than folded into `items` —
-  //  it opens a modal, not a destination goTab() knows about, so it needs a
-  //  data-action instead of a data-tab and must be excluded from the
-  //  current-section highlighting below.
-  el.innerHTML = items.map(function(it) {
-    return '<button class="navmenu-item' + (it.primary ? ' primary' : '') + '" role="menuitem"'
-      + (it.action ? ' data-action="' + it.action + '"' : ' data-tab="' + it.id + '"') + (it.sec ? ' data-sec="' + it.sec + '"' : '') + '>' + it.label + '<span class="navmenu-tick">&#9679;</span></button>';
-  }).join('');
-  document.body.appendChild(el);
-  el.querySelectorAll('.navmenu-item').forEach(function(b) {
-    b.addEventListener('click', function(e) {
-      e.stopPropagation();
-      closeNavMenu();
-      if (b.dataset.action === 'settings') openSettingsModal();
-      else if (b.dataset.sec) { goTab('info'); goSec(b.dataset.sec); }
-      else if (b.dataset.tab === 'quicklog') openQuickLog();
-      else goTab(b.dataset.tab);
-    });
-    //  Same letter-roll as the primary tabs, driven the same way: a .rolling
-    //  class, hover in and out on a mouse, and a single timed roll on tap that
-    //  always clears itself. Touch has no hover-exit event, so anything driven
-    //  by :hover alone either never fires or sticks half-transitioned.
-    if (!prefersReducedMotion()) {
-      wrapTextRoll(b);
-      var roll = function(on) { b.classList.toggle('rolling', on); };
-      b.addEventListener('mouseenter', function() { roll(true); });
-      b.addEventListener('mouseleave', function() { roll(false); });
-      b.addEventListener('blur', function() { roll(false); });
-      b.addEventListener('touchstart', function() {
-        roll(true);
-        setTimeout(function() { roll(false); }, 700);
-      }, { passive: true });
-      b.addEventListener('click', function() {
-        setTimeout(function() { roll(false); }, 320);
-      });
-    }
-  });
-  el.addEventListener('click', function(e) { e.stopPropagation(); });
-  //  Without this, a finger landing on the panel bubbles to the document
-  //  dismiss handler below, which closes the menu before the tap resolves — so
-  //  the click lands on whatever was underneath and the item never fires.
-  el.addEventListener('touchstart', function(e) { e.stopPropagation(); }, { passive: true });
-  _navMenu = el;
-  return el;
-}
-
-function navMenuOpen() { return !!(_navMenu && _navMenu.classList.contains('on')); }
-
-//  8.30: a clear layer under the open menu takes every tap outside it, so
-//  that tap only closes the menu and never presses what sits underneath.
-//  After a touch it stays a moment longer to swallow the click that follows.
-var _navScrim = null, _navScrimT = 0;
-function navScrim() {
-  if (_navScrim) return _navScrim;
-  var s = document.createElement('div');
-  s.className = 'navmenu-scrim';
-  s.setAttribute('aria-hidden', 'true');
-  s.addEventListener('touchstart', function(e) {
-    e.stopPropagation();
-    closeNavMenu(false, true);
-    clearTimeout(_navScrimT);
-    _navScrimT = setTimeout(hideNavScrim, 700);
-  }, { passive: true });
-  s.addEventListener('mousedown', function(e) { e.preventDefault(); });
-  s.addEventListener('click', function(e) {
-    e.preventDefault(); e.stopPropagation();
-    if (navMenuOpen()) closeNavMenu(); else hideNavScrim();
-  });
-  document.body.appendChild(s);
-  _navScrim = s;
-  return s;
-}
-function hideNavScrim() { clearTimeout(_navScrimT); if (_navScrim) _navScrim.classList.remove('on'); }
-
-const NAV_HINT_KEY = 'monk_nav_hint_v1';
-function openNavMenu() {
-  var trigger = document.getElementById('navLogo');
-  if (!trigger) return;
-  //  First real open, ever, on this device — the hint has done its job.
-  trigger.classList.remove('nav-hint');
-  try { localStorage.setItem(NAV_HINT_KEY, '1'); } catch(e) {}
-  var el = buildNavMenu();
-  //  Mark the tab you are already on. Quick Log ticks itself. The About
-  //  entry ticks only on the About page; the rest of Info and the More tab
-  //  have no entry here, so nothing ticks there.
-  var current = null;
-  try { current = localStorage.getItem(LAST_TAB_KEY); } catch (e) {}
-  if (MAIN_TABS.indexOf(current) === -1) current = 'info';
-  if (current === 'info') {
-    var onSec = ['overview', 'edge'].filter(function(id) { var el = document.getElementById('sec-' + id); return el && el.style.display === 'block'; })[0];
-    current = onSec ? 'more' : null;
-  }
-  el.querySelectorAll('.navmenu-item').forEach(function(b) {
-    b.classList.toggle('current', b.dataset.tab === current);
-    //  The panel is built once and reused, so clear any roll left over from the
-    //  last time it was open. Belt and braces alongside the timers that clear
-    //  it — reopening must never show letters parked mid-transition.
-    b.classList.remove('rolling');
-  });
-
-  positionNavMenu();
-  clearTimeout(_navScrimT);
-  navScrim().classList.add('on');
-  void el.offsetWidth;
-  el.classList.add('on');
-  trigger.setAttribute('aria-expanded', 'true');
-}
-
-//  Kept separate from opening so a resize can re-anchor the panel without
-//  re-adding .on, which would restart the entrance animation on every one of
-//  the many resize events a window drag fires.
-function positionNavMenu() {
-  var trigger = document.getElementById('navLogo');
-  if (!trigger || !_navMenu) return;
-  var el = _navMenu;
-  var wasOn = el.classList.contains('on');
-  if (!wasOn) { el.style.visibility = 'hidden'; el.style.left = '0px'; el.style.top = '0px'; }
-  var r = trigger.getBoundingClientRect();
-  var vw = document.documentElement.clientWidth, vh = document.documentElement.clientHeight;
-  var mw = el.offsetWidth, mh = el.offsetHeight;
-  //  Under the mark by default; flip above if it would run off the bottom, the
-  //  same collision rule the tooltip uses.
-  var top = r.bottom + 8;
-  if (top + mh > vh - 6 && r.top - mh - 8 > 6) top = r.top - mh - 8;
-  var left = Math.max(8, Math.min(r.left, vw - mw - 8));
-  el.style.left = Math.round(left) + 'px';
-  el.style.top = Math.round(top) + 'px';
-  el.style.visibility = '';
-}
-
-//  returnFocus is for keyboard dismissal — closing with Escape has to put focus
-//  back on the trigger, or a keyboard user is dropped at the top of the document.
-function closeNavMenu(returnFocus, keepScrim) {
-  if (!keepScrim) hideNavScrim();
-  if (!_navMenu) return;
-  _navMenu.classList.remove('on');
-  var t = document.getElementById('navLogo');
-  if (t) {
-    t.setAttribute('aria-expanded', 'false');
-    if (returnFocus) t.focus();
-  }
-}
-
-function toggleNavMenu(e) {
-  if (e) e.stopPropagation();
-  //  Confirms the tap registered before the menu itself appears (openNavMenu
-  //  below still runs synchronously right after — this isn't a delay, just a
-  //  visible acknowledgment of the tap that already happened).
-  var trigger = document.getElementById('navLogo');
-  if (trigger) {
-    trigger.classList.add('nav-tap-flash');
-    setTimeout(function() { trigger.classList.remove('nav-tap-flash'); }, 100);
-  }
-  if (navMenuOpen()) closeNavMenu(); else openNavMenu();
-}
-
-//  Tapping anywhere else closes without navigating; so does Escape.
-document.addEventListener('click', function() { if (navMenuOpen()) closeNavMenu(); });
-document.addEventListener('touchstart', function() { if (navMenuOpen()) closeNavMenu(); }, { passive: true });
-document.addEventListener('keydown', function(e) {
-  if (!navMenuOpen()) return;
-  if (e.key === 'Escape') { closeNavMenu(true); return; }
-  //  role="menu" promises arrow-key movement, so honour it rather than leaving
-  //  the roles writing a cheque the keyboard handling does not cover.
-  if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
-  var items = [].slice.call(_navMenu.querySelectorAll('.navmenu-item'));
-  if (!items.length) return;
-  e.preventDefault();
-  var i = items.indexOf(document.activeElement);
-  var step = e.key === 'ArrowDown' ? 1 : -1;
-  items[i < 0 ? (step > 0 ? 0 : items.length - 1) : (i + step + items.length) % items.length].focus();
-});
-//  Re-anchor rather than close: a resize here is usually an orientation change
-//  or the mobile URL bar collapsing, and closing on that feels like a glitch.
-window.addEventListener('resize', function() { if (navMenuOpen()) positionNavMenu(); });
 
 //  The sliding tab indicator lived here. It measured the active .nav-tab and
 //  moved a bar under it, and scrolled that tab into view on narrow screens.
@@ -18558,7 +18335,8 @@ var TAB_ALIASES = { workout: 'training', plan: 'training', progress: 'calendar',
 //  The bar has four buttons. More lights for More and the pages listed in
 //  it. Quick Log and Progress are not under any button, so none lights.
 function tabBarOwner(t) {
-  if (t === 'quicklog') return (typeof trainStyle === 'object' && trainStyle.style === 'free') ? 'training' : (typeof FOOD_ENABLED !== 'undefined' && !FOOD_ENABLED ? 'quicklog' : null);
+  //  8.37: no Quick Log tab. Its screen belongs to the tab it was opened from.
+  if (t === 'quicklog') return (typeof trainStyle === 'object' && trainStyle.style === 'free') ? 'training' : (typeof _qlFrom === 'string' && _qlFrom !== 'quicklog' ? tabBarOwner(_qlFrom) : 'today');
   return (t === 'today' || t === 'training' || t === 'food' || t === 'running' || t === 'calendar') ? t : null;
 }
 function goTab(t) {
@@ -18608,7 +18386,7 @@ function goTab(t) {
       //  Present() already calls switchDay() itself when it finds something
       //  to resume, so pickTrainingDay() (which would reroute to whichever
       //  day is earliest-unlogged) never runs at all in that case.
-      if (!restoreActiveSessionIfPresent()) switchDay(pickTrainingDay());
+      if (!restoreActiveSessionIfPresent()) wsLiftDay();
       if (typeof maybeShowLiftTip === 'function') maybeShowLiftTip();
       if (typeof updateLiftToolbar === 'function') updateLiftToolbar();
     }
@@ -18643,7 +18421,8 @@ function goTab(t) {
   // Renders above may have rebuilt inputs and indicators
   if (typeof enhanceAllInputs === 'function') enhanceAllInputs();
   if (typeof attachAllTooltips === 'function') attachAllTooltips();
-  window.scrollTo(0,0);
+  //  8.35b1: a tab switch jumps, html is scroll-behavior: smooth. Older browsers may reject 'instant'.
+  try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch(e) { window.scrollTo(0, 0); }
 }
 
 function goSec(id) {
@@ -18678,14 +18457,6 @@ document.addEventListener('DOMContentLoaded', function() {
     var saved = localStorage.getItem(LAST_TAB_KEY);
     if (MAIN_TABS.indexOf(saved) !== -1 && saved !== 'info') lastTab = saved;
   } catch(e) {}
-  var _logo = document.getElementById('navLogo');
-  if (_logo) {
-    _logo.addEventListener('click', toggleNavMenu);
-    //  Same reason as the panel: the document dismiss handler would close the
-    //  menu on touchstart and the click would immediately reopen it, so a
-    //  second tap on the logo could never close what the first tap opened.
-    _logo.addEventListener('touchstart', function(e) { e.stopPropagation(); }, { passive: true });
-  }
   initScrollAssembly();
   initEdgeCarousel();
   //  Progress is one place: the lift progress cards move under the calendar.
@@ -18960,10 +18731,10 @@ function renderPlanActive() {
   var moves = paMovesText(list);
   var head = '<header class="pa-head">'
     + '<p class="pa-meta"><span>Week ' + (currentTrainWeek + 1) + ' of ' + totalTrainWeeks() + '</span><span>' + (ex ? 'Exercise ' + idx + ' of ' + list.length : 'All ' + list.length + ' done') + '</span></p>'
-    + '<div class="pa-row"><h2 class="pa-title">' + paEsc(dayWorkoutName(day)) + '<span class="pa-dot" aria-hidden="true">.</span></h2>' + sessionLengthHTML(day, 'on-blue') + '</div>'
+    + '<div class="pa-row"><h2 class="pa-title">' + paEsc(dayWorkoutName(day)) + '<span class="pa-dot" aria-hidden="true">.</span></h2></div>'
     + restoreLineHTML(day, 'on-blue')
     + '<p class="pa-sum">' + [mins ? mins + ' min' : '', list.length + (list.length === 1 ? ' lift' : ' lifts'), moves].filter(Boolean).join(' · ') + '</p>'
-    + '</header><div class="pa-week" id="paWeekSlot"></div>';
+    + '</header>' + dayAdjustHTML(day, selSlot()) + '<div class="pa-week" id="paWeekSlot"></div>';
   //  Finished lifts sit above the card, each one a tap away from editing.
   var fin = list.filter(function(x) { return x !== ex && !paOpenSlot(x); });
   var finHTML = fin.map(function(x) {
@@ -18994,7 +18765,7 @@ function renderPlanActive() {
   var unit = ex.unit || 'reps';
   var noLoad = weightOptional(ex) && !(PA.wLb > 0);
   var qs = quickSetsOn(day, ex.id), isAdd = !!(b.added && b.added[ex.id]);
-  var sub = (isAdd ? 'Added to this day · ' : '') + (qs.length ? 'Quick Log ' + qs.map(function(x) { return paSetTxt(x, ex); }).join(', ') + ' · ' : '') + (prevRef && prevRef.reps ? 'Last time ' + (prevRef.weight > 0 ? wNum(prevRef.weight) + ' x ' : '') + prevRef.reps : 'First time on this lift') + ' · target ' + paRange(ex) + ' ' + unit;
+  var sub = (isAdd ? 'Added to this day · ' : '') + (qs.length ? 'Single sets ' + qs.map(function(x) { return paSetTxt(x, ex); }).join(', ') + ' · ' : '') + (prevRef && prevRef.reps ? 'Last time ' + (prevRef.weight > 0 ? wNum(prevRef.weight) + ' x ' : '') + prevRef.reps : 'First time on this lift') + ' · target ' + paRange(ex) + ' ' + unit;
   var isLogged = !!paLoggedSet(ex, slot);
   var wBox = noLoad
     ? '<div class="pa-box pa-bw"><span class="pa-bwt">Body weight</span></div>'
@@ -19247,25 +19018,25 @@ function renderTodayB() {
     var left = Math.max(0, planned - done);
     var C = 2 * Math.PI * 44, frac = planned ? Math.min(1, done / planned) : 0;
     var copy = !planned ? '' : left === 0 ? 'All ' + paWord(planned) + ' done this week.' : (done ? paWord(done, true) + ' done. ' : '') + paWord(left, true) + ' to go. A day you did not get to moves forward, it does not disappear.';
-    var lift = 0, strip = week.map(function(id, i) {
-      var d = SPLIT_DAYS[id] || {}, rest = id === 'rest' || d.rest;
-      var logged = !rest && hasLogsForDay(id, currentTrainWeek);
-      if (!rest) lift++;
-      var cls = 'tb-dot' + (logged ? ' done' : (i === ti && !rest) ? ' now' : '');
-      var inner = rest ? 'R' : logged ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' : String(lift);
-      var say = PA_DOWS[i] + ', ' + (rest ? 'rest' : (d.title || 'session') + (logged ? ', done' : i === ti ? ', today' : ''));
-      return '<li><span class="sr-only">' + paEsc(say) + '</span><span class="tb-dl" aria-hidden="true">' + PA_DOWS[i].charAt(0) + '</span><span class="' + cls + '" aria-hidden="true">' + inner + '</span></li>';
-    }).join('');
     if (wk) {
       wk.hidden = !planned;
       wk.innerHTML = '<div class="tb-week-top"><div class="tb-ring" role="img" aria-label="' + done + ' of ' + planned + ' sessions done this week">'
         + '<svg viewBox="0 0 104 104" aria-hidden="true"><circle class="trk" cx="52" cy="52" r="44"/><circle class="val" cx="52" cy="52" r="44" stroke-dasharray="' + (C * frac).toFixed(1) + ' ' + C.toFixed(1) + '"' + (frac ? '' : ' style="display:none"') + '/></svg>'
         + '<div class="tb-ring-c" aria-hidden="true"><span class="tb-ring-n">' + done + '/' + planned + '</span><span class="tb-ring-l">This week</span></div></div>'
-        + '<p class="tb-week-copy">' + copy + '</p></div>'
-        + '<ul class="tb-strip" aria-label="This week">' + strip + '</ul>';
+        + '<p class="tb-week-copy">' + copy + '</p></div>';
     }
-    if (work) {
+    var adj = document.getElementById('tbAdj'), sel = selSlot();
+    if (adj) adj.innerHTML = '';
+    if (work && slotWhen(sel) !== 'today') {
+      //  8.37: another day is picked in the strip. No START here.
       work.hidden = false;
+      work.className = 'tb-work tb-prev';
+      work.innerHTML = wsPreviewHTML(sel);
+      var mp = document.getElementById('tbMore'); if (mp) mp.innerHTML = '';
+      if (adj && slotWhen(sel) === 'future') adj.innerHTML = dayAdjustHTML(splitWeekOf(currentTrainWeek)[sel], sel);
+    } else if (work) {
+      work.hidden = false;
+      work.className = 'tb-work';
       var partial = null, next = null;
       try { partial = partialDayThisWeek(); next = partial || findNextUnloggedDay(); } catch(e) {}
       var mo0 = document.getElementById('tbMore'); if (mo0) mo0.innerHTML = '';
@@ -19280,12 +19051,13 @@ function renderTodayB() {
         try { back = backFromBreak() ? BREAK_LINE : daysSinceLastLog() >= 3 ? 'Welcome back. Pick up where you left off.' : ''; } catch(e) {}
         work.innerHTML = (back ? '<p class="tb-meta" style="margin-bottom:12px">' + back + '</p>' : '') + '<p class="tb-kick">' + kick + '</p>'
           + '<h2 class="tb-day">' + paEsc(dayWorkoutName(next) || dd.title || '') + '</h2>'
-          + '<p class="tb-meta">' + nLifts + (nLifts === 1 ? ' lift' : ' lifts') + (mins ? ' · about ' + mins + ' min' : '') + ' · Week ' + (currentTrainWeek + 1) + ' of ' + totalTrainWeeks() + '</p>'
-          + sessionLengthHTML(next, 'on-blue') + restoreLineHTML(next, 'on-blue')
+          + '<p class="tb-meta">' + nLifts + (nLifts === 1 ? ' lift' : ' lifts') + (mins ? ' · about ' + mins + ' min' : '') + ' · <span class="nb">Week ' + (currentTrainWeek + 1) + ' of ' + totalTrainWeeks() + '</span></p>'
+          + restoreLineHTML(next, 'on-blue')
           + '<button type="button" class="tb-start" onclick="tbStart(\'' + paJs(next) + '\')">' + (partial ? 'Continue workout' : 'Start workout') + '</button>'
           ;
         var mo = document.getElementById('tbMore');
-        if (mo) mo.innerHTML = '<button type="button" onclick="openQuickLog(null, \'' + paJs(next) + '\')">Short on time</button><button type="button" onclick="openGoingOut(\'' + paJs(next) + '\')">Going out?</button>';
+        if (adj) adj.innerHTML = dayAdjustHTML(next, sel);
+        if (mo) mo.innerHTML = '<button type="button" onclick="openGoingOut(\'' + paJs(next) + '\')">Going out?</button>';
       }
     }
   }
@@ -19298,6 +19070,223 @@ function renderTodayB() {
     stats.className = 'tb-stats' + (tiles.length === 1 ? ' one' : '');
     stats.innerHTML = tiles.join('');
   }
+}
+//  ===== 8.37 WEEK STRIP =====
+//  One strip on Today and Lift and one selected day for both. The plan week
+//  is still currentTrainWeek. Another week is a preview: it is never saved,
+//  so a reload lands on this week and on today. Nothing new is stored; a
+//  change to a day goes under that day's week and day key as before.
+var _selSlot = null, _homeWeek = null, _weekPreview = false;
+function homeWeek() { if (_homeWeek == null) _homeWeek = currentTrainWeek; return _homeWeek; }
+function wsToday() { return mondayIndex(startOfToday()); }
+function selSlot() { return _selSlot == null ? wsToday() : _selSlot; }
+function splitWeekOf(w) {
+  var t = SPLIT_TEMPLATES[activeSplitId] || SPLIT_TEMPLATES.arnold, mv = (typeof weekMoves === 'object' && weekMoves) ? weekMoves[w] : null;
+  return Array.isArray(mv) && mv.length === 7 && mv.slice().sort().join() === t.week.slice().sort().join() ? mv : t.week;
+}
+function slotDate(w, i) { var d = startOfToday(); d.setDate(d.getDate() - mondayIndex(d) + 7 * (w - homeWeek()) + i); return d; }
+function dayDateKey(dayId, w) { var i = splitWeekOf(w).indexOf(dayId); return i === -1 ? null : dateKeyOfRun(slotDate(w, i)); }
+function slotWhen(i) { var k = dateKeyOfRun(slotDate(currentTrainWeek, i)), t = todayKey(); return k === t ? 'today' : k < t ? 'past' : 'future'; }
+//  Today's slot runs today's workout, which can be a day that moved forward.
+function wsTodayDay() { var n = null; try { n = partialDayThisWeek() || findNextUnloggedDay(); } catch(e) {} return n; }
+//  On a rest day too, as Today offers the next workout under the rest line.
+function slotDayId(i) { return slotWhen(i) === 'today' ? (wsTodayDay() || splitWeekOf(currentTrainWeek)[i]) : splitWeekOf(currentTrainWeek)[i]; }
+function dayWord(dayId) {
+  if (currentTrainWeek === homeWeek() && dayId === todayDayId()) return 'today';
+  var i = splitWeekOf(currentTrainWeek).indexOf(dayId);
+  return i === -1 ? 'this day' : PA_DOWS[i];
+}
+var WS_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+var WS_SHORT = { Shoulders: 'Arms', Mobility: 'Core' };
+function wsShort(t) { var f = String(t || '').split(' ')[0]; return WS_SHORT[f] || f; }
+function wsAfter() {
+  renderWeekGlance();
+  if (typeof renderTodayB === 'function') renderTodayB();
+  if (document.body && document.body.dataset.tab === 'training') wsSyncLift();
+}
+function viewWeek(w) {
+  var home = homeWeek();
+  w = Math.max(0, Math.min(totalTrainWeeks() - 1, w));
+  if (w !== currentTrainWeek) {
+    _weekPreview = w !== home;
+    try { setTrainWeek(w); } finally { _weekPreview = false; }
+  }
+  if (w === home) _selSlot = null;
+  wsAfter();
+  var say = document.getElementById('wsSay');
+  if (say) say.textContent = 'Week ' + (w + 1) + (w === home ? ', this week' : '') + '.';
+}
+function wsHome() {
+  viewWeek(homeWeek());
+  var b = Array.prototype.filter.call(document.querySelectorAll('.wg-day.picked'), function(x) { return x.offsetParent; })[0];
+  if (b) b.focus();
+}
+function selectSlot(i) {
+  if (!(i >= 0 && i < 7)) return;
+  _selSlot = i;
+  wsAfter();
+  var say = document.getElementById('wsSay'), id = slotDayId(i);
+  if (say) say.textContent = PA_DOWS[i] + ', ' + (id === 'rest' || !SPLIT_DAYS[id] ? 'rest' : dayWorkoutName(id)) + '.';
+}
+//  Lift follows the selection when it opens or when a day is picked on it.
+function wsSyncLift() {
+  var i = selSlot(), id = slotDayId(i);
+  if (!id) return;
+  if (id === 'rest') { if (typeof showPlanRestDay === 'function') showPlanRestDay(i); }
+  else switchDay(id);
+}
+function wsLiftDay() {
+  var i = selSlot(), id = slotDayId(i);
+  if (id === 'rest') { switchDay(pickTrainingDay()); showPlanRestDay(i); }
+  else switchDay(id && SPLIT_DAYS[id] ? id : pickTrainingDay());
+}
+function wsLogFor(i) { _selSlot = i; goTab('training'); scrollTo(0, 0); }
+function wsSwipe(host) {
+  if (host.dataset.sw) return;
+  host.dataset.sw = '1';
+  var x = 0, y = 0;
+  host.addEventListener('touchstart', function(e) { var t = e.touches[0]; x = t.clientX; y = t.clientY; }, { passive: true });
+  host.addEventListener('touchend', function(e) {
+    var t = e.changedTouches[0], dx = t.clientX - x, dy = t.clientY - y;
+    if (Math.abs(dx) > 48 && Math.abs(dy) < 32) stepTrainWeek(dx < 0 ? 1 : -1);
+  }, { passive: true });
+}
+var WS_CHECK = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.5l2.3 2.3 4.7-5"/></svg>';
+function renderWeekGlance() {
+  var hosts = document.querySelectorAll('#weekGlance, #tbStrip');
+  if (!hosts.length) return;
+  var w = currentTrainWeek, home = homeWeek(), week = splitWeekOf(w), sel = selSlot();
+  var a = slotDate(w, 0), z = slotDate(w, 6);
+  var range = MON3[a.getMonth()] + ' ' + a.getDate() + ' to ' + (a.getMonth() === z.getMonth() ? '' : MON3[z.getMonth()] + ' ') + z.getDate();
+  var cells = week.map(function(id, i) {
+    var d = SPLIT_DAYS[id] || {}, rest = id === 'rest' || d.rest, when = slotWhen(i), dt = slotDate(w, i);
+    var done = false, short = false;
+    try { done = !rest && hasLogsForDay(id, w); short = !rest && !done && sessionIsShort(id); } catch(e) {}
+    var full = rest ? 'rest day' : dayWorkoutName(id);
+    var state = done ? 'done' : rest ? 'rest' : short ? 'short' : 'open';
+    var mark = done ? WS_CHECK : short ? '<i class="wg-half"></i>' : rest ? '' : '<i class="wg-ring"></i>';
+    var say = PA_DOWS[i] + ', ' + WS_MONTHS[dt.getMonth()] + ' ' + dt.getDate() + ', ' + full
+      + (when === 'today' ? ', today' : '') + (done ? ', done' : '') + (short ? ', shortened' : '') + (!rest && !done && when === 'future' ? ', upcoming' : '');
+    return '<button type="button" class="wg-day ' + state + (when === 'today' ? ' today' : '') + (i === sel ? ' picked' : '') + '" aria-pressed="' + (i === sel) + '" aria-label="' + paEsc(say) + '" onclick="selectSlot(' + i + ')">'
+      + '<span class="wg-in"><span class="wg-dow">' + PA_DOWS[i].charAt(0) + '</span><span class="wg-date">' + dt.getDate() + '</span>'
+      + '<span class="wg-title">' + paEsc(rest ? 'Rest' : wsShort(full.replace(/^Short /, ''))) + '</span><span class="wg-mark">' + mark + '</span></span></button>';
+  }).join('');
+  var html = '<div class="ws-nav"><button type="button" class="ws-arr" aria-label="Previous week" onclick="stepTrainWeek(-1)"' + (w <= 0 ? ' disabled' : '') + '>&#8249;</button>'
+    + '<p class="ws-wk"><b>Week ' + (w + 1) + (isDeloadWeek(w) ? ', easy' : '') + '</b><span>' + range + '</span></p>'
+    + (w !== home ? '<button type="button" class="ws-home" onclick="wsHome()">This week</button>' : '')
+    + '<button type="button" class="ws-arr" aria-label="Next week" onclick="stepTrainWeek(1)"' + (w >= totalTrainWeeks() - 1 ? ' disabled' : '') + '>&#8250;</button></div>'
+    + '<div class="ws-days" role="group" aria-label="Days of week ' + (w + 1) + '">' + cells + '</div>';
+  hosts.forEach(function(h) {
+    h.classList.add('ws');
+    h.innerHTML = html;
+    wsSwipe(h);
+    //  A name that does not fit is left out; the full name is in the label.
+    h.querySelectorAll('.wg-title').forEach(function(t) { if (t.scrollWidth > t.clientWidth + 1) t.classList.add('wg-cut'); });
+  });
+}
+//  Short and Change workout, under the day's card on Today and Lift.
+function dayAdjustHTML(dayId, slot) {
+  var rest = !dayId || dayId === 'rest' || !SPLIT_DAYS[dayId] || SPLIT_DAYS[dayId].rest, sh = !rest && sessionIsShort(dayId);
+  return '<div class="day-adj" role="group" aria-label="Change this day">'
+    + (rest ? '' : '<button type="button" class="day-adj-btn" aria-pressed="' + sh + '" onclick="openShortPicker(\'' + paJs(dayId) + '\')">Short</button>')
+    + '<button type="button" class="day-adj-btn" aria-haspopup="dialog" onclick="openChangeSheet(\'' + paJs(rest ? 'rest' : dayId) + '\',' + slot + ')">Change workout</button></div>';
+}
+//  CHANGE WORKOUT. One sheet with the three Quick Log ways in. Their logic
+//  is the Quick Log logic; the sheet only picks the day they work on. A rest
+//  day takes the next workout not yet logged this week, moved there.
+var _cw = null, _sheetDay = null;
+function cwRestPick(slot) {
+  var week = splitWeekOf(currentTrainWeek), open = [];
+  week.forEach(function(id, i) { if (id !== 'rest' && SPLIT_DAYS[id] && !SPLIT_DAYS[id].rest && !hasLogsForDay(id, currentTrainWeek)) open.push(i); });
+  var after = open.filter(function(i) { return i > slot; });
+  var i = after.length ? after[0] : open[open.length - 1];
+  return i == null ? null : week[i];
+}
+function openChangeSheet(dayId, slot) {
+  var m = document.getElementById('cwSheet');
+  if (!m) return;
+  var rest = !SPLIT_DAYS[dayId] || SPLIT_DAYS[dayId].rest, target = rest ? cwRestPick(slot) : dayId;
+  _cw = { day: target, slot: slot, rest: rest, back: document.activeElement };
+  var when = slotWhen(slot) === 'today' ? 'today' : PA_DOWS[slot];
+  var title = target ? String(SPLIT_DAYS[target].title || '').replace(/\.$/, '') : '';
+  document.getElementById('cwSub').textContent = !target ? 'Every workout this week is logged.'
+    : rest ? title + ' moves from ' + PA_DOWS[splitWeekOf(currentTrainWeek).indexOf(target)] + ' to ' + when + '.' : 'For ' + when + ', ' + dayWorkoutName(target) + '.';
+  m.querySelectorAll('.cw-opt').forEach(function(b) { b.disabled = !target; });
+  m.style.display = 'flex';
+  var f = m.querySelector('.cw-opt:not([disabled])') || m.querySelector('.settings-cancel-btn');
+  if (f) f.focus();
+}
+function closeChangeSheet(keepFocus) {
+  var m = document.getElementById('cwSheet');
+  if (m) m.style.display = 'none';
+  if (!keepFocus && _cw && _cw.back && _cw.back.focus) try { _cw.back.focus(); } catch(e) {}
+}
+function cwMoveTo(dayId, slot) {
+  var week = splitWeekOf(currentTrainWeek).slice(), from = week.indexOf(dayId);
+  if (from === -1 || week[slot] !== 'rest') return;
+  week[slot] = dayId; week[from] = 'rest';
+  weekMoves[currentTrainWeek] = week;
+  persistLifeHappens(); invalidateBuild();
+  renderDaySections(); renderAllRowStates();
+}
+function cwGo(what) {
+  var c = _cw;
+  if (!c || !c.day) return;
+  closeChangeSheet(true);
+  if (c.rest) cwMoveTo(c.day, c.slot);
+  if (what === 'add') { _sheetDay = c.day; openExSheet('day'); return; }
+  openQuickLog(null, c.day);
+  var to = document.getElementById(what === 'pick' ? 'qlOthersLabel' : 'qlSession');
+  if (what === 'pick') { var rw = document.getElementById('qlRecentW'); if (rw && rw.style.display !== 'none') to = rw; }
+  if (to) try { to.scrollIntoView({ block: 'start' }); } catch(e) {}
+  if (what === 'build') openExSheet('session');
+}
+//  Add an exercise: the lift joins the day, marked as added.
+function cwAdded(id) {
+  var day = _sheetDay;
+  if (!day || !EX_BY_ID[id]) return;
+  addToDay(day, id);
+  renderDaySections(); renderAllRowStates();
+  if (typeof renderToday === 'function') renderToday();
+  if (document.body.dataset.tab === 'training') wsSyncLift();
+  var say = document.getElementById('wsSay');
+  if (say) say.textContent = activeVariant(EX_BY_ID[id]) + ' added to ' + dayWord(day) + '.';
+}
+document.addEventListener('keydown', function(e) {
+  var m = document.getElementById('cwSheet');
+  if (!m || m.style.display === 'none') return;
+  if (e.key === 'Escape') { e.preventDefault(); closeChangeSheet(); }
+  if (e.key === 'Tab') {
+    var f = Array.prototype.filter.call(m.querySelectorAll('button'), function(b) { return !b.disabled; }), first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+});
+//  The card for a day that is not today: the plan for a day ahead, what was
+//  logged on a day gone by, or rest.
+function wsPreviewHTML(sel) {
+  var w = currentTrainWeek, id = splitWeekOf(w)[sel], dd = SPLIT_DAYS[id] || {}, rest = id === 'rest' || dd.rest;
+  var when = slotWhen(sel), dt = slotDate(w, sel);
+  var kick = '<p class="tb-kick">' + PA_DOWS[sel] + ', ' + MON3[dt.getMonth()] + ' ' + dt.getDate() + '</p>';
+  if (rest) {
+    var rp = restPlanFor(sel, w);
+    return kick + '<h2 class="tb-day">Rest</h2><p class="tb-meta">' + paEsc(REST_OPTS[rp.list[0]].text) + '</p>';
+  }
+  var bs = {}; try { bs = buildSession(id, w); } catch(e) {}
+  var list = bs.list || [], mins = bs.minutes || 0;
+  var head = kick + '<h2 class="tb-day">' + paEsc(dayWorkoutName(id)) + '</h2>';
+  if (when === 'future') {
+    return head + '<p class="tb-meta">' + list.length + (list.length === 1 ? ' lift' : ' lifts') + (mins ? ' · about ' + mins + ' min' : '') + ' · <span class="nb">Week ' + (w + 1) + ' of ' + totalTrainWeeks() + '</span></p>'
+      + restoreLineHTML(id) + '<ol class="tb-list">' + list.map(function(x) { return '<li>' + paEsc(activeVariant(x)) + (bs.added && bs.added[x.id] ? ' <span>added</span>' : '') + '</li>'; }).join('') + '</ol>'
+      + '<p class="tb-quiet">Planned for ' + PA_DOWS[sel] + '</p>';
+  }
+  var done = list.map(function(x) {
+    var e = null; try { e = entryForWeek(getHistory(x.id), w, x); } catch(err) {}
+    var n = e && entryForDay(e, id) ? finSets(e).length : 0;
+    return n ? '<li>' + paEsc(activeVariant(x)) + ' <span>' + n + (n === 1 ? ' set' : ' sets') + '</span></li>' : '';
+  }).join('');
+  return head + (done ? '<ol class="tb-list">' + done + '</ol>' : '<p class="tb-meta">Nothing logged.</p>')
+    + '<button type="button" class="tb-logfor" onclick="wsLogFor(' + sel + ')">' + (done ? 'Open in Lift' : 'Log for this day') + '</button>';
 }
 function tbStart(dayId) {
   goTab('training'); switchDay(dayId);
