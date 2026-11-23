@@ -67,6 +67,10 @@ Plan shows the next lift as a card and the other lifts as rows; the full row for
 
 `t837_a_strip.py` covers the shared week strip on Today and Lift for three plans at 390 and 320: past, today, future and rest days, previewing next week without saving it, Short and Change workout per day, and storage unchanged after a round trip. `t837_b_nav.py` covers the four or five tab bar, the gear, the logo going to Today, the Change workout sheet and the removal of every Quick Log label. `baselines/storage_keys_835b.json` lists the storage keys on master before 8.37, so a new key fails the check. 8.37 removed the logo menu and the Quick Log tab, so the older checks for them now test where those items moved. The header and tab bar baselines were re-recorded for the narrower logo and the four tab bar.
 
+## Setup maxes (8.37b)
+
+`t837b_setup_max.py` covers the setup step for the three maxes at 390 and 320, in lb and kg. Each lift can take a typed max, a weight and reps (1 to 10, estimated with the same `epleyEstimate` Settings uses, then editable), or Skip for now, which saves no max for that lift.
+
 ## Baselines
 
 Some checks used to compare against a copy of the previous build served on a second port. In the repo they compare against saved values in `tests/browser/baselines` instead:

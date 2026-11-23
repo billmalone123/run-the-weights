@@ -1780,6 +1780,18 @@
     letter-spacing: 0.01em; 
   }
   .onb-choice.on { background: var(--fill); border-color: var(--fill); color: var(--on-accent); }
+  .onb-lift { border: 0; padding: 0; margin: 0 0 22px; min-width: 0; }
+  .onb-lift legend { padding: 0; margin-bottom: 8px; font-size: 17px; font-weight: 700; color: var(--ink); text-transform: none; letter-spacing: 0; }
+  .onb-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .onb-mode { min-height: 48px; padding: 6px 10px; border: 2px solid var(--ink); border-radius: 14px; background: transparent; color: var(--ink); font: inherit; font-size: 15px; font-weight: 700; line-height: 1.2; cursor: pointer; }
+  .onb-mode[aria-pressed="true"] { background: var(--ink); color: var(--cream); }
+  .onb-mode-skip { grid-column: 1 / -1; min-height: 44px; border-color: transparent; text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
+  .onb-mode-skip[aria-pressed="true"] { text-decoration: none; }
+  .onb-mode:focus-visible { outline: 3px solid var(--ultramarine); outline-offset: 2px; }
+  .onb-set { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .onb-f { display: block; min-width: 0; margin-bottom: 8px; }
+  .onb-f .settings-input-field { width: 100%; min-height: 44px; box-sizing: border-box; }
+  .onb-msg { margin-bottom: 8px; min-height: 0; }
   .onb-q-hint { font-size: var(--fs-1); color: var(--muted); line-height: 1.6; margin-bottom: 22px; min-height: 18px; }
   .onb-summary { list-style: none; padding: 0; margin: 0 0 26px; display: grid; gap: 10px; font-size: var(--fs-2); line-height: 1.5; color: var(--text-soft); }
   .onb-summary strong { color: var(--accent); }
@@ -5503,7 +5515,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     </div>
 
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.37</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.37b</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -12243,7 +12255,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
       case 'days':
         var t = SPLIT_TEMPLATES[onb.split];
         return !!SPLIT_PRESETS_BY_DAYS[onb.days] && !!t && t.days === onb.days;
-      case 'maxes': return MAX_KEYS.every(function(k) { return onbNum(onb[k]) > 0; });
+      case 'maxes': return MAX_KEYS.every(function(k) { return onbMaxMode(k) === 'skip' || onbNum(onb[k]) > 0; });
       case 'runs': return onb.runs === true || onb.runs === false;
       case 'mileage': return Object.prototype.hasOwnProperty.call(ONB_MILEAGE, onb.mileage);
       case 'race': return onb.race === false || (onb.race === true && onbDateOK(onb.raceDate));
@@ -12278,7 +12290,8 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     var t = SPLIT_TEMPLATES[onb.split];
     var items = [];
     if (t) items.push('<strong>' + t.label + '</strong> · ' + t.days + ' days a week');
-    items.push('Squat ' + wNum(onbNum(onb.squat)) + ' · Bench ' + wNum(onbNum(onb.bench)) + ' · Shoulder Press ' + wNum(onbNum(onb.ohp)) + ' ' + wLbs());
+    var mx = function(k) { return onbMaxMode(k) === 'skip' ? 'skipped' : wNum(onbNum(onb[k])) + ' ' + wLbs(); };
+    items.push('Squat ' + mx('squat') + ' · Bench ' + mx('bench') + ' · Shoulder Press ' + mx('ohp'));
     if (onb.runs !== true) {
       items.push('No running plan. Add one on the Run tab anytime.');
     } else if (onb.race === true && onbDateOK(onb.raceDate)) {
@@ -12317,13 +12330,8 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
         break;
       case 'maxes':
         title = 'Your 1RMs';
-        sub = 'The most you can lift once with good form, in ' + (wUnit() === 'kg' ? 'kilograms' : 'pounds') + '. These set your starting weights.';
-        body = MAX_KEYS.map(function(k) {
-          var v = onbNum(onb[k]);
-          return '<div class="settings-input-group"><div class="settings-input-label">' + ONB_MAX_LABELS[k] + ' <span>' + wLbs() + '</span></div>'
-            + '<input class="settings-input-field wu-in" type="number" inputmode="decimal" min="1" max="2000" id="onb-max-' + k + '"'
-            + ' ' + wValAttr(v || '') + ' oninput="onbSetMax(\'' + k + '\', this.value)"></div>';
-        }).join('');
+        sub = 'The most you can lift once with good form, in ' + (wUnit() === 'kg' ? 'kilograms' : 'pounds') + '. These set your starting weights. Not sure? Use a recent set, or skip.';
+        body = MAX_KEYS.map(onbMaxHTML).join('');
         break;
       case 'runs':
         title = 'Running';
@@ -12391,6 +12399,66 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     onbSaveDraft();
     onbRender();
   }
+  //  8.37b: each lift is known max, a weight and reps, or skipped. The draft
+  //  holds the mode and the set; only the max itself is ever saved.
+  var ONB_MAX_MODES = [['max', 'I know my max'], ['reps', 'I know a weight and reps'], ['skip', 'Skip for now']];
+  var ONB_REPS_MAX = 10;   // Epley drifts past 10 reps
+  function onbMaxMode(k) { return onb[k + 'Mode'] === 'reps' || onb[k + 'Mode'] === 'skip' ? onb[k + 'Mode'] : 'max'; }
+  function onbMaxHTML(k) {
+    var mode = onbMaxMode(k), v = onbNum(onb[k]), L = ONB_MAX_LABELS[k];
+    var field = function(id, lab, val, extra) {
+      return '<label class="onb-f"><span class="settings-input-label">' + lab + '</span>'
+        + '<input class="settings-input-field' + (extra.wu ? ' wu-in' : '') + '" type="number" inputmode="' + (extra.wu ? 'decimal' : 'numeric') + '" id="' + id + '" ' + val + ' ' + extra.attrs + '></label>';
+    };
+    var h = '<fieldset class="onb-lift"><legend class="settings-input-label">' + L + '</legend>'
+      + '<div class="onb-modes" role="group" aria-label="' + L + '">' + ONB_MAX_MODES.map(function(m) {
+        return '<button type="button" class="onb-mode' + (m[0] === 'skip' ? ' onb-mode-skip' : '') + '" aria-pressed="' + (mode === m[0]) + '" onclick="onbSetMaxMode(\'' + k + '\',\'' + m[0] + '\')">' + m[1] + '</button>';
+      }).join('') + '</div>';
+    if (mode === 'skip') return h + '<p class="onb-q-hint">Skipped. You can set it later in Settings.</p></fieldset>';
+    var maxF = field('onb-max-' + k, (mode === 'reps' ? 'Estimated max, ' : 'Max, ') + wLbs(), wValAttr(v || ''),
+      { wu: 1, attrs: 'min="1" max="2000" oninput="onbSetMax(\'' + k + '\', this.value)"' });
+    if (mode === 'max') return h + maxF + '</fieldset>';
+    return h + '<div class="onb-set">'
+      + field('onb-w-' + k, 'Weight, ' + wLbs(), wValAttr(onbNum(onb[k + 'W']) || ''), { wu: 1, attrs: 'min="1" max="2000" oninput="onbSetSet(\'' + k + '\')"' })
+      + field('onb-r-' + k, 'Reps', 'value="' + (parseInt(onb[k + 'R'], 10) || '') + '"', { attrs: 'min="1" max="' + ONB_REPS_MAX + '" step="1" oninput="onbSetSet(\'' + k + '\')"' })
+      + '</div><p class="onb-q-hint onb-msg" id="onb-msg-' + k + '" role="status">' + onbSetMsg(k) + '</p>' + maxF + '</fieldset>';
+  }
+  function onbSetMaxMode(k, mode) {
+    if (MAX_KEYS.indexOf(k) === -1) return;
+    onb[k + 'Mode'] = mode;
+    onbSaveDraft();
+    onbRender();
+    var f = document.getElementById(mode === 'reps' ? 'onb-w-' + k : 'onb-max-' + k);
+    if (f) try { f.focus(); } catch(e) {}
+  }
+  function onbSetMsg(k) {
+    var r = parseFloat(onb[k + 'R']);
+    if (!onb[k + 'R'] || isNaN(r)) return 'Enter a weight you lifted and how many reps.';
+    if (r !== Math.floor(r) || r < 1 || r > ONB_REPS_MAX) return 'Use a set of 1 to 10 reps. Past 10 the estimate is not reliable.';
+    return 'Check the estimate. You can change it.';
+  }
+  //  The estimate is the one Settings uses (epleyEstimate, lb, rounded to 5).
+  //  In kg it is then rounded to the 2.5 kg step the weight fields use.
+  function onbEstimate(lb, reps) {
+    var r = parseFloat(reps);
+    if (isNaN(r) || r !== Math.floor(r) || r < 1 || r > ONB_REPS_MAX) return null;
+    var est = epleyEstimate(lb, r);
+    if (est == null) return null;
+    return wUnit() === 'kg' ? wToLb(Math.round(wNum(est) / 2.5) * 2.5) : est;
+  }
+  //  Typing a weight or reps fills the estimate field; the user can still edit it.
+  function onbSetSet(k) {
+    if (MAX_KEYS.indexOf(k) === -1) return;
+    var w = document.getElementById('onb-w-' + k), r = document.getElementById('onb-r-' + k);
+    onb[k + 'W'] = w ? String(w.value) : '';
+    onb[k + 'R'] = r ? String(r.value) : '';
+    var est = onbEstimate(onb[k + 'W'], onb[k + 'R']);
+    onb[k] = est == null ? '' : String(est);
+    var m = document.getElementById('onb-max-' + k); if (m) m.value = est == null ? '' : est;
+    var msg = document.getElementById('onb-msg-' + k); if (msg) msg.textContent = onbSetMsg(k);
+    onbSaveDraft();
+    onbPaintNext();
+  }
   //  Typing re-checks Next without re-rendering, so the field keeps focus.
   function onbSetMax(k, v) {
     if (MAX_KEYS.indexOf(k) === -1) return;
@@ -12449,7 +12517,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     //  Split first: liftDaysPerWeek feeds the run-plan merge written below.
     setSplit(onb.split);
     userMaxes = {};
-    MAX_KEYS.forEach(function(k) { userMaxes[k] = onbNum(onb[k]); });
+    MAX_KEYS.forEach(function(k) { if (onbMaxMode(k) !== 'skip' && onbNum(onb[k]) > 0) userMaxes[k] = onbNum(onb[k]); });
     persistMaxes();
     updateMaxChips();
     //  The same cycle-start record Start New Cycle takes, so this first cycle
