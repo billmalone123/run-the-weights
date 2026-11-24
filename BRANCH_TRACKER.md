@@ -1,13 +1,13 @@
 # Branch tracker
 
-Updated 2026-11-24, after the 8.41 finish-card preview. Live site: runtheweights.vercel.app (master). Previews sit behind Vercel login.
+Updated 2026-11-24, after 8.41 went live. Live site: runtheweights.vercel.app (master). Previews sit behind Vercel login. Rollback tag: pre-launch-8.39 (6611d66, 8.40.1, v125).
 
 | Branch | Commit | Build label | Cache | Status | Preview URL |
 |---|---|---|---|---|---|
-| master | 6611d66 | 8.40.1 | v125 | Live, matches origin. Fast forwarded from block-rollover | https://runtheweights.vercel.app |
+| master | 5f92cfc | 8.41 | v128 | Live, matches origin. Fast forwarded from finish-card. Deploy confirmed serving v128 | https://runtheweights.vercel.app |
 | block-rollover | 6611d66 | 8.40.1 | v125 | Merged into master (fast forward). Has master 8.39, the 8.39.1 hotfix, and the block trigger on the date rule | https://runtheweights-85xj8am5b-billmalone123s-projects.vercel.app |
-| finish-card | 09a760d | 8.41 | v127 | Preview only, not merged. Cut from block-rollover (8.40.1). DONE on the workout screen and a one message finish card with Share | https://runtheweights-ccvw3alh3-billmalone123s-projects.vercel.app |
-| install-notice | 5d3064e | 8.39.2 | v126 | Preview only, not merged. Cut from hotfix-today-state. iPhone browser tab gets Add to Home Screen first, Coming from Safari card on Today in an empty Home Screen app, Moving to the Home Screen in Settings | https://runtheweights-nb0e9sdw7-billmalone123s-projects.vercel.app |
+| finish-card | 5f92cfc | 8.41 | v128 | Merged into master (fast forward). DONE on the workout screen, one message finish card with Share. Fallback names the workout Today leads with | https://runtheweights-ccvw3alh3-billmalone123s-projects.vercel.app (09a760d, before the fallback fix) |
+| install-notice | 5d3064e | 8.39.2 | v126 | Preview only, not merged. Behind master: a merge needs the cache past v128. Cut from hotfix-today-state. iPhone browser tab gets Add to Home Screen first, Coming from Safari card on Today in an empty Home Screen app, Moving to the Home Screen in Settings | https://runtheweights-nb0e9sdw7-billmalone123s-projects.vercel.app |
 | hotfix-today-state | 862fb0b | 8.39.1 | v124 | Merged into master through block-rollover. Today state by date, Current week, Do this workout today, Reset this week | https://runtheweights-4yx7dv6t4-billmalone123s-projects.vercel.app |
 | run-base | 03404ba | 8.39 | v122 | Merged into master | https://runtheweights-asltsgv7s-billmalone123s-projects.vercel.app |
 | setup-max-reps | 53dd18d | 8.37d | v120 | Merged into master | https://runtheweights-63rqawkv0-billmalone123s-projects.vercel.app |
@@ -21,6 +21,7 @@ Updated 2026-11-24, after the 8.41 finish-card preview. Live site: runtheweights
 ## Notes
 
 - 8.40 block-rollover preview before the hotfix merge (4f90d53) was runtheweights-rlxb7s7yr.
+- master went from 8.40.1 (6611d66) to 8.41 (5f92cfc) on 2026-11-24, by fast forward from finish-card, at the owner's request. Tag pre-launch-8.39 marks 6611d66. Roll back: git push --force origin pre-launch-8.39^{commit}:master
 - master went from 8.39 (03404ba) to 8.40.1 (6611d66) on 2026-11-24, by fast forward from block-rollover, at the owner's request.
 
 - block-rollover now includes master 8.39. Its block done card follows the calendar week rule. The earlier 8.38 preview (c8b8ac3) was runtheweights-1brlg2tw8.
