@@ -4055,6 +4055,27 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
   .nav-streak { font-size: 11px; padding: 0 8px; min-height: 34px; letter-spacing: 0; margin-left: 8px; }
 }
 .prog-review small { font-size: 14px; font-weight: 400; color: var(--s834-muted); }
+
+/* ── 8.39 RUN WITHOUT A RACE ── */
+.rb-sum { margin: 0 0 14px; padding: 18px 20px; border-radius: 22px; background: var(--s834-surface, #FBF9F3); color: var(--ink); }
+.rb-k { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--s834-muted); }
+.rb-v { margin: 4px 0 2px; font-family: 'Antonio', sans-serif; font-weight: 700; font-size: 48px; line-height: 1; }
+.rb-l { margin: 4px 0 0; font-size: 16px; color: var(--ink); }
+.rb-empty { margin: 6px 0 0; font-size: 16px; }
+.rb-bar { height: 10px; margin: 12px 0 0; border-radius: 5px; background: var(--s834-track); overflow: hidden; }
+.rb-bar i { display: block; height: 100%; background: var(--ultramarine); }
+.prog-all-btn.rb-link { border: 0; background: none; min-height: 44px; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; font-weight: 600; box-shadow: none; }
+.tb-run-log { display: block; width: 100%; min-height: 44px; margin: 10px 0 0; border: 1.5px solid var(--ink); border-radius: 14px; background: transparent; color: var(--ink); font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }
+.tb-run-log:focus-visible, .rb-link:focus-visible { outline: 3px solid var(--ultramarine); outline-offset: 3px; }
+.rb-set { flex-basis: 100%; margin: 12px 0 0; }
+.rb-set-f { border: 0; margin: 0 0 12px; padding: 0; }
+.rb-set .liftdays-btn { min-width: 44px; min-height: 44px; }
+.rb-target { display: block; width: 100%; max-width: 200px; min-height: 44px; margin: 6px 0 12px; box-sizing: border-box; }
+.rb-race { margin: 0; }
+.rb-set .settings-open-btn { min-height: 44px; margin: 8px 0 0; }
+.onb-rundays { border: 0; margin: 18px 0 0; padding: 0; }
+.onb-rundays .liftdays-group { display: flex; flex-wrap: wrap; gap: 6px; max-width: 100%; box-sizing: border-box; }
+.onb-rundays .liftdays-btn { min-width: 44px; min-height: 48px; flex: 1 0 44px; }
 </style>
 </head>
 <body style="background:var(--bg)">
@@ -4901,6 +4922,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     <div class="run-units" role="group" aria-label="Units" id="runUnits"></div>
   </div>
   <div class="today-card" id="runTodayCard"></div>
+  <div class="rb-sum" id="runBaseSum" hidden></div>
   <div class="run-saved" id="runSaved" role="status" aria-live="polite"></div>
   <div class="today-label">This week</div>
   <div class="pw-strip run-week-strip" id="runWeek" role="list" aria-label="Runs this week"></div>
@@ -4908,7 +4930,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
   <div id="runDistChart"></div>
   <div class="today-label">Recent runs</div>
   <div id="runTable"></div>
-  <button type="button" class="quicklog-back prog-all-btn" id="runPlanBtn" aria-expanded="false" aria-controls="runPlanWrap" onclick="toggleRunPlanWrap()">Race plan and full schedule</button>
+  <button type="button" class="quicklog-back prog-all-btn" id="runPlanBtn" aria-expanded="false" aria-controls="runPlanWrap" onclick="raceActive() ? toggleRunPlanWrap() : openRaceFlow()">Race plan and full schedule</button>
 </section>
 <div id="runPlanWrap" style="display:none">
 <section id="runplan">
@@ -5486,7 +5508,8 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
         <button class="liftdays-btn" data-run-btn="off" onclick="setRunning(false)">Off</button>
         <button class="liftdays-btn" data-run-btn="on" onclick="setRunning(true)">On</button>
       </div>
-      <span class="liftdays-desc">On adds the Run plan to the menu.</span>
+      <span class="liftdays-desc">On shows your runs on Today and Run. Off keeps every run you logged.</span>
+      <div class="rb-set" id="runBaseSet" hidden></div>
     </div>
     <div class="liftdays-wrap" style="margin-bottom:16px;">
       <span class="liftdays-label">Easy week</span>
@@ -5562,7 +5585,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
 
     <button class="settings-open-btn intro-replay" id="replayIntroBtn" onclick="replayIntro()">Replay intro</button>
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.37d</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.39</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -6868,11 +6891,12 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
   }
   //  Lifts this day owns beyond the old rule: entries labelled with this day,
   //  and Quick Log single sets that belong here. quick: { id: [{w, r}] }.
-  function dayOwnLogs(dayId, week) {
+  function dayOwnLogs(dayId, week, from, to) {
     var ids = {}, quick = {}, map = null;
     Object.keys(sessions || {}).forEach(function(id) {
       (sessions[id] || []).forEach(function(e) {
         if (!e || e.week !== week) return;
+        if (from && e.d && (e.d < from || e.d > to)) return;
         if (e.quickLog) {
           if (!(e.reps > 0)) return;
           if (!validDayLabel(e.day)) map = map || programmedDayMap();
@@ -6924,7 +6948,8 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     });
     if (best) return best.slice(t.length);
     var n = null;
-    try { n = partialDayThisWeek() || findNextUnloggedDay(); } catch(e) {}
+    //  8.39: the same day Today shows: today's planned workout first.
+    try { n = typeof wsTodayDay === 'function' ? wsTodayDay() : (partialDayThisWeek() || findNextUnloggedDay()); } catch(e) {}
     if (n && SPLIT_DAYS[n]) return n;
     var s = activeSplit().week[mondayIndex(startOfToday())];
     return s && s !== 'rest' && SPLIT_DAYS[s] ? s : null;
@@ -8029,9 +8054,40 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     }, 900);
   }
   function ownerPressEnd() { clearTimeout(_ownerT); }
+  //  8.39 RUN WITHOUT A RACE. {on, perWeek, weeklyTarget}: on follows the
+  //  running switch, perWeek is the runs a week goal (1 to 5), weeklyTarget is
+  //  an optional distance in miles. Runs and races are stored as before.
+  var RUN_BASE_KEY = 'monk_run_base_v1';
+  function cleanRunBase(v) {
+    if (!v || typeof v !== 'object') return null;
+    var pw = Math.floor(+v.perWeek), wt = +v.weeklyTarget;
+    return { on: v.on === true, perWeek: pw >= 1 && pw <= 5 ? pw : 3, weeklyTarget: isFinite(wt) && wt > 0 && wt <= 300 ? Math.round(wt * 100) / 100 : null };
+  }
+  function loadRunBase() { try { return cleanRunBase(JSON.parse(localStorage.getItem(RUN_BASE_KEY))); } catch(e) { return null; } }
+  function saveRunBase(o) { var c = cleanRunBase(o); try { localStorage.setItem(RUN_BASE_KEY, JSON.stringify(c)); } catch(e) {} return c; }
+  //  The runs a week goal: the saved answer, or 3 for someone who already logs
+  //  runs, or none for someone who has never logged one and never answered.
+  function runGoal() {
+    var b = loadRunBase();
+    if (b) return b.perWeek;
+    return typeof runRows === 'function' && runRows().length ? 3 : null;
+  }
+  function raceActive() {
+    var d = runPlan && runPlan.raceDate ? parseDateKey(runPlan.raceDate) : null;
+    return !!d && d.getTime() >= startOfToday().getTime();
+  }
+  //  This week, Monday to Sunday: runs as dates with a distance, and miles.
+  function runWeekStats() {
+    var mon = addDays(startOfToday(), -mondayIndex(startOfToday())), n = 0, mi = 0;
+    for (var i = 0; i < 7; i++) { var e = runLogs[dateKeyOfRun(addDays(mon, i))]; if (e && e.miles > 0) { n++; mi += e.miles; } }
+    return { runs: n, miles: mi };
+  }
+  function runDistTxt(mi) { return (Math.round(unitDist(mi) * 10) / 10) + ' ' + runUnits; }
   function setRunning(on) {
     runningEnabled = !!on;
     try { localStorage.setItem(RUNNING_KEY, runningEnabled ? '1' : '0'); } catch(e) {}
+    var rb = loadRunBase(); if (rb && rb.on !== runningEnabled) { rb.on = runningEnabled; saveRunBase(rb); }
+    if (typeof renderRunBaseSet === 'function') renderRunBaseSet();
     if (document.body) document.body.classList.toggle('running', runningEnabled);
     document.querySelectorAll('[data-run-btn]').forEach(function(b) { b.classList.toggle('on', (b.dataset.runBtn === 'on') === runningEnabled); });
     //  The Run tab comes and goes with the switch, no reload.
@@ -12437,7 +12493,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     var mx = function(k) { return onbMaxMode(k) === 'skip' ? 'skipped' : wNum(onbNum(onb[k])) + ' ' + wLbs(); };
     items.push('Squat ' + mx('squat') + ' · Bench ' + mx('bench') + ' · Shoulder Press ' + mx('ohp'));
     if (onb.runs !== true) {
-      items.push('No running plan. Add one on the Run tab anytime.');
+      items.push('Not running for now. Turn it on from the Run tab anytime.');
     } else if (onb.race === true && onbDateOK(onb.raceDate)) {
       var race = parseDateKey(onb.raceDate);
       var days = dayDiff(startOfToday(), race);
@@ -12447,7 +12503,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
         ? 'Maintenance Mode turns on now for your taper'
         : 'Maintenance Mode switches on automatically 3 weeks before race day');
     } else {
-      items.push('About ' + ONB_MILEAGE_LABELS[onb.mileage] + ' a week · no race yet');
+      items.push(onbRunDays() + (onbRunDays() === 1 ? ' run' : ' runs') + ' a week, about ' + ONB_MILEAGE_LABELS[onb.mileage] + '. No race.');
     }
     items.push('Starting at Week 1, Day 1');
     return '<ul class="onb-summary">' + items.map(function(s) { return '<li>' + s + '</li>'; }).join('') + '</ul>';
@@ -12480,7 +12536,16 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
       case 'runs':
         title = 'Running';
         sub = 'Do you run?';
-        body = onbChoices('runs', [[true, 'Yes'], [false, 'No']]);
+        body = '<div class="onb-choices">' + ONB_RUN_HOW.map(function(o) {
+          var on = onbRunHow() === o[0];
+          return '<button type="button" class="onb-choice' + (on ? ' on' : '') + '" aria-pressed="' + on + '" onclick="onbPickRunHow(\'' + o[0] + '\')">' + o[1] + '</button>';
+        }).join('') + '</div>';
+        if (onb.runs === true) {
+          var rd = onbRunDays();
+          body += '<fieldset class="onb-rundays"><legend class="settings-input-label">How many days a week?</legend><div class="liftdays-group">'
+            + [1, 2, 3, 4, 5].map(function(n) { return '<button type="button" class="liftdays-btn' + (rd === n ? ' on' : '') + '" aria-pressed="' + (rd === n) + '" onclick="onbPick(\'runDays\', ' + n + ')">' + n + '</button>'; }).join('')
+            + '</div></fieldset>';
+        } else if (onb.runs === false) body += '<p class="onb-q-hint">Running stays one tap away on the Run tab.</p>';
         break;
       case 'mileage':
         title = 'Weekly Mileage';
@@ -12490,7 +12555,8 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
       case 'race':
         title = 'Race';
         sub = 'Training for a race?';
-        body = onbChoices('race', [[false, 'No'], [true, 'Yes']]);
+        if (onb.race !== true) onb.race = false;
+        body = onbChoices('race', [[false, 'Skip'], [true, 'Yes, add a race date']]);
         if (onb.race === true) {
           var dv = /^\d{4}-\d{2}-\d{2}$/.test(String(onb.raceDate || '')) ? onb.raceDate : '';
           body += '<div class="settings-input-group"><div class="settings-input-label">Race Date</div>'
@@ -12534,8 +12600,14 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     if (hint) hint.textContent = (onb.race === true && onb.raceDate && !onbDateOK(onb.raceDate)) ? 'Pick today or a later date.' : '';
   }
 
+  //  8.39: Yes, regularly and A little are both runners; Not now is not.
+  var ONB_RUN_HOW = [['regular', 'Yes, regularly'], ['little', 'A little'], ['no', 'Not now']];
+  function onbRunHow() { return onb.runHow || (onb.runs === true ? 'regular' : onb.runs === false ? 'no' : null); }
+  function onbRunDays() { var n = Math.floor(+onb.runDays); return n >= 1 && n <= 5 ? n : 3; }
+  function onbPickRunHow(v) { onb.runHow = v; onbPick('runs', v !== 'no'); }
   function onbPick(field, value) {
     onb[field] = value;
+    if (field === 'runs' && onb.runHow && (onb.runHow !== 'no') !== value) delete onb.runHow;
     if (field === 'days') {
       var keep = value === 6 && (onb.split === 'ppl' || onb.split === 'arnold');
       if (!keep) onb.split = (SPLIT_PRESETS_BY_DAYS[value] || {}).onboardingDefault;
@@ -12684,6 +12756,8 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
       onRunInput();
     }
     runPlan.runner = runs;
+    saveRunBase({ on: runs, perWeek: runs ? onbRunDays() : 3, weeklyTarget: (loadRunBase() || {}).weeklyTarget });
+    try { setRunning(runs); } catch(e) {}
     runPlan.mileageBand = runs ? onb.mileage : null;   // kept for future Strava/programming work
     runPlan.liftDays = liftDaysPerWeek;
     persistRunPlan();
@@ -12715,7 +12789,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
       variants: variantChoice, aims: aimChoice, runPlan: runPlan, runLogs: runLogs, liftDays: liftDaysPerWeek,
       splitId: activeSplitId, maintenanceMode: maintenanceMode,
       setCounts: setCounts, warmupLogs: warmupLogs, customEx: customEx,
-      splitHistory: splitHistory, cycleStartMaxes: cycleStartMaxes,
+      splitHistory: splitHistory, cycleStartMaxes: cycleStartMaxes, runBase: loadRunBase(),
       //  MEAL_PASS_KEY is left out on purpose: a backup file is not a place
       //  for a credential.
       foodLogs: foodLogs, foodTargets: foodTargets, bodyweight: bodyweight, goalMode: goalMode, workoutNotes: workoutNotes,
@@ -12795,6 +12869,8 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
         //  Only a real boolean is accepted. Absent on older backups.
         if (typeof data.aboutSeen === 'boolean') setAboutSeen(data.aboutSeen);
         if (typeof data.introSeen === 'boolean') setIntroSeen(data.introSeen);
+        //  8.39: absent on older backups, which then read as before: a goal of 3 if they hold runs.
+        if (data.runBase && typeof data.runBase === 'object') saveRunBase(data.runBase); else { try { localStorage.removeItem(RUN_BASE_KEY); } catch(e) {} }
         if (data.runLogs && typeof data.runLogs === 'object') {
           runLogs = data.runLogs;
           persistRunLogs();
@@ -16682,6 +16758,62 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
     if (open && typeof renderRunPlan === 'function') renderRunPlan();
   }
+  //  8.39: with no race ahead, the top of Run is this week against the goal.
+  function renderRunBaseSum() {
+    var el = document.getElementById('runBaseSum'), pb = document.getElementById('runPlanBtn');
+    var race = raceActive();
+    if (pb) { pb.textContent = race ? 'Race plan and full schedule' : 'Add a race for a plan'; pb.classList.toggle('rb-link', !race); }
+    if (!el) return;
+    el.hidden = race;
+    if (race) { el.innerHTML = ''; return; }
+    var g = runGoal(), st = runWeekStats(), b = loadRunBase(), tgt = b && b.weeklyTarget;
+    if (!g && !st.runs) { el.innerHTML = '<p class="rb-k">This week</p><p class="rb-empty">No runs yet. Log one and it shows here.</p>'; return; }
+    var h = '<p class="rb-k">Runs this week</p><p class="rb-v">' + st.runs + (g ? ' of ' + g : '') + '</p>'
+      + '<p class="rb-l">' + runDistTxt(st.miles) + ' this week</p>';
+    if (tgt) {
+      var f = Math.min(1, st.miles / tgt);
+      h += '<div class="rb-bar" role="progressbar" aria-label="Weekly distance target" aria-valuemin="0" aria-valuemax="' + (Math.round(unitDist(tgt) * 10) / 10) + '" aria-valuenow="' + (Math.round(unitDist(st.miles) * 10) / 10) + '" aria-valuetext="' + runDistTxt(st.miles) + ' of ' + runDistTxt(tgt) + '"><i style="width:' + (f * 100).toFixed(1) + '%"></i></div>'
+        + '<p class="rb-l">' + runDistTxt(st.miles) + ' of ' + runDistTxt(tgt) + ' target</p>';
+    }
+    el.innerHTML = h;
+  }
+  //  Settings, Running: days a week, a weekly distance target, the race date.
+  function renderRunBaseSet() {
+    var el = document.getElementById('runBaseSet');
+    if (!el) return;
+    el.hidden = !runningEnabled;
+    if (!runningEnabled) return;
+    var b = loadRunBase(), g = b ? b.perWeek : (runGoal() || 3), tgt = b && b.weeklyTarget;
+    var rd = runPlan && runPlan.raceDate ? parseDateKey(runPlan.raceDate) : null;
+    el.innerHTML = '<fieldset class="rb-set-f"><legend class="liftdays-label">Runs a week</legend><div class="liftdays-group">'
+      + [1, 2, 3, 4, 5].map(function(n) { return '<button type="button" class="liftdays-btn' + (g === n ? ' on' : '') + '" aria-pressed="' + (g === n) + '" onclick="setRunBase(\'perWeek\', ' + n + ')">' + n + '</button>'; }).join('')
+      + '</div></fieldset>'
+      + '<label class="liftdays-label" for="rbTarget">Weekly distance target, ' + runUnits + ', optional</label>'
+      + '<input class="settings-input-field rb-target" id="rbTarget" type="number" inputmode="decimal" min="0" max="300" step="0.5" value="' + (tgt ? Math.round(unitDist(tgt) * 10) / 10 : '') + '" onchange="setRunBase(\'weeklyTarget\', this.value)">'
+      + '<p class="liftdays-label rb-race">Race</p><p class="liftdays-desc">' + (rd ? fmtRunDate(rd) + (raceActive() ? '' : ', passed') : 'No race set.') + '</p>'
+      + '<button type="button" class="settings-open-btn" onclick="openRaceFlow()">' + (rd ? 'Change race date' : 'Add a race for a plan') + '</button>';
+  }
+  function setRunBase(k, v) {
+    var b = loadRunBase() || { on: runningEnabled, perWeek: runGoal() || 3, weeklyTarget: null };
+    if (k === 'perWeek') b.perWeek = v;
+    else if (k === 'weeklyTarget') { var n = parseFloat(v); b.weeklyTarget = isFinite(n) && n > 0 ? (runUnits === 'km' ? n / KM_PER_MI : n) : null; }
+    b.on = runningEnabled;
+    saveRunBase(b);
+    renderRunBaseSet(); renderRunBaseSum();
+  }
+  //  The existing race setup, opened from anywhere.
+  function openRaceFlow() {
+    var m = document.getElementById('settingsModal'); if (m && m.style.display !== 'none') closeSettingsModal();
+    if (!runningEnabled) setRunning(true);
+    goTab('running');
+    var w = document.getElementById('runPlanWrap');
+    if (w && w.style.display === 'none') toggleRunPlanWrap();
+    if (typeof setRunSetupCollapsed === 'function') setRunSetupCollapsed(false);
+    var f = document.getElementById('run-race-date');
+    if (f) { try { f.scrollIntoView({ block: 'center' }); f.focus(); } catch(e) {} }
+  }
+  //  Today's run tile, logging from Today.
+  function todayLogRun() { if (runningEnabled) openRunLog(); }
   function renderRunHome() {
     var u = document.getElementById('runUnits');
     if (!u) return;
@@ -16700,6 +16832,8 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
         card.innerHTML = '<button type="button" class="today-start run-log-big" onclick="openRunLog()">Log a run</button>';
       }
     }
+    renderRunBaseSum();
+    if (document.body.dataset.tab === 'today' && typeof renderTodayB === 'function') { try { renderTodayB(); } catch(e) {} }
     var wk = document.getElementById('runWeek');
     if (wk) {
       var mon = addDays(startOfToday(), -mondayIndex(startOfToday())), tIdx = mondayIndex(startOfToday());
@@ -17694,6 +17828,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
       var saved = parseInt(localStorage.getItem(TRAIN_WEEK_KEY));
       if (!isNaN(saved) && saved >= 0) currentTrainWeek = saved;
     } catch(e) {}
+    try { rollStaleWeek(); } catch(e) {}
     // Ask the browser to protect this origin's storage from eviction. Request
     // alone was requested-and-forgotten before — a resolved-false grant (not
     // just a rejected promise) was never checked, so there was no way to know
@@ -18549,7 +18684,39 @@ if ('serviceWorker' in navigator) {
 }
 
 // ── HERO RING ──────────────────────────────────────────────────────────────
-function hasLogsForDay(dayId, week) {
+//  from/to (date keys, optional): only sets logged on those dates count.
+//  Plan weeks follow the calendar for every user. A plan week starts on the
+//  Monday of its first logged set; the weeks after it start 7 days apart. On
+//  open, every calendar week that has passed since the current plan week's
+//  Monday moves the plan one week on, so a missed day or a missed week never
+//  holds anyone back. Missed days stay missed; no set is moved or changed.
+//  Finishing a week early is kept: a plan week whose Monday is still ahead
+//  stays put, and so does a week with a set logged since this Monday.
+//  Never past the last week; nothing happens before a first log.
+//  shortcut: runs on open only; an app left open across Sunday night moves on the next open.
+function planWeekMonday(w) {
+  var first = {};
+  Object.keys(sessions || {}).forEach(function(id) { (sessions[id] || []).forEach(function(e) {
+    if (e && e.week >= 0 && e.week <= w && /^\d{4}-\d{2}-\d{2}$/.test(e.d || '') && (!first[e.week] || e.d < first[e.week])) first[e.week] = e.d;
+  }); });
+  for (var k = w; k >= 0; k--) if (first[k]) { var d = parseDateKey(first[k]); return addDays(addDays(d, -mondayIndex(d)), 7 * (w - k)); }
+  return null;
+}
+function rollStaleWeek() {
+  var w = currentTrainWeek, m = planWeekMonday(w);
+  if (!m) return false;
+  var mon = addDays(startOfToday(), -mondayIndex(startOfToday())), monK = dateKeyOfRun(mon), live = false;
+  //  A set logged in this plan week on or after this Monday means the user is training it now.
+  Object.keys(sessions || {}).forEach(function(id) { (sessions[id] || []).forEach(function(e) { if (e && e.week === w && e.d && e.d >= monK) live = true; }); });
+  if (live) return false;
+  var behind = Math.round((mon.getTime() - m.getTime()) / (7 * 864e5));
+  var to = Math.min(totalTrainWeeks() - 1, w + Math.max(0, behind));
+  if (to === w) return false;
+  currentTrainWeek = to;
+  try { localStorage.setItem(TRAIN_WEEK_KEY, currentTrainWeek); } catch(e) {}
+  return true;
+}
+function hasLogsForDay(dayId, week, from, to) {
   //  Goes through splitDayExercises() rather than filtering EXERCISES by
   //  ex.day === dayId directly: split-day ids like 'push' or 'upper-a' never
   //  appear as an exercise's own .day (that's always one of the six base
@@ -18566,10 +18733,22 @@ function hasLogsForDay(dayId, week) {
     //  Quick Log entries don't count as "did the planned day" — they're a
     //  one-off anchor-lift set, not the structured session this (and the
     //  next-unlogged-day picker) is tracking.
-    return (sessions[ex.id] || []).some(function(e) { return e.week === week && !e.quickLog && entryForDay(e, dayId); });
-  }) || (typeof dayOwnLogs === 'function' && Object.keys(dayOwnLogs(dayId, week).ids).length > 0);
+    return (sessions[ex.id] || []).some(function(e) { return e.week === week && !e.quickLog && entryForDay(e, dayId) && (!from || !e.d || (e.d >= from && e.d <= to)); });
+  }) || (typeof dayOwnLogs === 'function' && Object.keys(dayOwnLogs(dayId, week, from, to).ids).length > 0);
 }
 
+//  The first date a planned day was logged in a plan week, or null.
+function dayLogDate(dayId, week) {
+  var first = null;
+  try { splitDayExercises(dayId).forEach(function(ex) { (sessions[ex.id] || []).forEach(function(e) { if (e.week === week && !e.quickLog && e.d && entryForDay(e, dayId) && (!first || e.d < first)) first = e.d; }); }); } catch(e) {}
+  return first;
+}
+//  Today's planned workout, when this is the plan's current week and today is not a rest day.
+function todayPlannedDay() {
+  if (currentTrainWeek !== homeWeek()) return null;
+  var id = splitWeekOf(currentTrainWeek)[wsToday()];
+  return id && id !== 'rest' && SPLIT_DAYS[id] && !SPLIT_DAYS[id].rest ? id : null;
+}
 function renderRing() {
   if (typeof renderWeekGlance === 'function') renderWeekGlance();
   //  Whichever split is active, not the fixed Arnold array
@@ -19105,10 +19284,22 @@ function renderTodayB() {
     } else if (work) {
       work.hidden = false;
       work.className = 'tb-work';
-      var partial = null, next = null;
+      var partial = null, next = null, tp = todayPlannedDay(), early = null;
       try { partial = partialDayThisWeek(); next = partial || findNextUnloggedDay(); } catch(e) {}
+      //  On the day it is, today's planned workout comes first. It counts as
+      //  done for today only when its sets carry today's date.
+      if (tp && !hasLogsForDay(tp, currentTrainWeek, todayKey(), todayKey())) {
+        if (!hasLogsForDay(tp, currentTrainWeek)) { next = tp; if (partial !== tp) partial = null; }
+        else if (partial !== tp) early = dayLogDate(tp, currentTrainWeek);
+      }
       var mo0 = document.getElementById('tbMore'); if (mo0) mo0.innerHTML = '';
-      if (!next) {
+      if (early) {
+        var ed = parseDateKey(early);
+        work.innerHTML = '<p class="tb-kick">Today</p><h2 class="tb-day">' + paEsc(dayWorkoutName(tp) || '') + '</h2>'
+          + '<p class="tb-meta">Logged on ' + PA_DOWS[mondayIndex(ed)] + ', ' + WS_MONTHS[ed.getMonth()] + ' ' + ed.getDate() + '. It counts for that day, not today.</p>'
+          + '<button type="button" class="tb-start" onclick="goTab(\'training\'); switchDay(\'' + paJs(tp) + '\')">Open in Lift</button>';
+        if (adj) adj.innerHTML = dayAdjustHTML(tp, sel);
+      } else if (!next) {
         work.innerHTML = '<p class="tb-kick">Week ' + (currentTrainWeek + 1) + '</p><p class="tb-day">Week done</p><p class="tb-meta">Every workout this week is logged.</p>'
           + '<button type="button" class="tb-start" onclick="advanceToNextWeek(); renderToday();">Start week ' + (currentTrainWeek + 2) + '</button>';
       } else {
@@ -19133,6 +19324,11 @@ function renderTodayB() {
   if (stats) {
     var tiles = [], vol = lastWeekVolume(), run = nextPlannedRun();
     if (vol > 0) tiles.push('<div class="tb-tile"><p class="tb-tile-k">Last week</p><p class="tb-tile-v">' + fmtInt(wNum(vol)) + ' ' + wLbs() + '</p><p class="tb-tile-l">total volume</p></div>');
+    if (!run && runningEnabled && !raceActive() && runGoal()) {
+      var rw = runWeekStats();
+      tiles.push('<div class="tb-tile tb-run"><p class="tb-tile-k">Runs this week</p><p class="tb-tile-v">' + rw.runs + ' of ' + runGoal() + '</p><p class="tb-tile-l">' + runDistTxt(rw.miles) + '</p>'
+        + '<button type="button" class="tb-run-log" onclick="todayLogRun()">Log a run</button></div>');
+    }
     if (run) tiles.push('<div class="tb-tile"><p class="tb-tile-k">Run</p><p class="tb-tile-v">' + paEsc(fmtDist(run.miles)) + '</p><p class="tb-tile-l">' + paEsc(runTypeLabel(run.type).toLowerCase()) + ', ' + (run.dd === 0 ? 'today' : run.dd === 1 ? 'tomorrow' : PA_DOWS[mondayIndex(run.date)]) + '</p></div>');
     stats.hidden = !tiles.length;
     stats.className = 'tb-stats' + (tiles.length === 1 ? ' one' : '');
@@ -19156,7 +19352,12 @@ function slotDate(w, i) { var d = startOfToday(); d.setDate(d.getDate() - monday
 function dayDateKey(dayId, w) { var i = splitWeekOf(w).indexOf(dayId); return i === -1 ? null : dateKeyOfRun(slotDate(w, i)); }
 function slotWhen(i) { var k = dateKeyOfRun(slotDate(currentTrainWeek, i)), t = todayKey(); return k === t ? 'today' : k < t ? 'past' : 'future'; }
 //  Today's slot runs today's workout, which can be a day that moved forward.
-function wsTodayDay() { var n = null; try { n = partialDayThisWeek() || findNextUnloggedDay(); } catch(e) {} return n; }
+function wsTodayDay() {
+  var tp = todayPlannedDay(), n = null;
+  if (tp && !hasLogsForDay(tp, currentTrainWeek, todayKey(), todayKey())) return tp;
+  try { n = partialDayThisWeek() || findNextUnloggedDay(); } catch(e) {}
+  return n;
+}
 //  On a rest day too, as Today offers the next workout under the rest line.
 function slotDayId(i) { return slotWhen(i) === 'today' ? (wsTodayDay() || splitWeekOf(currentTrainWeek)[i]) : splitWeekOf(currentTrainWeek)[i]; }
 function dayWord(dayId) {
@@ -19229,7 +19430,9 @@ function renderWeekGlance() {
   var cells = week.map(function(id, i) {
     var d = SPLIT_DAYS[id] || {}, rest = id === 'rest' || d.rest, when = slotWhen(i), dt = slotDate(w, i);
     var done = false, short = false;
-    try { done = !rest && hasLogsForDay(id, w); short = !rest && !done && sessionIsShort(id); } catch(e) {}
+    //  A mark needs sets logged on this week's dates, and today's only on today.
+    var k0 = when === 'today' ? todayKey() : dateKeyOfRun(a), k1 = when === 'today' ? todayKey() : dateKeyOfRun(z);
+    try { done = !rest && hasLogsForDay(id, w, k0, k1); short = !rest && !done && sessionIsShort(id); } catch(e) {}
     var full = rest ? 'rest day' : dayWorkoutName(id);
     var state = done ? 'done' : rest ? 'rest' : short ? 'short' : 'open';
     var mark = done ? WS_CHECK : short ? '<i class="wg-half"></i>' : rest ? '' : '<i class="wg-ring"></i>';
