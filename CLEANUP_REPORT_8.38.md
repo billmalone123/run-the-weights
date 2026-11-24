@@ -67,3 +67,9 @@ Nowhere directly. `monk_split_history_v1` is read only by Progress (`earliestArc
 - `t838_block.py`: 76 checks at 390 and 320 on a 10 week fixture (`block_seed.js`).
 - Full suite after the 8.39 merge: 29 browser files, 0 failures. food, onb and sets pass. compat.js has the 3 known failures ("N-day split: switchDay() activates a day that exists" for the 3, 4 and 5 day splits).
 - Screenshots are in `tests/browser/out/838-*`.
+
+## 8.40.1: hotfix-today-state merged in (2026-11-24)
+- Merged hotfix-today-state (8.39.1). Label 8.40.1, cache v125.
+- Block done trigger on the date rule. The last week is fully logged when every planned day reaches DONE_FRACTION (70 percent) of its lifts, counting sets dated in that calendar week. Otherwise the block ends when its calendar week is over, as before.
+- Today card order: a workout logged within RECENT_HOURS today, or picked with Do this workout today, comes before the block card. Finish for today hands Today back to the block card.
+- New test t840b_block_date.py, 7 checks. t838_block 82 and t8391_today_state 99 pass. Full suite clean apart from the 3 known compat.js failures.
