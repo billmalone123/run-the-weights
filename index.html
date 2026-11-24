@@ -3946,27 +3946,22 @@ body.pa-on #plan .lift-row.pa-fin { display: none !important; }
 .fin[hidden] { display: none; }
 body.fin-open { overflow: hidden; }
 .fin-in { max-width: 520px; margin: 0 auto; padding: 0 16px calc(24px + env(safe-area-inset-bottom)); }
-.fin-head { background: var(--ultramarine); color: var(--cream); margin: 0 -16px; padding: calc(20px + env(safe-area-inset-top)) 20px 24px; border-radius: 0 0 32px 32px; }
-.fin-k { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin: 0; }
-.fin-title { font-family: 'Antonio', sans-serif; font-weight: 700; font-size: clamp(48px, 15vw, 64px); line-height: 0.95; text-transform: uppercase; margin: 10px 0 8px; overflow-wrap: anywhere; outline: none; }
+.fin-card { background: var(--ultramarine); color: var(--cream); margin: calc(16px + env(safe-area-inset-top)) 0 0; padding: 24px 20px 20px; border-radius: 32px; }
+.fin-k { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin: 0; overflow-wrap: anywhere; }
+.fin-title { font-family: 'Antonio', sans-serif; font-weight: 700; font-size: clamp(36px, 11vw, 56px); line-height: 1; text-transform: uppercase; margin: 12px 0 8px; overflow-wrap: anywhere; outline: none; }
 .fin-title:focus-visible { outline: 3px solid var(--cream); outline-offset: 4px; }
-.fin-cmp { font-size: 16px; font-weight: 600; margin: 0; }
-.fin-stats { list-style: none; display: grid; grid-template-columns: repeat(var(--n, 3), 1fr); gap: 8px; margin: 16px 0 0; padding: 0; }
-.fin-stats li { background: var(--s834-surface); border-radius: 20px; padding: 14px 12px; min-width: 0; }
-.fin-stats b { display: block; font-family: 'Antonio', sans-serif; font-weight: 700; font-size: 28px; white-space: nowrap; line-height: 1.05; color: var(--ink); overflow-wrap: anywhere; }
-.fin-stats span { font-size: 13px; font-weight: 600; color: var(--s834-muted); }
-.fin-l { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--s834-muted); margin: 20px 0 8px; }
-.fin-hl { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
-.fin-hl li { background: var(--s834-surface); border-radius: 22px; padding: 16px; color: var(--ink); }
-.fin-hl .lab { display: block; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--s834-muted); }
-.fin-hl b { display: block; font-family: 'Antonio', sans-serif; font-weight: 700; font-size: 34px; line-height: 1.05; text-transform: uppercase; margin: 4px 0; }
-.fin-hl .d { display: block; font-size: 15px; }
-.fin-hl li.top { background: var(--ultramarine); color: var(--cream); }
-.fin-hl li.top .lab { color: var(--cream); }
+.fin-sub { font-size: 18px; line-height: 1.4; margin: 0; }
+.fin-stats { list-style: none; display: grid; grid-template-columns: repeat(var(--n, 3), 1fr); gap: 8px; margin: 18px 0 0; padding: 0; }
+.fin-stats li { background: rgba(242, 238, 228, 0.12); border-radius: 20px; padding: 12px; min-width: 0; }
+.fin-stats b { display: block; font-family: 'Antonio', sans-serif; font-weight: 700; font-size: clamp(22px, 7vw, 28px); line-height: 1.05; color: var(--cream); white-space: nowrap; }
+.fin-stats span { font-size: 13px; font-weight: 600; color: var(--cream); }
 .fin-btns { display: grid; gap: 10px; margin: 20px 0 0; }
-.fin-share { min-height: 56px; border: 0; border-radius: 18px; background: var(--persimmon); color: var(--ink); font-family: 'Antonio', sans-serif; font-weight: 700; font-size: 26px; letter-spacing: 0.02em; text-transform: uppercase; cursor: pointer; }
-.fin-done { min-height: 52px; border: 2px solid var(--ink); border-radius: 18px; background: transparent; color: var(--ink); font: inherit; font-size: 17px; font-weight: 700; cursor: pointer; }
+.fin-done { min-height: 56px; border: 0; border-radius: 18px; background: var(--persimmon); color: var(--ink); font-family: 'Antonio', sans-serif; font-weight: 700; font-size: 26px; letter-spacing: 0.02em; text-transform: uppercase; cursor: pointer; }
+.fin-share { min-height: 52px; border: 2px solid var(--ink); border-radius: 18px; background: transparent; color: var(--ink); font: inherit; font-size: 17px; font-weight: 700; cursor: pointer; }
+.fin-switch { margin: 0; }
 .fin-share:focus-visible, .fin-done:focus-visible { outline: 3px solid var(--ultramarine); outline-offset: 3px; }
+.pa-done-btn { display: block; width: 100%; min-height: 52px; margin: 14px 0 0; border: 2px solid var(--ink); border-radius: 18px; background: transparent; color: var(--ink); font-family: 'Antonio', sans-serif; font-weight: 700; font-size: 22px; text-transform: uppercase; cursor: pointer; }
+.pa-done-btn:focus-visible { outline: 3px solid var(--ultramarine); outline-offset: 3px; }
 .fin-msg { font-size: 15px; color: var(--s834-muted); margin: 10px 0 0; text-align: center; }
 .fin-msg:empty { display: none; }
 /* 8.35c: first open story. Light theme, locked palette. */
@@ -5646,7 +5641,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
 
     <button class="settings-open-btn intro-replay" id="replayIntroBtn" onclick="replayIntro()">Replay intro</button>
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.40.1</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.41</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -18859,7 +18854,17 @@ function dayLiftsOn(dayId, w, from, to) {
 }
 function dayDoneOn(dayId, w, from, to) {
   var p = dayLiftsOn(dayId, w, from, to);
-  return p.total > 0 && p.done >= Math.ceil(p.total * DONE_FRACTION - 1e-9);
+  if (p.total > 0 && p.done >= Math.ceil(p.total * DONE_FRACTION - 1e-9)) return true;
+  return p.done > 0 && finDoneTapped(dayId, from, to);
+}
+//  8.41: DONE on the workout screen stores f: 2 on that date and day. Finish
+//  for today and Reset this week store f: 1, which only stops a workout leading.
+function finDoneTapped(dayId, from, to) {
+  if (typeof finTimes !== 'object' || !finTimes) return false;
+  return Object.keys(finTimes).some(function(k) {
+    var i = k.indexOf('|'), d = k.slice(0, i);
+    return k.slice(i + 1) === dayId && d >= from && d <= to && finTimes[k].f === 2;
+  });
 }
 function finRecToday(dayId) { return (typeof finTimes === 'object' && finTimes[todayKey() + '|' + dayId]) || null; }
 //  The workout logged today and not yet done, the latest one if several.
@@ -18869,7 +18874,7 @@ function todayPartial() {
   splitDayIds().forEach(function(id) {
     if (!hasLogsForDay(id, w, t, t)) return;
     var p = dayLiftsOn(id, w, t, t);
-    if (p.total && p.done >= Math.ceil(p.total * DONE_FRACTION - 1e-9)) return;
+    if (dayDoneOn(id, w, t, t)) return;
     var r = finRecToday(id) || {}, l = r.l || 0;
     if (!best || l > best.l) best = { day: id, l: l, done: p.done, total: p.total, recent: !r.f && l > Date.now() - RECENT_HOURS * 36e5 };
   });
@@ -19274,7 +19279,7 @@ function renderPlanActive() {
   }).join('');
   if (!ex) {
     paWeekHome();
-    host.innerHTML = head + '<div class="pa-body">' + finHTML + '<div class="pa-done"><h3 class="pa-name">Every set is in</h3><p>' + list.length + ' lifts logged for ' + paEsc(d.title || 'this day') + '. Tap any lift to change a set.</p><button type="button" class="pa-log pa-fin-btn" id="paFinishBtn" onclick="openFinish()">Finish workout</button></div></div>';
+    host.innerHTML = head + '<div class="pa-body">' + finHTML + '<div class="pa-done"><h3 class="pa-name">Every set is in</h3><p>' + list.length + ' lifts logged for ' + paEsc(d.title || 'this day') + '. Tap any lift to change a set.</p><button type="button" class="pa-log pa-fin-btn" id="paFinishBtn" onclick="finDone()">Done</button></div></div>';
     PA.html = null;
     host.hidden = false;
     paWeekUp();
@@ -19335,7 +19340,9 @@ function renderPlanActive() {
     + '</div>' + warmHTML
     + '<div class="pa-links2">' + (isLogged ? '<button type="button" class="pa-link" onclick="paDelete()">Delete set ' + n + '</button>' : '')
     + '<button type="button" class="pa-link" aria-expanded="' + PA.details + '" onclick="paToggle(\'details\')">' + (PA.details ? 'Hide details' : 'Notes and details') + '</button></div>'
-    + '</section></div>';
+    + '</section>'
+    + (finSession(day).sets ? '<button type="button" class="pa-done-btn" id="paDoneBtn" onclick="finDone()" aria-label="Done. Finish this workout">Done</button>' : '')
+    + '</div>';
   if (html !== PA.html || host.hidden) { paWeekHome(); host.innerHTML = html; PA.html = html; }
   host.hidden = false;
   paWeekUp();
@@ -19915,7 +19922,7 @@ function finCleanTimes(o) {
     var s = +v.s, l = +v.l, r = {};
     if (s > 1e12 && s < 1e13) { r.s = s; if (l >= s && l < s + 864e5) r.l = l; }
     //  8.39.1: f, finished for today. t, this workout is done today in place of the planned one.
-    if (v.f === 1) r.f = 1;
+    if (v.f === 1 || v.f === 2) r.f = v.f;
     if (v.t === 1) r.t = 1;
     if (r.s || r.f || r.t) out[k] = r;
   });
@@ -19972,6 +19979,7 @@ function finHighlights(items, week) {
       var cm = Math.max.apply(null, cur.map(function(s) { return s.w; }));
       var pm = Math.max.apply(null, prev.map(function(s) { return s.w; }));
       if (cm > 0 && cm > pm + 0.001) got = { kind: 'w', rank: (cm - pm) / (pm || 1), label: 'Weight PR', big: finW(cm), sub: it.name,
+        w: cm, r: Math.max.apply(null, cur.filter(function(s) { return Math.abs(s.w - cm) < 0.01; }).map(function(s) { return s.r; })),
         note: 'Your best before was ' + wNum(pm) + '.', line: finW(cm) + ' on ' + it.name + '. Your best before was ' + wNum(pm) + '.' };
       if (!got) {
         cur.slice().sort(function(a, b) { return b.w - a.w || b.r - a.r; }).some(function(s) {
@@ -19980,7 +19988,15 @@ function finHighlights(items, week) {
           var best = Math.max.apply(null, at.map(function(p) { return p.r; }));
           if (s.r <= best) return false;
           var where = s.w > 0 ? ' at ' + finW(s.w) : ' at body weight';
-          got = { kind: 'r', rank: s.w, label: 'Rep PR', big: s.r + ' reps' + (s.w > 0 ? ' at ' + finW(s.w) : ''), sub: it.name,
+          //  The latest earlier entry with a set at this weight, for "than last time".
+          var lastR = 0, lastKey = null;
+          (it.others || []).forEach(function(o) {
+            var at2 = finSets(o).filter(function(p) { return Math.abs(p.w - s.w) < 0.01; });
+            if (!at2.length) return;
+            var key = (o.d || '') + '|' + ('00' + (o.week == null ? 0 : o.week)).slice(-3);
+            if (lastKey == null || key >= lastKey) { lastKey = key; lastR = Math.max.apply(null, at2.map(function(p) { return p.r; })); }
+          });
+          got = { kind: 'r', rank: s.w, w: s.w, r: s.r, last: lastR, label: 'Rep PR', big: s.r + ' reps' + (s.w > 0 ? ' at ' + finW(s.w) : ''), sub: it.name,
             note: 'Your best' + (s.w > 0 ? ' at that weight' : '') + ' was ' + best + '.', line: s.r + ' reps' + where + ' on ' + it.name + '. Your best' + (s.w > 0 ? ' at that weight' : '') + ' was ' + best + '.' };
           return true;
         });
@@ -20009,32 +20025,103 @@ function finHighlights(items, week) {
   var by = function(a, b) { return b.rank - a.rank; };
   return wPR.sort(by).concat(rPR.sort(by), runs.sort(by)).slice(0, 3);
 }
-function finBlockSession() {
-  var d = {}, N = totalTrainWeeks();
-  Object.keys(sessions || {}).forEach(function(id) { (sessions[id] || []).forEach(function(e) { if (e && e.d && e.week != null && e.week < N && !e.quickLog) d[e.d] = 1; }); });
-  return Math.max(1, Object.keys(d).length);
-}
-function finSummary(day, week) {
+//  8.41 FINISH CARD. DONE marks the day finished and opens one card with the
+//  single strongest true message from the user's own logs, plus a stats row.
+//  Nothing is written to sets. Easy weeks and short sessions never compare.
+var FIN_WORDS = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+var FIN_MIN_SETS = 3;   // fewer sets than this gets the fallback line only
+function finDayIds(day) {
   var ids = {};
   try { programmedDayExercises(day).forEach(function(e) { ids[e.id] = 1; }); } catch(x) {}
   paList(day).forEach(function(e) { ids[e.id] = 1; });
-  var items = [], sets = 0, vol = 0, reps = 0, lastVol = 0, lastAny = false;
-  Object.keys(ids).forEach(function(id) {
-    var ex = EX_BY_ID[id]; if (!ex) return;
-    var hist = getHistory(id), e = entryForWeek(hist, week, ex), cur = finSets(e);
-    if (cur.length) {
-      sets += cur.length; vol += finVol(cur); cur.forEach(function(s) { reps += s.r; });
-      items.push({ name: activeVariant(ex), sets: cur, others: hist.filter(function(h) { return h && h !== e && entryVariant(h, ex) === activeVariant(ex); }) });
-    }
-    hist.forEach(function(h) { if (h && h.week === week - 1 && !h.quickLog) { var s = finSets(h); if (s.length) { lastAny = true; lastVol += finVol(s); } } });
-  });
-  var t = finTimes[todayKey() + '|' + day], mins = t && t.l ? Math.round((t.l - t.s) / 60000) : 0;
-  var hl = finHighlights(items, week);
-  if (!hl.length) hl = [{ kind: 'f', label: 'Session ' + finBlockSession() + ' of the block', big: 'Showed up', sub: '', line: 'Showed up. Session ' + finBlockSession() + ' of the block.' }];
-  return { day: day, week: week, title: String((SPLIT_DAYS[day] || {}).title || '').replace(/\.$/, ''), sets: sets, vol: vol, reps: reps,
-    mins: mins >= 1 && mins < 300 ? mins : 0, cmp: lastAny && (vol > 0 || lastVol > 0) ? vol - lastVol : null, hl: hl };
+  return Object.keys(ids);
 }
-var FIN = { sum: null, blob: null, back: null };
+//  Today, plus yesterday when that session was still going under RECENT_HOURS ago.
+function finSessionDates(day) {
+  var t = todayKey(), y = dateKeyOfRun(addDays(startOfToday(), -1)), r = finTimes[y + '|' + day];
+  return r && r.f !== 2 && r.l > Date.now() - RECENT_HOURS * 36e5 ? [t, y] : [t];
+}
+function finSession(day) {
+  var dates = finSessionDates(day), items = [], sets = 0, vol = 0;
+  finDayIds(day).forEach(function(id) {
+    var ex = EX_BY_ID[id]; if (!ex) return;
+    var hist = getHistory(id), cur = hist.filter(function(e) { return e && !e.closed && !e.quickLog && dates.indexOf(e.d) >= 0 && entryForDay(e, day); });
+    var ss = [];
+    cur.forEach(function(e) { ss = ss.concat(finSets(e)); });
+    if (!ss.length) return;
+    sets += ss.length; vol += finVol(ss);
+    var v = entryVariant(cur[0], ex);
+    items.push({ id: id, name: v, sets: ss, others: hist.filter(function(h) { return h && cur.indexOf(h) < 0 && entryVariant(h, ex) === v; }) });
+  });
+  var s0 = 0;
+  dates.forEach(function(d) { var r = finTimes[d + '|' + day]; if (r && r.s && (!s0 || r.s < s0)) s0 = r.s; });
+  var ms = s0 ? Date.now() - s0 : 0;
+  return { day: day, dates: dates, items: items, sets: sets, vol: vol, mins: ms >= 60000 && ms < RECENT_HOURS * 36e5 ? Math.round(ms / 60000) : 0 };
+}
+function finLastWeekVol(s, w) {
+  var v = 0;
+  finDayIds(s.day).forEach(function(id) { (sessions[id] || []).forEach(function(e) { if (e && e.week === w && !e.quickLog && entryForDay(e, s.day)) v += finVol(finSets(e)); }); });
+  return v;
+}
+//  This plan week by the Today rule. Earlier weeks by their own sets only.
+function finWeekDone(w) {
+  var ids = splitDayIds(), r = weekRangeKeys(currentTrainWeek);
+  return ids.length > 0 && ids.every(function(id) {
+    if (w === currentTrainWeek) return dayDoneOn(id, w, r[0], r[1]);
+    var p = dayLiftsOn(id, w, '0000-01-01', '9999-12-31');
+    return p.total > 0 && p.done >= Math.ceil(p.total * DONE_FRACTION - 1e-9);
+  });
+}
+function finNextDay() {
+  var wk = (activeSplit() || {}).week || [], d0 = startOfToday();
+  for (var i = 1; i <= 7; i++) {
+    var d = addDays(d0, i), id = wk[mondayIndex(d)];
+    if (id && id !== 'rest' && SPLIT_DAYS[id]) return i === 1 ? 'tomorrow' : TODAY_DOWS[mondayIndex(d)];
+  }
+  return '';
+}
+function finLine(k, head, sub, headNoW, subNoW) {
+  return { k: k, head: head, sub: sub || '', headNoW: headNoW || head, subNoW: subNoW == null ? (sub || '') : subNoW };
+}
+//  a weight PR, b rep PR at a weight, c volume up on last week, d full weeks in
+//  a row, e done this week, f fallback. The first one the logs support wins.
+function finPick(s) {
+  var w = currentTrainWeek, m = null;
+  if (s.sets >= FIN_MIN_SETS) {
+    if (!isDeloadWeek(w)) {
+      var hl = finHighlights(s.items, w);
+      var a = hl.filter(function(h) { return h.kind === 'w'; })[0], b = hl.filter(function(h) { return h.kind === 'r' && h.last > 0; })[0];
+      if (a) m = finLine('a', a.sub + ' ' + wNum(a.w) + ' for ' + a.r + '.', 'Your best yet.', 'A new best on ' + a.sub + '.', '');
+      else if (b) {
+        var d = b.r - b.last, more = (FIN_WORDS[d] || String(d)) + ' more than last time.';
+        m = finLine('b', b.sub + (b.w > 0 ? ' ' + wNum(b.w) : '') + ', ' + b.r + ' reps.', more, b.sub + ', ' + b.r + ' reps.', more);
+      }
+      if (!m && w > 0 && !isDeloadWeek(w - 1) && s.vol > 0) {
+        var lv = finLastWeekVol(s, w - 1), pct = lv > 0 ? Math.round((s.vol / lv - 1) * 100) : 0;
+        if (pct >= 1) m = finLine('c', 'Volume up ' + pct + ' percent on last week.');
+      }
+      if (!m && finWeekDone(w)) {
+        var n = 1;
+        while (w - n >= 0 && finWeekDone(w - n)) n++;
+        if (n >= 2) m = finLine('d', n + ' weeks in a row.', 'Every planned day done.');
+      }
+    }
+    if (!m) {
+      var ids = splitDayIds(), r = weekRangeKeys(w);
+      var done = ids.filter(function(id) { return dayDoneOn(id, w, r[0], r[1]); }).length;
+      if (ids.length && done) m = finLine('e', done + ' of ' + ids.length + ' done this week.');
+    }
+  }
+  if (!m) { var nx = finNextDay(); m = finLine('f', 'Logged.', nx ? 'See you ' + nx + '.' : ''); }
+  return m;
+}
+function finStats(s, showW) {
+  var out = [[String(s.sets), s.sets === 1 ? 'Set' : 'Sets']];
+  if (showW && s.vol > 0) out.push([finInt(wNum(s.vol)), 'Volume, ' + wLb()]);
+  if (s.mins) out.push([String(s.mins), 'Minutes']);
+  return out;
+}
+var FIN = { sum: null, blob: null, back: null, showW: false };
 function finEl() {
   var el = document.getElementById('finSheet');
   if (el) return el;
@@ -20051,35 +20138,50 @@ function finEl() {
   document.body.appendChild(el);
   return el;
 }
-function openFinish() {
+//  DONE on the workout screen. A second tap while the card is open does nothing.
+function finDone() {
+  if (FIN.sum) return;
   var day = PA.day || paViewedDay();
   if (!day) return;
-  var s = FIN.sum = finSummary(day, currentTrainWeek);
-  FIN.blob = null; FIN.back = document.activeElement;
-  var stats = [];
-  if (s.mins) stats.push([s.mins + ' min', 'Duration']);
-  stats.push([String(s.sets), s.sets === 1 ? 'Set' : 'Sets']);
-  stats.push(s.vol > 0 ? [finInt(wNum(s.vol)), 'Volume, ' + wLb()] : [String(s.reps), 'Reps']);
-  var cmp = '';
-  if (s.cmp != null) {
-    var d = Math.round(wNum(Math.abs(s.cmp)));
-    cmp = d === 0 ? 'Same volume as last week' : '<span aria-hidden="true">' + (s.cmp > 0 ? '↑' : '↓') + '</span> ' + finInt(d) + ' ' + wLb() + (s.cmp > 0 ? ' more than last week' : ' less than last week');
-  }
-  var el = finEl();
-  el.innerHTML = '<div class="fin-in">'
-    + '<header class="fin-head"><p class="fin-k">Workout done · Week ' + (s.week + 1) + ' of ' + totalTrainWeeks() + '</p>'
-    + '<h2 class="fin-title" id="finTitle" tabindex="-1">' + paEsc(s.title) + '<span class="pa-dot" aria-hidden="true">.</span></h2>'
-    + (cmp ? '<p class="fin-cmp">' + cmp + '</p>' : '') + '</header>'
-    + '<ul class="fin-stats" style="--n:' + stats.length + '">' + stats.map(function(x) { return '<li><b>' + paEsc(x[0]) + '</b><span>' + x[1] + '</span></li>'; }).join('') + '</ul>'
-    + '<h3 class="fin-l">' + (s.hl[0].kind === 'f' ? 'Today' : 'Highlights') + '</h3>'
-    + '<ol class="fin-hl">' + s.hl.map(function(h, i) { return '<li' + (i ? '' : ' class="top"') + '><span class="lab">' + paEsc(h.label) + '</span><b>' + paEsc(h.big) + '</b>' + (h.kind === 'f' ? '' : '<span class="d">' + paEsc(h.sub) + '. ' + paEsc(h.note) + '</span>') + '</li>'; }).join('') + '</ol>'
-    + '<div class="fin-btns"><button type="button" class="fin-share" id="finShareBtn" onclick="finShare()">Share</button><button type="button" class="fin-done" onclick="finClose(true)">Done</button></div>'
-    + '<p class="fin-msg" id="finMsg" role="status" aria-live="polite"></p></div>';
+  var s = finSession(day);
+  if (!s.sets) return;
+  s.dates.forEach(function(d) { var k = d + '|' + day; (finTimes[k] || (finTimes[k] = {})).f = 2; });
+  finTimes = finCleanTimes(finTimes); finSaveTimes();
+  invalidateBuild();
+  openFinish(s);
+}
+function openFinish(s) {
+  if (!s || !s.sets) return;
+  s.title = dayWorkoutName(s.day);
+  s.msg = finPick(s);
+  FIN.sum = s; FIN.blob = null; FIN.showW = false; FIN.back = document.activeElement;
+  var st = finStats(s, true), el = finEl();
+  el.innerHTML = '<div class="fin-in"><section class="fin-card" aria-labelledby="finTitle">'
+    + '<p class="fin-k">' + paEsc(s.title) + ' done</p>'
+    + '<h2 class="fin-title" id="finTitle" tabindex="-1">' + paEsc(s.msg.head) + '</h2>'
+    + (s.msg.sub ? '<p class="fin-sub">' + paEsc(s.msg.sub) + '</p>' : '')
+    + '<ul class="fin-stats" style="--n:' + st.length + '">' + st.map(function(x) { return '<li><b>' + paEsc(x[0]) + '</b><span>' + paEsc(x[1]) + '</span></li>'; }).join('') + '</ul>'
+    + '</section><div class="fin-btns">'
+    + '<button type="button" class="fin-done" onclick="finClose(true)">Done</button>'
+    + '<button type="button" class="fin-share" id="finShareBtn" onclick="finShare()">Share</button>'
+    + '<button type="button" class="blk-switch fin-switch" id="finShowW" role="switch" aria-checked="false" onclick="finToggleWeights()"><span>Show weights in the image</span><i aria-hidden="true"></i></button>'
+    + '</div><p class="fin-msg" id="finMsg" role="status" aria-live="polite"></p></div>';
   el.hidden = false; el.scrollTop = 0;
   document.body.classList.add('fin-open');
   var t = document.getElementById('finTitle'); if (t) t.focus();
-  //  Drawn now, so Share can hand the file over inside the tap itself.
-  finFonts().then(function() { finDrawImage(s).toBlob(function(b) { if (FIN.sum === s) FIN.blob = b; }, 'image/png'); });
+  finPaint();
+}
+//  Drawn ahead, so Share can hand the file over inside the tap itself.
+function finPaint() {
+  var s = FIN.sum, sw = FIN.showW;
+  FIN.blob = null;
+  if (!s) return;
+  finFonts().then(function() { finDrawImage(s, sw).toBlob(function(b) { if (FIN.sum === s && FIN.showW === sw) FIN.blob = b; }, 'image/png'); });
+}
+function finToggleWeights() {
+  FIN.showW = !FIN.showW;
+  var b = document.getElementById('finShowW'); if (b) b.setAttribute('aria-checked', String(FIN.showW));
+  finPaint();
 }
 function finClose(done) {
   var el = document.getElementById('finSheet');
@@ -20099,37 +20201,29 @@ function finWrap(g, text, maxW, maxLines) {
   if (cur) lines.push(cur);
   return lines.length <= maxLines ? lines : null;
 }
-//  1080 x 1350, ultramarine, cream type. Big enough to read as a thumbnail.
-function finDrawImage(s) {
+//  1080 x 1350, ultramarine, cream type. Weights only when Show weights is on.
+function finDrawImage(s, showW) {
   var c = document.createElement('canvas'); c.width = 1080; c.height = 1350;
-  var g = c.getContext('2d'), X = 80, W = 920, CR = '#F2EEE4';
+  var g = c.getContext('2d'), X = 80, W = 920, CR = '#F2EEE4', m = s.msg || finPick(s);
   function font(wt, px, fam) { g.font = wt + ' ' + px + 'px ' + fam; }
   function track(v) { if ('letterSpacing' in g) g.letterSpacing = v; }
   g.fillStyle = '#1C2FB5'; g.fillRect(0, 0, 1080, 1350);
   g.fillStyle = CR; g.textBaseline = 'alphabetic';
   font(700, 36, '"DM Sans", sans-serif'); track('4px');
-  g.fillText(('Week ' + (s.week + 1) + ' of ' + totalTrainWeeks()).toUpperCase(), X, 140);
-  track('0px');
-  var title = s.title.toUpperCase(), px = 210;
-  font(700, px, 'Antonio, sans-serif');
-  while (px > 90 && g.measureText(title + '.').width > W) { px -= 6; font(700, px, 'Antonio, sans-serif'); }
-  g.fillText(title, X, 150 + px * 0.92);
-  g.fillStyle = '#F2552C'; g.fillText('.', X + g.measureText(title).width, 150 + px * 0.92); g.fillStyle = CR;
-  var h = s.hl[0], y = 560;
-  font(700, 40, '"DM Sans", sans-serif'); track('4px');
-  g.fillText(String(h.kind === 'f' ? 'Today' : h.label).toUpperCase(), X, y); track('0px');
-  var bp = 150, lines;
-  do { font(700, bp, 'Antonio, sans-serif'); lines = finWrap(g, String(h.big).toUpperCase(), W, 2); bp -= 8; } while (!lines && bp > 70);
-  lines = lines || [String(h.big).toUpperCase()];
-  lines.forEach(function(l) { y += bp * 1.0; g.fillText(l, X, y); });
-  var sub = h.kind === 'f' ? h.label : h.sub;
-  if (sub) { font(500, 48, '"DM Sans", sans-serif'); (finWrap(g, sub, W, 2) || [sub]).forEach(function(l) { y += 64; g.fillText(l, X, y); }); }
+  var k = (String(s.title || '') + ' done').toUpperCase();
+  g.fillText((finWrap(g, k, W, 1) || [k])[0], X, 150); track('0px');
+  var head = String(showW ? m.head : m.headNoW).toUpperCase(), sub = showW ? m.sub : m.subNoW, bp = 170, lines, y = 200;
+  do { font(700, bp, 'Antonio, sans-serif'); lines = finWrap(g, head, W, 3); bp -= 8; } while (!lines && bp > 60);
+  lines = lines || [head];
+  lines.forEach(function(l) { y += bp * 1.02; g.fillText(l, X, y); });
+  g.fillStyle = '#F2552C'; g.fillRect(X, y + 40, 28, 28); g.fillStyle = CR;
+  if (sub) { font(500, 52, '"DM Sans", sans-serif'); y += 140; (finWrap(g, sub, W, 2) || [sub]).forEach(function(l) { g.fillText(l, X, y); y += 68; }); }
   g.globalAlpha = 0.35; g.fillRect(X, 1010, W, 3); g.globalAlpha = 1;
-  var st = [[String(s.sets), s.sets === 1 ? 'set' : 'sets'], s.vol > 0 ? [finInt(wNum(s.vol)), wLb() + ' moved'] : [String(s.reps), 'reps']];
+  var st = finStats(s, showW), cw = W / Math.max(st.length, 1);
   st.forEach(function(p, i) {
-    var x = X + i * 470;
+    var x = X + i * cw;
     font(700, 104, 'Antonio, sans-serif'); g.fillText(p[0], x, 1140);
-    font(500, 38, '"DM Sans", sans-serif'); g.fillText(p[1], x, 1192);
+    font(500, 36, '"DM Sans", sans-serif'); g.fillText(p[1], x, 1190);
   });
   font(700, 52, 'Antonio, sans-serif'); track('2px');
   var wm = 'RUN THE WEIGHTS'; g.fillText(wm, X, 1290);
@@ -20161,7 +20255,7 @@ function finShare() {
   if (!s) return;
   var name = 'run-the-weights-' + todayKey() + '.png';
   if (FIN.blob) shareImage(FIN.blob, name, s.title, msg);
-  else { if (msg) msg.textContent = 'Making the image.'; finFonts().then(function() { finDrawImage(s).toBlob(function(b) { shareImage(b, name, s.title, msg); }, 'image/png'); }); }
+  else { if (msg) msg.textContent = 'Making the image.'; var sw = FIN.showW; finFonts().then(function() { finDrawImage(s, sw).toBlob(function(b) { shareImage(b, name, s.title, msg); }, 'image/png'); }); }
 }
 //  8.38 END OF BLOCK. At the end of the last week Today shows the block card:
 //  what was trained, the three maxes old to proposed, and START BLOCK 2,

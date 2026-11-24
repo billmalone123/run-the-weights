@@ -44,7 +44,7 @@ with sync_playwright() as p:
         if not pg.evaluate("!!document.getElementById('paLogBtn')"): break
         pg.click('#paLogBtn'); pg.wait_for_timeout(120); clear_timer(pg)
     fb=pg.evaluate("(()=>{const b=document.getElementById('paFinishBtn');if(!b)return null;const r=b.getBoundingClientRect(),c=getComputedStyle(b);return [b.textContent,c.backgroundColor,c.color,Math.round(r.height)]})()")
-    check('after the last set: Finish workout, persimmon, 44 px or more', fb and fb[0]=='Finish workout' and fb[1]==PERS and fb[2]==INK and fb[3]>=44, fb)
+    check('after the last set: Done, persimmon, 44 px or more', fb and fb[0]=='Done' and fb[1]==PERS and fb[2]==INK and fb[3]>=44, fb)
     check('the session clock started on the first set', pg.evaluate("!!finTimes[todayKey()+'|%s']"%D))
     pg.evaluate("finTimes[todayKey()+'|%s'].s-=42*60000;finSaveTimes()"%D)
     pg.click('#paFinishBtn'); pg.wait_for_timeout(400)
@@ -54,28 +54,18 @@ with sync_playwright() as p:
     exp=pg.evaluate("(()=>{let n=0,v=0;paList('%s').forEach(x=>{const e=entryForWeek(getHistory(x.id),currentTrainWeek,x);finSets(e).forEach(s=>{n++;v+=s.w*s.r})});return [n,v]})()"%D)
     check('summary: sets and volume from the logged sets', [sm['sets'],round(sm['vol'])]==[exp[0],round(exp[1])], [sm['sets'],sm['vol'],exp])
     stats=pg.evaluate("[...document.querySelectorAll('.fin-stats li')].map(l=>l.innerText.replace(/\\s+/g,' '))")
-    check('stats: duration, sets, volume', stats[0]=='42 min Duration' and stats[1]==str(exp[0])+' Sets' and stats[2].endswith(' Volume, lb'), stats)
-    check('day name in the header', pg.evaluate("finTitle.textContent").rstrip('.').lower()==sm['title'].lower(), pg.evaluate("finTitle.textContent"))
-    last=pg.evaluate("(()=>{let any=false,v=0;paList('%s').forEach(x=>getHistory(x.id).forEach(h=>{if(h.week===currentTrainWeek-1&&!h.quickLog){const s=finSets(h);if(s.length){any=true;v+=finVol(s)}}}));return [any,v]})()"%D)
-    cmp=pg.evaluate("(document.querySelector('.fin-cmp')||{}).textContent||''")
-    if last[0]:
-        dlt=round(exp[1]-last[1])
-        want=('Same volume as last week' if dlt==0 else ('↑ ' if dlt>0 else '↓ ')+'{:,}'.format(abs(dlt))+' lb '+('more' if dlt>0 else 'less')+' than last week')
-        check('comparison to last week, arrow and difference', cmp==want, [cmp,want])
-    else:
-        check('no comparison when last week has no log', cmp=='', cmp)
-    hls=pg.evaluate("[...document.querySelectorAll('.fin-hl li')].length")
-    check('one to three highlights', 1<=hls<=3, hls)
-    h0=pg.evaluate("document.querySelector('.fin-hl li .d')&&document.querySelector('.fin-hl li .d').textContent")
-    check('a highlight names the lift and the old best, not the number twice', h0 is None or (h0.startswith(pg.evaluate("FIN.sum.hl[0].sub")+'. ')), h0)
+    check('stats: sets, volume, minutes', stats[0]==str(exp[0])+' Sets' and stats[1].endswith(' Volume, lb') and stats[2]=='42 Minutes', stats)
+    check('day name in the kicker', pg.evaluate("document.querySelector('.fin-k').textContent").lower()==sm['title'].lower()+' done', pg.evaluate("document.querySelector('.fin-k').textContent"))
+    # 8.41: one message by priority, checked in t841_finish_card.py.
+    check('one message, no highlight list', pg.evaluate("!document.querySelector('.fin-hl')&&!!FIN.sum.msg.head"))
     txt=pg.evaluate("finSheet.innerText")
     check('no dashes or exclamation marks', not any(c in txt for c in '–—!') and ' - ' not in txt, txt[:200])
     bt=pg.evaluate("[...document.querySelectorAll('.fin-btns button')].map(b=>{const r=b.getBoundingClientRect(),c=getComputedStyle(b);return [b.textContent,c.backgroundColor,Math.round(r.height)]})")
-    check('Share is persimmon, Done next to it, both 44 px or more', bt[0][0]=='Share' and bt[0][1]==PERS and bt[1][0]=='Done' and all(x[2]>=44 for x in bt), bt)
+    check('8.41: Done is persimmon and first, Share next, all 44 px or more', bt[0][0]=='Done' and bt[0][1]==PERS and bt[1][0]=='Share' and all(x[2]>=44 for x in bt), bt)
     check('no sideways scroll on the finish card', pg.evaluate("finSheet.scrollWidth<=innerWidth&&document.documentElement.scrollWidth<=innerWidth"))
     pg.screenshot(path=shot('834-finish-390.png'))
     # the share image
-    im=pg.evaluate("(()=>{const c=finDrawImage(FIN.sum),g=c.getContext('2d');const px=(x,y)=>Array.from(g.getImageData(x,y,1,1).data).slice(0,3);let cream=0;const d=g.getImageData(80,150,920,300).data;for(let i=0;i<d.length;i+=4)if(d[i]>230&&d[i+1]>225&&d[i+2]>215)cream++;return [c.width,c.height,px(4,4),px(1075,1345),cream]})()")
+    im=pg.evaluate("(()=>{const c=finDrawImage(FIN.sum,false),g=c.getContext('2d');const px=(x,y)=>Array.from(g.getImageData(x,y,1,1).data).slice(0,3);let cream=0;const d=g.getImageData(80,150,920,300).data;for(let i=0;i<d.length;i+=4)if(d[i]>230&&d[i+1]>225&&d[i+2]>215)cream++;return [c.width,c.height,px(4,4),px(1075,1345),cream]})()")
     check('share image is 1080 x 1350 on ultramarine with cream type', im[0]==1080 and im[1]==1350 and im[2]==[28,47,181] and im[3]==[28,47,181] and im[4]>2000, im[:4]+[im[4]])
     pg.wait_for_timeout(600)
     check('the image is ready before Share is tapped', pg.evaluate("!!FIN.blob&&FIN.blob.type==='image/png'"))
@@ -92,7 +82,7 @@ with sync_playwright() as p:
     check('cancelling the share sheet does nothing else', pg.evaluate("finMsg.textContent")=='')
     # keyboard
     pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
-    check('Escape closes it and focus goes back to Finish workout', pg.evaluate("finSheet.hidden&&document.activeElement.id==='paFinishBtn'"))
+    check('Escape closes it and focus goes back to Done', pg.evaluate("finSheet.hidden&&document.activeElement.id==='paFinishBtn'"))
     # edited set: the card recomputes
     ex0=pg.evaluate("paList('%s')[0].id"%D)
     pg.evaluate("paPickEx('%s');paPick('s1')"%ex0); pg.wait_for_timeout(150)
@@ -101,13 +91,7 @@ with sync_playwright() as p:
     pg.click('#paFinishBtn'); pg.wait_for_timeout(300)
     v2=pg.evaluate("FIN.sum.vol")
     check('an edited set changes the summary', abs(v2-exp[1]-50*pg.evaluate("normSet(entryForWeek(getHistory('%s'),currentTrainWeek,EX_BY_ID['%s']),entryForWeek(getHistory('%s'),currentTrainWeek,EX_BY_ID['%s']).s1).r"%(ex0,ex0,ex0,ex0)))<0.01, [v2,exp[1]])
-    check('a weight above all history shows as a weight PR', any(h['kind']=='w' for h in pg.evaluate("FIN.sum.hl")), pg.evaluate("FIN.sum.hl.map(h=>h.line)"))
-    # fallback when nothing applies
-    pg.evaluate("finClose(false);window._fh=finHighlights;finHighlights=function(){return []};openFinish()"); pg.wait_for_timeout(200)
-    fl=pg.evaluate("document.querySelector('.fin-hl').innerText.replace(/\\s+/g,' ')")
-    check('fallback: Showed up, session n of the block', fl.startswith('SESSION ') or fl.startswith('Session '), fl)
-    check('fallback names the session number', pg.evaluate("FIN.sum.hl[0].line")=='Showed up. Session %d of the block.'%pg.evaluate("finBlockSession()"), pg.evaluate("FIN.sum.hl[0].line"))
-    pg.evaluate("finHighlights=window._fh;0")
+    check('a weight above all history shows as a weight PR', pg.evaluate("FIN.sum.msg.k")=='a', pg.evaluate("FIN.sum.msg"))
     pg.click('.fin-done'); pg.wait_for_timeout(400)
     check('Done closes it and goes to Today', pg.evaluate("finSheet.hidden&&document.body.dataset.tab==='today'"))
     # backup carries the session times

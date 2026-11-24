@@ -1,4 +1,4 @@
-const CACHE = 'monk-mode-v125';
+const CACHE = 'monk-mode-v127';
 
 self.addEventListener('install', function(e) {
   self.skipWaiting();
