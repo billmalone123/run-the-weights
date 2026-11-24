@@ -4055,6 +4055,38 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
   .nav-streak { font-size: 11px; padding: 0 8px; min-height: 34px; letter-spacing: 0; margin-left: 8px; }
 }
 .prog-review small { font-size: 14px; font-weight: 400; color: var(--s834-muted); }
+
+/* ── 8.38 END OF BLOCK ── */
+.tb-block .tb-day { font-size: 48px; }
+.blk-sub { font-size: 15px; color: var(--s834-muted); margin: 10px 0 2px; }
+.blk-list { list-style: none; margin: 0 0 12px; padding: 0; }
+.blk-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 10px; padding: 12px 0; border-top: 1px solid var(--s834-track); }
+.blk-l { font-weight: 700; font-size: 16px; }
+.blk-v { font-size: 16px; }
+.blk-v b { font-family: 'Antonio', sans-serif; font-size: 22px; }
+.blk-tag { display: inline-block; margin-left: 4px; padding: 2px 8px; border-radius: 999px; background: var(--persimmon); color: var(--ink); font-size: 12px; font-weight: 700; vertical-align: 2px; }
+.blk-flag { flex-basis: 100%; font-size: 14px; color: var(--ink); }
+.blk-use { flex: 0 0 auto; min-height: 44px; }
+.blk-in { width: 120px; min-height: 44px; box-sizing: border-box; }
+.blk-note { font-size: 14px; color: var(--s834-muted); margin: 0 0 12px; }
+.tb-start.blk-go { min-height: 56px; }
+.blk-btns { display: flex; gap: 10px; margin: 12px 0 0; }
+.blk-btns .day-adj-btn { min-height: 44px; }
+.blk-later { display: block; min-height: 44px; min-width: 88px; margin: 6px auto 0; padding: 0 12px; border: 0; background: none; color: var(--ink); font: inherit; font-size: 16px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.blk-later:focus-visible, .blk-switch:focus-visible, #blkHead:focus-visible { outline: 3px solid var(--ultramarine); outline-offset: 3px; }
+.blk-set { margin: 0 0 10px; }
+.blk-set-now { margin: 0 0 8px; font-size: 16px; font-weight: 700; color: var(--ink); }
+.blk-set-note { margin: 0 0 8px; font-size: 14px; color: var(--s834-muted); }
+.blk-set-note:empty { display: none; }
+.blk-set .settings-open-btn { min-height: 44px; margin: 0 0 8px; }
+.blk-share-card img { display: block; width: 100%; height: auto; max-height: 52vh; object-fit: contain; border-radius: 12px; margin: 8px 0 10px; background: var(--ultramarine); }
+.blk-switch { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 44px; margin: 0 0 10px; padding: 0; border: 0; background: none; color: var(--ink); font: inherit; font-size: 16px; font-weight: 700; cursor: pointer; }
+.blk-switch i { position: relative; width: 48px; height: 28px; border-radius: 14px; background: var(--s834-track); box-shadow: inset 0 0 0 1.5px var(--ink); }
+.blk-switch i::after { content: ''; position: absolute; top: 4px; left: 4px; width: 20px; height: 20px; border-radius: 50%; background: var(--ink); transition: left .15s; }
+.blk-switch[aria-checked="true"] i { background: var(--ultramarine); box-shadow: none; }
+.blk-switch[aria-checked="true"] i::after { left: 24px; background: var(--cream); }
+.blk-share-card .fin-share { width: 100%; }
+#blkShare { z-index: 360 !important; }   /* above the maxes sheet it can open from */
 </style>
 </head>
 <body style="background:var(--bg)">
@@ -4070,6 +4102,16 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
 
 <p class="sr-only" id="wsSay" role="status" aria-live="polite"></p>
 <!-- CHANGE WORKOUT (8.37). The Quick Log ways in, for one day. -->
+<div class="settings-modal-overlay" id="blkShare" style="display:none" onclick="if (event.target === this) closeBlockShare()">
+  <div class="settings-modal-card blk-share-card" role="dialog" aria-modal="true" aria-labelledby="blkShareT">
+    <div class="settings-modal-title" id="blkShareT">Share your block</div>
+    <img id="blkShareImg" alt="" width="1080" height="1350">
+    <button type="button" class="blk-switch" id="blkShowW" role="switch" aria-checked="true" onclick="blockToggleWeights()"><span>Show weights</span><i aria-hidden="true"></i></button>
+    <button type="button" class="fin-share" id="blkShareGo" onclick="blockShareGo()">Share</button>
+    <p class="fin-msg" id="blkShareMsg" role="status"></p>
+    <button type="button" class="settings-cancel-btn" onclick="closeBlockShare()">Close</button>
+  </div>
+</div>
 <div class="settings-modal-overlay" id="cwSheet" style="display:none" onclick="if (event.target === this) closeChangeSheet()">
   <div class="settings-modal-card cw-card" role="dialog" aria-modal="true" aria-labelledby="cwTitle" aria-describedby="cwSub">
     <div class="settings-modal-title" id="cwTitle">Change workout</div>
@@ -4643,7 +4685,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
         <span class="maintenance-quick-label">Easy week</span>
         <span class="maintenance-toggle maintenance-toggle-sm" aria-hidden="true"><span class="maintenance-toggle-knob"></span></span>
       </button>
-      <button class="plan-notice-btn week-complete-btn" onclick="advanceToNextWeek()">Start week <span id="weekCompleteNext"></span></button>
+      <button class="plan-notice-btn week-complete-btn" id="weekCompleteBtn" onclick="advanceToNextWeek()">Start week <span id="weekCompleteNext"></span></button>
     </div>
     <div id="backupNudgeBanner" class="plan-notice backup-nudge-banner" style="display:none" data-want="0">
       <span class="plan-notice-text">Save a backup of your logs.</span>
@@ -5353,7 +5395,8 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     </div>
     <button class="settings-danger-btn" id="changePlanBtn" onclick="openChangePlanModal()">Change Training Plan</button>
     <button class="settings-danger-btn" id="resetMaxesBtn" onclick="resetMaxes()">Reset maxes</button>
-    <button class="settings-danger-btn" id="startCycleBtn" onclick="startNewCycle()">Start New Cycle</button>
+    <div class="blk-set" id="blockRow"></div>
+    <button class="settings-danger-btn" id="startCycleBtn" onclick="openBlockCard()">Start new block</button>
   </div>
 </div>
 
@@ -5445,7 +5488,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
         <span class="settings-max-val unset" id="chip-ohp">Not set</span>
       </div>
     </div>
-    <button class="settings-open-btn" id="settingsOpenBtn" onclick="openMaxesModal()" style="margin-bottom:24px;">
+    <button class="settings-open-btn" id="settingsOpenBtn" onclick="closeSettingsModal(); openMaxesModal()" style="margin-bottom:24px;">
       Set your maxes
     </button>
     <div class="liftdays-wrap" style="margin-bottom:24px;">
@@ -5562,7 +5605,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
 
     <button class="settings-open-btn intro-replay" id="replayIntroBtn" onclick="replayIntro()">Replay intro</button>
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.37d</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.38</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -6075,6 +6118,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     mirrorPlainKey('prHistory', PR_HISTORY_KEY, function(v) { return Array.isArray(v) && v.length > 0; });
     mirrorPlainKey('splitHistory', SPLIT_HISTORY_KEY, function(v) { return Array.isArray(v) && v.length > 0; });
     mirrorPlainKey('cycleStartMaxes', CYCLE_START_MAXES_KEY, function(v) { return !!v && typeof v === 'object'; });
+    mirrorPlainKey('blockHistory', BLOCK_KEY, function(v) { return Array.isArray(v) && v.length > 0; });
     mirrorPlainKey('lastTab', LAST_TAB_KEY, function(v) { return typeof v === 'string' && !!v; });
     mirrorPlainKey('lastDay', LAST_DAY_KEY, function(v) { return typeof v === 'string' && !!v; });
     mirrorPlainKey('timerBg', TIMER_BG_KEY, function(v) { return !!v && !!v.endTime; });
@@ -7738,7 +7782,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
         host.innerHTML = '<div class="today-card-kicker">Week ' + (currentTrainWeek + 1) + '</div>'
           + '<div class="today-card-title">Week done</div>'
           + '<div class="today-card-meta">Every workout this week is logged.</div>'
-          + '<button class="today-start" onclick="advanceToNextWeek(); renderToday();">Start week ' + (currentTrainWeek + 2) + '</button>';
+          + (currentTrainWeek >= totalTrainWeeks() - 1 ? '<button class="today-start" onclick="openBlockCard()">Start a new block</button>' : '<button class="today-start" onclick="advanceToNextWeek(); renderToday();">Start week ' + (currentTrainWeek + 2) + '</button>');
       } else {
         var d = SPLIT_DAYS[next] || {}, b = buildSession(next, currentTrainWeek);
         var restToday = slot === 'rest';
@@ -11442,6 +11486,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
   //  new cycle reusing week 0..9 would silently overwrite the old entries if
   //  they weren't moved out first. Append-only, oldest first.
   const SPLIT_HISTORY_KEY = 'monk_split_history_v1';
+  var BLOCK_KEY = 'monk_block_history_v1';   // 8.38: [{n, endedAt, oldMaxes, newMaxes}], plus {n, snoozes} for the block not yet ended
   //  The maxes as first entered for the CURRENT live cycle — captured once,
   //  right after Start New Cycle, by commitMaxes() below. Not the same as
   //  userMaxes (which drifts as PRs improve) or PR_HISTORY_KEY (which logs
@@ -11544,6 +11589,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
 
   function openMaxesModal() {
     loadMaxes();
+    renderBlockRow();
     MAX_KEYS.forEach(function(k) {
       var el = document.getElementById('max-' + k);
       if (el) el.value = userMaxes[k] || '';
@@ -11628,11 +11674,6 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
   //     the same rule as set logging: debounced while typing, immediate on blur.
   //     Save & Enter is now purely the forward action.
   var _maxesT = null;
-  //  Set by startNewCycle() right after it clears userMaxes; cleared the first
-  //  time this fires with at least one value committed. That first commit IS
-  //  the new cycle's starting maxes — everyday edits later in the same cycle
-  //  must not re-snapshot and overwrite it.
-  var _newCycleReentry = false;
   function commitMaxes() {
     clearTimeout(_maxesT);
     //  Estimate mode writes its result into the same 1RM field below, so there
@@ -11647,12 +11688,6 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     persistMaxes();
     updateMaxChips();
     renderAllRowStates();
-    if (_newCycleReentry && Object.keys(userMaxes).length) {
-      _newCycleReentry = false;
-      setLSMirrored(CYCLE_START_MAXES_KEY, 'cycleStartMaxes', {
-        maxes: JSON.parse(JSON.stringify(userMaxes)), date: todayKey()
-      });
-    }
   }
   function onMaxInput() {
     clearTimeout(_maxesT);
@@ -11701,13 +11736,11 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
   //  clears maxes, sessions stay live and week-collide with whatever comes
   //  next. This moves sessions out wholesale, snapshots both ends of the
   //  maxes for the record, then resets exactly like a fresh cycle would.
-  function startNewCycle() {
-    var total = totalTrainWeeks();
-    var isFinalWeek = currentTrainWeek >= total - 1;
-    var msg = isFinalWeek
-      ? 'Start a new cycle? This archives your current sessions and 1RMs so you can start fresh, and resets the week back to 1. Nothing is deleted.'
-      : 'You\'re on Week ' + (currentTrainWeek + 1) + ' of ' + total + '. Starting a new cycle now will archive an incomplete cycle. Continue? Nothing is deleted.';
-    if (!confirm(msg)) return;
+  //  8.38: Settings Start new block runs the block flow, with the proposal.
+  function startNewCycle() { openBlockCard(); }
+  //  The archive itself: sessions and maxes move into SPLIT_HISTORY_KEY, the
+  //  live copies clear and the week goes back to 1. Nothing is deleted.
+  function archiveCycle() {
     syncFromDisk();
     var splitHist = [];
     try { splitHist = JSON.parse(localStorage.getItem(SPLIT_HISTORY_KEY)) || []; } catch(e) { splitHist = []; }
@@ -11741,10 +11774,8 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     saveSessions();
     userMaxes = {};
     persistMaxes();
-    _newCycleReentry = true;
     setTrainWeek(0);
     updateMaxChips();
-    openMaxesModal();
   }
   function updateMaxChips() {
     var chips = { squat: 'chip-squat', bench: 'chip-bench', ohp: 'chip-ohp' };
@@ -12715,7 +12746,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
       variants: variantChoice, aims: aimChoice, runPlan: runPlan, runLogs: runLogs, liftDays: liftDaysPerWeek,
       splitId: activeSplitId, maintenanceMode: maintenanceMode,
       setCounts: setCounts, warmupLogs: warmupLogs, customEx: customEx,
-      splitHistory: splitHistory, cycleStartMaxes: cycleStartMaxes,
+      splitHistory: splitHistory, cycleStartMaxes: cycleStartMaxes, blockHistory: loadBlockHist(),
       //  MEAL_PASS_KEY is left out on purpose: a backup file is not a place
       //  for a credential.
       foodLogs: foodLogs, foodTargets: foodTargets, bodyweight: bodyweight, goalMode: goalMode, workoutNotes: workoutNotes,
@@ -12761,6 +12792,8 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
         if (data.maxes) { userMaxes = data.maxes; persistMaxes(); }
         if (data.archive) { setLSMirrored(ARCHIVE_KEY, 'archive', data.archive); }
         if (Array.isArray(data.splitHistory)) { setLSMirrored(SPLIT_HISTORY_KEY, 'splitHistory', data.splitHistory); }
+        //  8.38: a backup without block history loads with none, so it reads as its archive count plus 1.
+        saveBlockHist(cleanBlockHist(data.blockHistory));
         if (data.cycleStartMaxes && typeof data.cycleStartMaxes === 'object') { setLSMirrored(CYCLE_START_MAXES_KEY, 'cycleStartMaxes', data.cycleStartMaxes); }
         if (typeof data.week === 'number' && data.week >= 0) {
           currentTrainWeek = data.week;
@@ -17884,11 +17917,14 @@ function updateWeekCompleteBanner() {
     var numEl = document.getElementById('weekCompleteNum');
     var nextEl = document.getElementById('weekCompleteNext');
     if (numEl) numEl.textContent = currentTrainWeek + 1;
-    if (nextEl) nextEl.textContent = Math.min(totalTrainWeeks(), currentTrainWeek + 2);
+    var btn = document.getElementById('weekCompleteBtn');
+    //  8.38: the last week has no week after it, so the button starts a block.
+    if (btn) btn.innerHTML = currentTrainWeek >= totalTrainWeeks() - 1 ? 'Start a new block' : 'Start week <span id="weekCompleteNext">' + (currentTrainWeek + 2) + '</span>';
   }
 }
 
 function advanceToNextWeek() {
+  if (currentTrainWeek >= totalTrainWeeks() - 1) { openBlockCard(); return; }
   var next = Math.min(totalTrainWeeks() - 1, currentTrainWeek + 1);
   if (typeof setTrainWeek === 'function') setTrainWeek(next);
   switchDay(findNextUnloggedDay() || getMostRecentDay());
@@ -19108,7 +19144,12 @@ function renderTodayB() {
       var partial = null, next = null;
       try { partial = partialDayThisWeek(); next = partial || findNextUnloggedDay(); } catch(e) {}
       var mo0 = document.getElementById('tbMore'); if (mo0) mo0.innerHTML = '';
-      if (!next) {
+      if (blockCardOn()) {
+        work.className = 'tb-work tb-prev tb-block';
+        work.innerHTML = blockCardHTML();
+      } else if (!next && blockEnded()) {
+        work.innerHTML = '<p class="tb-kick">Week ' + (currentTrainWeek + 1) + ' of ' + totalTrainWeeks() + '</p><p class="tb-day">Block done</p><p class="tb-meta">Start your next block from Settings when you are ready.</p>';
+      } else if (!next) {
         work.innerHTML = '<p class="tb-kick">Week ' + (currentTrainWeek + 1) + '</p><p class="tb-day">Week done</p><p class="tb-meta">Every workout this week is logged.</p>'
           + '<button type="button" class="tb-start" onclick="advanceToNextWeek(); renderToday();">Start week ' + (currentTrainWeek + 2) + '</button>';
       } else {
@@ -19618,30 +19659,338 @@ function finDrawImage(s) {
   track('0px');
   return c;
 }
-function finShare() {
-  var msg = document.getElementById('finMsg'), s = FIN.sum;
-  if (!s) return;
-  var name = 'run-the-weights-' + todayKey() + '.png';
-  function save(blob) {
+//  One share path for every image card: the share sheet with the file when
+//  the browser can, otherwise a download. Nothing is posted anywhere.
+function shareImage(blob, name, title, msg) {
+  if (!blob) { if (msg) msg.textContent = 'The image could not be made. Try again.'; return; }
+  function save() {
     var u = URL.createObjectURL(blob), a = document.createElement('a');
     a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function() { URL.revokeObjectURL(u); }, 4000);
     if (msg) msg.textContent = 'Image saved to your downloads.';
   }
-  function go(blob) {
-    if (!blob) { if (msg) msg.textContent = 'The image could not be made. Try again.'; return; }
-    var file = null;
-    try { file = new File([blob], name, { type: 'image/png' }); } catch(e) {}
-    if (file && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-      navigator.share({ files: [file], title: s.title }).then(function() { if (msg) msg.textContent = ''; }, function(err) {
-        if (err && err.name === 'AbortError') return;
-        save(blob);
-      });
-    } else save(blob);
-  }
-  if (FIN.blob) go(FIN.blob);
-  else { if (msg) msg.textContent = 'Making the image.'; finFonts().then(function() { finDrawImage(s).toBlob(go, 'image/png'); }); }
+  var file = null;
+  try { file = new File([blob], name, { type: 'image/png' }); } catch(e) {}
+  if (file && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+    navigator.share({ files: [file], title: title }).then(function() { if (msg) msg.textContent = ''; }, function(err) {
+      if (err && err.name === 'AbortError') return;
+      save();
+    });
+  } else save();
 }
+function finShare() {
+  var msg = document.getElementById('finMsg'), s = FIN.sum;
+  if (!s) return;
+  var name = 'run-the-weights-' + todayKey() + '.png';
+  if (FIN.blob) shareImage(FIN.blob, name, s.title, msg);
+  else { if (msg) msg.textContent = 'Making the image.'; finFonts().then(function() { finDrawImage(s).toBlob(function(b) { shareImage(b, name, s.title, msg); }, 'image/png'); }); }
+}
+//  8.38 END OF BLOCK. At the end of the last week Today shows the block card:
+//  what was trained, the three maxes old to proposed, and START BLOCK 2,
+//  which runs the Start New Cycle archive. Nothing applies without that tap.
+var START_FRACTION = 0.92;      // block 2 week 1 lands about 8% under the best week 8 to 10 set
+var BLOCK_JUMP_FLAG = 1.25;     // a proposal over 25% above the old max waits for a confirm
+var BLOCK_SNOOZE_MAX = 3;       // Not yet, then only from Settings
+var BLOCK_FULL_WEEKS = 6;       // fewer weeks with logged sets gets the soft card
+var BLOCK_RECENT_DAYS = 14;     // share and undo stay in Settings this long
+var BLOCK_MAIN = { squat: 'bb-squat', bench: 'flat-bb-bench', ohp: 'seated-ohp' };
+var BLOCK_SHORT = { squat: 'Squat', bench: 'Bench', ohp: 'Shoulder press' };
+var _blk = blockFresh();
+function blockFresh() { return { force: false, dismissed: false, edit: false, vals: {}, ok: {}, showW: true, src: null, back: null }; }
+
+function loadBlockHist() {
+  var h = null;
+  try { h = JSON.parse(localStorage.getItem(BLOCK_KEY)); } catch(e) {}
+  return Array.isArray(h) ? h : [];
+}
+function saveBlockHist(h) { setLSMirrored(BLOCK_KEY, 'blockHistory', h); }
+//  Restore keeps only well formed records: whole numbers, dates, three maxes.
+function cleanBlockHist(v) {
+  if (!Array.isArray(v)) return [];
+  function mx(o) {
+    var r = {};
+    if (o && typeof o === 'object') MAX_KEYS.forEach(function(k) { var n = +o[k]; if (isFinite(n) && n > 0 && n <= 2000) r[k] = n; });
+    return r;
+  }
+  return v.slice(0, 100).filter(function(r) { return r && typeof r === 'object' && r.n === Math.floor(r.n) && r.n >= 1 && r.n <= 999; }).map(function(r) {
+    var o = { n: r.n };
+    if (/^\d{4}-\d{2}-\d{2}$/.test(String(r.endedAt || ''))) { o.endedAt = r.endedAt; o.oldMaxes = mx(r.oldMaxes); o.newMaxes = mx(r.newMaxes); }
+    else o.snoozes = Math.max(0, Math.min(9, Math.floor(+r.snoozes) || 0));
+    return o;
+  });
+}
+function blockArchive() { try { return JSON.parse(localStorage.getItem(SPLIT_HISTORY_KEY)) || []; } catch(e) { return []; } }
+function blockNum() { return blockArchive().length + 1; }
+function blockSnoozes(n) { var r = loadBlockHist().filter(function(x) { return x.n === n && !x.endedAt; })[0]; return r ? r.snoozes || 0 : 0; }
+//  Weeks with a logged set, and workouts as distinct dates, in this block.
+function blockStats(src) {
+  var total = totalTrainWeeks(), wk = {}, days = {};
+  Object.keys(src || {}).forEach(function(id) {
+    (src[id] || []).forEach(function(e) {
+      if (!e || e.week == null || e.week < 0 || e.week > total - 1 || !finSets(e).length) return;
+      wk[e.week] = 1; if (e.d) days[e.d] = 1;
+    });
+  });
+  return { weeks: Object.keys(wk).length, total: total, sessions: Object.keys(days).length };
+}
+function blockRound(lb) { return wUnit() === 'kg' ? wToLb(Math.round(wNum(lb) / 2.5) * 2.5) : roundToNearestFive(lb); }
+//  Per max: the heaviest set in the last three weeks at or above the plan's
+//  target reps, for each lift tied to it, as the max that set implies.
+//  Implied = e1rm(w, r) / e1rm(1, target reps) / the lift's percentage, so a
+//  set at exactly the target reps implies w / percentage and extra reps count.
+function blockProposal(src) {
+  var total = totalTrainWeeks(), from = Math.max(0, total - 3);
+  return MAX_KEYS.map(function(k) {
+    var old = userMaxes[k] > 0 ? +userMaxes[k] : 0, per = [];
+    EXERCISES.forEach(function(ex) {
+      if (ex.maxKey !== k || !(ex.maxPct > 0)) return;
+      var r0 = ex.repRange[0], best = null;
+      (src[ex.id] || []).forEach(function(e) {
+        if (!e || e.week == null || e.week < from || e.week > total - 1 || entryVariant(e, ex) !== ex.name) return;
+        finSets(e).forEach(function(st) { if (st.w > 0 && st.r >= r0 && (!best || st.w > best.w || (st.w === best.w && st.r > best.r))) best = { w: st.w, r: st.r, week: e.week }; });
+      });
+      if (best) per.push({ id: ex.id, pct: ex.maxPct, w: best.w, r: best.r, week: best.week, implied: e1rm(best.w, best.r) / e1rm(1, r0) / ex.maxPct });
+    });
+    var main = per.filter(function(x) { return x.id === BLOCK_MAIN[k]; })[0], pick = main;
+    if (!pick && per.length) { var srt = per.slice().sort(function(a, b) { return a.implied - b.implied; }); pick = srt[Math.floor((srt.length - 1) / 2)]; }
+    var raw = pick ? blockRound(pick.implied * START_FRACTION) : 0;
+    var flagged = old > 0 && raw > old * BLOCK_JUMP_FLAG;
+    return { key: k, old: old, raw: raw, proposed: flagged ? old : Math.max(old, raw), flagged: flagged, from: pick || null };
+  });
+}
+//  What START applies: an edit, a confirmed jump, or the proposal.
+function blockFinal(prop) {
+  var out = {};
+  (prop || blockProposal(sessions)).forEach(function(p) {
+    var v = _blk.vals[p.key] != null ? _blk.vals[p.key] : (p.flagged && _blk.ok[p.key] ? p.raw : p.proposed);
+    if (v > 0) out[p.key] = v;
+  });
+  return out;
+}
+function blockEnded() {
+  var w = typeof homeWeek === 'function' ? homeWeek() : currentTrainWeek;
+  if (w < totalTrainWeeks() - 1 || w !== currentTrainWeek) return false;
+  try { return !partialDayThisWeek() && !findNextUnloggedDay(); } catch(e) { return false; }
+}
+function blockWorkoutLive() {
+  var st = null;
+  try { st = JSON.parse(localStorage.getItem(ACTIVE_SESSION_KEY)); } catch(e) {}
+  return !!(st && st.updatedAt && Date.now() - st.updatedAt < ACTIVE_SESSION_MAX_AGE_MS && st.dayId);
+}
+function blockCardOn() {
+  if (_blk.force) return true;
+  return blockEnded() && !_blk.dismissed && blockSnoozes(blockNum()) < BLOCK_SNOOZE_MAX && !blockWorkoutLive();
+}
+function blockCardHTML() {
+  var n = blockNum(), st = blockStats(sessions), full = st.weeks >= BLOCK_FULL_WEEKS, prop = blockProposal(sessions), fin = blockFinal(prop);
+  var best = null;
+  prop.forEach(function(p) { var g = p.old > 0 && fin[p.key] > p.old ? fin[p.key] / p.old - 1 : 0; if (g > 0 && (!best || g > best.g)) best = { k: p.key, g: g }; });
+  var rows = prop.map(function(p) {
+    var now = fin[p.key] || 0, L = ONB_MAX_LABELS[p.key];
+    var val = _blk.edit
+      ? '<input class="settings-input-field wu-in blk-in" type="number" inputmode="decimal" min="1" max="2000" id="blk-in-' + p.key + '" aria-label="New ' + L + ' max, ' + wLbs() + '" ' + wValAttr(now || '') + ' oninput="blockSetVal(\'' + p.key + '\', this.value)">'
+      : '<span class="blk-v">' + (p.old ? wNum(p.old) : 'Not set') + ' to <b>' + (now ? wNum(now) : 'Not set') + '</b> ' + wLbs() + '</span>';
+    var flag = p.flagged && !_blk.ok[p.key] && _blk.vals[p.key] == null
+      ? '<span class="blk-flag">Check this weight. Your sets point to ' + wTxt(p.raw) + '.</span><button type="button" class="day-adj-btn blk-use" onclick="blockConfirm(\'' + p.key + '\')">Use ' + wTxt(p.raw) + '</button>' : '';
+    return '<li class="blk-row' + (best && best.k === p.key ? ' blk-best' : '') + '"><span class="blk-l">' + L + (best && best.k === p.key ? ' <span class="blk-tag">Biggest gain</span>' : '') + '</span>' + val + flag + '</li>';
+  }).join('');
+  return '<p class="tb-kick">Block ' + n + ', week ' + Math.min(currentTrainWeek + 1, st.total) + ' of ' + st.total + '</p>'
+    + '<h2 class="tb-day" id="blkHead" tabindex="-1">' + (full ? 'Block ' + n + ' done' : 'Start a new block?') + '</h2>'
+    + '<p class="tb-meta">' + st.weeks + ' of ' + st.total + ' weeks trained. ' + st.sessions + (st.sessions === 1 ? ' session' : ' sessions') + ' logged.</p>'
+    + '<p class="blk-sub">Your maxes, now to proposed. Week 1 weights come from these.</p>'
+    + '<ul class="blk-list">' + rows + '</ul>'
+    + '<p class="blk-note">Your block ' + n + ' logs are saved in your archive.</p>'
+    + '<button type="button" class="tb-start blk-go" onclick="startBlock()">Start block ' + (n + 1) + '</button>'
+    + '<div class="blk-btns"><button type="button" class="day-adj-btn" aria-pressed="' + _blk.edit + '" onclick="blockEdit()">Edit maxes</button>'
+    + (full ? '<button type="button" class="day-adj-btn" aria-haspopup="dialog" onclick="openBlockShare(\'card\')">Share</button>' : '') + '</div>'
+    + '<button type="button" class="blk-later" onclick="blockNotYet()">Not yet</button>';
+}
+function blockRender(focusId) {
+  if (typeof renderTodayB === 'function') renderTodayB();
+  var f = focusId && document.getElementById(focusId);
+  if (f) try { f.focus(); } catch(e) {}
+}
+function openBlockCard() {
+  _blk = blockFresh(); _blk.force = true;
+  var m = document.getElementById('settingsModal'); if (m && m.style.display !== 'none') closeSettingsModal();
+  var mm = document.getElementById('maxesModal'); if (mm) mm.style.display = 'none';
+  if (typeof _weekPreview !== 'undefined' && currentTrainWeek !== homeWeek()) wsHome();
+  _selSlot = null;
+  goTab('today');
+  blockRender('blkHead');
+  var h = document.getElementById('blkHead'); if (h) try { h.scrollIntoView({ block: 'center' }); } catch(e) {}
+}
+function blockNotYet() {
+  if (!_blk.force || blockEnded()) {
+    var n = blockNum(), h = loadBlockHist(), r = h.filter(function(x) { return x.n === n && !x.endedAt; })[0];
+    if (!r) { r = { n: n, snoozes: 0 }; h.push(r); }
+    r.snoozes = (r.snoozes || 0) + 1;
+    saveBlockHist(h);
+  }
+  _blk = blockFresh(); _blk.dismissed = true;
+  blockRender('tbHello');
+}
+function blockEdit() {
+  if (!_blk.edit) blockProposal(sessions).forEach(function(p) { if (_blk.vals[p.key] == null) { var v = blockFinal()[p.key]; if (v) _blk.vals[p.key] = v; } });
+  _blk.edit = !_blk.edit;
+  blockRender(_blk.edit ? 'blk-in-squat' : null);
+}
+function blockSetVal(k, v) {
+  if (MAX_KEYS.indexOf(k) === -1) return;
+  var n = parseFloat(v);
+  if (isFinite(n) && n > 0 && n <= 2000) _blk.vals[k] = n; else delete _blk.vals[k];
+}
+function blockConfirm(k) { _blk.ok[k] = true; blockRender('blkHead'); }
+//  START: the record with both sets of maxes is saved first, then the
+//  archive runs, then the new maxes are written. A stop between the last
+//  two is repaired on the next open by blockRecover().
+function startBlock() {
+  var n = blockNum(), fin = blockFinal(), old = JSON.parse(JSON.stringify(userMaxes));
+  var h = loadBlockHist().filter(function(x) { return !(x.n === n && !x.endedAt); });
+  h.push({ n: n, endedAt: todayKey(), oldMaxes: old, newMaxes: fin });
+  saveBlockHist(h);
+  archiveCycle();
+  userMaxes = JSON.parse(JSON.stringify(fin));
+  persistMaxes(); updateMaxChips();
+  setLSMirrored(CYCLE_START_MAXES_KEY, 'cycleStartMaxes', { maxes: JSON.parse(JSON.stringify(userMaxes)), date: todayKey() });
+  _blk = blockFresh(); _selSlot = null;
+  if (typeof renderAllRowStates === 'function') renderAllRowStates();
+  blockRender('tbHello');
+  var say = document.getElementById('lenSay');
+  if (say) say.textContent = 'Block ' + (n + 1) + ' started. Week 1 weights come from your new maxes.';
+}
+function blockRecover() {
+  var h = loadBlockHist(), r = h.filter(function(x) { return x.endedAt; }).slice(-1)[0];
+  if (!r || Object.keys(userMaxes || {}).length || !Object.keys(r.newMaxes || {}).length || blockArchive().length < r.n) return;
+  userMaxes = JSON.parse(JSON.stringify(r.newMaxes)); persistMaxes(); updateMaxChips();
+}
+try { document.addEventListener('DOMContentLoaded', function() { setTimeout(blockRecover, 0); }); } catch(e) {}
+function blockLast() {
+  var r = loadBlockHist().filter(function(x) { return x.endedAt; }).slice(-1)[0];
+  if (!r) return null;
+  var age = (startOfToday() - parseDateKey(r.endedAt)) / 864e5;
+  return age >= 0 && age <= BLOCK_RECENT_DAYS ? r : null;
+}
+//  Undo puts the archived sets and the old maxes back. It is offered only
+//  while nothing is logged in the new block, so no week can collide.
+function blockUndoOK() { var r = blockLast(), a = blockArchive(); return !!r && a.length === r.n && entryCount(sessions) === 0; }
+function undoBlockStart() {
+  if (!blockUndoOK()) return;
+  var r = blockLast();
+  if (!confirm('Undo the start of block ' + (r.n + 1) + '? Block ' + r.n + ' comes back with its logs and maxes.')) return;
+  var a = blockArchive(), last = a.pop();
+  sessions = JSON.parse(JSON.stringify(last.sessions || {})); saveSessions();
+  setLSMirrored(SPLIT_HISTORY_KEY, 'splitHistory', a);
+  userMaxes = JSON.parse(JSON.stringify(r.oldMaxes || {})); persistMaxes(); updateMaxChips();
+  if (last.startingMaxes) setLSMirrored(CYCLE_START_MAXES_KEY, 'cycleStartMaxes', { maxes: last.startingMaxes, date: last.startDate });
+  saveBlockHist(loadBlockHist().filter(function(x) { return x !== r && !(x.n === r.n && x.endedAt === r.endedAt); }));
+  var wk = 0;
+  Object.keys(sessions).forEach(function(id) { (sessions[id] || []).forEach(function(e) { if (e && e.week > wk) wk = e.week; }); });
+  setTrainWeek(wk);
+  if (typeof renderAllRowStates === 'function') renderAllRowStates();
+  renderBlockRow();
+  var msg = document.getElementById('blkRowMsg'); if (msg) msg.textContent = 'Block ' + r.n + ' is back.';
+}
+function renderBlockRow() {
+  var el = document.getElementById('blockRow');
+  if (!el) return;
+  var r = blockLast(), t = totalTrainWeeks();
+  el.innerHTML = '<div class="settings-input-label">Block</div><p class="blk-set-now">Block ' + blockNum() + ', week ' + (Math.min(currentTrainWeek, t - 1) + 1) + ' of ' + t + '</p>'
+    + (r ? '<button type="button" class="settings-open-btn" aria-haspopup="dialog" onclick="openBlockShare(\'last\')">Share block ' + r.n + '</button>'
+      + (blockUndoOK() ? '<button type="button" class="settings-open-btn" onclick="undoBlockStart()">Undo last block start</button>'
+        : '<p class="blk-set-note">Undo last block start is off once a set is logged in block ' + (r.n + 1) + '.</p>') : '')
+    + '<p class="blk-set-note" id="blkRowMsg" role="status"></p>';
+}
+//  SHARE. The image is drawn from real numbers only; a lift with no gain is left off.
+function blockShareData(src) {
+  var d;
+  if (src === 'last') {
+    var r = blockLast(), a = blockArchive(), arch = a[r ? r.n - 1 : -1];
+    if (!r) return null;
+    d = { n: r.n, st: blockStats(arch ? arch.sessions : {}), old: r.oldMaxes || {}, now: r.newMaxes || {} };
+  } else d = { n: blockNum(), st: blockStats(sessions), old: JSON.parse(JSON.stringify(userMaxes)), now: blockFinal() };
+  d.lifts = MAX_KEYS.filter(function(k) { return d.old[k] > 0 && d.now[k] > d.old[k]; }).map(function(k) {
+    return { k: k, label: BLOCK_SHORT[k], old: d.old[k], now: d.now[k], pct: Math.round((d.now[k] / d.old[k] - 1) * 100) };
+  });
+  var top = d.lifts.slice().sort(function(a, b) { return b.now / b.old - a.now / a.old; })[0];
+  d.best = top ? top.k : null;
+  return d;
+}
+function blockDrawImage(d, showW) {
+  var c = document.createElement('canvas'); c.width = 1080; c.height = 1350;
+  var g = c.getContext('2d'), X = 80, W = 920, CR = '#F2EEE4', INK = '#141414', PER = '#F2552C';
+  function font(wt, px, fam) { g.font = wt + ' ' + px + 'px ' + fam; }
+  g.fillStyle = '#1C2FB5'; g.fillRect(0, 0, 1080, 1350);
+  g.fillStyle = CR; g.textBaseline = 'alphabetic';
+  var head = ('Block ' + d.n + ' done').toUpperCase(), px = 190;
+  font(700, px, 'Antonio, sans-serif');
+  while (px > 90 && g.measureText(head + '.').width > W) { px -= 6; font(700, px, 'Antonio, sans-serif'); }
+  g.fillText(head, X, 120 + px * 0.92);
+  g.fillStyle = PER; g.fillText('.', X + g.measureText(head).width, 120 + px * 0.92); g.fillStyle = CR;
+  font(500, 44, '"DM Sans", sans-serif');
+  g.fillText(d.st.weeks + ' of ' + d.st.total + ' weeks trained', X, 420);
+  g.fillText(d.st.sessions + (d.st.sessions === 1 ? ' session' : ' sessions') + ' logged', X, 482);
+  var y = 600;
+  d.lifts.forEach(function(l) {
+    var hi = l.k === d.best;
+    if (hi) { g.fillStyle = PER; g.fillRect(X - 24, y - 24, W + 48, 170); }
+    g.fillStyle = hi ? INK : CR;
+    font(700, 40, '"DM Sans", sans-serif'); g.fillText(l.label.toUpperCase(), X, y + 26);
+    font(700, 96, 'Antonio, sans-serif');
+    g.fillText(showW ? wNum(l.old) + ' TO ' + wNum(l.now) + ' ' + wLb().toUpperCase() : '+' + l.pct + '%', X, y + 126);
+    if (showW) { var t = '+' + l.pct + '%'; g.fillText(t, X + W - g.measureText(t).width, y + 126); }
+    y += 210;
+  });
+  g.fillStyle = CR; g.globalAlpha = 0.35; g.fillRect(X, 1220, W, 3); g.globalAlpha = 1;
+  font(700, 44, 'Antonio, sans-serif');
+  var wm = 'RUN THE WEIGHTS'; g.fillText(wm, X, 1290);
+  g.fillStyle = PER; g.fillText('.', X + g.measureText(wm).width, 1290);
+  return c;
+}
+function blockSharePaint() {
+  var d = blockShareData(_blk.src), img = document.getElementById('blkShareImg');
+  if (!d || !img) return Promise.resolve();
+  return finFonts().then(function() {
+    var c = blockDrawImage(d, _blk.showW);
+    img.src = c.toDataURL('image/png');
+    img.alt = 'Block ' + d.n + ' done. ' + d.st.weeks + ' of ' + d.st.total + ' weeks trained, ' + d.st.sessions + ' sessions logged. '
+      + d.lifts.map(function(l) { return l.label + (_blk.showW ? ' ' + wNum(l.old) + ' to ' + wNum(l.now) + ' ' + wLb() : '') + ', up ' + l.pct + ' percent'; }).join('. ');
+    _blk.canvas = c;
+  });
+}
+function openBlockShare(src) {
+  var m = document.getElementById('blkShare');
+  if (!m || !blockShareData(src)) return;
+  _blk.src = src; _blk.back = document.activeElement;
+  var sw = document.getElementById('blkShowW'); if (sw) sw.setAttribute('aria-checked', String(_blk.showW));
+  var msg = document.getElementById('blkShareMsg'); if (msg) msg.textContent = '';
+  m.style.display = 'flex';
+  blockSharePaint();
+  var go = document.getElementById('blkShareGo'); if (go) try { go.focus(); } catch(e) {}
+}
+function closeBlockShare() {
+  var m = document.getElementById('blkShare'); if (m) m.style.display = 'none';
+  if (_blk.back && _blk.back.focus) try { _blk.back.focus(); } catch(e) {}
+}
+function blockToggleWeights() {
+  _blk.showW = !_blk.showW;
+  var sw = document.getElementById('blkShowW'); if (sw) sw.setAttribute('aria-checked', String(_blk.showW));
+  blockSharePaint();
+}
+function blockShareGo() {
+  var d = blockShareData(_blk.src), msg = document.getElementById('blkShareMsg');
+  if (!d) return;
+  blockSharePaint().then(function() { _blk.canvas.toBlob(function(b) { shareImage(b, 'run-the-weights-block-' + d.n + '.png', 'Block ' + d.n + ' done', msg); }, 'image/png'); });
+}
+document.addEventListener('keydown', function(e) {
+  var m = document.getElementById('blkShare');
+  if (!m || m.style.display === 'none') return;
+  if (e.key === 'Escape') { e.stopPropagation(); closeBlockShare(); return; }
+  if (e.key !== 'Tab') return;
+  var f = [].slice.call(m.querySelectorAll('button')), i = f.indexOf(document.activeElement);
+  if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); }
+  else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
+}, true);
 </script>
 </body>
 </html>
