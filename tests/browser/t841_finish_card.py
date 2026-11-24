@@ -138,12 +138,17 @@ with sync_playwright() as p:
     o = {'week': 5, 'ub': [[0, 4, [[100, 8]]]], 'today': [[0, [[150, 8], [150, 8]]]]}
     ctx, pg, errs = setup(b, o)
     m = tap_done(pg)
-    check('f: two sets read Logged. See you tomorrow.', full(m) == 'Logged. See you tomorrow.', full(m))
-    pg.screenshot(path=shot('841-f-390.png')); ctx.close()
+    nx = pg.evaluate("SPLIT_DAYS[findNextUnloggedDay()].title.replace(/\\.$/,'')")
+    check('f: two sets read Logged. Next up is the workout Today leads with.', full(m) == 'Logged. Next up is ' + nx + '.', (full(m), nx))
+    pg.screenshot(path=shot('841-f-390.png'))
+    pg.click('.fin-done'); pg.wait_for_timeout(500)
+    lead = pg.evaluate("(document.querySelector('#todayB .tb-day')||{}).innerText||''")
+    check('f: Today leads with the same workout the card named', lead.strip().upper() == nx.upper(), (lead, nx)); ctx.close()
     ctx, pg, errs = setup(b, {'week': 5, 'today': [[0, [[100, 8]], '2026-11-17']]}, clock=datetime.datetime(2026, 11, 17, 10, 0, 0))
     pg.evaluate("localStorage.setItem('monk_session_times_v1','{}')")
     pg.evaluate("PA.day='upper-b'"); pg.evaluate("finDone()"); pg.wait_for_timeout(300)
-    check('f: names the next planned weekday', full(pg.evaluate("FIN.sum.msg")) == 'Logged. See you Thursday.', full(pg.evaluate("FIN.sum&&FIN.sum.msg"))); ctx.close()
+    m2 = full(pg.evaluate("FIN.sum&&FIN.sum.msg"))
+    check('f: a missed earlier day is named, as Today shows it (Upper A on Tuesday)', m2 == 'Logged. Next up is Upper A.', m2); ctx.close()
     # ---------- priority: every message possible, the higher one wins ----------
     hist = [[0, 4, [[100, 7], [100, 7]]], [0, 3, [[100, 8]]]]
     o = {'week': 5, 'full': [3, 4], 'days': ['upper-a', 'lower-a', 'lower-b'], 'ub': hist, 'today': [[0, [[105, 6], [100, 9], [100, 8], [100, 8]]]] + ub_all([[50, 8], [50, 8], [50, 8]], 6, 1)}

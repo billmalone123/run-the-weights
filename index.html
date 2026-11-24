@@ -20072,13 +20072,11 @@ function finWeekDone(w) {
     return p.total > 0 && p.done >= Math.ceil(p.total * DONE_FRACTION - 1e-9);
   });
 }
+//  Names the workout Today will lead with next (the first one not yet logged
+//  this week), so the card and Today always agree.
 function finNextDay() {
-  var wk = (activeSplit() || {}).week || [], d0 = startOfToday();
-  for (var i = 1; i <= 7; i++) {
-    var d = addDays(d0, i), id = wk[mondayIndex(d)];
-    if (id && id !== 'rest' && SPLIT_DAYS[id]) return i === 1 ? 'tomorrow' : TODAY_DOWS[mondayIndex(d)];
-  }
-  return '';
+  var id = null; try { id = findNextUnloggedDay(); } catch(e) {}
+  return id && SPLIT_DAYS[id] ? String(SPLIT_DAYS[id].title || '').replace(/\.$/, '') : '';
 }
 function finLine(k, head, sub, headNoW, subNoW) {
   return { k: k, head: head, sub: sub || '', headNoW: headNoW || head, subNoW: subNoW == null ? (sub || '') : subNoW };
@@ -20112,7 +20110,7 @@ function finPick(s) {
       if (ids.length && done) m = finLine('e', done + ' of ' + ids.length + ' done this week.');
     }
   }
-  if (!m) { var nx = finNextDay(); m = finLine('f', 'Logged.', nx ? 'See you ' + nx + '.' : ''); }
+  if (!m) { var nx = finNextDay(); m = finLine('f', 'Logged.', nx ? 'Next up is ' + nx + '.' : 'Every workout this week is logged.'); }
   return m;
 }
 function finStats(s, showW) {
