@@ -1,5 +1,5 @@
-"""8.39.2 install notice: iPhone browser tab gets Add to Home Screen first, once. Standalone with no data gets Coming from Safari on Today. Settings has Moving to the Home Screen. 390 and 320."""
-import sys, os, re; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+"""8.42 install notice (first built as 8.39.2): iPhone browser tab gets Add to Home Screen first, once. Standalone with no data gets Coming from Safari on Today. Settings has Moving to the Home Screen. Get the app page, versioned icons. 390 and 320."""
+import sys, os, re, json; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import *
 from playwright.sync_api import sync_playwright
 IPHONE = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1'
@@ -122,6 +122,47 @@ with sync_playwright() as p:
         check('%d settings: steps name Backup, Add to Home Screen and Restore' % W, pg.evaluate("moveSec.querySelectorAll('li').length") == 3 and all(w in st for w in ['Backup', 'Add to Home Screen', 'Restore']) and not any(c in st for c in '-–—!'), st)
         check('%d settings: fits' % W, pg.evaluate("moveSec.scrollWidth<=moveSec.clientWidth+1"))
         pg.evaluate("moveSec.scrollIntoView({block:'center'})"); pg.screenshot(path=shot('8392-settings-%d.png' % W))
+        lk = pg.evaluate("[moveGet.getAttribute('href'),Math.round(moveGet.getBoundingClientRect().height)]")
+        check('%d settings: links to the Get the app page, 44 px tall' % W, lk[0] == 'get.html' and lk[1] >= 44, lk)
         check('%d settings: no page errors' % W, not errs, errs); ctx.close()
+    # Get the app page is linked from the first screen card and the intro.
+    ctx, pg, errs = ctx_for(b, IPHONE, SAFARI_TAB)
+    how = pg.evaluate("[installHow.getAttribute('href'),installHow.textContent,Math.round(installHow.getBoundingClientRect().height)]")
+    check('first screen card: Show me how links to get.html, 44 px', how[0] == 'get.html' and how[1] == 'Show me how' and how[2] >= 44, how)
+    pg.click('#installKeep'); pg.wait_for_timeout(300)
+    pg.evaluate("for(var i=0;i<5&&introGet.hidden;i++)introNext()"); pg.wait_for_timeout(200)
+    check('intro: last step links to get.html, next to the privacy link', pg.evaluate("!introGet.hidden&&introGet.getAttribute('href')==='get.html'&&introGet.getBoundingClientRect().height>=44"))
+    ctx.close()
+    GET = URL.rsplit('/', 1)[0] + '/get.html'
+    for W in [390, 320]:
+        ctx = b.new_context(viewport={'width': W, 'height': 844}); pg = ctx.new_page(); errs = []
+        pg.on('pageerror', lambda e: errs.append(str(e)))
+        pg.goto(GET); pg.wait_for_timeout(800)
+        hs = pg.evaluate("[...document.querySelectorAll('h1,h2')].filter(h=>h.offsetParent).map(h=>h.textContent)")
+        check('%d get page: iPhone, Android, Back up my data, Restore, Updates' % W, hs == ['Get the app', 'iPhone', 'Android', 'Back up my data', 'Restore', 'Updates'], hs)
+        txt = pg.evaluate("document.body.innerText")
+        check('%d get page: steps name Share, Add to Home Screen, Backup, Restore' % W, all(w in txt for w in ['Tap Share, then Add to Home Screen', 'Install app', 'Tap Backup', 'then Restore', 'install on their own']), txt[:200])
+        check('%d get page: no dashes or exclamation marks' % W, not any(c in txt for c in '-–—!'))
+        check('%d get page: Something wrong stays hidden until an email is set' % W, pg.evaluate("help.hidden&&!document.body.innerText.includes('PUT YOUR')"))
+        check('%d get page: fits with no sideways scroll' % W, pg.evaluate("document.documentElement.scrollWidth<=innerWidth"))
+        bk = pg.evaluate("(()=>{var r=document.querySelector('.back').getBoundingClientRect();return [r.height,getComputedStyle(document.querySelector('.back')).backgroundColor]})()")
+        check('%d get page: Back to the app is 44 px or more, persimmon' % W, bk[0] >= 44 and bk[1] == 'rgb(242, 85, 44)', bk)
+        cs = pg.evaluate("[getComputedStyle(document.querySelector('li')).color,getComputedStyle(document.querySelector('section')).backgroundColor,getComputedStyle(document.querySelector('h2')).color,getComputedStyle(document.querySelector('.note')).color]")
+        check('%d get page: text passes 4.5 to 1' % W, min(ratio(cs[0], cs[1]), ratio(cs[2], cs[1]), ratio(cs[3], cs[1])) >= 4.5, cs)
+        pg.screenshot(path=shot('8392-get-%d.png' % W), full_page=True)
+        check('%d get page: no page errors' % W, not errs, errs); ctx.close()
+    # Icons: versioned names in the head, the manifest and the service worker.
+    ctx = b.new_context(); pg = ctx.new_page(); pg.goto(URL); pg.wait_for_timeout(500)
+    base = URL.rsplit('/', 1)[0] + '/'
+    ic = pg.evaluate("[...document.querySelectorAll('link[rel=apple-touch-icon],link[rel=icon]')].map(l=>l.getAttribute('href'))")
+    check('icons: head links use the v2 files', ic and all('-v2.png' in h for h in ic), ic)
+    man = pg.evaluate("fetch('manifest.json').then(r=>r.json())")
+    mi = [(i['src'], i['sizes'], i.get('purpose')) for i in man['icons']]
+    check('icons: manifest has 192, 512 and a separate maskable 512', mi == [('assets/brand/rtw-icon-192-v2.png', '192x192', 'any'), ('assets/brand/rtw-icon-512-v2.png', '512x512', 'any'), ('assets/brand/rtw-icon-maskable-512-v2.png', '512x512', 'maskable')], mi)
+    sizes = pg.evaluate("Promise.all(%s.map(u=>new Promise(r=>{var i=new Image();i.onload=()=>r([i.naturalWidth,i.naturalHeight]);i.onerror=()=>r(null);i.src=u})))" % json.dumps(['assets/brand/rtw-apple-touch-180-v2.png', 'assets/brand/rtw-icon-192-v2.png', 'assets/brand/rtw-icon-512-v2.png', 'assets/brand/rtw-icon-maskable-512-v2.png']))
+    check('icons: files load at 180, 192, 512 and 512', sizes == [[180, 180], [192, 192], [512, 512], [512, 512]], sizes)
+    sw = pg.evaluate("fetch('sw.js').then(r=>r.text())")
+    check('icons: the service worker precaches all four', all(n in sw for n in ['rtw-apple-touch-180-v2.png', 'rtw-icon-192-v2.png', 'rtw-icon-512-v2.png', 'rtw-icon-maskable-512-v2.png']))
+    ctx.close()
     b.close()
 sys.exit(1 if done() else 0)

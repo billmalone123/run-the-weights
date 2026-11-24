@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get the app · Run the Weights</title>
+<meta name="theme-color" content="#1C2FB5">
+<meta name="color-scheme" content="light">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/brand/rtw-apple-touch-180-v2.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/brand/rtw-icon-192-v2.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Antonio:wght@700&family=DM+Sans:opsz,wght@9..40,400;9..40,600&display=swap" rel="stylesheet">
+<style>
+  :root { --cream: #F2EEE4; --surface: #FBF9F3; --ink: #141414; --muted: #55544D; --ultra: #1C2FB5; --pers: #F2552C; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--cream); color: var(--ink); font: 400 17px/1.5 'DM Sans', system-ui, sans-serif; }
+  header { background: var(--ultra); color: var(--cream); padding: 28px 16px 24px; }
+  header img { display: block; height: 72px; width: auto; margin-bottom: 20px; }
+  h1, h2 { font-family: 'Antonio', 'Arial Narrow', sans-serif; font-weight: 700; text-transform: uppercase; line-height: 1.05; margin: 0; }
+  h1 { font-size: 44px; }
+  h1::after { content: ''; display: block; width: 40px; height: 6px; background: var(--pers); margin-top: 14px; }
+  header p { margin: 14px 0 0; max-width: 34em; }
+  main { max-width: 640px; margin: 0 auto; padding: 16px 16px 40px; }
+  section { background: var(--surface); border-radius: 24px; padding: 20px 18px; margin: 0 0 14px; }
+  h2 { font-size: 26px; color: var(--ultra); margin-bottom: 10px; }
+  ol { margin: 0; padding-left: 24px; }
+  li { margin: 6px 0; }
+  .note { margin: 12px 0 0; color: var(--muted); font-size: 15px; }
+  p.plain { margin: 0; }
+  a { color: var(--ultra); text-underline-offset: 3px; }
+  a:focus-visible { outline: 3px solid var(--ultra); outline-offset: 3px; }
+  .mail { display: inline-block; min-height: 44px; line-height: 44px; font-weight: 600; }
+  .back { display: flex; align-items: center; justify-content: center; min-height: 52px; margin-top: 8px; border-radius: 26px; background: var(--pers); color: var(--ink); font-weight: 600; text-decoration: none; }
+  .back:focus-visible { outline-color: var(--ink); }
+  [hidden] { display: none; }
+</style>
+</head>
+<body>
+<header>
+  <img src="assets/brand/rtw-wordmark-on-ultramarine.svg" alt="Run the Weights">
+  <h1>Get the app</h1>
+  <p>Run the Weights works best from your Home Screen. Your plan and sets stay on your phone, in the place you open the app from.</p>
+</header>
+<main>
+  <section id="iphone" aria-labelledby="iphoneH">
+    <h2 id="iphoneH">iPhone</h2>
+    <ol>
+      <li>Open runtheweights.vercel.app in Safari.</li>
+      <li>Tap Share, then Add to Home Screen.</li>
+      <li>Open Run the Weights from your Home Screen and log from there.</li>
+    </ol>
+    <p class="note">Do this before you log anything. Safari and the Home Screen app do not share data.</p>
+  </section>
+  <section id="android" aria-labelledby="androidH">
+    <h2 id="androidH">Android</h2>
+    <ol>
+      <li>Open runtheweights.vercel.app in Chrome.</li>
+      <li>Tap the menu with three dots, then Install app or Add to Home screen.</li>
+      <li>Open Run the Weights from your Home Screen.</li>
+    </ol>
+  </section>
+  <section id="backup" aria-labelledby="backupH">
+    <h2 id="backupH">Back up my data</h2>
+    <ol>
+      <li>In the app, tap the gear at the top to open Settings.</li>
+      <li>Tap Backup. A file saves to your phone.</li>
+      <li>Keep it somewhere safe, such as Files or iCloud Drive.</li>
+    </ol>
+  </section>
+  <section id="restore" aria-labelledby="restoreH">
+    <h2 id="restoreH">Restore</h2>
+    <ol>
+      <li>Open the app where you want your data, for example from your Home Screen.</li>
+      <li>Tap the gear, then Restore.</li>
+      <li>Pick your backup file. Your plan, sets and weights come back.</li>
+    </ol>
+  </section>
+  <section id="updates" aria-labelledby="updatesH">
+    <h2 id="updatesH">Updates</h2>
+    <p class="plain">Updates install on their own. The newest version loads the next time you open the app.</p>
+  </section>
+  <section id="help" aria-labelledby="helpH" hidden>
+    <h2 id="helpH">Something wrong?</h2>
+    <p class="plain">Email <a class="mail" id="helpMail" href="#"></a> and say what you saw. A screenshot helps.</p>
+  </section>
+  <a class="back" href="./">Back to the app</a>
+</main>
+<script>
+  //  Set this to the support address to show the Something wrong section.
+  var SUPPORT_EMAIL = '';
+  if (/^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/.test(SUPPORT_EMAIL)) {
+    var a = document.getElementById('helpMail');
+    a.href = 'mailto:' + SUPPORT_EMAIL; a.textContent = SUPPORT_EMAIL;
+    document.getElementById('help').hidden = false;
+  }
+</script>
+</body>
+</html>

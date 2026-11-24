@@ -1,13 +1,17 @@
 const CACHE = 'monk-mode-v129';
 
+//  Icons are versioned by file name, so a new icon set gets new names here.
+var PRECACHE = ['manifest.json', 'assets/brand/rtw-apple-touch-180-v2.png', 'assets/brand/rtw-icon-192-v2.png', 'assets/brand/rtw-icon-512-v2.png', 'assets/brand/rtw-icon-maskable-512-v2.png'];
+
 self.addEventListener('install', function(e) {
   self.skipWaiting();
+  e.waitUntil(caches.open(CACHE).then(function(c) { return c.addAll(PRECACHE); }).catch(function() {}));
 });
 
 self.addEventListener('activate', function(e) {
   e.waitUntil(
     caches.keys().then(function(keys) {
-      return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+      return Promise.all(keys.filter(function(k) { return k !== CACHE; }).map(function(k) { return caches.delete(k); }));
     }).then(function() {
       return self.clients.matchAll({ type: 'window' });
     }).then(function(clients) {

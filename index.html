@@ -23,10 +23,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Run the Weights">
 <meta name="mobile-web-app-capable" content="yes">
-<link rel="apple-touch-icon" href="assets/brand/rtw-apple-touch-180.png">
-<link rel="apple-touch-icon" sizes="180x180" href="assets/brand/rtw-apple-touch-180.png">
-<link rel="icon" type="image/png" sizes="192x192" href="assets/brand/rtw-icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="assets/brand/rtw-icon-512.png">
+<link rel="apple-touch-icon" href="assets/brand/rtw-apple-touch-180-v2.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/brand/rtw-apple-touch-180-v2.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/brand/rtw-icon-192-v2.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/brand/rtw-icon-512-v2.png">
 <!-- Fetched as early as the parser can start it, so by the time the splash
      div below paints, the mark is very likely already in memory instead of
      popping in a beat after the dark background does. -->
@@ -3984,6 +3984,9 @@ body.fin-open { overflow: hidden; }
 .intro-next { width: 100%; min-height: 56px; border: 0; border-radius: 999px; background: #1C2FB5; color: #F2EEE4; font: 700 22px 'RTW Hero', Antonio, sans-serif; cursor: pointer; }
 .intro-privacy { display: block; min-height: 44px; line-height: 44px; margin-top: 8px; text-align: center; color: #141414; font: 400 14px 'DM Sans', sans-serif; text-decoration: underline; text-underline-offset: 3px; }
 .intro-privacy[hidden], .intro-photo[hidden] { display: none; }
+.intro-links { display: flex; justify-content: center; gap: 20px; }
+.intro-links .intro-privacy { display: inline-block; }
+.intro-links .intro-privacy[hidden] { display: none; }
 /* 8.39.2: install notice. Safari and the Home Screen app keep separate storage on iPhone. */
 .install-card { z-index: 610; }
 .install-card .intro-top { margin-top: calc(16px + env(safe-area-inset-top)); }
@@ -3992,6 +3995,9 @@ body.fin-open { overflow: hidden; }
 .install-keep:focus-visible { outline: 3px solid #1C2FB5; outline-offset: 3px; }
 .move-steps { margin: 6px 0 0; padding-left: 22px; color: var(--text); font-size: var(--fs-2); line-height: 1.5; }
 .move-steps li { margin: 2px 0; }
+.install-how { text-align: center; line-height: 44px; margin-top: 0; }
+.move-get { display: inline-block; min-height: 44px; line-height: 44px; color: var(--primary-text); font-size: var(--fs-2); text-decoration: underline; text-underline-offset: 3px; }
+.move-get:focus-visible { outline: 3px solid var(--ultramarine); outline-offset: 3px; }
 .intro-skip:focus-visible, .intro-next:focus-visible, .intro-privacy:focus-visible { outline: 3px solid #1C2FB5; outline-offset: 3px; }
 @media (max-width: 360px) { .intro-p { font-size: 16px; } .intro-body { padding-top: 20px; } }
 /* Short screens: the story text matters more than the photo, so the photo steps aside. */
@@ -4378,6 +4384,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     <div class="intro-foot">
       <button type="button" class="intro-next" id="installAdded" onclick="installChoose('added')">I added it</button>
       <button type="button" class="install-keep" id="installKeep" onclick="installChoose('safari')">Keep using Safari</button>
+      <a class="install-keep install-how" id="installHow" href="get.html" target="_blank" rel="noopener">Show me how</a>
     </div>
   </div>
 </div>
@@ -4391,7 +4398,8 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
       <div class="intro-dots" aria-hidden="true"><i></i><i></i><i></i></div>
       <p class="sr-only" id="introStep"></p>
       <button type="button" class="intro-next" id="introNext" onclick="introNext()">Next</button>
-      <a class="intro-privacy" id="introPrivacy" href="privacy.html" target="_blank" rel="noopener" hidden>Read the privacy page</a>
+      <div class="intro-links"><a class="intro-privacy" id="introPrivacy" href="privacy.html" target="_blank" rel="noopener" hidden>Read the privacy page</a>
+      <a class="intro-privacy" id="introGet" href="get.html" target="_blank" rel="noopener" hidden>Get the app</a></div>
     </div>
   </div>
 </div>
@@ -5638,6 +5646,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
         <li>Tap Share, then Add to Home Screen.</li>
         <li>Open Run the Weights from your Home Screen, then tap Restore here and pick the backup.</li>
       </ol>
+      <a class="move-get" id="moveGet" href="get.html" target="_blank" rel="noopener">All the steps, for iPhone and Android</a>
     </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
       <button class="settings-open-btn" onclick="exportData()">⇩ Backup</button>
@@ -12396,6 +12405,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     document.getElementById('introP').textContent = d.p;
     document.getElementById('introNext').textContent = d.b;
     document.getElementById('introPrivacy').hidden = !last;
+    document.getElementById('introGet').hidden = !last;
     document.getElementById('introStep').textContent = 'Screen ' + (_introStep + 1) + ' of ' + INTRO_STORY.length;
     document.querySelectorAll('#introStory .intro-dots i').forEach(function(i, k) { i.className = k === _introStep ? 'on' : ''; });
     var ph = document.getElementById('introPhoto'), im = _introImgs[_introStep];
