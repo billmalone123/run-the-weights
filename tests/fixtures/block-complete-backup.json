@@ -1,0 +1,5112 @@
+{
+ "app": "monk-mode",
+ "exportedAt": "2026-11-21",
+ "sessions": {
+  "flat-bb-bench": [
+   {
+    "d": "2026-09-14",
+    "week": 0,
+    "day": "upper-a",
+    "weight": 150,
+    "reps": 5,
+    "s1": {
+     "w": 150,
+     "r": 5
+    },
+    "s2": {
+     "w": 150,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Flat Barbell Bench Press"
+   },
+   {
+    "d": "2026-09-21",
+    "week": 1,
+    "day": "upper-a",
+    "weight": 155,
+    "reps": 5,
+    "s1": {
+     "w": 155,
+     "r": 5
+    },
+    "s2": {
+     "w": 155,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Flat Barbell Bench Press"
+   },
+   {
+    "d": "2026-09-28",
+    "week": 2,
+    "day": "upper-a",
+    "weight": 160,
+    "reps": 5,
+    "s1": {
+     "w": 160,
+     "r": 5
+    },
+    "s2": {
+     "w": 160,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Flat Barbell Bench Press"
+   },
+   {
+    "d": "2026-10-05",
+    "week": 3,
+    "day": "upper-a",
+    "weight": 135,
+    "reps": 5,
+    "s1": {
+     "w": 135,
+     "r": 5
+    },
+    "s2": {
+     "w": 135,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Flat Barbell Bench Press"
+   },
+   {
+    "d": "2026-10-12",
+    "week": 4,
+    "day": "upper-a",
+    "weight": 165,
+    "reps": 5,
+    "s1": {
+     "w": 165,
+     "r": 5
+    },
+    "s2": {
+     "w": 165,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Flat Barbell Bench Press"
+   },
+   {
+    "d": "2026-10-19",
+    "week": 5,
+    "day": "upper-a",
+    "weight": 170,
+    "reps": 5,
+    "s1": {
+     "w": 170,
+     "r": 5
+    },
+    "s2": {
+     "w": 170,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Flat Barbell Bench Press"
+   },
+   {
+    "d": "2026-10-26",
+    "week": 6,
+    "day": "upper-a",
+    "weight": 175,
+    "reps": 5,
+    "s1": {
+     "w": 175,
+     "r": 5
+    },
+    "s2": {
+     "w": 175,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Flat Barbell Bench Press"
+   },
+   {
+    "d": "2026-11-02",
+    "week": 7,
+    "day": "upper-a",
+    "weight": 150,
+    "reps": 5,
+    "s1": {
+     "w": 150,
+     "r": 5
+    },
+    "s2": {
+     "w": 150,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Flat Barbell Bench Press"
+   },
+   {
+    "d": "2026-11-09",
+    "week": 8,
+    "day": "upper-a",
+    "weight": 180,
+    "reps": 6,
+    "s1": {
+     "w": 180,
+     "r": 6
+    },
+    "s2": {
+     "w": 180,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Flat Barbell Bench Press"
+   },
+   {
+    "d": "2026-11-16",
+    "week": 9,
+    "day": "upper-a",
+    "weight": 185,
+    "reps": 7,
+    "s1": {
+     "w": 185,
+     "r": 7
+    },
+    "s2": {
+     "w": 185,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Flat Barbell Bench Press"
+   }
+  ],
+  "lat-pulldown": [
+   {
+    "d": "2026-09-14",
+    "week": 0,
+    "day": "upper-a",
+    "weight": 100,
+    "reps": 10,
+    "s1": {
+     "w": 100,
+     "r": 10
+    },
+    "s2": {
+     "w": 100,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Lat Pulldown Machine"
+   },
+   {
+    "d": "2026-09-21",
+    "week": 1,
+    "day": "upper-a",
+    "weight": 105,
+    "reps": 10,
+    "s1": {
+     "w": 105,
+     "r": 10
+    },
+    "s2": {
+     "w": 105,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Lat Pulldown Machine"
+   },
+   {
+    "d": "2026-09-28",
+    "week": 2,
+    "day": "upper-a",
+    "weight": 105,
+    "reps": 10,
+    "s1": {
+     "w": 105,
+     "r": 10
+    },
+    "s2": {
+     "w": 105,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Lat Pulldown Machine"
+   },
+   {
+    "d": "2026-10-05",
+    "week": 3,
+    "day": "upper-a",
+    "weight": 90,
+    "reps": 10,
+    "s1": {
+     "w": 90,
+     "r": 10
+    },
+    "s2": {
+     "w": 90,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Lat Pulldown Machine"
+   },
+   {
+    "d": "2026-10-12",
+    "week": 4,
+    "day": "upper-a",
+    "weight": 110,
+    "reps": 10,
+    "s1": {
+     "w": 110,
+     "r": 10
+    },
+    "s2": {
+     "w": 110,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Lat Pulldown Machine"
+   },
+   {
+    "d": "2026-10-19",
+    "week": 5,
+    "day": "upper-a",
+    "weight": 115,
+    "reps": 10,
+    "s1": {
+     "w": 115,
+     "r": 10
+    },
+    "s2": {
+     "w": 115,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Lat Pulldown Machine"
+   },
+   {
+    "d": "2026-10-26",
+    "week": 6,
+    "day": "upper-a",
+    "weight": 115,
+    "reps": 10,
+    "s1": {
+     "w": 115,
+     "r": 10
+    },
+    "s2": {
+     "w": 115,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Lat Pulldown Machine"
+   },
+   {
+    "d": "2026-11-02",
+    "week": 7,
+    "day": "upper-a",
+    "weight": 100,
+    "reps": 10,
+    "s1": {
+     "w": 100,
+     "r": 10
+    },
+    "s2": {
+     "w": 100,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Lat Pulldown Machine"
+   },
+   {
+    "d": "2026-11-09",
+    "week": 8,
+    "day": "upper-a",
+    "weight": 120,
+    "reps": 10,
+    "s1": {
+     "w": 120,
+     "r": 10
+    },
+    "s2": {
+     "w": 120,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Lat Pulldown Machine"
+   },
+   {
+    "d": "2026-11-16",
+    "week": 9,
+    "day": "upper-a",
+    "weight": 125,
+    "reps": 10,
+    "s1": {
+     "w": 125,
+     "r": 10
+    },
+    "s2": {
+     "w": 125,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Lat Pulldown Machine"
+   }
+  ],
+  "seated-ohp": [
+   {
+    "d": "2026-09-14",
+    "week": 0,
+    "day": "upper-a",
+    "weight": 90,
+    "reps": 5,
+    "s1": {
+     "w": 90,
+     "r": 5
+    },
+    "s2": {
+     "w": 90,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Seated Dumbbell Press"
+   },
+   {
+    "d": "2026-09-21",
+    "week": 1,
+    "day": "upper-a",
+    "weight": 95,
+    "reps": 5,
+    "s1": {
+     "w": 95,
+     "r": 5
+    },
+    "s2": {
+     "w": 95,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Seated Dumbbell Press"
+   },
+   {
+    "d": "2026-09-28",
+    "week": 2,
+    "day": "upper-a",
+    "weight": 95,
+    "reps": 5,
+    "s1": {
+     "w": 95,
+     "r": 5
+    },
+    "s2": {
+     "w": 95,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Seated Dumbbell Press"
+   },
+   {
+    "d": "2026-10-05",
+    "week": 3,
+    "day": "upper-a",
+    "weight": 80,
+    "reps": 5,
+    "s1": {
+     "w": 80,
+     "r": 5
+    },
+    "s2": {
+     "w": 80,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Seated Dumbbell Press"
+   },
+   {
+    "d": "2026-10-12",
+    "week": 4,
+    "day": "upper-a",
+    "weight": 100,
+    "reps": 5,
+    "s1": {
+     "w": 100,
+     "r": 5
+    },
+    "s2": {
+     "w": 100,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Seated Dumbbell Press"
+   },
+   {
+    "d": "2026-10-19",
+    "week": 5,
+    "day": "upper-a",
+    "weight": 100,
+    "reps": 5,
+    "s1": {
+     "w": 100,
+     "r": 5
+    },
+    "s2": {
+     "w": 100,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Seated Dumbbell Press"
+   },
+   {
+    "d": "2026-10-26",
+    "week": 6,
+    "day": "upper-a",
+    "weight": 105,
+    "reps": 5,
+    "s1": {
+     "w": 105,
+     "r": 5
+    },
+    "s2": {
+     "w": 105,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Seated Dumbbell Press"
+   },
+   {
+    "d": "2026-11-02",
+    "week": 7,
+    "day": "upper-a",
+    "weight": 90,
+    "reps": 5,
+    "s1": {
+     "w": 90,
+     "r": 5
+    },
+    "s2": {
+     "w": 90,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Seated Dumbbell Press"
+   },
+   {
+    "d": "2026-11-09",
+    "week": 8,
+    "day": "upper-a",
+    "weight": 105,
+    "reps": 6,
+    "s1": {
+     "w": 105,
+     "r": 6
+    },
+    "s2": {
+     "w": 105,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Seated Dumbbell Press"
+   },
+   {
+    "d": "2026-11-16",
+    "week": 9,
+    "day": "upper-a",
+    "weight": 110,
+    "reps": 7,
+    "s1": {
+     "w": 110,
+     "r": 7
+    },
+    "s2": {
+     "w": 110,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Seated Dumbbell Press"
+   }
+  ],
+  "seated-cable-row": [
+   {
+    "d": "2026-09-14",
+    "week": 0,
+    "day": "upper-a",
+    "weight": 100,
+    "reps": 10,
+    "s1": {
+     "w": 100,
+     "r": 10
+    },
+    "s2": {
+     "w": 100,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Seated Cable Row"
+   },
+   {
+    "d": "2026-09-21",
+    "week": 1,
+    "day": "upper-a",
+    "weight": 105,
+    "reps": 10,
+    "s1": {
+     "w": 105,
+     "r": 10
+    },
+    "s2": {
+     "w": 105,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Seated Cable Row"
+   },
+   {
+    "d": "2026-09-28",
+    "week": 2,
+    "day": "upper-a",
+    "weight": 105,
+    "reps": 10,
+    "s1": {
+     "w": 105,
+     "r": 10
+    },
+    "s2": {
+     "w": 105,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Seated Cable Row"
+   },
+   {
+    "d": "2026-10-05",
+    "week": 3,
+    "day": "upper-a",
+    "weight": 90,
+    "reps": 10,
+    "s1": {
+     "w": 90,
+     "r": 10
+    },
+    "s2": {
+     "w": 90,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Seated Cable Row"
+   },
+   {
+    "d": "2026-10-12",
+    "week": 4,
+    "day": "upper-a",
+    "weight": 110,
+    "reps": 10,
+    "s1": {
+     "w": 110,
+     "r": 10
+    },
+    "s2": {
+     "w": 110,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Seated Cable Row"
+   },
+   {
+    "d": "2026-10-19",
+    "week": 5,
+    "day": "upper-a",
+    "weight": 115,
+    "reps": 10,
+    "s1": {
+     "w": 115,
+     "r": 10
+    },
+    "s2": {
+     "w": 115,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Seated Cable Row"
+   },
+   {
+    "d": "2026-10-26",
+    "week": 6,
+    "day": "upper-a",
+    "weight": 115,
+    "reps": 10,
+    "s1": {
+     "w": 115,
+     "r": 10
+    },
+    "s2": {
+     "w": 115,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Seated Cable Row"
+   },
+   {
+    "d": "2026-11-02",
+    "week": 7,
+    "day": "upper-a",
+    "weight": 100,
+    "reps": 10,
+    "s1": {
+     "w": 100,
+     "r": 10
+    },
+    "s2": {
+     "w": 100,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Seated Cable Row"
+   },
+   {
+    "d": "2026-11-09",
+    "week": 8,
+    "day": "upper-a",
+    "weight": 120,
+    "reps": 10,
+    "s1": {
+     "w": 120,
+     "r": 10
+    },
+    "s2": {
+     "w": 120,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Seated Cable Row"
+   },
+   {
+    "d": "2026-11-16",
+    "week": 9,
+    "day": "upper-a",
+    "weight": 125,
+    "reps": 10,
+    "s1": {
+     "w": 125,
+     "r": 10
+    },
+    "s2": {
+     "w": 125,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Seated Cable Row"
+   }
+  ],
+  "lateral-raise-mach": [
+   {
+    "d": "2026-09-14",
+    "week": 0,
+    "day": "upper-a",
+    "weight": 20,
+    "reps": 15,
+    "s1": {
+     "w": 20,
+     "r": 15
+    },
+    "s2": {
+     "w": 20,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Lateral Raise Machine"
+   },
+   {
+    "d": "2026-09-21",
+    "week": 1,
+    "day": "upper-a",
+    "weight": 20,
+    "reps": 15,
+    "s1": {
+     "w": 20,
+     "r": 15
+    },
+    "s2": {
+     "w": 20,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Lateral Raise Machine"
+   },
+   {
+    "d": "2026-09-28",
+    "week": 2,
+    "day": "upper-a",
+    "weight": 20,
+    "reps": 15,
+    "s1": {
+     "w": 20,
+     "r": 15
+    },
+    "s2": {
+     "w": 20,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Lateral Raise Machine"
+   },
+   {
+    "d": "2026-10-05",
+    "week": 3,
+    "day": "upper-a",
+    "weight": 20,
+    "reps": 15,
+    "s1": {
+     "w": 20,
+     "r": 15
+    },
+    "s2": {
+     "w": 20,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Lateral Raise Machine"
+   },
+   {
+    "d": "2026-10-12",
+    "week": 4,
+    "day": "upper-a",
+    "weight": 20,
+    "reps": 15,
+    "s1": {
+     "w": 20,
+     "r": 15
+    },
+    "s2": {
+     "w": 20,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Lateral Raise Machine"
+   },
+   {
+    "d": "2026-10-19",
+    "week": 5,
+    "day": "upper-a",
+    "weight": 25,
+    "reps": 15,
+    "s1": {
+     "w": 25,
+     "r": 15
+    },
+    "s2": {
+     "w": 25,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Lateral Raise Machine"
+   },
+   {
+    "d": "2026-10-26",
+    "week": 6,
+    "day": "upper-a",
+    "weight": 25,
+    "reps": 15,
+    "s1": {
+     "w": 25,
+     "r": 15
+    },
+    "s2": {
+     "w": 25,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Lateral Raise Machine"
+   },
+   {
+    "d": "2026-11-02",
+    "week": 7,
+    "day": "upper-a",
+    "weight": 20,
+    "reps": 15,
+    "s1": {
+     "w": 20,
+     "r": 15
+    },
+    "s2": {
+     "w": 20,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Lateral Raise Machine"
+   },
+   {
+    "d": "2026-11-09",
+    "week": 8,
+    "day": "upper-a",
+    "weight": 25,
+    "reps": 15,
+    "s1": {
+     "w": 25,
+     "r": 15
+    },
+    "s2": {
+     "w": 25,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Lateral Raise Machine"
+   },
+   {
+    "d": "2026-11-16",
+    "week": 9,
+    "day": "upper-a",
+    "weight": 25,
+    "reps": 15,
+    "s1": {
+     "w": 25,
+     "r": 15
+    },
+    "s2": {
+     "w": 25,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Lateral Raise Machine"
+   }
+  ],
+  "ez-bar-curl": [
+   {
+    "d": "2026-09-14",
+    "week": 0,
+    "day": "upper-a",
+    "weight": 55,
+    "reps": 8,
+    "s1": {
+     "w": 55,
+     "r": 8
+    },
+    "s2": {
+     "w": 55,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "EZ Bar Curl"
+   },
+   {
+    "d": "2026-09-21",
+    "week": 1,
+    "day": "upper-a",
+    "weight": 55,
+    "reps": 8,
+    "s1": {
+     "w": 55,
+     "r": 8
+    },
+    "s2": {
+     "w": 55,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "EZ Bar Curl"
+   },
+   {
+    "d": "2026-09-28",
+    "week": 2,
+    "day": "upper-a",
+    "weight": 60,
+    "reps": 8,
+    "s1": {
+     "w": 60,
+     "r": 8
+    },
+    "s2": {
+     "w": 60,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "EZ Bar Curl"
+   },
+   {
+    "d": "2026-10-05",
+    "week": 3,
+    "day": "upper-a",
+    "weight": 50,
+    "reps": 8,
+    "s1": {
+     "w": 50,
+     "r": 8
+    },
+    "s2": {
+     "w": 50,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "EZ Bar Curl"
+   },
+   {
+    "d": "2026-10-12",
+    "week": 4,
+    "day": "upper-a",
+    "weight": 60,
+    "reps": 8,
+    "s1": {
+     "w": 60,
+     "r": 8
+    },
+    "s2": {
+     "w": 60,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "EZ Bar Curl"
+   },
+   {
+    "d": "2026-10-19",
+    "week": 5,
+    "day": "upper-a",
+    "weight": 60,
+    "reps": 8,
+    "s1": {
+     "w": 60,
+     "r": 8
+    },
+    "s2": {
+     "w": 60,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "EZ Bar Curl"
+   },
+   {
+    "d": "2026-10-26",
+    "week": 6,
+    "day": "upper-a",
+    "weight": 65,
+    "reps": 8,
+    "s1": {
+     "w": 65,
+     "r": 8
+    },
+    "s2": {
+     "w": 65,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "EZ Bar Curl"
+   },
+   {
+    "d": "2026-11-02",
+    "week": 7,
+    "day": "upper-a",
+    "weight": 55,
+    "reps": 8,
+    "s1": {
+     "w": 55,
+     "r": 8
+    },
+    "s2": {
+     "w": 55,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "EZ Bar Curl"
+   },
+   {
+    "d": "2026-11-09",
+    "week": 8,
+    "day": "upper-a",
+    "weight": 65,
+    "reps": 8,
+    "s1": {
+     "w": 65,
+     "r": 8
+    },
+    "s2": {
+     "w": 65,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "EZ Bar Curl"
+   },
+   {
+    "d": "2026-11-16",
+    "week": 9,
+    "day": "upper-a",
+    "weight": 70,
+    "reps": 8,
+    "s1": {
+     "w": 70,
+     "r": 8
+    },
+    "s2": {
+     "w": 70,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "EZ Bar Curl"
+   }
+  ],
+  "tricep-pushdown": [
+   {
+    "d": "2026-09-14",
+    "week": 0,
+    "day": "upper-a",
+    "weight": 50,
+    "reps": 12,
+    "s1": {
+     "w": 50,
+     "r": 12
+    },
+    "s2": {
+     "w": 50,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Tricep Rope Pushdown"
+   },
+   {
+    "d": "2026-09-21",
+    "week": 1,
+    "day": "upper-a",
+    "weight": 50,
+    "reps": 12,
+    "s1": {
+     "w": 50,
+     "r": 12
+    },
+    "s2": {
+     "w": 50,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Tricep Rope Pushdown"
+   },
+   {
+    "d": "2026-09-28",
+    "week": 2,
+    "day": "upper-a",
+    "weight": 55,
+    "reps": 12,
+    "s1": {
+     "w": 55,
+     "r": 12
+    },
+    "s2": {
+     "w": 55,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Tricep Rope Pushdown"
+   },
+   {
+    "d": "2026-10-05",
+    "week": 3,
+    "day": "upper-a",
+    "weight": 45,
+    "reps": 12,
+    "s1": {
+     "w": 45,
+     "r": 12
+    },
+    "s2": {
+     "w": 45,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Tricep Rope Pushdown"
+   },
+   {
+    "d": "2026-10-12",
+    "week": 4,
+    "day": "upper-a",
+    "weight": 55,
+    "reps": 12,
+    "s1": {
+     "w": 55,
+     "r": 12
+    },
+    "s2": {
+     "w": 55,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Tricep Rope Pushdown"
+   },
+   {
+    "d": "2026-10-19",
+    "week": 5,
+    "day": "upper-a",
+    "weight": 55,
+    "reps": 12,
+    "s1": {
+     "w": 55,
+     "r": 12
+    },
+    "s2": {
+     "w": 55,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Tricep Rope Pushdown"
+   },
+   {
+    "d": "2026-10-26",
+    "week": 6,
+    "day": "upper-a",
+    "weight": 60,
+    "reps": 12,
+    "s1": {
+     "w": 60,
+     "r": 12
+    },
+    "s2": {
+     "w": 60,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Tricep Rope Pushdown"
+   },
+   {
+    "d": "2026-11-02",
+    "week": 7,
+    "day": "upper-a",
+    "weight": 50,
+    "reps": 12,
+    "s1": {
+     "w": 50,
+     "r": 12
+    },
+    "s2": {
+     "w": 50,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Tricep Rope Pushdown"
+   },
+   {
+    "d": "2026-11-09",
+    "week": 8,
+    "day": "upper-a",
+    "weight": 60,
+    "reps": 12,
+    "s1": {
+     "w": 60,
+     "r": 12
+    },
+    "s2": {
+     "w": 60,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Tricep Rope Pushdown"
+   },
+   {
+    "d": "2026-11-16",
+    "week": 9,
+    "day": "upper-a",
+    "weight": 60,
+    "reps": 12,
+    "s1": {
+     "w": 60,
+     "r": 12
+    },
+    "s2": {
+     "w": 60,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Tricep Rope Pushdown"
+   }
+  ],
+  "face-pulls": [
+   {
+    "d": "2026-09-14",
+    "week": 0,
+    "day": "upper-a",
+    "weight": 25,
+    "reps": 15,
+    "s1": {
+     "w": 25,
+     "r": 15
+    },
+    "s2": {
+     "w": 25,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Face Pulls"
+   },
+   {
+    "d": "2026-09-21",
+    "week": 1,
+    "day": "upper-a",
+    "weight": 25,
+    "reps": 15,
+    "s1": {
+     "w": 25,
+     "r": 15
+    },
+    "s2": {
+     "w": 25,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Face Pulls"
+   },
+   {
+    "d": "2026-09-28",
+    "week": 2,
+    "day": "upper-a",
+    "weight": 25,
+    "reps": 15,
+    "s1": {
+     "w": 25,
+     "r": 15
+    },
+    "s2": {
+     "w": 25,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Face Pulls"
+   },
+   {
+    "d": "2026-10-05",
+    "week": 3,
+    "day": "upper-a",
+    "weight": 25,
+    "reps": 15,
+    "s1": {
+     "w": 25,
+     "r": 15
+    },
+    "s2": {
+     "w": 25,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Face Pulls"
+   },
+   {
+    "d": "2026-10-12",
+    "week": 4,
+    "day": "upper-a",
+    "weight": 25,
+    "reps": 15,
+    "s1": {
+     "w": 25,
+     "r": 15
+    },
+    "s2": {
+     "w": 25,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Face Pulls"
+   },
+   {
+    "d": "2026-10-19",
+    "week": 5,
+    "day": "upper-a",
+    "weight": 30,
+    "reps": 15,
+    "s1": {
+     "w": 30,
+     "r": 15
+    },
+    "s2": {
+     "w": 30,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Face Pulls"
+   },
+   {
+    "d": "2026-10-26",
+    "week": 6,
+    "day": "upper-a",
+    "weight": 30,
+    "reps": 15,
+    "s1": {
+     "w": 30,
+     "r": 15
+    },
+    "s2": {
+     "w": 30,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Face Pulls"
+   },
+   {
+    "d": "2026-11-02",
+    "week": 7,
+    "day": "upper-a",
+    "weight": 25,
+    "reps": 15,
+    "s1": {
+     "w": 25,
+     "r": 15
+    },
+    "s2": {
+     "w": 25,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Face Pulls"
+   },
+   {
+    "d": "2026-11-09",
+    "week": 8,
+    "day": "upper-a",
+    "weight": 30,
+    "reps": 15,
+    "s1": {
+     "w": 30,
+     "r": 15
+    },
+    "s2": {
+     "w": 30,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Face Pulls"
+   }
+  ],
+  "bb-squat": [
+   {
+    "d": "2026-09-15",
+    "week": 0,
+    "day": "lower-a",
+    "weight": 180,
+    "reps": 5,
+    "s1": {
+     "w": 180,
+     "r": 5
+    },
+    "s2": {
+     "w": 180,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Barbell Squat"
+   },
+   {
+    "d": "2026-09-22",
+    "week": 1,
+    "day": "lower-a",
+    "weight": 185,
+    "reps": 5,
+    "s1": {
+     "w": 185,
+     "r": 5
+    },
+    "s2": {
+     "w": 185,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Barbell Squat"
+   },
+   {
+    "d": "2026-09-29",
+    "week": 2,
+    "day": "lower-a",
+    "weight": 190,
+    "reps": 5,
+    "s1": {
+     "w": 190,
+     "r": 5
+    },
+    "s2": {
+     "w": 190,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Barbell Squat"
+   },
+   {
+    "d": "2026-10-06",
+    "week": 3,
+    "day": "lower-a",
+    "weight": 160,
+    "reps": 5,
+    "s1": {
+     "w": 160,
+     "r": 5
+    },
+    "s2": {
+     "w": 160,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Barbell Squat"
+   },
+   {
+    "d": "2026-10-13",
+    "week": 4,
+    "day": "lower-a",
+    "weight": 195,
+    "reps": 5,
+    "s1": {
+     "w": 195,
+     "r": 5
+    },
+    "s2": {
+     "w": 195,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Barbell Squat"
+   },
+   {
+    "d": "2026-10-20",
+    "week": 5,
+    "day": "lower-a",
+    "weight": 205,
+    "reps": 5,
+    "s1": {
+     "w": 205,
+     "r": 5
+    },
+    "s2": {
+     "w": 205,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Barbell Squat"
+   },
+   {
+    "d": "2026-10-27",
+    "week": 6,
+    "day": "lower-a",
+    "weight": 210,
+    "reps": 5,
+    "s1": {
+     "w": 210,
+     "r": 5
+    },
+    "s2": {
+     "w": 210,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Barbell Squat"
+   },
+   {
+    "d": "2026-11-03",
+    "week": 7,
+    "day": "lower-a",
+    "weight": 175,
+    "reps": 5,
+    "s1": {
+     "w": 175,
+     "r": 5
+    },
+    "s2": {
+     "w": 175,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Barbell Squat"
+   },
+   {
+    "d": "2026-11-10",
+    "week": 8,
+    "day": "lower-a",
+    "weight": 215,
+    "reps": 6,
+    "s1": {
+     "w": 215,
+     "r": 6
+    },
+    "s2": {
+     "w": 215,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Barbell Squat"
+   },
+   {
+    "d": "2026-11-17",
+    "week": 9,
+    "day": "lower-a",
+    "weight": 220,
+    "reps": 7,
+    "s1": {
+     "w": 220,
+     "r": 7
+    },
+    "s2": {
+     "w": 220,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Barbell Squat"
+   }
+  ],
+  "leg-press": [
+   {
+    "d": "2026-09-15",
+    "week": 0,
+    "day": "lower-a",
+    "weight": 205,
+    "reps": 10,
+    "s1": {
+     "w": 205,
+     "r": 10
+    },
+    "s2": {
+     "w": 205,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Leg Press Machine"
+   },
+   {
+    "d": "2026-09-22",
+    "week": 1,
+    "day": "lower-a",
+    "weight": 210,
+    "reps": 10,
+    "s1": {
+     "w": 210,
+     "r": 10
+    },
+    "s2": {
+     "w": 210,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Leg Press Machine"
+   },
+   {
+    "d": "2026-09-29",
+    "week": 2,
+    "day": "lower-a",
+    "weight": 215,
+    "reps": 10,
+    "s1": {
+     "w": 215,
+     "r": 10
+    },
+    "s2": {
+     "w": 215,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Leg Press Machine"
+   },
+   {
+    "d": "2026-10-06",
+    "week": 3,
+    "day": "lower-a",
+    "weight": 185,
+    "reps": 10,
+    "s1": {
+     "w": 185,
+     "r": 10
+    },
+    "s2": {
+     "w": 185,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Leg Press Machine"
+   },
+   {
+    "d": "2026-10-13",
+    "week": 4,
+    "day": "lower-a",
+    "weight": 225,
+    "reps": 10,
+    "s1": {
+     "w": 225,
+     "r": 10
+    },
+    "s2": {
+     "w": 225,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Leg Press Machine"
+   },
+   {
+    "d": "2026-10-20",
+    "week": 5,
+    "day": "lower-a",
+    "weight": 230,
+    "reps": 10,
+    "s1": {
+     "w": 230,
+     "r": 10
+    },
+    "s2": {
+     "w": 230,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Leg Press Machine"
+   },
+   {
+    "d": "2026-10-27",
+    "week": 6,
+    "day": "lower-a",
+    "weight": 240,
+    "reps": 10,
+    "s1": {
+     "w": 240,
+     "r": 10
+    },
+    "s2": {
+     "w": 240,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Leg Press Machine"
+   },
+   {
+    "d": "2026-11-03",
+    "week": 7,
+    "day": "lower-a",
+    "weight": 200,
+    "reps": 10,
+    "s1": {
+     "w": 200,
+     "r": 10
+    },
+    "s2": {
+     "w": 200,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Leg Press Machine"
+   },
+   {
+    "d": "2026-11-10",
+    "week": 8,
+    "day": "lower-a",
+    "weight": 245,
+    "reps": 10,
+    "s1": {
+     "w": 245,
+     "r": 10
+    },
+    "s2": {
+     "w": 245,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Leg Press Machine"
+   },
+   {
+    "d": "2026-11-17",
+    "week": 9,
+    "day": "lower-a",
+    "weight": 250,
+    "reps": 10,
+    "s1": {
+     "w": 250,
+     "r": 10
+    },
+    "s2": {
+     "w": 250,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Leg Press Machine"
+   }
+  ],
+  "rdl": [
+   {
+    "d": "2026-09-15",
+    "week": 0,
+    "day": "lower-a",
+    "weight": 125,
+    "reps": 8,
+    "s1": {
+     "w": 125,
+     "r": 8
+    },
+    "s2": {
+     "w": 125,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Romanian Deadlift (RDL)"
+   },
+   {
+    "d": "2026-09-22",
+    "week": 1,
+    "day": "lower-a",
+    "weight": 130,
+    "reps": 8,
+    "s1": {
+     "w": 130,
+     "r": 8
+    },
+    "s2": {
+     "w": 130,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Romanian Deadlift (RDL)"
+   },
+   {
+    "d": "2026-09-29",
+    "week": 2,
+    "day": "lower-a",
+    "weight": 135,
+    "reps": 8,
+    "s1": {
+     "w": 135,
+     "r": 8
+    },
+    "s2": {
+     "w": 135,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Romanian Deadlift (RDL)"
+   },
+   {
+    "d": "2026-10-06",
+    "week": 3,
+    "day": "lower-a",
+    "weight": 115,
+    "reps": 8,
+    "s1": {
+     "w": 115,
+     "r": 8
+    },
+    "s2": {
+     "w": 115,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Romanian Deadlift (RDL)"
+   },
+   {
+    "d": "2026-10-13",
+    "week": 4,
+    "day": "lower-a",
+    "weight": 135,
+    "reps": 8,
+    "s1": {
+     "w": 135,
+     "r": 8
+    },
+    "s2": {
+     "w": 135,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Romanian Deadlift (RDL)"
+   },
+   {
+    "d": "2026-10-20",
+    "week": 5,
+    "day": "lower-a",
+    "weight": 140,
+    "reps": 8,
+    "s1": {
+     "w": 140,
+     "r": 8
+    },
+    "s2": {
+     "w": 140,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Romanian Deadlift (RDL)"
+   },
+   {
+    "d": "2026-10-27",
+    "week": 6,
+    "day": "lower-a",
+    "weight": 145,
+    "reps": 8,
+    "s1": {
+     "w": 145,
+     "r": 8
+    },
+    "s2": {
+     "w": 145,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Romanian Deadlift (RDL)"
+   },
+   {
+    "d": "2026-11-03",
+    "week": 7,
+    "day": "lower-a",
+    "weight": 125,
+    "reps": 8,
+    "s1": {
+     "w": 125,
+     "r": 8
+    },
+    "s2": {
+     "w": 125,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Romanian Deadlift (RDL)"
+   },
+   {
+    "d": "2026-11-10",
+    "week": 8,
+    "day": "lower-a",
+    "weight": 150,
+    "reps": 8,
+    "s1": {
+     "w": 150,
+     "r": 8
+    },
+    "s2": {
+     "w": 150,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Romanian Deadlift (RDL)"
+   },
+   {
+    "d": "2026-11-17",
+    "week": 9,
+    "day": "lower-a",
+    "weight": 155,
+    "reps": 8,
+    "s1": {
+     "w": 155,
+     "r": 8
+    },
+    "s2": {
+     "w": 155,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Romanian Deadlift (RDL)"
+   }
+  ],
+  "leg-ext": [
+   {
+    "d": "2026-09-15",
+    "week": 0,
+    "day": "lower-a",
+    "weight": 55,
+    "reps": 12,
+    "s1": {
+     "w": 55,
+     "r": 12
+    },
+    "s2": {
+     "w": 55,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Extension Machine"
+   },
+   {
+    "d": "2026-09-22",
+    "week": 1,
+    "day": "lower-a",
+    "weight": 55,
+    "reps": 12,
+    "s1": {
+     "w": 55,
+     "r": 12
+    },
+    "s2": {
+     "w": 55,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Extension Machine"
+   },
+   {
+    "d": "2026-09-29",
+    "week": 2,
+    "day": "lower-a",
+    "weight": 60,
+    "reps": 12,
+    "s1": {
+     "w": 60,
+     "r": 12
+    },
+    "s2": {
+     "w": 60,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Extension Machine"
+   },
+   {
+    "d": "2026-10-06",
+    "week": 3,
+    "day": "lower-a",
+    "weight": 50,
+    "reps": 12,
+    "s1": {
+     "w": 50,
+     "r": 12
+    },
+    "s2": {
+     "w": 50,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Extension Machine"
+   },
+   {
+    "d": "2026-10-13",
+    "week": 4,
+    "day": "lower-a",
+    "weight": 60,
+    "reps": 12,
+    "s1": {
+     "w": 60,
+     "r": 12
+    },
+    "s2": {
+     "w": 60,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Extension Machine"
+   },
+   {
+    "d": "2026-10-20",
+    "week": 5,
+    "day": "lower-a",
+    "weight": 60,
+    "reps": 12,
+    "s1": {
+     "w": 60,
+     "r": 12
+    },
+    "s2": {
+     "w": 60,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Extension Machine"
+   },
+   {
+    "d": "2026-10-27",
+    "week": 6,
+    "day": "lower-a",
+    "weight": 65,
+    "reps": 12,
+    "s1": {
+     "w": 65,
+     "r": 12
+    },
+    "s2": {
+     "w": 65,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Extension Machine"
+   },
+   {
+    "d": "2026-11-03",
+    "week": 7,
+    "day": "lower-a",
+    "weight": 55,
+    "reps": 12,
+    "s1": {
+     "w": 55,
+     "r": 12
+    },
+    "s2": {
+     "w": 55,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Extension Machine"
+   },
+   {
+    "d": "2026-11-10",
+    "week": 8,
+    "day": "lower-a",
+    "weight": 65,
+    "reps": 12,
+    "s1": {
+     "w": 65,
+     "r": 12
+    },
+    "s2": {
+     "w": 65,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Extension Machine"
+   },
+   {
+    "d": "2026-11-17",
+    "week": 9,
+    "day": "lower-a",
+    "weight": 70,
+    "reps": 12,
+    "s1": {
+     "w": 70,
+     "r": 12
+    },
+    "s2": {
+     "w": 70,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Extension Machine"
+   }
+  ],
+  "leg-curl": [
+   {
+    "d": "2026-09-15",
+    "week": 0,
+    "day": "lower-a",
+    "weight": 70,
+    "reps": 12,
+    "s1": {
+     "w": 70,
+     "r": 12
+    },
+    "s2": {
+     "w": 70,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Curl Machine"
+   },
+   {
+    "d": "2026-09-22",
+    "week": 1,
+    "day": "lower-a",
+    "weight": 70,
+    "reps": 12,
+    "s1": {
+     "w": 70,
+     "r": 12
+    },
+    "s2": {
+     "w": 70,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Curl Machine"
+   },
+   {
+    "d": "2026-09-29",
+    "week": 2,
+    "day": "lower-a",
+    "weight": 75,
+    "reps": 12,
+    "s1": {
+     "w": 75,
+     "r": 12
+    },
+    "s2": {
+     "w": 75,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Curl Machine"
+   },
+   {
+    "d": "2026-10-06",
+    "week": 3,
+    "day": "lower-a",
+    "weight": 65,
+    "reps": 12,
+    "s1": {
+     "w": 65,
+     "r": 12
+    },
+    "s2": {
+     "w": 65,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Curl Machine"
+   },
+   {
+    "d": "2026-10-13",
+    "week": 4,
+    "day": "lower-a",
+    "weight": 75,
+    "reps": 12,
+    "s1": {
+     "w": 75,
+     "r": 12
+    },
+    "s2": {
+     "w": 75,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Curl Machine"
+   },
+   {
+    "d": "2026-10-20",
+    "week": 5,
+    "day": "lower-a",
+    "weight": 80,
+    "reps": 12,
+    "s1": {
+     "w": 80,
+     "r": 12
+    },
+    "s2": {
+     "w": 80,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Curl Machine"
+   },
+   {
+    "d": "2026-10-27",
+    "week": 6,
+    "day": "lower-a",
+    "weight": 80,
+    "reps": 12,
+    "s1": {
+     "w": 80,
+     "r": 12
+    },
+    "s2": {
+     "w": 80,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Curl Machine"
+   },
+   {
+    "d": "2026-11-03",
+    "week": 7,
+    "day": "lower-a",
+    "weight": 70,
+    "reps": 12,
+    "s1": {
+     "w": 70,
+     "r": 12
+    },
+    "s2": {
+     "w": 70,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Curl Machine"
+   },
+   {
+    "d": "2026-11-10",
+    "week": 8,
+    "day": "lower-a",
+    "weight": 85,
+    "reps": 12,
+    "s1": {
+     "w": 85,
+     "r": 12
+    },
+    "s2": {
+     "w": 85,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Curl Machine"
+   },
+   {
+    "d": "2026-11-17",
+    "week": 9,
+    "day": "lower-a",
+    "weight": 85,
+    "reps": 12,
+    "s1": {
+     "w": 85,
+     "r": 12
+    },
+    "s2": {
+     "w": 85,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Leg Curl Machine"
+   }
+  ],
+  "seated-calf": [
+   {
+    "d": "2026-09-15",
+    "week": 0,
+    "day": "lower-a",
+    "weight": 80,
+    "reps": 15,
+    "s1": {
+     "w": 80,
+     "r": 15
+    },
+    "s2": {
+     "w": 80,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Seated Calf Raise Machine"
+   },
+   {
+    "d": "2026-09-22",
+    "week": 1,
+    "day": "lower-a",
+    "weight": 80,
+    "reps": 15,
+    "s1": {
+     "w": 80,
+     "r": 15
+    },
+    "s2": {
+     "w": 80,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Seated Calf Raise Machine"
+   },
+   {
+    "d": "2026-09-29",
+    "week": 2,
+    "day": "lower-a",
+    "weight": 85,
+    "reps": 15,
+    "s1": {
+     "w": 85,
+     "r": 15
+    },
+    "s2": {
+     "w": 85,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Seated Calf Raise Machine"
+   },
+   {
+    "d": "2026-10-06",
+    "week": 3,
+    "day": "lower-a",
+    "weight": 70,
+    "reps": 15,
+    "s1": {
+     "w": 70,
+     "r": 15
+    },
+    "s2": {
+     "w": 70,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Seated Calf Raise Machine"
+   },
+   {
+    "d": "2026-10-13",
+    "week": 4,
+    "day": "lower-a",
+    "weight": 85,
+    "reps": 15,
+    "s1": {
+     "w": 85,
+     "r": 15
+    },
+    "s2": {
+     "w": 85,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Seated Calf Raise Machine"
+   },
+   {
+    "d": "2026-10-20",
+    "week": 5,
+    "day": "lower-a",
+    "weight": 90,
+    "reps": 15,
+    "s1": {
+     "w": 90,
+     "r": 15
+    },
+    "s2": {
+     "w": 90,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Seated Calf Raise Machine"
+   },
+   {
+    "d": "2026-10-27",
+    "week": 6,
+    "day": "lower-a",
+    "weight": 95,
+    "reps": 15,
+    "s1": {
+     "w": 95,
+     "r": 15
+    },
+    "s2": {
+     "w": 95,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Seated Calf Raise Machine"
+   },
+   {
+    "d": "2026-11-03",
+    "week": 7,
+    "day": "lower-a",
+    "weight": 80,
+    "reps": 15,
+    "s1": {
+     "w": 80,
+     "r": 15
+    },
+    "s2": {
+     "w": 80,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Seated Calf Raise Machine"
+   },
+   {
+    "d": "2026-11-10",
+    "week": 8,
+    "day": "lower-a",
+    "weight": 95,
+    "reps": 15,
+    "s1": {
+     "w": 95,
+     "r": 15
+    },
+    "s2": {
+     "w": 95,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Seated Calf Raise Machine"
+   },
+   {
+    "d": "2026-11-17",
+    "week": 9,
+    "day": "lower-a",
+    "weight": 100,
+    "reps": 15,
+    "s1": {
+     "w": 100,
+     "r": 15
+    },
+    "s2": {
+     "w": 100,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Seated Calf Raise Machine"
+   }
+  ],
+  "ab-wheel": [
+   {
+    "d": "2026-09-15",
+    "week": 0,
+    "day": "lower-a",
+    "weight": 50,
+    "reps": 8,
+    "s1": {
+     "w": 50,
+     "r": 8
+    },
+    "s2": {
+     "w": 50,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Ab Wheel Rollout"
+   },
+   {
+    "d": "2026-09-22",
+    "week": 1,
+    "day": "lower-a",
+    "weight": 50,
+    "reps": 8,
+    "s1": {
+     "w": 50,
+     "r": 8
+    },
+    "s2": {
+     "w": 50,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Ab Wheel Rollout"
+   },
+   {
+    "d": "2026-09-29",
+    "week": 2,
+    "day": "lower-a",
+    "weight": 55,
+    "reps": 8,
+    "s1": {
+     "w": 55,
+     "r": 8
+    },
+    "s2": {
+     "w": 55,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Ab Wheel Rollout"
+   },
+   {
+    "d": "2026-10-06",
+    "week": 3,
+    "day": "lower-a",
+    "weight": 45,
+    "reps": 8,
+    "s1": {
+     "w": 45,
+     "r": 8
+    },
+    "s2": {
+     "w": 45,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Ab Wheel Rollout"
+   },
+   {
+    "d": "2026-10-13",
+    "week": 4,
+    "day": "lower-a",
+    "weight": 55,
+    "reps": 8,
+    "s1": {
+     "w": 55,
+     "r": 8
+    },
+    "s2": {
+     "w": 55,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Ab Wheel Rollout"
+   },
+   {
+    "d": "2026-10-20",
+    "week": 5,
+    "day": "lower-a",
+    "weight": 55,
+    "reps": 8,
+    "s1": {
+     "w": 55,
+     "r": 8
+    },
+    "s2": {
+     "w": 55,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Ab Wheel Rollout"
+   },
+   {
+    "d": "2026-10-27",
+    "week": 6,
+    "day": "lower-a",
+    "weight": 60,
+    "reps": 8,
+    "s1": {
+     "w": 60,
+     "r": 8
+    },
+    "s2": {
+     "w": 60,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Ab Wheel Rollout"
+   },
+   {
+    "d": "2026-11-03",
+    "week": 7,
+    "day": "lower-a",
+    "weight": 50,
+    "reps": 8,
+    "s1": {
+     "w": 50,
+     "r": 8
+    },
+    "s2": {
+     "w": 50,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Ab Wheel Rollout"
+   },
+   {
+    "d": "2026-11-10",
+    "week": 8,
+    "day": "lower-a",
+    "weight": 60,
+    "reps": 8,
+    "s1": {
+     "w": 60,
+     "r": 8
+    },
+    "s2": {
+     "w": 60,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Ab Wheel Rollout"
+   },
+   {
+    "d": "2026-11-17",
+    "week": 9,
+    "day": "lower-a",
+    "weight": 60,
+    "reps": 8,
+    "s1": {
+     "w": 60,
+     "r": 8
+    },
+    "s2": {
+     "w": 60,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Ab Wheel Rollout"
+   }
+  ],
+  "incline-bb-bench": [
+   {
+    "d": "2026-09-17",
+    "week": 0,
+    "day": "upper-b",
+    "weight": 120,
+    "reps": 5,
+    "s1": {
+     "w": 120,
+     "r": 5
+    },
+    "s2": {
+     "w": 120,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Incline Barbell Bench Press"
+   },
+   {
+    "d": "2026-09-24",
+    "week": 1,
+    "day": "upper-b",
+    "weight": 125,
+    "reps": 5,
+    "s1": {
+     "w": 125,
+     "r": 5
+    },
+    "s2": {
+     "w": 125,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Incline Barbell Bench Press"
+   },
+   {
+    "d": "2026-10-01",
+    "week": 2,
+    "day": "upper-b",
+    "weight": 125,
+    "reps": 5,
+    "s1": {
+     "w": 125,
+     "r": 5
+    },
+    "s2": {
+     "w": 125,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Incline Barbell Bench Press"
+   },
+   {
+    "d": "2026-10-08",
+    "week": 3,
+    "day": "upper-b",
+    "weight": 110,
+    "reps": 5,
+    "s1": {
+     "w": 110,
+     "r": 5
+    },
+    "s2": {
+     "w": 110,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Incline Barbell Bench Press"
+   },
+   {
+    "d": "2026-10-15",
+    "week": 4,
+    "day": "upper-b",
+    "weight": 130,
+    "reps": 5,
+    "s1": {
+     "w": 130,
+     "r": 5
+    },
+    "s2": {
+     "w": 130,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Incline Barbell Bench Press"
+   },
+   {
+    "d": "2026-10-22",
+    "week": 5,
+    "day": "upper-b",
+    "weight": 135,
+    "reps": 5,
+    "s1": {
+     "w": 135,
+     "r": 5
+    },
+    "s2": {
+     "w": 135,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Incline Barbell Bench Press"
+   },
+   {
+    "d": "2026-10-29",
+    "week": 6,
+    "day": "upper-b",
+    "weight": 140,
+    "reps": 5,
+    "s1": {
+     "w": 140,
+     "r": 5
+    },
+    "s2": {
+     "w": 140,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Incline Barbell Bench Press"
+   },
+   {
+    "d": "2026-11-05",
+    "week": 7,
+    "day": "upper-b",
+    "weight": 120,
+    "reps": 5,
+    "s1": {
+     "w": 120,
+     "r": 5
+    },
+    "s2": {
+     "w": 120,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Incline Barbell Bench Press"
+   },
+   {
+    "d": "2026-11-12",
+    "week": 8,
+    "day": "upper-b",
+    "weight": 145,
+    "reps": 5,
+    "s1": {
+     "w": 145,
+     "r": 5
+    },
+    "s2": {
+     "w": 145,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Incline Barbell Bench Press"
+   },
+   {
+    "d": "2026-11-19",
+    "week": 9,
+    "day": "upper-b",
+    "weight": 150,
+    "reps": 5,
+    "s1": {
+     "w": 150,
+     "r": 5
+    },
+    "s2": {
+     "w": 150,
+     "r": 5
+    },
+    "failure": null,
+    "variant": "Incline Barbell Bench Press"
+   }
+  ],
+  "machine-row": [
+   {
+    "d": "2026-09-17",
+    "week": 0,
+    "day": "upper-b",
+    "weight": 110,
+    "reps": 10,
+    "s1": {
+     "w": 110,
+     "r": 10
+    },
+    "s2": {
+     "w": 110,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Machine Row"
+   },
+   {
+    "d": "2026-09-24",
+    "week": 1,
+    "day": "upper-b",
+    "weight": 115,
+    "reps": 10,
+    "s1": {
+     "w": 115,
+     "r": 10
+    },
+    "s2": {
+     "w": 115,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Machine Row"
+   },
+   {
+    "d": "2026-10-01",
+    "week": 2,
+    "day": "upper-b",
+    "weight": 115,
+    "reps": 10,
+    "s1": {
+     "w": 115,
+     "r": 10
+    },
+    "s2": {
+     "w": 115,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Machine Row"
+   },
+   {
+    "d": "2026-10-08",
+    "week": 3,
+    "day": "upper-b",
+    "weight": 100,
+    "reps": 10,
+    "s1": {
+     "w": 100,
+     "r": 10
+    },
+    "s2": {
+     "w": 100,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Machine Row"
+   },
+   {
+    "d": "2026-10-15",
+    "week": 4,
+    "day": "upper-b",
+    "weight": 120,
+    "reps": 10,
+    "s1": {
+     "w": 120,
+     "r": 10
+    },
+    "s2": {
+     "w": 120,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Machine Row"
+   },
+   {
+    "d": "2026-10-22",
+    "week": 5,
+    "day": "upper-b",
+    "weight": 125,
+    "reps": 10,
+    "s1": {
+     "w": 125,
+     "r": 10
+    },
+    "s2": {
+     "w": 125,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Machine Row"
+   },
+   {
+    "d": "2026-10-29",
+    "week": 6,
+    "day": "upper-b",
+    "weight": 130,
+    "reps": 10,
+    "s1": {
+     "w": 130,
+     "r": 10
+    },
+    "s2": {
+     "w": 130,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Machine Row"
+   },
+   {
+    "d": "2026-11-05",
+    "week": 7,
+    "day": "upper-b",
+    "weight": 110,
+    "reps": 10,
+    "s1": {
+     "w": 110,
+     "r": 10
+    },
+    "s2": {
+     "w": 110,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Machine Row"
+   },
+   {
+    "d": "2026-11-12",
+    "week": 8,
+    "day": "upper-b",
+    "weight": 130,
+    "reps": 10,
+    "s1": {
+     "w": 130,
+     "r": 10
+    },
+    "s2": {
+     "w": 130,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Machine Row"
+   },
+   {
+    "d": "2026-11-19",
+    "week": 9,
+    "day": "upper-b",
+    "weight": 135,
+    "reps": 10,
+    "s1": {
+     "w": 135,
+     "r": 10
+    },
+    "s2": {
+     "w": 135,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Machine Row"
+   }
+  ],
+  "arnold-press": [
+   {
+    "d": "2026-09-17",
+    "week": 0,
+    "day": "upper-b",
+    "weight": 55,
+    "reps": 8,
+    "s1": {
+     "w": 55,
+     "r": 8
+    },
+    "s2": {
+     "w": 55,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Dumbbell Arnold Press"
+   },
+   {
+    "d": "2026-09-24",
+    "week": 1,
+    "day": "upper-b",
+    "weight": 55,
+    "reps": 8,
+    "s1": {
+     "w": 55,
+     "r": 8
+    },
+    "s2": {
+     "w": 55,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Dumbbell Arnold Press"
+   },
+   {
+    "d": "2026-10-01",
+    "week": 2,
+    "day": "upper-b",
+    "weight": 60,
+    "reps": 8,
+    "s1": {
+     "w": 60,
+     "r": 8
+    },
+    "s2": {
+     "w": 60,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Dumbbell Arnold Press"
+   },
+   {
+    "d": "2026-10-08",
+    "week": 3,
+    "day": "upper-b",
+    "weight": 50,
+    "reps": 8,
+    "s1": {
+     "w": 50,
+     "r": 8
+    },
+    "s2": {
+     "w": 50,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Dumbbell Arnold Press"
+   },
+   {
+    "d": "2026-10-15",
+    "week": 4,
+    "day": "upper-b",
+    "weight": 60,
+    "reps": 8,
+    "s1": {
+     "w": 60,
+     "r": 8
+    },
+    "s2": {
+     "w": 60,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Dumbbell Arnold Press"
+   },
+   {
+    "d": "2026-10-22",
+    "week": 5,
+    "day": "upper-b",
+    "weight": 60,
+    "reps": 8,
+    "s1": {
+     "w": 60,
+     "r": 8
+    },
+    "s2": {
+     "w": 60,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Dumbbell Arnold Press"
+   },
+   {
+    "d": "2026-10-29",
+    "week": 6,
+    "day": "upper-b",
+    "weight": 65,
+    "reps": 8,
+    "s1": {
+     "w": 65,
+     "r": 8
+    },
+    "s2": {
+     "w": 65,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Dumbbell Arnold Press"
+   },
+   {
+    "d": "2026-11-05",
+    "week": 7,
+    "day": "upper-b",
+    "weight": 55,
+    "reps": 8,
+    "s1": {
+     "w": 55,
+     "r": 8
+    },
+    "s2": {
+     "w": 55,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Dumbbell Arnold Press"
+   },
+   {
+    "d": "2026-11-12",
+    "week": 8,
+    "day": "upper-b",
+    "weight": 65,
+    "reps": 8,
+    "s1": {
+     "w": 65,
+     "r": 8
+    },
+    "s2": {
+     "w": 65,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Dumbbell Arnold Press"
+   },
+   {
+    "d": "2026-11-19",
+    "week": 9,
+    "day": "upper-b",
+    "weight": 70,
+    "reps": 8,
+    "s1": {
+     "w": 70,
+     "r": 8
+    },
+    "s2": {
+     "w": 70,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Dumbbell Arnold Press"
+   }
+  ],
+  "sa-cable-row": [
+   {
+    "d": "2026-09-17",
+    "week": 0,
+    "day": "upper-b",
+    "weight": 55,
+    "reps": 12,
+    "s1": {
+     "w": 55,
+     "r": 12
+    },
+    "s2": {
+     "w": 55,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Single-Arm Cable Row"
+   },
+   {
+    "d": "2026-09-24",
+    "week": 1,
+    "day": "upper-b",
+    "weight": 55,
+    "reps": 12,
+    "s1": {
+     "w": 55,
+     "r": 12
+    },
+    "s2": {
+     "w": 55,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Single-Arm Cable Row"
+   },
+   {
+    "d": "2026-10-01",
+    "week": 2,
+    "day": "upper-b",
+    "weight": 60,
+    "reps": 12,
+    "s1": {
+     "w": 60,
+     "r": 12
+    },
+    "s2": {
+     "w": 60,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Single-Arm Cable Row"
+   },
+   {
+    "d": "2026-10-08",
+    "week": 3,
+    "day": "upper-b",
+    "weight": 50,
+    "reps": 12,
+    "s1": {
+     "w": 50,
+     "r": 12
+    },
+    "s2": {
+     "w": 50,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Single-Arm Cable Row"
+   },
+   {
+    "d": "2026-10-15",
+    "week": 4,
+    "day": "upper-b",
+    "weight": 60,
+    "reps": 12,
+    "s1": {
+     "w": 60,
+     "r": 12
+    },
+    "s2": {
+     "w": 60,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Single-Arm Cable Row"
+   },
+   {
+    "d": "2026-10-22",
+    "week": 5,
+    "day": "upper-b",
+    "weight": 60,
+    "reps": 12,
+    "s1": {
+     "w": 60,
+     "r": 12
+    },
+    "s2": {
+     "w": 60,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Single-Arm Cable Row"
+   },
+   {
+    "d": "2026-10-29",
+    "week": 6,
+    "day": "upper-b",
+    "weight": 65,
+    "reps": 12,
+    "s1": {
+     "w": 65,
+     "r": 12
+    },
+    "s2": {
+     "w": 65,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Single-Arm Cable Row"
+   },
+   {
+    "d": "2026-11-05",
+    "week": 7,
+    "day": "upper-b",
+    "weight": 55,
+    "reps": 12,
+    "s1": {
+     "w": 55,
+     "r": 12
+    },
+    "s2": {
+     "w": 55,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Single-Arm Cable Row"
+   },
+   {
+    "d": "2026-11-12",
+    "week": 8,
+    "day": "upper-b",
+    "weight": 65,
+    "reps": 12,
+    "s1": {
+     "w": 65,
+     "r": 12
+    },
+    "s2": {
+     "w": 65,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Single-Arm Cable Row"
+   },
+   {
+    "d": "2026-11-19",
+    "week": 9,
+    "day": "upper-b",
+    "weight": 70,
+    "reps": 12,
+    "s1": {
+     "w": 70,
+     "r": 12
+    },
+    "s2": {
+     "w": 70,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Single-Arm Cable Row"
+   }
+  ],
+  "cable-face-pull": [
+   {
+    "d": "2026-09-17",
+    "week": 0,
+    "day": "upper-b",
+    "weight": 25,
+    "reps": 15,
+    "s1": {
+     "w": 25,
+     "r": 15
+    },
+    "s2": {
+     "w": 25,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Cable Face Pull"
+   },
+   {
+    "d": "2026-09-24",
+    "week": 1,
+    "day": "upper-b",
+    "weight": 25,
+    "reps": 15,
+    "s1": {
+     "w": 25,
+     "r": 15
+    },
+    "s2": {
+     "w": 25,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Cable Face Pull"
+   },
+   {
+    "d": "2026-10-01",
+    "week": 2,
+    "day": "upper-b",
+    "weight": 25,
+    "reps": 15,
+    "s1": {
+     "w": 25,
+     "r": 15
+    },
+    "s2": {
+     "w": 25,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Cable Face Pull"
+   },
+   {
+    "d": "2026-10-08",
+    "week": 3,
+    "day": "upper-b",
+    "weight": 25,
+    "reps": 15,
+    "s1": {
+     "w": 25,
+     "r": 15
+    },
+    "s2": {
+     "w": 25,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Cable Face Pull"
+   },
+   {
+    "d": "2026-10-15",
+    "week": 4,
+    "day": "upper-b",
+    "weight": 25,
+    "reps": 15,
+    "s1": {
+     "w": 25,
+     "r": 15
+    },
+    "s2": {
+     "w": 25,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Cable Face Pull"
+   },
+   {
+    "d": "2026-10-22",
+    "week": 5,
+    "day": "upper-b",
+    "weight": 30,
+    "reps": 15,
+    "s1": {
+     "w": 30,
+     "r": 15
+    },
+    "s2": {
+     "w": 30,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Cable Face Pull"
+   },
+   {
+    "d": "2026-10-29",
+    "week": 6,
+    "day": "upper-b",
+    "weight": 30,
+    "reps": 15,
+    "s1": {
+     "w": 30,
+     "r": 15
+    },
+    "s2": {
+     "w": 30,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Cable Face Pull"
+   },
+   {
+    "d": "2026-11-05",
+    "week": 7,
+    "day": "upper-b",
+    "weight": 25,
+    "reps": 15,
+    "s1": {
+     "w": 25,
+     "r": 15
+    },
+    "s2": {
+     "w": 25,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Cable Face Pull"
+   },
+   {
+    "d": "2026-11-12",
+    "week": 8,
+    "day": "upper-b",
+    "weight": 30,
+    "reps": 15,
+    "s1": {
+     "w": 30,
+     "r": 15
+    },
+    "s2": {
+     "w": 30,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Cable Face Pull"
+   },
+   {
+    "d": "2026-11-19",
+    "week": 9,
+    "day": "upper-b",
+    "weight": 30,
+    "reps": 15,
+    "s1": {
+     "w": 30,
+     "r": 15
+    },
+    "s2": {
+     "w": 30,
+     "r": 15
+    },
+    "failure": null,
+    "variant": "Cable Face Pull"
+   }
+  ],
+  "incline-db-curl": [
+   {
+    "d": "2026-09-17",
+    "week": 0,
+    "day": "upper-b",
+    "weight": 35,
+    "reps": 10,
+    "s1": {
+     "w": 35,
+     "r": 10
+    },
+    "s2": {
+     "w": 35,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Incline Dumbbell Curl"
+   },
+   {
+    "d": "2026-09-24",
+    "week": 1,
+    "day": "upper-b",
+    "weight": 35,
+    "reps": 10,
+    "s1": {
+     "w": 35,
+     "r": 10
+    },
+    "s2": {
+     "w": 35,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Incline Dumbbell Curl"
+   },
+   {
+    "d": "2026-10-01",
+    "week": 2,
+    "day": "upper-b",
+    "weight": 35,
+    "reps": 10,
+    "s1": {
+     "w": 35,
+     "r": 10
+    },
+    "s2": {
+     "w": 35,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Incline Dumbbell Curl"
+   },
+   {
+    "d": "2026-10-08",
+    "week": 3,
+    "day": "upper-b",
+    "weight": 30,
+    "reps": 10,
+    "s1": {
+     "w": 30,
+     "r": 10
+    },
+    "s2": {
+     "w": 30,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Incline Dumbbell Curl"
+   },
+   {
+    "d": "2026-10-15",
+    "week": 4,
+    "day": "upper-b",
+    "weight": 40,
+    "reps": 10,
+    "s1": {
+     "w": 40,
+     "r": 10
+    },
+    "s2": {
+     "w": 40,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Incline Dumbbell Curl"
+   },
+   {
+    "d": "2026-10-22",
+    "week": 5,
+    "day": "upper-b",
+    "weight": 40,
+    "reps": 10,
+    "s1": {
+     "w": 40,
+     "r": 10
+    },
+    "s2": {
+     "w": 40,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Incline Dumbbell Curl"
+   },
+   {
+    "d": "2026-10-29",
+    "week": 6,
+    "day": "upper-b",
+    "weight": 40,
+    "reps": 10,
+    "s1": {
+     "w": 40,
+     "r": 10
+    },
+    "s2": {
+     "w": 40,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Incline Dumbbell Curl"
+   },
+   {
+    "d": "2026-11-05",
+    "week": 7,
+    "day": "upper-b",
+    "weight": 35,
+    "reps": 10,
+    "s1": {
+     "w": 35,
+     "r": 10
+    },
+    "s2": {
+     "w": 35,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Incline Dumbbell Curl"
+   },
+   {
+    "d": "2026-11-12",
+    "week": 8,
+    "day": "upper-b",
+    "weight": 40,
+    "reps": 10,
+    "s1": {
+     "w": 40,
+     "r": 10
+    },
+    "s2": {
+     "w": 40,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Incline Dumbbell Curl"
+   },
+   {
+    "d": "2026-11-19",
+    "week": 9,
+    "day": "upper-b",
+    "weight": 45,
+    "reps": 10,
+    "s1": {
+     "w": 45,
+     "r": 10
+    },
+    "s2": {
+     "w": 45,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Incline Dumbbell Curl"
+   }
+  ],
+  "machine-dip": [
+   {
+    "d": "2026-09-17",
+    "week": 0,
+    "day": "upper-b",
+    "weight": 75,
+    "reps": 12,
+    "s1": {
+     "w": 75,
+     "r": 12
+    },
+    "s2": {
+     "w": 75,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Machine Dip"
+   },
+   {
+    "d": "2026-09-24",
+    "week": 1,
+    "day": "upper-b",
+    "weight": 75,
+    "reps": 12,
+    "s1": {
+     "w": 75,
+     "r": 12
+    },
+    "s2": {
+     "w": 75,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Machine Dip"
+   },
+   {
+    "d": "2026-10-01",
+    "week": 2,
+    "day": "upper-b",
+    "weight": 80,
+    "reps": 12,
+    "s1": {
+     "w": 80,
+     "r": 12
+    },
+    "s2": {
+     "w": 80,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Machine Dip"
+   },
+   {
+    "d": "2026-10-08",
+    "week": 3,
+    "day": "upper-b",
+    "weight": 70,
+    "reps": 12,
+    "s1": {
+     "w": 70,
+     "r": 12
+    },
+    "s2": {
+     "w": 70,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Machine Dip"
+   },
+   {
+    "d": "2026-10-15",
+    "week": 4,
+    "day": "upper-b",
+    "weight": 80,
+    "reps": 12,
+    "s1": {
+     "w": 80,
+     "r": 12
+    },
+    "s2": {
+     "w": 80,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Machine Dip"
+   },
+   {
+    "d": "2026-10-22",
+    "week": 5,
+    "day": "upper-b",
+    "weight": 85,
+    "reps": 12,
+    "s1": {
+     "w": 85,
+     "r": 12
+    },
+    "s2": {
+     "w": 85,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Machine Dip"
+   },
+   {
+    "d": "2026-10-29",
+    "week": 6,
+    "day": "upper-b",
+    "weight": 85,
+    "reps": 12,
+    "s1": {
+     "w": 85,
+     "r": 12
+    },
+    "s2": {
+     "w": 85,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Machine Dip"
+   },
+   {
+    "d": "2026-11-05",
+    "week": 7,
+    "day": "upper-b",
+    "weight": 75,
+    "reps": 12,
+    "s1": {
+     "w": 75,
+     "r": 12
+    },
+    "s2": {
+     "w": 75,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Machine Dip"
+   },
+   {
+    "d": "2026-11-12",
+    "week": 8,
+    "day": "upper-b",
+    "weight": 90,
+    "reps": 12,
+    "s1": {
+     "w": 90,
+     "r": 12
+    },
+    "s2": {
+     "w": 90,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Machine Dip"
+   },
+   {
+    "d": "2026-11-19",
+    "week": 9,
+    "day": "upper-b",
+    "weight": 90,
+    "reps": 12,
+    "s1": {
+     "w": 90,
+     "r": 12
+    },
+    "s2": {
+     "w": 90,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Machine Dip"
+   }
+  ],
+  "goblet-squat-b": [
+   {
+    "d": "2026-09-18",
+    "week": 0,
+    "day": "lower-b",
+    "weight": 55,
+    "reps": 12,
+    "s1": {
+     "w": 55,
+     "r": 12
+    },
+    "s2": {
+     "w": 55,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Deep Goblet Squat"
+   },
+   {
+    "d": "2026-09-25",
+    "week": 1,
+    "day": "lower-b",
+    "weight": 55,
+    "reps": 12,
+    "s1": {
+     "w": 55,
+     "r": 12
+    },
+    "s2": {
+     "w": 55,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Deep Goblet Squat"
+   },
+   {
+    "d": "2026-10-02",
+    "week": 2,
+    "day": "lower-b",
+    "weight": 60,
+    "reps": 12,
+    "s1": {
+     "w": 60,
+     "r": 12
+    },
+    "s2": {
+     "w": 60,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Deep Goblet Squat"
+   },
+   {
+    "d": "2026-10-09",
+    "week": 3,
+    "day": "lower-b",
+    "weight": 50,
+    "reps": 12,
+    "s1": {
+     "w": 50,
+     "r": 12
+    },
+    "s2": {
+     "w": 50,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Deep Goblet Squat"
+   },
+   {
+    "d": "2026-10-16",
+    "week": 4,
+    "day": "lower-b",
+    "weight": 60,
+    "reps": 12,
+    "s1": {
+     "w": 60,
+     "r": 12
+    },
+    "s2": {
+     "w": 60,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Deep Goblet Squat"
+   },
+   {
+    "d": "2026-10-23",
+    "week": 5,
+    "day": "lower-b",
+    "weight": 60,
+    "reps": 12,
+    "s1": {
+     "w": 60,
+     "r": 12
+    },
+    "s2": {
+     "w": 60,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Deep Goblet Squat"
+   },
+   {
+    "d": "2026-10-30",
+    "week": 6,
+    "day": "lower-b",
+    "weight": 65,
+    "reps": 12,
+    "s1": {
+     "w": 65,
+     "r": 12
+    },
+    "s2": {
+     "w": 65,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Deep Goblet Squat"
+   },
+   {
+    "d": "2026-11-06",
+    "week": 7,
+    "day": "lower-b",
+    "weight": 55,
+    "reps": 12,
+    "s1": {
+     "w": 55,
+     "r": 12
+    },
+    "s2": {
+     "w": 55,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Deep Goblet Squat"
+   },
+   {
+    "d": "2026-11-13",
+    "week": 8,
+    "day": "lower-b",
+    "weight": 65,
+    "reps": 12,
+    "s1": {
+     "w": 65,
+     "r": 12
+    },
+    "s2": {
+     "w": 65,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Deep Goblet Squat"
+   },
+   {
+    "d": "2026-11-20",
+    "week": 9,
+    "day": "lower-b",
+    "weight": 70,
+    "reps": 12,
+    "s1": {
+     "w": 70,
+     "r": 12
+    },
+    "s2": {
+     "w": 70,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Deep Goblet Squat"
+   }
+  ],
+  "cossack-squat": [
+   {
+    "d": "2026-09-18",
+    "week": 0,
+    "day": "lower-b",
+    "weight": 25,
+    "reps": 8,
+    "s1": {
+     "w": 25,
+     "r": 8
+    },
+    "s2": {
+     "w": 25,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Cossack Squat"
+   },
+   {
+    "d": "2026-09-25",
+    "week": 1,
+    "day": "lower-b",
+    "weight": 25,
+    "reps": 8,
+    "s1": {
+     "w": 25,
+     "r": 8
+    },
+    "s2": {
+     "w": 25,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Cossack Squat"
+   },
+   {
+    "d": "2026-10-02",
+    "week": 2,
+    "day": "lower-b",
+    "weight": 25,
+    "reps": 8,
+    "s1": {
+     "w": 25,
+     "r": 8
+    },
+    "s2": {
+     "w": 25,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Cossack Squat"
+   },
+   {
+    "d": "2026-10-09",
+    "week": 3,
+    "day": "lower-b",
+    "weight": 25,
+    "reps": 8,
+    "s1": {
+     "w": 25,
+     "r": 8
+    },
+    "s2": {
+     "w": 25,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Cossack Squat"
+   },
+   {
+    "d": "2026-10-16",
+    "week": 4,
+    "day": "lower-b",
+    "weight": 25,
+    "reps": 8,
+    "s1": {
+     "w": 25,
+     "r": 8
+    },
+    "s2": {
+     "w": 25,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Cossack Squat"
+   },
+   {
+    "d": "2026-10-23",
+    "week": 5,
+    "day": "lower-b",
+    "weight": 30,
+    "reps": 8,
+    "s1": {
+     "w": 30,
+     "r": 8
+    },
+    "s2": {
+     "w": 30,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Cossack Squat"
+   },
+   {
+    "d": "2026-10-30",
+    "week": 6,
+    "day": "lower-b",
+    "weight": 30,
+    "reps": 8,
+    "s1": {
+     "w": 30,
+     "r": 8
+    },
+    "s2": {
+     "w": 30,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Cossack Squat"
+   },
+   {
+    "d": "2026-11-06",
+    "week": 7,
+    "day": "lower-b",
+    "weight": 25,
+    "reps": 8,
+    "s1": {
+     "w": 25,
+     "r": 8
+    },
+    "s2": {
+     "w": 25,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Cossack Squat"
+   },
+   {
+    "d": "2026-11-13",
+    "week": 8,
+    "day": "lower-b",
+    "weight": 30,
+    "reps": 8,
+    "s1": {
+     "w": 30,
+     "r": 8
+    },
+    "s2": {
+     "w": 30,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Cossack Squat"
+   },
+   {
+    "d": "2026-11-20",
+    "week": 9,
+    "day": "lower-b",
+    "weight": 30,
+    "reps": 8,
+    "s1": {
+     "w": 30,
+     "r": 8
+    },
+    "s2": {
+     "w": 30,
+     "r": 8
+    },
+    "failure": null,
+    "variant": "Cossack Squat"
+   }
+  ],
+  "reverse-lunge": [
+   {
+    "d": "2026-09-18",
+    "week": 0,
+    "day": "lower-b",
+    "weight": 45,
+    "reps": 10,
+    "s1": {
+     "w": 45,
+     "r": 10
+    },
+    "s2": {
+     "w": 45,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Reverse Lunge"
+   },
+   {
+    "d": "2026-09-25",
+    "week": 1,
+    "day": "lower-b",
+    "weight": 45,
+    "reps": 10,
+    "s1": {
+     "w": 45,
+     "r": 10
+    },
+    "s2": {
+     "w": 45,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Reverse Lunge"
+   },
+   {
+    "d": "2026-10-02",
+    "week": 2,
+    "day": "lower-b",
+    "weight": 50,
+    "reps": 10,
+    "s1": {
+     "w": 50,
+     "r": 10
+    },
+    "s2": {
+     "w": 50,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Reverse Lunge"
+   },
+   {
+    "d": "2026-10-09",
+    "week": 3,
+    "day": "lower-b",
+    "weight": 40,
+    "reps": 10,
+    "s1": {
+     "w": 40,
+     "r": 10
+    },
+    "s2": {
+     "w": 40,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Reverse Lunge"
+   },
+   {
+    "d": "2026-10-16",
+    "week": 4,
+    "day": "lower-b",
+    "weight": 50,
+    "reps": 10,
+    "s1": {
+     "w": 50,
+     "r": 10
+    },
+    "s2": {
+     "w": 50,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Reverse Lunge"
+   },
+   {
+    "d": "2026-10-23",
+    "week": 5,
+    "day": "lower-b",
+    "weight": 50,
+    "reps": 10,
+    "s1": {
+     "w": 50,
+     "r": 10
+    },
+    "s2": {
+     "w": 50,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Reverse Lunge"
+   },
+   {
+    "d": "2026-10-30",
+    "week": 6,
+    "day": "lower-b",
+    "weight": 50,
+    "reps": 10,
+    "s1": {
+     "w": 50,
+     "r": 10
+    },
+    "s2": {
+     "w": 50,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Reverse Lunge"
+   },
+   {
+    "d": "2026-11-06",
+    "week": 7,
+    "day": "lower-b",
+    "weight": 45,
+    "reps": 10,
+    "s1": {
+     "w": 45,
+     "r": 10
+    },
+    "s2": {
+     "w": 45,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Reverse Lunge"
+   },
+   {
+    "d": "2026-11-13",
+    "week": 8,
+    "day": "lower-b",
+    "weight": 55,
+    "reps": 10,
+    "s1": {
+     "w": 55,
+     "r": 10
+    },
+    "s2": {
+     "w": 55,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Reverse Lunge"
+   },
+   {
+    "d": "2026-11-20",
+    "week": 9,
+    "day": "lower-b",
+    "weight": 55,
+    "reps": 10,
+    "s1": {
+     "w": 55,
+     "r": 10
+    },
+    "s2": {
+     "w": 55,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Reverse Lunge"
+   }
+  ],
+  "sissy-squat": [
+   {
+    "d": "2026-09-18",
+    "week": 0,
+    "day": "lower-b",
+    "weight": 50,
+    "reps": 10,
+    "s1": {
+     "w": 50,
+     "r": 10
+    },
+    "s2": {
+     "w": 50,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Sissy Squat"
+   },
+   {
+    "d": "2026-09-25",
+    "week": 1,
+    "day": "lower-b",
+    "weight": 50,
+    "reps": 10,
+    "s1": {
+     "w": 50,
+     "r": 10
+    },
+    "s2": {
+     "w": 50,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Sissy Squat"
+   },
+   {
+    "d": "2026-10-02",
+    "week": 2,
+    "day": "lower-b",
+    "weight": 55,
+    "reps": 10,
+    "s1": {
+     "w": 55,
+     "r": 10
+    },
+    "s2": {
+     "w": 55,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Sissy Squat"
+   },
+   {
+    "d": "2026-10-09",
+    "week": 3,
+    "day": "lower-b",
+    "weight": 45,
+    "reps": 10,
+    "s1": {
+     "w": 45,
+     "r": 10
+    },
+    "s2": {
+     "w": 45,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Sissy Squat"
+   },
+   {
+    "d": "2026-10-16",
+    "week": 4,
+    "day": "lower-b",
+    "weight": 55,
+    "reps": 10,
+    "s1": {
+     "w": 55,
+     "r": 10
+    },
+    "s2": {
+     "w": 55,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Sissy Squat"
+   },
+   {
+    "d": "2026-10-23",
+    "week": 5,
+    "day": "lower-b",
+    "weight": 55,
+    "reps": 10,
+    "s1": {
+     "w": 55,
+     "r": 10
+    },
+    "s2": {
+     "w": 55,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Sissy Squat"
+   },
+   {
+    "d": "2026-10-30",
+    "week": 6,
+    "day": "lower-b",
+    "weight": 60,
+    "reps": 10,
+    "s1": {
+     "w": 60,
+     "r": 10
+    },
+    "s2": {
+     "w": 60,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Sissy Squat"
+   },
+   {
+    "d": "2026-11-06",
+    "week": 7,
+    "day": "lower-b",
+    "weight": 50,
+    "reps": 10,
+    "s1": {
+     "w": 50,
+     "r": 10
+    },
+    "s2": {
+     "w": 50,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Sissy Squat"
+   },
+   {
+    "d": "2026-11-13",
+    "week": 8,
+    "day": "lower-b",
+    "weight": 60,
+    "reps": 10,
+    "s1": {
+     "w": 60,
+     "r": 10
+    },
+    "s2": {
+     "w": 60,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Sissy Squat"
+   },
+   {
+    "d": "2026-11-20",
+    "week": 9,
+    "day": "lower-b",
+    "weight": 60,
+    "reps": 10,
+    "s1": {
+     "w": 60,
+     "r": 10
+    },
+    "s2": {
+     "w": 60,
+     "r": 10
+    },
+    "failure": null,
+    "variant": "Sissy Squat"
+   }
+  ],
+  "nordic-curl": [
+   {
+    "d": "2026-09-18",
+    "week": 0,
+    "day": "lower-b",
+    "weight": 50,
+    "reps": 6,
+    "s1": {
+     "w": 50,
+     "r": 6
+    },
+    "s2": {
+     "w": 50,
+     "r": 6
+    },
+    "failure": null,
+    "variant": "Nordic Curl"
+   },
+   {
+    "d": "2026-09-25",
+    "week": 1,
+    "day": "lower-b",
+    "weight": 50,
+    "reps": 6,
+    "s1": {
+     "w": 50,
+     "r": 6
+    },
+    "s2": {
+     "w": 50,
+     "r": 6
+    },
+    "failure": null,
+    "variant": "Nordic Curl"
+   },
+   {
+    "d": "2026-10-02",
+    "week": 2,
+    "day": "lower-b",
+    "weight": 55,
+    "reps": 6,
+    "s1": {
+     "w": 55,
+     "r": 6
+    },
+    "s2": {
+     "w": 55,
+     "r": 6
+    },
+    "failure": null,
+    "variant": "Nordic Curl"
+   },
+   {
+    "d": "2026-10-09",
+    "week": 3,
+    "day": "lower-b",
+    "weight": 45,
+    "reps": 6,
+    "s1": {
+     "w": 45,
+     "r": 6
+    },
+    "s2": {
+     "w": 45,
+     "r": 6
+    },
+    "failure": null,
+    "variant": "Nordic Curl"
+   },
+   {
+    "d": "2026-10-16",
+    "week": 4,
+    "day": "lower-b",
+    "weight": 55,
+    "reps": 6,
+    "s1": {
+     "w": 55,
+     "r": 6
+    },
+    "s2": {
+     "w": 55,
+     "r": 6
+    },
+    "failure": null,
+    "variant": "Nordic Curl"
+   },
+   {
+    "d": "2026-10-23",
+    "week": 5,
+    "day": "lower-b",
+    "weight": 55,
+    "reps": 6,
+    "s1": {
+     "w": 55,
+     "r": 6
+    },
+    "s2": {
+     "w": 55,
+     "r": 6
+    },
+    "failure": null,
+    "variant": "Nordic Curl"
+   },
+   {
+    "d": "2026-10-30",
+    "week": 6,
+    "day": "lower-b",
+    "weight": 60,
+    "reps": 6,
+    "s1": {
+     "w": 60,
+     "r": 6
+    },
+    "s2": {
+     "w": 60,
+     "r": 6
+    },
+    "failure": null,
+    "variant": "Nordic Curl"
+   },
+   {
+    "d": "2026-11-06",
+    "week": 7,
+    "day": "lower-b",
+    "weight": 50,
+    "reps": 6,
+    "s1": {
+     "w": 50,
+     "r": 6
+    },
+    "s2": {
+     "w": 50,
+     "r": 6
+    },
+    "failure": null,
+    "variant": "Nordic Curl"
+   },
+   {
+    "d": "2026-11-13",
+    "week": 8,
+    "day": "lower-b",
+    "weight": 60,
+    "reps": 6,
+    "s1": {
+     "w": 60,
+     "r": 6
+    },
+    "s2": {
+     "w": 60,
+     "r": 6
+    },
+    "failure": null,
+    "variant": "Nordic Curl"
+   },
+   {
+    "d": "2026-11-20",
+    "week": 9,
+    "day": "lower-b",
+    "weight": 60,
+    "reps": 6,
+    "s1": {
+     "w": 60,
+     "r": 6
+    },
+    "s2": {
+     "w": 60,
+     "r": 6
+    },
+    "failure": null,
+    "variant": "Nordic Curl"
+   }
+  ],
+  "weighted-leg-raise": [
+   {
+    "d": "2026-09-18",
+    "week": 0,
+    "day": "lower-b",
+    "weight": 50,
+    "reps": 12,
+    "s1": {
+     "w": 50,
+     "r": 12
+    },
+    "s2": {
+     "w": 50,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Lying Leg Raise"
+   },
+   {
+    "d": "2026-09-25",
+    "week": 1,
+    "day": "lower-b",
+    "weight": 50,
+    "reps": 12,
+    "s1": {
+     "w": 50,
+     "r": 12
+    },
+    "s2": {
+     "w": 50,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Lying Leg Raise"
+   },
+   {
+    "d": "2026-10-02",
+    "week": 2,
+    "day": "lower-b",
+    "weight": 55,
+    "reps": 12,
+    "s1": {
+     "w": 55,
+     "r": 12
+    },
+    "s2": {
+     "w": 55,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Lying Leg Raise"
+   },
+   {
+    "d": "2026-10-09",
+    "week": 3,
+    "day": "lower-b",
+    "weight": 45,
+    "reps": 12,
+    "s1": {
+     "w": 45,
+     "r": 12
+    },
+    "s2": {
+     "w": 45,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Lying Leg Raise"
+   },
+   {
+    "d": "2026-10-16",
+    "week": 4,
+    "day": "lower-b",
+    "weight": 55,
+    "reps": 12,
+    "s1": {
+     "w": 55,
+     "r": 12
+    },
+    "s2": {
+     "w": 55,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Lying Leg Raise"
+   },
+   {
+    "d": "2026-10-23",
+    "week": 5,
+    "day": "lower-b",
+    "weight": 55,
+    "reps": 12,
+    "s1": {
+     "w": 55,
+     "r": 12
+    },
+    "s2": {
+     "w": 55,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Lying Leg Raise"
+   },
+   {
+    "d": "2026-10-30",
+    "week": 6,
+    "day": "lower-b",
+    "weight": 60,
+    "reps": 12,
+    "s1": {
+     "w": 60,
+     "r": 12
+    },
+    "s2": {
+     "w": 60,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Lying Leg Raise"
+   },
+   {
+    "d": "2026-11-06",
+    "week": 7,
+    "day": "lower-b",
+    "weight": 50,
+    "reps": 12,
+    "s1": {
+     "w": 50,
+     "r": 12
+    },
+    "s2": {
+     "w": 50,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Lying Leg Raise"
+   },
+   {
+    "d": "2026-11-13",
+    "week": 8,
+    "day": "lower-b",
+    "weight": 60,
+    "reps": 12,
+    "s1": {
+     "w": 60,
+     "r": 12
+    },
+    "s2": {
+     "w": 60,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Lying Leg Raise"
+   },
+   {
+    "d": "2026-11-20",
+    "week": 9,
+    "day": "lower-b",
+    "weight": 60,
+    "reps": 12,
+    "s1": {
+     "w": 60,
+     "r": 12
+    },
+    "s2": {
+     "w": 60,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Lying Leg Raise"
+   }
+  ],
+  "weighted-situp": [
+   {
+    "d": "2026-09-18",
+    "week": 0,
+    "day": "lower-b",
+    "weight": 50,
+    "reps": 12,
+    "s1": {
+     "w": 50,
+     "r": 12
+    },
+    "s2": {
+     "w": 50,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Sit-Up"
+   },
+   {
+    "d": "2026-09-25",
+    "week": 1,
+    "day": "lower-b",
+    "weight": 50,
+    "reps": 12,
+    "s1": {
+     "w": 50,
+     "r": 12
+    },
+    "s2": {
+     "w": 50,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Sit-Up"
+   },
+   {
+    "d": "2026-10-02",
+    "week": 2,
+    "day": "lower-b",
+    "weight": 55,
+    "reps": 12,
+    "s1": {
+     "w": 55,
+     "r": 12
+    },
+    "s2": {
+     "w": 55,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Sit-Up"
+   },
+   {
+    "d": "2026-10-09",
+    "week": 3,
+    "day": "lower-b",
+    "weight": 45,
+    "reps": 12,
+    "s1": {
+     "w": 45,
+     "r": 12
+    },
+    "s2": {
+     "w": 45,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Sit-Up"
+   },
+   {
+    "d": "2026-10-16",
+    "week": 4,
+    "day": "lower-b",
+    "weight": 55,
+    "reps": 12,
+    "s1": {
+     "w": 55,
+     "r": 12
+    },
+    "s2": {
+     "w": 55,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Sit-Up"
+   },
+   {
+    "d": "2026-10-23",
+    "week": 5,
+    "day": "lower-b",
+    "weight": 55,
+    "reps": 12,
+    "s1": {
+     "w": 55,
+     "r": 12
+    },
+    "s2": {
+     "w": 55,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Sit-Up"
+   },
+   {
+    "d": "2026-10-30",
+    "week": 6,
+    "day": "lower-b",
+    "weight": 60,
+    "reps": 12,
+    "s1": {
+     "w": 60,
+     "r": 12
+    },
+    "s2": {
+     "w": 60,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Sit-Up"
+   },
+   {
+    "d": "2026-11-06",
+    "week": 7,
+    "day": "lower-b",
+    "weight": 50,
+    "reps": 12,
+    "s1": {
+     "w": 50,
+     "r": 12
+    },
+    "s2": {
+     "w": 50,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Sit-Up"
+   },
+   {
+    "d": "2026-11-13",
+    "week": 8,
+    "day": "lower-b",
+    "weight": 60,
+    "reps": 12,
+    "s1": {
+     "w": 60,
+     "r": 12
+    },
+    "s2": {
+     "w": 60,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Sit-Up"
+   },
+   {
+    "d": "2026-11-20",
+    "week": 9,
+    "day": "lower-b",
+    "weight": 60,
+    "reps": 12,
+    "s1": {
+     "w": 60,
+     "r": 12
+    },
+    "s2": {
+     "w": 60,
+     "r": 12
+    },
+    "failure": null,
+    "variant": "Weighted Sit-Up"
+   }
+  ]
+ },
+ "maxes": {
+  "squat": 225,
+  "bench": 185,
+  "ohp": 115
+ },
+ "week": 9,
+ "archive": null,
+ "variants": {},
+ "aims": {},
+ "runPlan": {
+  "level": "casual",
+  "distance": "half",
+  "liftDays": 4,
+  "liftRestDow": 6,
+  "daysPerWeek": 5,
+  "current": 15,
+  "longDow": 5,
+  "peak": 30,
+  "raceDate": "",
+  "pr": ""
+ },
+ "runLogs": {},
+ "liftDays": 4,
+ "splitId": "upper-lower",
+ "maintenanceMode": false,
+ "setCounts": {},
+ "warmupLogs": {},
+ "customEx": {},
+ "splitHistory": null,
+ "cycleStartMaxes": {
+  "maxes": {
+   "squat": 225,
+   "bench": 185,
+   "ohp": 115
+  },
+  "date": "2026-09-14"
+ },
+ "blockHistory": [],
+ "runBase": null,
+ "foodLogs": {},
+ "foodTargets": {},
+ "bodyweight": {},
+ "goalMode": "bulk",
+ "workoutNotes": {},
+ "trainStyle": {
+  "style": "plan",
+  "days": null,
+  "lastPreset": "upper-lower"
+ },
+ "ownPlan": {
+  "days": []
+ },
+ "liftNotes": {},
+ "tipsSeen": {
+  "v": 1,
+  "seen": {
+   "today": 1,
+   "plan": 1,
+   "lnote": 1,
+   "wnote": 1,
+   "quicklog": 1,
+   "progress": 1,
+   "run": 1,
+   "food": 1,
+   "style": 1,
+   "menu": 1,
+   "body": 1
+  }
+ },
+ "quickLogSession": null,
+ "runNotes": {
+  "v": 1,
+  "notes": {}
+ },
+ "hiddenEx": [],
+ "sessionPrefs": {
+  "size": null,
+  "budget": null,
+  "equip": [
+   "barbell",
+   "dumbbell",
+   "cable",
+   "machine",
+   "smith",
+   "band",
+   "bodyweight",
+   "pullup-bar",
+   "sled",
+   "tire",
+   "skierg",
+   "medball",
+   "rope"
+  ]
+ },
+ "bwBand": {
+  "lo": 0.5,
+  "hi": 1
+ },
+ "weekMoves": {},
+ "shortDays": {},
+ "weekAnchor": null,
+ "sessionTimes": {},
+ "profile": {},
+ "favEx": [],
+ "sessionShape": {
+  "timeBoxes": {},
+  "usualMinutes": null,
+  "liftExperience": null,
+  "dropLogs": {},
+  "sessionSets": {}
+ },
+ "restDays": {
+  "done": {},
+  "goingOut": {}
+ },
+ "quick": {
+  "sessions": {},
+  "minutes": 30
+ },
+ "rest": {
+  "scale": "normal",
+  "all": null,
+  "ex": {}
+ },
+ "swapsToday": {},
+ "runPrefs": {
+  "units": "mi",
+  "lastType": "easy"
+ },
+ "weightUnit": "lb",
+ "userName": "",
+ "aboutSeen": false,
+ "introSeen": false,
+ "dayMode": null,
+ "dayAdded": {}
+}
