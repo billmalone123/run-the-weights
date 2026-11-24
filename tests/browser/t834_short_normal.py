@@ -17,7 +17,8 @@ ADJ={'#planActive':'#planActive .day-adj','#tbWork':'#tbAdj .day-adj'}
 def pressed(pg, sel):
     v=pg.evaluate("(()=>{const b=document.querySelector('%s .day-adj-btn');return b?b.getAttribute('aria-pressed'):null})()"%ADJ[sel])
     return 'Normal:%s,Short:%s'%('false' if v=='true' else 'true', v)
-def restore(pg, sel): pg.click(sel+' .restore-btn')
+#  8.39.1: the Restore line is now a Full workout button next to Short.
+def restore(pg, sel): pg.click(ADJ[sel]+' .day-adj-btn:has-text("Full workout")')
 with sync_playwright() as p:
     b=p.chromium.launch(); ctx,pg,errs=page(b,390,844)
     go(pg,'today'); pg.click('.tb-start'); pg.wait_for_timeout(500)
@@ -79,6 +80,11 @@ with sync_playwright() as p:
     check('the switch is announced without dashes or exclamation marks', not any(c in an for c in '-–—!'), an)
     # 8.35b: tapping Short opens the time picker instead of trimming in place.
     go(pg,'today'); pg.click('#tbAdj .day-adj-btn:has-text("Short")'); pg.wait_for_timeout(400)
-    check('8.35b: Short opens the time picker', pg.evaluate("document.body.dataset.tab")=='quicklog' and pg.evaluate("quicklogSection.classList.contains('ql-short')"))
+    cuts=pg.evaluate("shortCuts('%s')"%D)
+    if cuts: check('8.35b: Short opens the time picker', pg.evaluate("document.body.dataset.tab")=='quicklog' and pg.evaluate("quicklogSection.classList.contains('ql-short')"))
+    else:
+        note=pg.evaluate("(document.querySelector('#tbAdj .adj-note')||{}).innerText||''")
+        check('8.39.1: Short that would keep the same lifts says so and changes nothing', note.startswith('Already about ') and not pg.evaluate("sessionIsShort('%s')"%D), note)
+        pg.evaluate("_noShort=null;openQuickLog(null,'%s',true)"%D); pg.wait_for_timeout(300)
     check('no page errors', not errs, errs); ctx.close()
 sys.exit(1 if done() else 0)

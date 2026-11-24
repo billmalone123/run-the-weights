@@ -4040,6 +4040,21 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
 .tb-list { margin: 0 0 12px; padding-left: 20px; font-size: 15px; line-height: 1.5; }
 .tb-list span { color: var(--s834-muted); }
 .tb-quiet { margin: 0; font-size: 15px; color: var(--s834-muted); }
+/* 8.39.1 */
+.wg-part { display: block; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--ultramarine); box-sizing: border-box; background: radial-gradient(circle, var(--ultramarine) 0 2px, transparent 2.5px); }
+.wg-day.picked .wg-part { border-color: var(--cream); background: radial-gradient(circle, var(--cream) 0 2px, transparent 2.5px); }
+.tb-two, .tw-two, .tw-acts { display: flex; gap: 8px; margin-top: 10px; }
+.tb-sec { flex: 1 1 0; min-width: 0; min-height: 48px; padding: 0 8px; border: 2px solid currentColor; border-radius: 18px; background: transparent; color: inherit; font: inherit; font-size: 16px; font-weight: 700; }
+.tb-wide { display: block; width: 100%; margin-top: 10px; }
+.tb-earlier { margin: 12px 0 0; font-size: 15px; opacity: .9; }
+.tw-acts .day-adj-btn { font-size: 15px; }
+.tw-note { margin-top: 10px; }
+.adj-note { margin: 8px 0 0; }
+.tw-confirm { margin: 10px 0 0; }
+.tw-ok { flex: 1 1 0; min-height: 48px; border: 2px solid var(--ink); border-radius: 18px; background: var(--ink); color: var(--cream); font: inherit; font-weight: 700; }
+.tw-no { flex: 1 1 0; min-height: 48px; border: 2px solid var(--ink); border-radius: 18px; background: transparent; color: var(--ink); font: inherit; font-weight: 700; }
+.tw-grid { flex-wrap: wrap; }
+.tw-grid .liftdays-btn { min-width: 44px; min-height: 44px; }
 .tb-logfor { display: block; width: 100%; min-height: 48px; margin-top: 4px; border: 2px solid var(--ink); border-radius: 18px; background: transparent; color: var(--ink); font: inherit; font-size: 16px; font-weight: 700; cursor: pointer; }
 .cw-sub { font-size: 15px; line-height: 1.4; color: var(--s834-muted); margin: 4px 0 14px; }
 .cw-opt { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; min-height: 56px; margin: 0 0 10px; padding: 10px 16px; border: 2px solid var(--ink); border-radius: 18px; background: transparent; color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
@@ -5544,6 +5559,10 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
       </div>
       <span class="liftdays-desc">For body weight and every lift. Distance has its own setting on Run.</span>
     </div>
+    <div class="liftdays-wrap" id="trainSec" style="margin-bottom:16px;">
+      <span class="liftdays-label">Training</span>
+      <div class="rb-set" id="trainWeekSet"></div>
+    </div>
     <div class="liftdays-wrap" style="margin-bottom:16px;">
       <span class="liftdays-label">Running</span>
       <div class="liftdays-group">
@@ -5627,7 +5646,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
 
     <button class="settings-open-btn intro-replay" id="replayIntroBtn" onclick="replayIntro()">Replay intro</button>
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.40</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.40.1</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -6983,6 +7002,8 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
   //  Today's workout day, the one Today shows: a day chosen today, else the
   //  day worked on today, else the day Today offers, else today's slot.
   function todayDayId() {
+    var tk = typeof takenToday === 'function' ? takenToday() : null;
+    if (tk) return tk;
     var m = liveDayKey();
     if (m && SPLIT_DAYS[m.split('|')[1]]) return m.split('|')[1];
     var t = todayKey() + '|', best = null;
@@ -7398,7 +7419,36 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     renderQuickLog();
   }
   //  Short opens the time picker for that day. Nothing changes until the check.
-  function openShortPicker(dayId) { openQuickLog(null, dayId, true); }
+  function openShortPicker(dayId) {
+    if (!sessionIsShort(dayId) && !shortCuts(dayId)) {
+      _noShort = dayId;
+      var ann = document.getElementById('lenSay');
+      if (ann) ann.textContent = 'Already about ' + fullMinutes(dayId, currentTrainWeek) + ' min. Short would keep the same lifts.';
+      if (typeof renderToday === 'function') renderToday();
+      if (typeof renderPlanActive === 'function') renderPlanActive();
+      return;
+    }
+    _noShort = null;
+    openQuickLog(null, dayId, true);
+  }
+  //  8.39.1: does Short drop a lift or at least 5 minutes from this day?
+  function shortCuts(dayId) {
+    var w = currentTrainWeek, k = w + '|' + dayId, had = shortDays[k], tb = timeBoxes[k], qs = quickSessions[k], pk = _previewKey, f, sh;
+    try {
+      f = buildSessionFull(dayId, w);
+      //  As setSessionLength does: Short replaces a time or quick choice.
+      delete timeBoxes[k]; delete quickSessions[k];
+      shortDays[k] = true; _previewKey = k; invalidateBuild();
+      sh = buildSession(dayId, w);
+    } finally {
+      if (tb !== undefined) timeBoxes[k] = tb;
+      if (qs !== undefined) quickSessions[k] = qs;
+      if (had === undefined) delete shortDays[k]; else shortDays[k] = had;
+      _previewKey = pk; invalidateBuild();
+    }
+    return sh.list.length < f.list.length || sh.minutes <= f.minutes - 5;
+  }
+  function buildSessionFull(dayId, w) { _ignoreDayChoice = true; invalidateBuild(); try { return buildSession(dayId, w); } finally { _ignoreDayChoice = false; invalidateBuild(); } }
   function qlBack() { var t = _qlFrom || 'today'; _qlShort = null; goTab(t); scrollTo(0, 0); }
   function qlToggleOthers() { _qlOthersOpen = !_qlOthersOpen; renderQuickLog(); if (_qlOthersOpen) { var o = document.getElementById('qlOthersLabel'); if (o) try { o.scrollIntoView({ block: 'start' }); } catch(e) {} } }
   function pickTodayTime(v) { openQuickLog(v); }
@@ -7602,6 +7652,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     return sessionIsShort(dayId) ? 'Short ' + t : t;
   }
   function restoreLineHTML(dayId, cls) {
+    return '';  // 8.39.1: Full workout, next to Short, does this now.
     if (!sessionIsShort(dayId)) return '';
     var t = String((SPLIT_DAYS[dayId] || {}).title || '').replace(/\.$/, '');
     return '<p class="restore-line ' + (cls || '') + '">Planned workout: ' + paEsc(t) + '. <button type="button" class="restore-btn" onclick="restorePlanned(\'' + paJs(dayId) + '\')" aria-label="Restore the planned workout, ' + paEsc(t) + '">Restore</button></p>';
@@ -7961,13 +8012,10 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     return { done: done, total: total };
   }
   //  First day this week with some sets logged and some still open.
+  //  8.39.1: only a workout logged today, under DONE_FRACTION, last set within RECENT_HOURS.
   function partialDayThisWeek() {
-    var ids = splitDayIds();
-    for (var i = 0; i < ids.length; i++) {
-      var pr = dayProgress(ids[i]);
-      if (pr.done > 0 && pr.done < pr.total) return ids[i];
-    }
-    return null;
+    var p = typeof todayPartial === 'function' ? todayPartial() : null;
+    return p && p.recent ? p.day : null;
   }
   function guidedTotalSets() { return _g.list.reduce(function(t, ex) { return t + shownSets(ex.id); }, 0); }
   function guidedDoneSets() {
@@ -8131,6 +8179,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     try { localStorage.setItem(RUNNING_KEY, runningEnabled ? '1' : '0'); } catch(e) {}
     var rb = loadRunBase(); if (rb && rb.on !== runningEnabled) { rb.on = runningEnabled; saveRunBase(rb); }
     if (typeof renderRunBaseSet === 'function') renderRunBaseSet();
+    if (typeof renderTrainWeekSet === 'function') renderTrainWeekSet();
     if (document.body) document.body.classList.toggle('running', runningEnabled);
     document.querySelectorAll('[data-run-btn]').forEach(function(b) { b.classList.toggle('on', (b.dataset.runBtn === 'on') === runningEnabled); });
     //  The Run tab comes and goes with the switch, no reload.
@@ -10319,11 +10368,11 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
   //     The logged entry for the week you're viewing AND the currently selected
   //     variant. If this week was logged under a different movement, it doesn't show
   //     here (you get the fresh target for the variant you've now switched to).
-  function entryForWeek(hist, wk, ex) {
+  function entryForWeek(hist, wk, ex, any) {
     var want = ex ? activeVariant(ex) : null;
     for (var i = hist.length - 1; i >= 0; i--) {
       var e = hist[i];
-      if (e.week === wk && e.weight != null && !e.quickLog && (!want || entryVariant(e, ex) === want)) return e;
+      if (e.week === wk && e.weight != null && !e.quickLog && (!want || entryVariant(e, ex) === want) && (any || entryInView(e, wk))) return e;
     }
     return null;
   }
@@ -10843,7 +10892,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     var lday = rowDayOf(exId);
     for (var i = hist.length - 1; i >= 0; i--) {
       //  Old entries with no variant field read as the exercise's own name.
-      if (hist[i].week === currentTrainWeek && !hist[i].quickLog && entryVariant(hist[i], ex) === activeVariant(ex)
+      if (hist[i].week === currentTrainWeek && !hist[i].quickLog && !hist[i].closed && entryVariant(hist[i], ex) === activeVariant(ex)
           && (hist[i].d === t || (lateNight && hist[i].d === yest)) && (!lday || entryForDay(hist[i], lday))) { idx = i; break; }
     }
     var prev = idx >= 0 ? hist[idx] : null;
@@ -12826,7 +12875,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
       trainStyle: trainStyle, ownPlan: ownPlan, liftNotes: liftNotes, tipsSeen: { v: 1, seen: loadTipsSeen() }, quickLogSession: readSavedQs(), runNotes: { v: 1, notes: getRunNotes() },
       hiddenEx: hiddenEx,
       sessionPrefs: { size: sessionSize, budget: sessionBudget, equip: equipOwned },
-      bwBand: bwBand, weekMoves: weekMoves, shortDays: shortDays, sessionTimes: (typeof finTimes === 'object' ? finTimes : {}), profile: userProfile, favEx: favEx,
+      bwBand: bwBand, weekMoves: weekMoves, shortDays: shortDays, weekAnchor: pickedWeek(), sessionTimes: (typeof finTimes === 'object' ? finTimes : {}), profile: userProfile, favEx: favEx,
       sessionShape: { timeBoxes: timeBoxes, usualMinutes: usualMinutes, liftExperience: liftExperience, dropLogs: dropLogs, sessionSets: sessionSets },
       restDays: { done: restDone, goingOut: goingOutDays },
       quick: { sessions: quickSessions, minutes: quickMinutes },
@@ -12925,6 +12974,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
         if (Array.isArray(data.favEx)) { favEx = data.favEx.filter(function(x) { return typeof x === 'string'; }); persistFavEx(); }
         if (data.weekMoves && typeof data.weekMoves === 'object') { weekMoves = data.weekMoves; }
         if (data.shortDays && typeof data.shortDays === 'object') { shortDays = data.shortDays; }
+        if (data.weekAnchor) savePickedWeek(data.weekAnchor);
         //  8.34: session times are range checked; anything odd is dropped.
         if (data.sessionTimes && typeof finCleanTimes === 'function') { finTimes = finCleanTimes(data.sessionTimes); finSaveTimes(); }
         if (data.weekMoves || data.shortDays) { persistLifeHappens(); invalidateBuild(); }
@@ -18730,6 +18780,8 @@ if ('serviceWorker' in navigator) {
 //  Never past the last week; nothing happens before a first log.
 //  shortcut: runs on open only; an app left open across Sunday night moves on the next open.
 function planWeekMonday(w) {
+  var an = pickedWeek();
+  if (an && w >= an.week) return addDays(parseDateKey(an.monday), 7 * (w - an.week));
   var first = {};
   Object.keys(sessions || {}).forEach(function(id) { (sessions[id] || []).forEach(function(e) {
     if (e && e.week >= 0 && e.week <= w && /^\d{4}-\d{2}-\d{2}$/.test(e.d || '') && (!first[e.week] || e.d < first[e.week])) first[e.week] = e.d;
@@ -18749,9 +18801,12 @@ function rollStaleWeek() {
   if (to === w) return false;
   currentTrainWeek = to;
   try { localStorage.setItem(TRAIN_WEEK_KEY, currentTrainWeek); } catch(e) {}
+  _homeWeek = null; _weekNote = to + 1;
   return true;
 }
 function hasLogsForDay(dayId, week, from, to) {
+  //  8.39.1: in this plan week only sets dated in its calendar week count.
+  if (!from && week === currentTrainWeek && typeof weekRangeKeys === 'function') { var wr = weekRangeKeys(week); from = wr[0]; to = wr[1]; }
   //  Goes through splitDayExercises() rather than filtering EXERCISES by
   //  ex.day === dayId directly: split-day ids like 'push' or 'upper-a' never
   //  appear as an exercise's own .day (that's always one of the six base
@@ -18773,9 +18828,9 @@ function hasLogsForDay(dayId, week, from, to) {
 }
 
 //  The first date a planned day was logged in a plan week, or null.
-function dayLogDate(dayId, week) {
+function dayLogDate(dayId, week, from) {
   var first = null;
-  try { splitDayExercises(dayId).forEach(function(ex) { (sessions[ex.id] || []).forEach(function(e) { if (e.week === week && !e.quickLog && e.d && entryForDay(e, dayId) && (!first || e.d < first)) first = e.d; }); }); } catch(e) {}
+  try { splitDayExercises(dayId).forEach(function(ex) { (sessions[ex.id] || []).forEach(function(e) { if (e.week === week && !e.quickLog && e.d && (!from || e.d >= from) && entryForDay(e, dayId) && (!first || e.d < first)) first = e.d; }); }); } catch(e) {}
   return first;
 }
 //  Today's planned workout, when this is the plan's current week and today is not a rest day.
@@ -18783,6 +18838,195 @@ function todayPlannedDay() {
   if (currentTrainWeek !== homeWeek()) return null;
   var id = splitWeekOf(currentTrainWeek)[wsToday()];
   return id && id !== 'rest' && SPLIT_DAYS[id] && !SPLIT_DAYS[id].rest ? id : null;
+}
+//  ===== 8.39.1 TODAY STATE =====
+//  A date's view is built from three things only: the plan's workout for that
+//  weekday in full, the choices saved for that date, and the sets logged on
+//  that date. Only weights carry over. Nothing here deletes or moves a set.
+var RECENT_HOURS = 3;      // a part logged workout leads Today only on its own date, this soon after its last set
+var DONE_FRACTION = 0.7;   // this share of a day's planned lifts logged counts the day as done
+var WEEK_ANCHOR_KEY = 'monk_week_anchor_v1';   // { week, monday }: the plan week picked for a calendar week
+var _weekNote = null, _noShort = null;
+function weekRangeKeys(w) { return [dateKeyOfRun(slotDate(w, 0)), dateKeyOfRun(slotDate(w, 6))]; }
+//  Planned lifts of a day, and how many have a set dated from..to.
+function dayLiftsOn(dayId, w, from, to) {
+  var list = [], own = {}, n = 0;
+  try { list = buildSession(dayId, w).list || []; own = dayOwnLogs(dayId, w, from, to).ids; } catch(e) {}
+  list.forEach(function(ex) {
+    if (own[ex.id] || (sessions[ex.id] || []).some(function(e) { return e && e.week === w && !e.quickLog && e.d && e.d >= from && e.d <= to && entryForDay(e, dayId); })) n++;
+  });
+  return { done: n, total: list.length };
+}
+function dayDoneOn(dayId, w, from, to) {
+  var p = dayLiftsOn(dayId, w, from, to);
+  return p.total > 0 && p.done >= Math.ceil(p.total * DONE_FRACTION - 1e-9);
+}
+function finRecToday(dayId) { return (typeof finTimes === 'object' && finTimes[todayKey() + '|' + dayId]) || null; }
+//  The workout logged today and not yet done, the latest one if several.
+function todayPartial() {
+  var t = todayKey(), w = currentTrainWeek, best = null;
+  if (w !== homeWeek()) return null;
+  splitDayIds().forEach(function(id) {
+    if (!hasLogsForDay(id, w, t, t)) return;
+    var p = dayLiftsOn(id, w, t, t);
+    if (p.total && p.done >= Math.ceil(p.total * DONE_FRACTION - 1e-9)) return;
+    var r = finRecToday(id) || {}, l = r.l || 0;
+    if (!best || l > best.l) best = { day: id, l: l, done: p.done, total: p.total, recent: !r.f && l > Date.now() - RECENT_HOURS * 36e5 };
+  });
+  return best;
+}
+//  A day of this week picked with Do this workout today.
+function takenToday() {
+  if (typeof finTimes !== 'object' || currentTrainWeek !== homeWeek()) return null;
+  var t = todayKey() + '|', out = null;
+  Object.keys(finTimes).forEach(function(k) { if (!out && k.indexOf(t) === 0 && finTimes[k].t && SPLIT_DAYS[k.slice(t.length)]) out = k.slice(t.length); });
+  return out;
+}
+//  In this week, a row shows the sets of the date it is for: today's rows
+//  today's sets, a past day's rows the sets dated in this calendar week.
+function entryInView(e, wk) {
+  if (typeof homeWeek !== 'function' || wk !== currentTrainWeek || wk !== homeWeek()) return true;
+  if (e.closed) return false;
+  var t = todayKey(), sel = selSlot();
+  if (slotWhen(sel) === 'past') { var r = weekRangeKeys(wk); return !!e.d && e.d >= r[0] && e.d < t; }
+  if (e.d === t) return true;
+  var y = addDays(startOfToday(), -1);
+  return new Date().getHours() < 5 && e.d === dateKeyOfRun(y);
+}
+function pickedWeek() {
+  var a = null;
+  try { a = JSON.parse(localStorage.getItem(WEEK_ANCHOR_KEY)); } catch(e) {}
+  return a && typeof a.week === 'number' && a.week % 1 === 0 && a.week >= 0 && a.week < 52 && /^\d{4}-\d{2}-\d{2}$/.test(a.monday || '') ? { week: a.week, monday: a.monday } : null;
+}
+function savePickedWeek(a) {
+  var ok = a && typeof a.week === 'number' && a.week % 1 === 0 && a.week >= 0 && a.week < 52 && /^\d{4}-\d{2}-\d{2}$/.test(a.monday || '');
+  try { if (ok) localStorage.setItem(WEEK_ANCHOR_KEY, JSON.stringify({ week: a.week, monday: a.monday })); } catch(e) {}
+}
+function tbSay(msg) { var a = document.getElementById('lenSay'); if (a) a.textContent = msg; }
+function freshDayChoice(dayId) {
+  var k = currentTrainWeek + '|' + dayId;
+  if (k === liveDayKey()) return;
+  delete shortDays[k]; delete timeBoxes[k];
+  persistSessionShape(); persistLifeHappens(); invalidateBuild();
+}
+//  Start fresh: today's earlier sets of this workout are kept and closed, so
+//  new sets go in new entries. Both stay in history, Progress and volume.
+function startFresh(dayId) {
+  var t = todayKey(), w = currentTrainWeek, n = 0;
+  Object.keys(sessions || {}).forEach(function(id) { (sessions[id] || []).forEach(function(e) {
+    if (e && e.week === w && e.d === t && !e.quickLog && !e.closed && entryForDay(e, dayId)) { e.closed = true; n++; }
+  }); });
+  if (n) saveSessions();
+  delete finTimes[t + '|' + dayId]; finSaveTimes();
+  invalidateBuild();
+  tbStart(dayId);
+  tbSay('New session started. Your earlier sets are kept.');
+}
+function finishForToday(dayId) {
+  var k = todayKey() + '|' + dayId, r = finTimes[k] || (finTimes[k] = {});
+  r.f = 1; finSaveTimes();
+  if (typeof renderToday === 'function') renderToday();
+  tbSay('Finished for today. Your sets are kept.');
+}
+function continueEarlier(dayId) {
+  var r = finRecToday(dayId);
+  if (r) { delete r.f; r.l = Date.now(); if (!r.s) r.s = r.l; finSaveTimes(); }
+  tbStart(dayId);
+}
+//  Do this workout today: today runs another day of this week. Sets log under
+//  today's date and that day's workout, so that day shows done.
+function doThisToday(dayId) {
+  if (!dayId || !SPLIT_DAYS[dayId]) return;
+  var t = todayKey() + '|';
+  Object.keys(finTimes).forEach(function(k) { if (k.indexOf(t) === 0) delete finTimes[k].t; });
+  (finTimes[t + dayId] || (finTimes[t + dayId] = {})).t = 1;
+  finTimes = finCleanTimes(finTimes); finSaveTimes();
+  freshDayChoice(dayId);
+  _selSlot = null;
+  tbStart(dayId);
+  tbSay(dayWorkoutName(dayId) + ' is today. Your logged sets are kept.');
+}
+function undoTakeToday(dayId) {
+  var r = finRecToday(dayId);
+  if (r) { delete r.t; finTimes = finCleanTimes(finTimes); finSaveTimes(); }
+  if (typeof renderToday === 'function') renderToday();
+  tbSay('Back to the planned workout. Your logged sets are kept.');
+}
+//  Current week. The picked week becomes this calendar week; sets never move.
+function lastLoggedWeek(before) {
+  var hi = -1;
+  Object.keys(sessions || {}).forEach(function(id) { (sessions[id] || []).forEach(function(e) { if (e && typeof e.week === 'number' && (before == null || e.week < before) && e.week > hi) hi = e.week; }); });
+  return hi;
+}
+function renderTrainWeekSet() {
+  var el = document.getElementById('trainWeekSet');
+  if (!el) return;
+  var cur = homeWeek() + 1, n = totalTrainWeeks(), b = '';
+  for (var i = 1; i <= n; i++) b += '<button type="button" class="liftdays-btn' + (i === cur ? ' on' : '') + '" aria-pressed="' + (i === cur) + '" onclick="pickTrainWeek(' + i + ')">' + i + '</button>';
+  el.innerHTML = '<fieldset class="rb-set-f"><legend class="liftdays-label">Current week</legend>'
+    + '<p class="liftdays-desc">Pick the week you are training this week.</p><div class="liftdays-group tw-grid">' + b + '</div></fieldset>'
+    + '<div id="twAsk" aria-live="polite"></div>'
+    + '<button type="button" class="settings-open-btn" onclick="askResetWeek(\'twReset\')">Reset this week</button><div id="twReset"></div>';
+}
+function pickTrainWeek(n) {
+  var el = document.getElementById('twAsk'), w = n - 1, hi = lastLoggedWeek(), from = lastLoggedWeek(w);
+  if (!el) return;
+  if (w === homeWeek()) { el.innerHTML = '<p class="liftdays-desc">This week is already week ' + n + '.</p>'; return; }
+  el.innerHTML = '<div class="tw-confirm" role="group" aria-label="Change week"><p class="liftdays-desc">This week will be week ' + n + '. Your logged sets stay.'
+    + (hi > w ? ' Week ' + n + ' is earlier than week ' + (hi + 1) + ', your last logged week.' : '')
+    + (from >= 0 ? ' Targets come from week ' + (from + 1) + '.' : ' Targets come from your maxes.') + '</p>'
+    + '<div class="tw-two"><button type="button" class="tw-ok" onclick="setCurrentWeek(' + n + ')">Make this week ' + n + '</button>'
+    + '<button type="button" class="tw-no" onclick="document.getElementById(\'twAsk\').innerHTML=\'\'">Cancel</button></div></div>';
+  var ok = el.querySelector('.tw-ok'); if (ok) ok.focus();
+}
+function setCurrentWeek(n) {
+  var w = n - 1, t = startOfToday(), mon = dateKeyOfRun(addDays(t, -mondayIndex(t))), pre = w + '|';
+  if (!(w >= 0 && w < totalTrainWeeks())) return;
+  savePickedWeek({ week: w, monday: mon });
+  //  Choices saved for that week were made for other dates.
+  [shortDays, timeBoxes].forEach(function(o) { Object.keys(o).forEach(function(k) { if (k.indexOf(pre) === 0) delete o[k]; }); });
+  delete weekMoves[w];
+  currentTrainWeek = w; _homeWeek = w; _selSlot = null; _weekNote = null; _weekPreview = false;
+  try { localStorage.setItem(TRAIN_WEEK_KEY, w); } catch(e) {}
+  persistSessionShape(); persistLifeHappens(); invalidateBuild();
+  try { renderDaySections(); renderAllRowStates(); } catch(e) {}
+  renderTrainWeekSet();
+  if (typeof renderToday === 'function') renderToday();
+  var ok = document.querySelector('#trainWeekSet .liftdays-btn.on'); if (ok) ok.focus();
+  tbSay('This week is week ' + n + '. Your logged sets stay.');
+}
+function changeWeek() {
+  _weekNote = null;
+  openSettingsModal();
+  setTimeout(function() {
+    renderTrainWeekSet();
+    var s = document.getElementById('trainSec'); if (s) try { s.scrollIntoView({ block: 'start' }); } catch(e) {}
+    var b = document.querySelector('#trainWeekSet .liftdays-btn.on'); if (b) b.focus();
+  }, 60);
+}
+//  Reset this week: overrides, Short, added lifts and open workouts go. Sets stay.
+function askResetWeek(hostId) {
+  var el = document.getElementById(hostId);
+  if (!el) return;
+  el.innerHTML = '<div class="tw-confirm" role="group" aria-label="Reset this week"><p class="liftdays-desc">This week goes back to your plan. Your logged sets stay.</p>'
+    + '<div class="tw-two"><button type="button" class="tw-ok" onclick="resetThisWeek()">Reset week</button>'
+    + '<button type="button" class="tw-no" onclick="document.getElementById(\'' + hostId + '\').innerHTML=\'\'">Cancel</button></div></div>';
+  var ok = el.querySelector('.tw-ok'); if (ok) ok.focus();
+}
+function resetThisWeek() {
+  var w = currentTrainWeek, pre = w + '|', t = todayKey() + '|';
+  [shortDays, timeBoxes, dayAdded, goingOutDays].forEach(function(o) { Object.keys(o || {}).forEach(function(k) { if (k.indexOf(pre) === 0) delete o[k]; }); });
+  Object.keys(quickSessions).forEach(function(k) { if (k.indexOf(pre) === 0 && !slotHasLogs(k.slice(pre.length), w)) delete quickSessions[k]; });
+  delete weekMoves[w];
+  Object.keys(finTimes).forEach(function(k) { if (k.indexOf(t) === 0) { delete finTimes[k].t; finTimes[k].f = 1; } });
+  finTimes = finCleanTimes(finTimes); finSaveTimes();
+  var m = currentDayMode(); if (m && m.week === w) saveDayMode(null);
+  _noShort = null;
+  persistQuick(); persistSessionShape(); persistLifeHappens(); persistDayAdded(); persistRestState(); invalidateBuild();
+  try { renderDaySections(); renderAllRowStates(); } catch(e) {}
+  ['tbResetAsk', 'twReset'].forEach(function(id) { var el = document.getElementById(id); if (el) el.innerHTML = ''; });
+  if (typeof renderToday === 'function') renderToday();
+  tbSay('This week is back to your plan. Your logged sets stay.');
 }
 function renderRing() {
   if (typeof renderWeekGlance === 'function') renderWeekGlance();
@@ -19296,7 +19540,7 @@ function renderTodayB() {
   if (free) { if (wk) wk.hidden = true; if (work) work.hidden = true; var mf = document.getElementById('tbMore'); if (mf) mf.innerHTML = ''; }
   else {
     var ids = []; try { ids = splitDayIds(); } catch(e) {}
-    var planned = ids.length, done = ids.filter(function(id) { return hasLogsForDay(id, currentTrainWeek); }).length;
+    var wr0 = weekRangeKeys(currentTrainWeek), planned = ids.length, done = ids.filter(function(id) { return dayDoneOn(id, currentTrainWeek, wr0[0], wr0[1]); }).length;
     var left = Math.max(0, planned - done);
     var C = 2 * Math.PI * 44, frac = planned ? Math.min(1, done / planned) : 0;
     var copy = !planned ? '' : left === 0 ? 'All ' + paWord(planned) + ' done this week.' : (done ? paWord(done, true) + ' done. ' : '') + paWord(left, true) + ' to go. A day you did not get to moves forward, it does not disappear.';
@@ -19305,7 +19549,10 @@ function renderTodayB() {
       wk.innerHTML = '<div class="tb-week-top"><div class="tb-ring" role="img" aria-label="' + done + ' of ' + planned + ' sessions done this week">'
         + '<svg viewBox="0 0 104 104" aria-hidden="true"><circle class="trk" cx="52" cy="52" r="44"/><circle class="val" cx="52" cy="52" r="44" stroke-dasharray="' + (C * frac).toFixed(1) + ' ' + C.toFixed(1) + '"' + (frac ? '' : ' style="display:none"') + '/></svg>'
         + '<div class="tb-ring-c" aria-hidden="true"><span class="tb-ring-n">' + done + '/' + planned + '</span><span class="tb-ring-l">This week</span></div></div>'
-        + '<p class="tb-week-copy">' + copy + '</p></div>';
+        + '<p class="tb-week-copy">' + copy + '</p></div>'
+        + (_weekNote === currentTrainWeek + 1 ? '<p class="tb-quiet tw-note">This week is week ' + _weekNote + '. Wrong? <button type="button" class="restore-btn" onclick="changeWeek()">Change week</button></p>' : '')
+        + '<div class="tw-acts"><button type="button" class="day-adj-btn" onclick="changeWeek()">Change week</button>'
+        + '<button type="button" class="day-adj-btn" onclick="askResetWeek(\'tbResetAsk\')">Reset this week</button></div><div id="tbResetAsk"></div>';
     }
     var adj = document.getElementById('tbAdj'), sel = selSlot();
     if (adj) adj.innerHTML = '';
@@ -19315,20 +19562,29 @@ function renderTodayB() {
       work.className = 'tb-work tb-prev';
       work.innerHTML = wsPreviewHTML(sel);
       var mp = document.getElementById('tbMore'); if (mp) mp.innerHTML = '';
-      if (adj && slotWhen(sel) === 'future') adj.innerHTML = dayAdjustHTML(splitWeekOf(currentTrainWeek)[sel], sel);
+      if (adj && (currentTrainWeek === homeWeek() || slotWhen(sel) === 'future')) adj.innerHTML = dayAdjustHTML(splitWeekOf(currentTrainWeek)[sel], sel);
     } else if (work) {
       work.hidden = false;
       work.className = 'tb-work';
-      var partial = null, next = null, tp = todayPlannedDay(), early = null;
-      try { partial = partialDayThisWeek(); next = partial || findNextUnloggedDay(); } catch(e) {}
-      //  On the day it is, today's planned workout comes first. It counts as
-      //  done for today only when its sets carry today's date.
-      if (tp && !hasLogsForDay(tp, currentTrainWeek, todayKey(), todayKey())) {
-        if (!hasLogsForDay(tp, currentTrainWeek)) { next = tp; if (partial !== tp) partial = null; }
-        else if (partial !== tp) early = dayLogDate(tp, currentTrainWeek);
-      }
+      var partial = null, next = null, tp = todayPlannedDay(), early = null, take = null, tpart = null, tk = todayKey();
+      //  8.39.1: a part logged workout leads only on its own date, within
+      //  RECENT_HOURS of its last set. Anything older is closed: Today shows
+      //  the plan's workout in full, and an earlier one from today gets a line.
+      try {
+        tpart = todayPartial(); take = takenToday();
+        partial = tpart && tpart.recent ? tpart.day : null;
+        next = partial || take;
+        if (!next && tp) {
+          if (tpart && tpart.day === tp) next = tp;
+          else if (!hasLogsForDay(tp, currentTrainWeek)) next = tp;
+          else if (!hasLogsForDay(tp, currentTrainWeek, tk, tk)) early = dayLogDate(tp, currentTrainWeek, weekRangeKeys(currentTrainWeek)[0]);
+        }
+        if (!next && !early) next = findNextUnloggedDay();
+      } catch(e) {}
+      var earlier = tpart && !tpart.recent ? tpart : null;
       var mo0 = document.getElementById('tbMore'); if (mo0) mo0.innerHTML = '';
-      if (blockCardOn()) {
+      //  8.40.1: a workout in progress today comes before the block card.
+      if (blockCardOn() && !partial && !take) {
         work.className = 'tb-work tb-prev tb-block';
         work.innerHTML = blockCardHTML();
       } else if (early) {
@@ -19337,7 +19593,7 @@ function renderTodayB() {
           + '<p class="tb-meta">Logged on ' + PA_DOWS[mondayIndex(ed)] + ', ' + WS_MONTHS[ed.getMonth()] + ' ' + ed.getDate() + '. It counts for that day, not today.</p>'
           + '<button type="button" class="tb-start" onclick="goTab(\'training\'); switchDay(\'' + paJs(tp) + '\')">Open in Lift</button>';
         if (adj) adj.innerHTML = dayAdjustHTML(tp, sel);
-      } else if (blockEnded()) {
+      } else if (blockEnded() && !partial && !take) {
         work.innerHTML = '<p class="tb-kick">Week ' + (currentTrainWeek + 1) + ' of ' + totalTrainWeeks() + '</p><p class="tb-day">Block done</p><p class="tb-meta">Start your next block from Settings when you are ready.</p>';
       } else if (!next) {
         work.innerHTML = '<p class="tb-kick">Week ' + (currentTrainWeek + 1) + '</p><p class="tb-day">Week done</p><p class="tb-meta">Every workout this week is logged.</p>'
@@ -19345,14 +19601,19 @@ function renderTodayB() {
       } else {
         var dd = SPLIT_DAYS[next] || {}, bs = {}; try { bs = buildSession(next, currentTrainWeek); } catch(e) {}
         var nLifts = (bs.list || []).length, mins = bs.minutes || 0;
-        var kick = partial ? 'In progress' : (week[ti] === next ? 'Today' : 'Next workout');
+        var kick = partial ? 'In progress' : (week[ti] === next || take === next ? 'Today' : 'Next workout');
         var back = '';
         try { back = backFromBreak() ? BREAK_LINE : daysSinceLastLog() >= 3 ? 'Welcome back. Pick up where you left off.' : ''; } catch(e) {}
         work.innerHTML = (back ? '<p class="tb-meta" style="margin-bottom:12px">' + back + '</p>' : '') + '<p class="tb-kick">' + kick + '</p>'
           + '<h2 class="tb-day">' + paEsc(dayWorkoutName(next) || dd.title || '') + '</h2>'
           + '<p class="tb-meta">' + nLifts + (nLifts === 1 ? ' lift' : ' lifts') + (mins ? ' · about ' + mins + ' min' : '') + ' · <span class="nb">Week ' + (currentTrainWeek + 1) + ' of ' + totalTrainWeeks() + '</span></p>'
           + restoreLineHTML(next, 'on-blue')
-          + '<button type="button" class="tb-start" onclick="tbStart(\'' + paJs(next) + '\')">' + (partial ? 'Continue workout' : 'Start workout') + '</button>'
+          + '<button type="button" class="tb-start" onclick="' + (earlier && earlier.day === next ? 'startFresh' : 'tbStart') + '(\'' + paJs(next) + '\')">' + (partial ? 'Continue workout' : 'Start workout') + '</button>'
+          + (partial ? '<div class="tb-two"><button type="button" class="tb-sec" onclick="finishForToday(\'' + paJs(next) + '\')">Finish for today</button>'
+            + '<button type="button" class="tb-sec" onclick="startFresh(\'' + paJs(next) + '\')">Start fresh</button></div>' : '')
+          + (take === next && tp && tp !== next ? '<button type="button" class="tb-sec tb-wide" onclick="undoTakeToday(\'' + paJs(next) + '\')">Back to ' + paEsc(dayWorkoutName(tp)) + '</button>' : '')
+          + (earlier ? '<p class="tb-earlier">Earlier today: ' + paEsc(dayWorkoutName(earlier.day)) + ', ' + earlier.done + ' of ' + earlier.total + ' lifts. '
+            + '<button type="button" class="restore-btn" onclick="continueEarlier(\'' + paJs(earlier.day) + '\')" aria-label="Continue ' + paEsc(dayWorkoutName(earlier.day)) + ' from earlier today">Continue</button></p>' : '')
           ;
         var mo = document.getElementById('tbMore');
         if (adj) adj.innerHTML = dayAdjustHTML(next, sel);
@@ -19393,9 +19654,11 @@ function dayDateKey(dayId, w) { var i = splitWeekOf(w).indexOf(dayId); return i 
 function slotWhen(i) { var k = dateKeyOfRun(slotDate(currentTrainWeek, i)), t = todayKey(); return k === t ? 'today' : k < t ? 'past' : 'future'; }
 //  Today's slot runs today's workout, which can be a day that moved forward.
 function wsTodayDay() {
-  var tp = todayPlannedDay(), n = null;
-  if (tp && !hasLogsForDay(tp, currentTrainWeek, todayKey(), todayKey())) return tp;
-  try { n = partialDayThisWeek() || findNextUnloggedDay(); } catch(e) {}
+  var tk = takenToday(), p = partialDayThisWeek(), tp = todayPlannedDay(), t = todayKey(), n = null;
+  if (tk) return tk;
+  if (p) return p;
+  if (tp && !dayDoneOn(tp, currentTrainWeek, t, t)) return tp;
+  try { n = findNextUnloggedDay(); } catch(e) {}
   return n;
 }
 //  On a rest day too, as Today offers the next workout under the rest line.
@@ -19469,15 +19732,19 @@ function renderWeekGlance() {
   var range = MON3[a.getMonth()] + ' ' + a.getDate() + ' to ' + (a.getMonth() === z.getMonth() ? '' : MON3[z.getMonth()] + ' ') + z.getDate();
   var cells = week.map(function(id, i) {
     var d = SPLIT_DAYS[id] || {}, rest = id === 'rest' || d.rest, when = slotWhen(i), dt = slotDate(w, i);
-    var done = false, short = false;
+    var done = false, short = false, part = false;
     //  A mark needs sets logged on this week's dates, and today's only on today.
     var k0 = when === 'today' ? todayKey() : dateKeyOfRun(a), k1 = when === 'today' ? todayKey() : dateKeyOfRun(z);
-    try { done = !rest && hasLogsForDay(id, w, k0, k1); short = !rest && !done && sessionIsShort(id); } catch(e) {}
+    try {
+      done = !rest && dayDoneOn(id, w, k0, k1);
+      part = !rest && !done && hasLogsForDay(id, w, k0, k1);
+      short = !rest && !done && !part && sessionIsShort(id);
+    } catch(e) {}
     var full = rest ? 'rest day' : dayWorkoutName(id);
-    var state = done ? 'done' : rest ? 'rest' : short ? 'short' : 'open';
-    var mark = done ? WS_CHECK : short ? '<i class="wg-half"></i>' : rest ? '' : '<i class="wg-ring"></i>';
+    var state = done ? 'done' : rest ? 'rest' : part ? 'part' : short ? 'short' : 'open';
+    var mark = done ? WS_CHECK : part ? '<i class="wg-part"></i>' : short ? '<i class="wg-half"></i>' : rest ? '' : '<i class="wg-ring"></i>';
     var say = PA_DOWS[i] + ', ' + WS_MONTHS[dt.getMonth()] + ' ' + dt.getDate() + ', ' + full
-      + (when === 'today' ? ', today' : '') + (done ? ', done' : '') + (short ? ', shortened' : '') + (!rest && !done && when === 'future' ? ', upcoming' : '');
+      + (when === 'today' ? ', today' : '') + (done ? ', done' : '') + (part ? ', partly logged' : '') + (short ? ', shortened' : '') + (!rest && !done && when === 'future' ? ', upcoming' : '');
     return '<button type="button" class="wg-day ' + state + (when === 'today' ? ' today' : '') + (i === sel ? ' picked' : '') + '" aria-pressed="' + (i === sel) + '" aria-label="' + paEsc(say) + '" onclick="selectSlot(' + i + ')">'
       + '<span class="wg-in"><span class="wg-dow">' + PA_DOWS[i].charAt(0) + '</span><span class="wg-date">' + dt.getDate() + '</span>'
       + '<span class="wg-title">' + paEsc(rest ? 'Rest' : wsShort(full.replace(/^Short /, ''))) + '</span><span class="wg-mark">' + mark + '</span></span></button>';
@@ -19498,9 +19765,16 @@ function renderWeekGlance() {
 //  Short and Change workout, under the day's card on Today and Lift.
 function dayAdjustHTML(dayId, slot) {
   var rest = !dayId || dayId === 'rest' || !SPLIT_DAYS[dayId] || SPLIT_DAYS[dayId].rest, sh = !rest && sessionIsShort(dayId);
+  var when = slot == null ? 'today' : slotWhen(slot), here = currentTrainWeek === homeWeek(), wr = weekRangeKeys(currentTrainWeek);
+  var other = here && when !== 'today' && !rest && takenToday() !== dayId && !dayDoneOn(dayId, currentTrainWeek, wr[0], wr[1]);
+  var past = when === 'past';
   return '<div class="day-adj" role="group" aria-label="Change this day">'
-    + (rest ? '' : '<button type="button" class="day-adj-btn" aria-pressed="' + sh + '" onclick="openShortPicker(\'' + paJs(dayId) + '\')">Short</button>')
-    + '<button type="button" class="day-adj-btn" aria-haspopup="dialog" onclick="openChangeSheet(\'' + paJs(rest ? 'rest' : dayId) + '\',' + slot + ')">Change workout</button></div>';
+    + (rest || past ? '' : '<button type="button" class="day-adj-btn" aria-pressed="' + sh + '" onclick="openShortPicker(\'' + paJs(dayId) + '\')">Short</button>')
+    + (sh && !past ? '<button type="button" class="day-adj-btn" onclick="restorePlanned(\'' + paJs(dayId) + '\')">Full workout</button>' : '')
+    + (past ? '' : '<button type="button" class="day-adj-btn" aria-haspopup="dialog" onclick="openChangeSheet(\'' + paJs(rest ? 'rest' : dayId) + '\',' + slot + ')">Change workout</button>')
+    + '</div>'
+    + (_noShort === dayId && !sh ? '<p class="tb-quiet adj-note" role="status">Already about ' + fullMinutes(dayId, currentTrainWeek) + ' min. Short would keep the same lifts.</p>' : '')
+    + (other ? '<button type="button" class="tb-logfor" onclick="doThisToday(\'' + paJs(dayId) + '\')">Do this workout today</button>' : '');
 }
 //  CHANGE WORKOUT. One sheet with the three Quick Log ways in. Their logic
 //  is the Quick Log logic; the sheet only picks the day they work on. A rest
@@ -19592,7 +19866,7 @@ function wsPreviewHTML(sel) {
       + '<p class="tb-quiet">Planned for ' + PA_DOWS[sel] + '</p>';
   }
   var done = list.map(function(x) {
-    var e = null; try { e = entryForWeek(getHistory(x.id), w, x); } catch(err) {}
+    var e = null; try { var wr = weekRangeKeys(w); e = (getHistory(x.id) || []).filter(function(h) { return h.week === w && !h.quickLog && h.weight != null && entryForDay(h, id) && (w !== homeWeek() || (h.d && h.d >= wr[0] && h.d <= wr[1])); }).pop() || null; } catch(err) {}
     var n = e && entryForDay(e, id) ? finSets(e).length : 0;
     return n ? '<li>' + paEsc(activeVariant(x)) + ' <span>' + n + (n === 1 ? ' set' : ' sets') + '</span></li>' : '';
   }).join('');
@@ -19638,11 +19912,12 @@ function finCleanTimes(o) {
   if (!o || typeof o !== 'object' || Array.isArray(o)) return out;
   Object.keys(o).filter(function(k) { return /^\d{4}-\d\d-\d\d\|[A-Za-z0-9_-]{1,40}$/.test(k); }).sort().slice(-120).forEach(function(k) {
     var v = o[k]; if (!v || typeof v !== 'object') return;
-    var s = +v.s, l = +v.l;
-    if (!(s > 1e12 && s < 1e13)) return;
-    var r = { s: s };
-    if (l >= s && l < s + 864e5) r.l = l;
-    out[k] = r;
+    var s = +v.s, l = +v.l, r = {};
+    if (s > 1e12 && s < 1e13) { r.s = s; if (l >= s && l < s + 864e5) r.l = l; }
+    //  8.39.1: f, finished for today. t, this workout is done today in place of the planned one.
+    if (v.f === 1) r.f = 1;
+    if (v.t === 1) r.t = 1;
+    if (r.s || r.f || r.t) out[k] = r;
   });
   return out;
 }
@@ -19653,7 +19928,8 @@ function finStamp(day) {
   if (!day || !SPLIT_DAYS[day]) return;
   var k = todayKey() + '|' + day, now = Date.now();
   var t = finTimes[k] || (finTimes[k] = { s: now });
-  t.l = now;
+  if (!t.s) t.s = now;
+  t.l = now; delete t.f;
   finTimes = finCleanTimes(finTimes); finSaveTimes();
 }
 function finDayOf(ex) {
@@ -19979,13 +20255,16 @@ function blockEnded() {
   try {
     var m = planWeekMonday(w), mon = addDays(startOfToday(), -mondayIndex(startOfToday()));
     if (m && mon.getTime() > m.getTime()) return true;
-    return !partialDayThisWeek() && !findNextUnloggedDay();
+    //  8.40.1: fully logged means every planned day done at DONE_FRACTION, on this week's dates.
+    var r = weekRangeKeys(w);
+    return !partialDayThisWeek() && splitDayIds().every(function(id) { return dayDoneOn(id, w, r[0], r[1]); });
   } catch(e) { return false; }
 }
 function blockWorkoutLive() {
   var st = null;
   try { st = JSON.parse(localStorage.getItem(ACTIVE_SESSION_KEY)); } catch(e) {}
-  return !!(st && st.updatedAt && Date.now() - st.updatedAt < ACTIVE_SESSION_MAX_AGE_MS && st.dayId);
+  //  8.40.1: a workout logged today within RECENT_HOURS, or one picked for today, is live too.
+  return !!(st && st.updatedAt && Date.now() - st.updatedAt < ACTIVE_SESSION_MAX_AGE_MS && st.dayId) || !!partialDayThisWeek() || !!takenToday();
 }
 function blockCardOn() {
   if (_blk.force) return true;

@@ -249,7 +249,8 @@ storage.setItem('monk_lift_days_v1', '4');
 boot();
 EX = anExercise();
 // Exactly the shape this app has been writing: no s3 key at all, no warmup store.
-var oldEntry = { d: '2026-01-05', week: 0, weight: 185, reps: 5,
+//  8.39.1: today's row shows today's sets, so the old shape is dated today.
+var oldEntry = { d: (function () { var t = new Date(); return t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0'); })(), week: 0, weight: 185, reps: 5,
                  s1: { w: 185, r: 5 }, s2: { w: 185, r: 4 }, failure: true,
                  variant: ev('activeVariant(EX_BY_ID["' + EX + '"])') };
 var oldSessions = {}; oldSessions[EX] = [oldEntry];
