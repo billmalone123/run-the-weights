@@ -71,6 +71,10 @@ Plan shows the next lift as a card and the other lifts as rows; the full row for
 
 `t837b_setup_max.py` covers the setup step for the three maxes at 390 and 320, in lb and kg. Each lift can take a typed max, a weight and reps (1 to 10, estimated with the same `epleyEstimate` Settings uses, then editable), or Skip for now, which saves no max for that lift.
 
+## End of block (8.38)
+
+`t838_block.py` seeds a 10 week block with `block_seed.js` and covers, at 390 and 320: no dead week 11 button, the block card once and on later opens (never during a workout), the soft card, Not yet up to 3, the proposed maxes (gain, no data, never lower, 25 percent flag, kg), Edit maxes, START BLOCK 2 through the archive with week 1 at max times percentage, Undo, backup with and without `monk_block_history_v1`, and the share image (size, fonts, weights off, no gain lift left off, download fallback, from Settings).
+
 ## Baselines
 
 Some checks used to compare against a copy of the previous build served on a second port. In the repo they compare against saved values in `tests/browser/baselines` instead:
