@@ -3840,6 +3840,9 @@ body.tb-on #todaySection > .today-label:first-of-type, body.tb-on #todayGoal { d
 .tb-links { display: flex; gap: 20px; margin-top: 10px; }
 .tb-links { margin: -4px 0 12px; }
 .tb-links button { min-height: 44px; background: none; border: 0; padding: 0; color: var(--primary-text); font: inherit; font-size: 15px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.tb-move { background: var(--s834-surface); border-radius: 24px; padding: 18px 16px 16px; margin: 0 0 12px; }
+.tb-move-h { margin: 0 0 6px; font-family: var(--font-display); font-weight: 700; font-size: var(--fs-4); line-height: 1.1; color: var(--text); }
+.tb-move-p { margin: 0; color: var(--text); font-size: var(--fs-2); line-height: 1.5; }
 .tb-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
 .tb-stats.one { grid-template-columns: 1fr; }
 .tb-tile { background: var(--s834-surface); border-radius: 24px; padding: 16px 16px 14px; }
@@ -3981,6 +3984,14 @@ body.fin-open { overflow: hidden; }
 .intro-next { width: 100%; min-height: 56px; border: 0; border-radius: 999px; background: #1C2FB5; color: #F2EEE4; font: 700 22px 'RTW Hero', Antonio, sans-serif; cursor: pointer; }
 .intro-privacy { display: block; min-height: 44px; line-height: 44px; margin-top: 8px; text-align: center; color: #141414; font: 400 14px 'DM Sans', sans-serif; text-decoration: underline; text-underline-offset: 3px; }
 .intro-privacy[hidden], .intro-photo[hidden] { display: none; }
+/* 8.39.2: install notice. Safari and the Home Screen app keep separate storage on iPhone. */
+.install-card { z-index: 610; }
+.install-card .intro-top { margin-top: calc(16px + env(safe-area-inset-top)); }
+.install-card .intro-h { font-size: clamp(36px, 11vw, 56px); }
+.install-keep { display: block; width: 100%; min-height: 44px; margin-top: 8px; border: 0; background: none; color: #141414; font: 400 16px 'DM Sans', sans-serif; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.install-keep:focus-visible { outline: 3px solid #1C2FB5; outline-offset: 3px; }
+.move-steps { margin: 6px 0 0; padding-left: 22px; color: var(--text); font-size: var(--fs-2); line-height: 1.5; }
+.move-steps li { margin: 2px 0; }
 .intro-skip:focus-visible, .intro-next:focus-visible, .intro-privacy:focus-visible { outline: 3px solid #1C2FB5; outline-offset: 3px; }
 @media (max-width: 360px) { .intro-p { font-size: 16px; } .intro-body { padding-top: 20px; } }
 /* Short screens: the story text matters more than the photo, so the photo steps aside. */
@@ -4359,6 +4370,17 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
      shown this versus silently flagged past it. Hidden by default; shown
      by JS once the rest of the app has finished initializing. -->
 <!-- 8.35c: first open story, before setup, fresh installs only. Words live in INTRO_STORY. -->
+<!-- 8.39.2: first screen in an iPhone browser tab, once per browser. -->
+<div class="intro-story install-card" id="installCard" role="dialog" aria-modal="true" aria-labelledby="installH" aria-describedby="installP">
+  <div class="intro-top"><span class="intro-mark" aria-hidden="true"></span><h1 class="intro-h" id="installH" tabindex="-1">Add to Home Screen first</h1></div>
+  <div class="intro-body">
+    <p class="intro-p" id="installP">Tap Share, then Add to Home Screen, then open Run the Weights from your Home Screen. Do this before you log anything, because Safari and the Home Screen app do not share data.</p>
+    <div class="intro-foot">
+      <button type="button" class="intro-next" id="installAdded" onclick="installChoose('added')">I added it</button>
+      <button type="button" class="install-keep" id="installKeep" onclick="installChoose('safari')">Keep using Safari</button>
+    </div>
+  </div>
+</div>
 <div class="intro-story" id="introStory" role="dialog" aria-modal="true" aria-labelledby="introH">
   <button type="button" class="intro-skip" onclick="introDone()">Skip</button>
   <div class="intro-photo" id="introPhoto" hidden></div>
@@ -4636,6 +4658,11 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
   <div class="tb" id="todayB">
     <p class="tb-dow" id="tbDow"></p>
     <h1 class="tb-hello" id="tbHello"></h1>
+    <div class="tb-move" id="todayMove" style="display:none" role="region" aria-labelledby="todayMoveH">
+      <h2 class="tb-move-h" id="todayMoveH">Coming from Safari?</h2>
+      <p class="tb-move-p">Open the app in Safari, export a backup in Settings, then restore it here.</p>
+      <button type="button" class="today-secondary" onclick="dismissMoveCard()">Dismiss</button>
+    </div>
     <div class="ws-host" id="tbStrip"></div>
     <div class="tb-work" id="tbWork" hidden></div>
     <div id="tbAdj"></div>
@@ -5603,6 +5630,15 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
       <span class="liftdays-label">Hidden exercises</span>
       <div class="hidden-ex-list" id="hiddenExList"></div>
     </div>
+    <div class="liftdays-wrap" id="moveSec" style="margin-bottom:16px;">
+      <span class="liftdays-label">Moving to the Home Screen</span>
+      <span class="liftdays-desc">On iPhone, Safari and the Home Screen app do not share data.</span>
+      <ol class="move-steps">
+        <li>In Safari, tap Backup below.</li>
+        <li>Tap Share, then Add to Home Screen.</li>
+        <li>Open Run the Weights from your Home Screen, then tap Restore here and pick the backup.</li>
+      </ol>
+    </div>
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;">
       <button class="settings-open-btn" onclick="exportData()">⇩ Backup</button>
       <label class="settings-open-btn" style="cursor:pointer">⇧ Restore<input type="file" accept=".json,application/json" style="display:none" onchange="importData(this)"></label>
@@ -5641,7 +5677,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
 
     <button class="settings-open-btn intro-replay" id="replayIntroBtn" onclick="replayIntro()">Replay intro</button>
     <button class="settings-cancel-btn" onclick="closeSettingsModal()">Close</button>
-    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.41</div>
+    <div class="settings-version" id="settingsVersion" onpointerdown="ownerPressStart()" onpointerup="ownerPressEnd()" onpointerleave="ownerPressEnd()" onpointercancel="ownerPressEnd()">Run the Weights · Version 8.42</div>
   </div>
 </div>
 <!-- RUN SETUP MODAL — onboarding step 2. Its fields are a front end for the Run
@@ -7823,6 +7859,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
   var TODAY_DOWS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
   var _todayDay = null;
   function renderToday() {
+    if (typeof renderMoveCard === 'function') renderMoveCard();
     var dEl = document.getElementById('todayDate');
     if (dEl) dEl.textContent = TODAY_DOWS[mondayIndex(startOfToday())];
     //  A rest day today gets its own card first. The next workout stays
@@ -12069,7 +12106,9 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
         return;
       }
       //  8.35c: the intro story comes first, once. Skip or the last button goes on to setup.
-      if (introSeen()) showOnbFlow(); else showIntro(showOnbFlow);
+      //  8.39.2: in an iPhone browser tab the install notice comes before the story.
+      var go = function() { if (introSeen()) showOnbFlow(); else showIntro(showOnbFlow); };
+      if (needsInstallCard()) showInstallCard(go); else go();
     });
   }
   function showOnbFlow() {
@@ -12390,6 +12429,50 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
   function replayIntro() {
     closeSettingsModal();
     showIntro(null);
+  }
+  //  8.39.2 INSTALL NOTICE. iPhone keeps Safari and Home Screen storage apart.
+  const INSTALL_KEY = 'monk_install_choice_v1', MOVE_KEY = 'monk_move_card_v1';
+  var _installThen = null;
+  function isStandalone() {
+    try { return navigator.standalone === true || !!(window.matchMedia && matchMedia('(display-mode: standalone)').matches); } catch(e) { return false; }
+  }
+  function isIOSDevice() {
+    var u = navigator.userAgent || '';
+    return /iPhone|iPad|iPod/.test(u) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }
+  function needsInstallCard() {
+    if (isStandalone() || !isIOSDevice()) return false;
+    try { return !localStorage.getItem(INSTALL_KEY); } catch(e) { return false; }
+  }
+  function showInstallCard(then) {
+    var el = document.getElementById('installCard');
+    if (!el) { if (then) then(); return; }
+    _installThen = then || null;
+    el.style.display = 'flex'; el.scrollTop = 0;
+    document.getElementById('installH').focus();
+  }
+  function installChoose(v) {
+    try { localStorage.setItem(INSTALL_KEY, v === 'added' ? 'added' : 'safari'); } catch(e) {}
+    var el = document.getElementById('installCard');
+    if (el) el.style.display = 'none';
+    var t = _installThen; _installThen = null;
+    if (t) t();
+  }
+  function appLooksEmpty() {
+    return entryCount(sessions) === 0 && !Object.keys(foodLogs || {}).length && !Object.keys(bodyweight || {}).length;
+  }
+  function renderMoveCard() {
+    var el = document.getElementById('todayMove');
+    if (!el) return;
+    var off = true;
+    try { off = localStorage.getItem(MOVE_KEY) === 'dismissed'; } catch(e) {}
+    el.style.display = isStandalone() && !off && appLooksEmpty() ? '' : 'none';
+  }
+  function dismissMoveCard() {
+    try { localStorage.setItem(MOVE_KEY, 'dismissed'); } catch(e) {}
+    renderMoveCard();
+    var d = document.getElementById('todayDate');
+    if (d) { d.setAttribute('tabindex', '-1'); d.focus(); }
   }
   function renderWhy() {
     var host = document.getElementById('whyBody');
@@ -14360,7 +14443,7 @@ body[data-tab="today"] nav .nav-streak:not([hidden]) + .nav-gear { margin-left: 
     return first && first.offsetParent ? first.firstElementChild : null;
   }
   function tipBlocked() {
-    var open = Array.prototype.some.call(document.querySelectorAll('.settings-modal-overlay, .rest-modal-overlay, #onbFlow, #introStory'), function(m) {
+    var open = Array.prototype.some.call(document.querySelectorAll('.settings-modal-overlay, .rest-modal-overlay, #onbFlow, #introStory, #installCard'), function(m) {
       return m.id !== 'settingsModal' && getComputedStyle(m).display !== 'none';
     });
     return open;

@@ -108,7 +108,7 @@ with sync_playwright() as p:
                 fit = pg.evaluate(FIT)
                 nb = pg.evaluate("(()=>{var r=document.getElementById('introNext').getBoundingClientRect();return [Math.round(r.bottom),innerHeight]})()")
                 check(tag + ': Next is on screen without scrolling', nb[0] <= nb[1], nb)
-                tx = pg.evaluate("[Math.round(introP.getBoundingClientRect().bottom),Math.round(document.querySelector('.intro-foot').getBoundingClientRect().top)]")
+                tx = pg.evaluate("[Math.round(introP.getBoundingClientRect().bottom),Math.round(document.querySelector('#introStory .intro-foot').getBoundingClientRect().top)]")
                 check(tag + ': the whole story text shows above the footer', tx[0] <= tx[1], tx)
                 check(tag + ': no sideways scroll, no cut text, 44 px targets', fit['ow'] <= 0 and fit['dw'] <= 0 and not any(e['cut'] for e in fit['els']) and all(e['h'] >= 44 for e in fit['els'] if e['s'] not in ('#introH', '#introP')), fit)
                 pg.screenshot(path=shot('835c-intro-%d-%d%s.png' % (i + 1, W, '-photo' if photo else '')))
