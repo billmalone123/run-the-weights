@@ -65,5 +65,5 @@ Nowhere directly. `monk_split_history_v1` is read only by Progress (`earliestArc
 ## Tests
 
 - `t838_block.py`: 76 checks at 390 and 320 on a 10 week fixture (`block_seed.js`).
-- Full suite: 27 browser files, 0 failures. food, onb and sets pass. compat.js has the 3 known failures ("N-day split: switchDay() activates a day that exists" for the 3, 4 and 5 day splits).
+- Full suite after the 8.39 merge: 29 browser files, 0 failures. food, onb and sets pass. compat.js has the 3 known failures ("N-day split: switchDay() activates a day that exists" for the 3, 4 and 5 day splits).
 - Screenshots are in `tests/browser/out/838-*`.
