@@ -1,6 +1,6 @@
 # 8.38 End of block
 
-Branch `block-rollover`, cut from master 53dd18d (8.37d). Build label 8.38, cache `monk-mode-v121`. Pushed for a preview only. Not merged.
+Branch `block-rollover`, cut from master 53dd18d (8.37d). Built as 8.38 (cache v121). Then master (8.39) was merged in and it was relabelled **8.40**, cache `monk-mode-v123`, so the label is past the live build. Pushed for a preview only. Not merged.
 
 ## Skills used
 
@@ -18,6 +18,10 @@ anthropic-skills:token-smart-work, design:ux-copy, design:accessibility-review, 
 - **Undo** is built. It shows only while nothing has been logged in the new block. It restores the archived sets, the old maxes, the week and the cycle start snapshot, and removes the record.
 - **New key** `monk_block_history_v1`, holding `[{n, endedAt, oldMaxes, newMaxes}]`. It is in backup and restore and is validated on restore. A backup without it loads as block 1 plus its archive count. Deviation to note: the open block's snooze count lives in the same array as `{n, snoozes}` until START replaces it, so it adds no second key.
 - **Share.** A preview of a 1080x1350 image with a Show weights switch, on by default. Sharing uses the Web Share API with the file, and downloads the image if that isn't available. 8.36's share code became one `shareImage()` helper that both cards use. Fonts load through the existing `finFonts()` before drawing.
+
+## Block done on the calendar week rule (after the 8.39 merge)
+
+The block ends like every other week: when the last week is fully logged, or when its calendar week is over, logged or not. Plan weeks stop at the last week, so a missed day there never holds a block open. Someone away for weeks lands on week 10, and the card shows once that week's calendar week has passed. With fewer than 6 weeks logged, they get the soft version. After Not yet, Today shows Block done with no button, even if week 10 days are still open. Today's order: block card, then the "logged on an earlier date" card from 8.39, then Block done, then Week done.
 
 ## Formula
 

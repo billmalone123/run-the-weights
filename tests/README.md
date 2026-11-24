@@ -75,6 +75,23 @@ Plan shows the next lift as a card and the other lifts as rows; the full row for
 
 `t838_block.py` seeds a 10 week block with `block_seed.js` and covers, at 390 and 320: no dead week 11 button, the block card once and on later opens (never during a workout), the soft card, Not yet up to 3, the proposed maxes (gain, no data, never lower, 25 percent flag, kg), Edit maxes, START BLOCK 2 through the archive with week 1 at max times percentage, Undo, backup with and without `monk_block_history_v1`, and the share image (size, fonts, weights off, no gain lift left off, download fallback, from Settings).
 
+## Running without a race and Today first (8.39)
+
+`t839_run_base.py` covers, at 390 and 320 and in km:
+- the setup questions (Do you run, days a week, race Skip, Not now);
+- the Run tab and the Today tile with no race;
+- logging a run from Today;
+- Settings Running;
+- the three existing user cases;
+- a race set later;
+- backup with and without `monk_run_base_v1`.
+
+`t839b_today_first.py` covers:
+- Today showing today's planned workout first;
+- a day counting as done for today only with today's date;
+- strip marks only from this week's dates;
+- plan weeks following the calendar: a missed week, three weeks away, the last week, finishing early, and a new user.
+
 ## Baselines
 
 Some checks used to compare against a copy of the previous build served on a second port. In the repo they compare against saved values in `tests/browser/baselines` instead:

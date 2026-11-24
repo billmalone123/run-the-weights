@@ -1,6 +1,9 @@
 """8.35b Part B: Short routes to the time picker, the check makes it the day's workout, Restore and Normal bring the plan back. Three plans, reloads."""
 import sys, os, json; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import *
+#  8.39: Today opens today's planned workout. These checks need a day Short
+#  shortens (Upper A); Upper B is not shortened, so the clock sits on Monday.
+import common, datetime; common.T0 = datetime.datetime(2026, 11, 16, 10, 0, 0)
 from playwright.sync_api import sync_playwright
 PLANS = [('upper and lower', ''), ('arnold', "setSplit('arnold')"), ('advanced runner', "setAdvanced(true);setRunning(true)")]
 STORE = "JSON.stringify([localStorage.getItem('monk_sessions_v1'),localStorage.getItem('monk_day_added_v1')])"

@@ -5,7 +5,7 @@
   setSplit('upper-lower');
   const weeks = o.weeks == null ? 10 : o.weeks, last = o.lastWeek == null ? 9 : o.lastWeek, mx = o.maxes || { squat: 300, bench: 225, ohp: 60 };
   const bm = o.base || mx, r5 = n => Math.round(n / 5) * 5, s = {}, split = activeSplit().week;
-  const mon = new Date(2026, 10, 16 - last * 7);
+  const mon = new Date(2026, 10, 16 - last * 7 - 7 * (o.shift || 0));   // shift: weeks earlier on the calendar
   const key = dd => dd.getFullYear() + '-' + String(dd.getMonth() + 1).padStart(2, '0') + '-' + String(dd.getDate()).padStart(2, '0');
   for (let w = 0; w < 10; w++) {
     if (o.only ? o.only.indexOf(w) === -1 : w >= weeks) continue;

@@ -1,6 +1,9 @@
 """8.35b Parts C and D, updated for 8.37: bottom bar for both Food flag states, Lift rename, Change workout entry points, no menu, title not interactive, fit at 390 and 320, screenshots."""
 import sys, os, json; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import *
+#  8.39: Today opens today's planned workout. These checks need a day Short
+#  shortens (Upper A); Upper B is not shortened, so the clock sits on Monday.
+import common, datetime; common.T0 = datetime.datetime(2026, 11, 16, 10, 0, 0)
 from playwright.sync_api import sync_playwright
 CLOSE = "document.querySelectorAll('.settings-modal-overlay').forEach(m=>{if(m.id!=='dayTakeover')m.style.display='none'})"
 BAR = "[...document.querySelectorAll('#tabbar .tabbar-btn')].filter(b=>b.offsetParent).map(b=>{var s=b.querySelector('span'),r=b.getBoundingClientRect();return {t:b.dataset.tab,l:s.innerText.replace(/\\n/g,' '),w:Math.round(r.width),h:Math.round(r.height),cut:s.scrollWidth>s.clientWidth+1||s.scrollHeight>s.clientHeight+1||r.right>innerWidth}})"

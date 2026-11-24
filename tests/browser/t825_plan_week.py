@@ -23,7 +23,9 @@ with sync_playwright() as p:
     check('seeded preset user loads as Follow a plan', ev("trainStyle.style")=='plan', ev("JSON.stringify(trainStyle)"))
     # 1. skip two weeks on a preset plan
     pg.clock.set_system_time(T0+datetime.timedelta(days=16)); pg.reload(); pg.wait_for_timeout(1500)
-    check('after 16 days away, plan week unchanged', ev("currentTrainWeek")==wk0, (wk0, ev("currentTrainWeek")))
+    #  8.39 reverses 8.25 here: plan weeks follow the calendar, so two calendar weeks away moves the plan two weeks on.
+    check('after 16 days away, the plan moves two weeks on', ev("currentTrainWeek")==wk0+2, (wk0, ev("currentTrainWeek")))
+    wk0=ev("currentTrainWeek")
     check('deload still by position (week 4, 8, 12)', ev("[3,7,11].every(isDeloadWeek) && !isDeloadWeek(currentTrainWeek===3?0:currentTrainWeek)") , ev("isDeloadWeek(currentTrainWeek)"))
     check('gap measured from last log', ev("breakGapDays()")>=14, ev("breakGapDays()"))
     ev("goTab('today');scrollTo(0,0)"); pg.wait_for_timeout(400)
