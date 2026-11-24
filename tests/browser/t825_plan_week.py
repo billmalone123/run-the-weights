@@ -116,7 +116,8 @@ with sync_playwright() as p:
     check('delete removes exactly the newest past entry', n1==n0-1 and latest1!=latest, (n0,n1,latest,latest1))
     ptxt2=ev("document.getElementById('progView').innerText")
     check('after delete, change line recomputed', ptxt2!=ptxt, re.findall(r'Since last session\s*\n?\s*[^\n]+',ptxt2))
-    check('after delete, row state reads the remaining entry', ev("entryForWeek(getHistory('flat-bb-bench'),currentTrainWeek,EX_BY_ID['flat-bb-bench']).d")==day1)
+    #  8.39.1: today's rows show today's sets only; the earlier entry stays in history.
+    check('after delete, today shows no sets and the earlier entry is kept', ev("entryForWeek(getHistory('flat-bb-bench'),currentTrainWeek,EX_BY_ID['flat-bb-bench'])") is None and ev("entryForWeek(getHistory('flat-bb-bench'),currentTrainWeek,EX_BY_ID['flat-bb-bench'],true).d")==day1)
     # delete an entry that holds the best
     ev("quickLogSet('flat-bb-bench',300,3,null,'')"); ev("renderProgressHome()"); pg.wait_for_timeout(200)
     bestB=ev("(()=>{const l=liftEntries('flat-bb-bench');return Math.max(...l.map(e=>e.weight))})()")

@@ -112,7 +112,10 @@ with sync_playwright() as p:
     go(pg, 'training'); pg.click('#weekGlance .wg-day >> nth=4'); go(pg, 'today')
     pg.click('#tbStrip .wg-day >> nth=%d' % pg.evaluate("wsToday()"))
     pg.click('#tbAdj .day-adj-btn:has-text("Change workout")'); pg.click('#cwSheet .settings-cancel-btn')
-    pg.click('#tbAdj .day-adj-btn:has-text("Short")'); pg.wait_for_timeout(300); pg.click('#qlToday button:has-text("Back")'); pg.wait_for_timeout(300)
+    pg.click('#tbAdj .day-adj-btn:has-text("Short")'); pg.wait_for_timeout(300)
+    #  8.39.1: Upper B cannot be shortened, so Short says so in place.
+    if pg.evaluate("document.body.dataset.tab") == 'quicklog': pg.click('#qlToday button:has-text("Back")'); pg.wait_for_timeout(300)
+    else: check('Short on a day it cannot shorten says Already about', pg.evaluate("(document.querySelector('#tbAdj .adj-note')||{}).innerText||''").startswith('Already about '))
     for t in TABS: go(pg, t); pg.click('#navGear'); pg.click('#settingsModal .settings-cancel-btn')
     pg.click('#navLogo'); pg.wait_for_timeout(300)
     after = pg.evaluate(ALL)
