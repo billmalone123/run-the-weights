@@ -1,6 +1,9 @@
 """8.34 fix (8.37: Short button and Restore line replace the Normal/Short toggle): switch a workout between Short and Normal at any time, both ways, with sets already logged. Logged data never changes."""
 import sys, os, json; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import *
+#  8.39: Today opens today's planned workout. These checks need a day Short
+#  shortens (Upper A); Upper B is not shortened, so the clock sits on Monday.
+import common, datetime; common.T0 = datetime.datetime(2026, 11, 16, 10, 0, 0)
 from playwright.sync_api import sync_playwright
 LOGS="(()=>{const o={};Object.keys(sessions).sort().forEach(k=>o[k]=sessions[k]);return JSON.stringify(o)})()"
 STORE="(()=>{const o=JSON.parse(localStorage.getItem('monk_sessions_v1')||'{}');const r={};Object.keys(o).sort().forEach(k=>r[k]=o[k]);return JSON.stringify(r)})()"

@@ -1,0 +1,83 @@
+"""8.39 Today first: on the day it is, Today shows that day's planned workout first; a day is done for today only
+when its sets carry today's date; marks from earlier dates do not show on this week's dates. 390 and 320."""
+import sys, os; sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from common import *
+from playwright.sync_api import sync_playwright
+# The seed sits on plan week 7 (index 6) with nothing logged in it. The clock is Thursday 19 Nov 2026.
+LOG = """([day, wk, d]) => { splitDayExercises(day).forEach(ex => { (sessions[ex.id] = sessions[ex.id] || []).push({ d, week: wk, day, weight: 50, reps: 8, s1: { w: 50, r: 8 }, s2: { w: 50, r: 8 }, failure: null, variant: activeVariant(ex) }); }); saveSessions(); renderTodayB(); renderWeekGlance(); }"""
+def marks(pg): return pg.evaluate("[...document.querySelectorAll('#tbStrip .wg-day')].map(b=>b.classList.contains('done')?'x':'.').join('')")
+def card(pg): return pg.evaluate("tbWork.innerText").lower()
+with sync_playwright() as p:
+    b = p.chromium.launch()
+    for W in [390, 320]:
+        ctx, pg, errs = page(b, W, 844); go(pg, 'today')
+        wk = pg.evaluate("splitWeekOf(currentTrainWeek)"); thu = wk[3]
+        check('%d: the plan has a workout on Thursday' % W, thu != 'rest', wk)
+        name = pg.evaluate("dayWorkoutName('%s')" % thu).lower()
+        c = card(pg)
+        check('%d: with Monday and Tuesday open, Today shows Thursday first' % W, '\ntoday\n' in '\n'+c and name in c and 'start workout' in c, c[:120])
+        check('%d: the strip picks Thursday as today' % W, pg.evaluate("slotDayId(3)") == thu)
+        # Thursday's workout logged on Tuesday.
+        pg.evaluate(LOG, [thu, 6, '2026-11-17'])
+        c = card(pg)
+        check('%d: logged on an earlier date it is not done for today' % W, 'logged on tuesday, november 17. it counts for that day, not today.' in c and 'open in lift' in c, c[:200])
+        check('%d: and today has no check' % W, marks(pg)[3] == '.', marks(pg))
+        pg.screenshot(path=shot('839b-today-early-%d.png' % W))
+        ctx.close()
+        # Logged today.
+        ctx, pg, errs = page(b, W, 844); go(pg, 'today')
+        pg.evaluate(LOG, [thu, 6, '2026-11-19'])
+        check('%d: logged today, Thursday is checked' % W, marks(pg)[3] == 'x', marks(pg))
+        check('%d: and Today moves on to the next open workout' % W, 'week done' not in card(pg) and name not in card(pg).split('\n')[2] if len(card(pg).split('\n')) > 2 else True, card(pg)[:120])
+        ctx.close()
+        # Marks from earlier dates.
+        ctx, pg, errs = page(b, W, 844); go(pg, 'today')
+        mon = pg.evaluate("splitWeekOf(currentTrainWeek)[0]")
+        pg.evaluate(LOG, [mon, 6, '2026-11-10'])
+        check('%d: a week 7 day logged last calendar week shows no mark on this week' % W, marks(pg)[0] == '.', marks(pg))
+        pg.evaluate(LOG, [wk[1], 6, '2026-11-17'])
+        check('%d: one logged on this week\'s dates does' % W, marks(pg)[1] == 'x', marks(pg))
+        check('%d: no page errors' % W, not errs, errs); ctx.close()
+    # ---------- a new calendar week rolls the plan week ----------
+    for W in [390, 320]:
+        ctx, pg, errs = page(b, W, 844); go(pg, 'today')
+        wk = pg.evaluate("splitWeekOf(6)")
+        for i, d in enumerate(wk):
+            if d != 'rest' and i < 5: pg.evaluate(LOG, [d, 6, '2026-11-%02d' % (9 + i)])
+        before = pg.evaluate("JSON.stringify(sessions)")
+        pg.reload(); pg.wait_for_timeout(1500); pg.evaluate("document.querySelectorAll('.settings-modal-overlay').forEach(m=>m.style.display='none')"); go(pg, 'today')
+        check('%d: week 7 logged only last calendar week rolls to week 8' % W, pg.evaluate("currentTrainWeek") == 7 and pg.evaluate("localStorage.getItem('monk_mode_train_week_v1')") == '7')
+        check('%d: the strip is clean and Today starts Thursday fresh' % W, marks(pg) == '.......' and 'start workout' in card(pg) and '\ntoday\n' in '\n' + card(pg), [marks(pg), card(pg)[:100]])
+        check('%d: no logged set changed' % W, pg.evaluate("JSON.stringify(sessions)") == before)
+        pg.screenshot(path=shot('839b-rolled-%d.png' % W))
+        ctx.close()
+    ctx, pg, errs = page(b, 390, 844)
+    pg.evaluate("Object.keys(sessions).forEach(id=>sessions[id].forEach(e=>{if(e.week===5)e.d='2026-11-02'}));saveSessions()")
+    pg.reload(); pg.wait_for_timeout(1500)
+    check('a whole missed week does not hold anyone back: week 7 empty, week 6 two weeks ago, now week 8', pg.evaluate("currentTrainWeek") == 7)
+    ctx.close()
+    ctx, pg, errs = page(b, 390, 844)
+    pg.evaluate(LOG, [pg.evaluate("splitWeekOf(6)[0]"), 6, '2026-10-26'])
+    pg.reload(); pg.wait_for_timeout(1500)
+    check('away three weeks moves three weeks on', pg.evaluate("currentTrainWeek") == 9)
+    ctx.close()
+    ctx, pg, errs = page(b, 390, 844)
+    pg.evaluate(LOG, [pg.evaluate("splitWeekOf(9)[0]"), 9, '2026-10-26'])
+    pg.evaluate("localStorage.setItem('monk_mode_train_week_v1','9')"); pg.reload(); pg.wait_for_timeout(1500)
+    check('it never goes past the last week', pg.evaluate("currentTrainWeek") == 9)
+    ctx.close()
+    ctx, pg, errs = page(b, 390, 844)
+    pg.evaluate("Object.keys(sessions).forEach(id=>sessions[id].forEach(e=>{if(e.week===5)e.d='2026-11-16'}));saveSessions()")
+    pg.reload(); pg.wait_for_timeout(1500)
+    check('finishing a week early keeps the next week (week 6 done this week, on week 7)', pg.evaluate("currentTrainWeek") == 6)
+    ctx.close()
+    ctx, pg, errs = page(b, 390, 844, seed=False)
+    check('a new user with no logs stays on week 1', pg.evaluate("currentTrainWeek") == 0)
+    ctx.close()
+    ctx, pg, errs = page(b, 390, 844)
+    pg.evaluate(LOG, [pg.evaluate("splitWeekOf(6)[0]"), 6, '2026-11-10']); pg.evaluate(LOG, [pg.evaluate("splitWeekOf(6)[1]"), 6, '2026-11-17'])
+    pg.reload(); pg.wait_for_timeout(1500)
+    check('a plan week with a set from this calendar week does not roll', pg.evaluate("currentTrainWeek") == 6)
+    ctx.close()
+    b.close()
+sys.exit(1 if done() else 0)

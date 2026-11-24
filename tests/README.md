@@ -71,6 +71,23 @@ Plan shows the next lift as a card and the other lifts as rows; the full row for
 
 `t837b_setup_max.py` covers the setup step for the three maxes at 390 and 320, in lb and kg. Each lift can take a typed max, a weight and reps (1 to 10, estimated with the same `epleyEstimate` Settings uses, then editable), or Skip for now, which saves no max for that lift.
 
+## Running without a race and Today first (8.39)
+
+`t839_run_base.py` covers, at 390 and 320 and in km:
+- the setup questions (Do you run, days a week, race Skip, Not now);
+- the Run tab and the Today tile with no race;
+- logging a run from Today;
+- Settings Running;
+- the three existing user cases;
+- a race set later;
+- backup with and without `monk_run_base_v1`.
+
+`t839b_today_first.py` covers:
+- Today showing today's planned workout first;
+- a day counting as done for today only with today's date;
+- strip marks only from this week's dates;
+- plan weeks following the calendar: a missed week, three weeks away, the last week, finishing early, and a new user.
+
 ## Baselines
 
 Some checks used to compare against a copy of the previous build served on a second port. In the repo they compare against saved values in `tests/browser/baselines` instead:
